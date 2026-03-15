@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 RUN apk add --no-cache openssl libc6-compat
 
@@ -10,18 +10,7 @@ RUN npm ci
 COPY backend/ .
 RUN npx prisma generate
 RUN npm run build
-
-# ==================== PRODUCTION ====================
-FROM node:20-alpine AS production
-
-RUN apk add --no-cache openssl libc6-compat
-
-WORKDIR /app
-
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/package*.json ./
+RUN ls -la dist/
 
 EXPOSE 3001
 
