@@ -13,7 +13,9 @@ COPY backend/tsconfig.json ./
 COPY backend/.nestcli.json ./.nestcli.json
 
 RUN npx prisma generate
-RUN npm run build && echo "BUILD SUCCESS" && ls -la dist/
+
+# Compilar com tsc diretamente para ver erros explícitos
+RUN npx tsc --project tsconfig.json 2>&1 && echo "BUILD SUCCESS" && ls -la dist/
 
 EXPOSE 3001
 
