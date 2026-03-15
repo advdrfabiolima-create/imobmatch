@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { formatCurrency, PROPERTY_TYPE_LABELS } from "@/lib/utils";
-import { Zap, RefreshCw, ArrowRight, User, Home, Phone, ChevronDown, Handshake, Lock } from "lucide-react";
+import { Zap, RefreshCw, ArrowRight, User, Home, Phone, ChevronDown, Users, Lock } from "lucide-react";
 import { getWhatsAppLink } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
 import toast from "react-hot-toast";
@@ -472,7 +472,7 @@ export default function MatchesPage() {
                                 : "bg-violet-600 text-white hover:bg-violet-700"
                             }`}
                           >
-                            <Handshake className="h-3.5 w-3.5" />
+                            <Users className="h-3.5 w-3.5" />
                             {isPartnershipFormOpen ? "Fechar" : "Propor Parceria"}
                           </button>
                         )}
