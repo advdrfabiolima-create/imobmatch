@@ -1,5 +1,7 @@
 FROM node:20-alpine AS builder
 
+RUN apk add --no-cache openssl libc6-compat
+
 WORKDIR /app
 
 COPY backend/package*.json ./
@@ -11,6 +13,8 @@ RUN npm run build
 
 # ==================== PRODUCTION ====================
 FROM node:20-alpine AS production
+
+RUN apk add --no-cache openssl libc6-compat
 
 WORKDIR /app
 
