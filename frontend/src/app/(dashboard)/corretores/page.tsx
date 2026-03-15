@@ -1,0 +1,104 @@
+"use client";
+
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Header } from "@/components/layout/header";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { api } from "@/lib/api";
+import { Search, MapPin, Building2, MessageSquare, Phone } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+export default function CorretoresPage() {
+  const [search, setSearch] = useState("");
+  const [city, setCity] = useState("");
+  const router = useRouter();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["agents", search, city],
+    queryFn: () => api.get("/users", { params: { search, city } }).then((r) => r.data),
+  });
+
+  return (
+    <div>
+      <Header title="Buscar Corretores" />
+      <div className="p-6">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input placeholder="Buscar por nome ou imobiliária..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+          </div>
+          <Input placeholder="Filtrar por cidade..." value={city} onChange={(e) => setCity(e.target.value)} className="sm:w-48" />
+        </div>
+
+        <p className="text-sm text-gray-500 mb-4">{data?.total ?? 0} corretor(es) encontrado(s)</p>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => <div key={i} className="h-40 bg-gray-100 rounded-xl animate-pulse" />)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {data?.data?.map((agent: any) => (
+              <Card key={agent.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-5">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg flex-shrink-0">
+                      {agent.avatarUrl ? (
+                        <img src={agent.avatarUrl} className="w-full h-full rounded-full object-cover" alt={agent.name} />
+                      ) : (
+                        agent.name.charAt(0)
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900">{agent.name}</p>
+                      {agent.agency && <p className="text-sm text-blue-600 truncate">{agent.agency}</p>}
+                      {(agent.city || agent.state) && (
+                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                          <MapPin className="h-3 w-3" />
+                          <span>{agent.city}{agent.state ? `/${agent.state}` : ""}</span>
+                        </div>
+                      )}
+                      {agent.creci && (
+                        <span className="text-xs text-gray-400 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded mt-0.5 inline-block">
+                          {agent.creci}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {agent.bio && (
+                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">{agent.bio}</p>
+                  )}
+
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
+                    <Building2 className="h-3.5 w-3.5" />
+                    <span>{agent._count?.properties ?? 0} imóveis cadastrados</span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 gap-1"
+                      onClick={() => router.push(`/mensagens?partner=${agent.id}`)}
+                    >
+                      <MessageSquare className="h-3.5 w-3.5" /> Mensagem
+                    </Button>
+                    <Link href={`/corretor/${agent.id}`} className="flex-1">
+                      <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700 gap-1">
+                        Ver Perfil
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,107 @@
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { PropertyStatus } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreatePropertyDto, UpdatePropertyDto } from './dto/property.dto';
+
+@Injectable()
+export class PropertiesService {
+  constructor(private prisma: PrismaService) {}
+
+  async create(agentId: string, dto: CreatePropertyDto) {
+    return this.prisma.property.create({
+      data: { ...dto, agentId },
+      include: { agent: { select: { id: true, name: true, phone: true, email: true } } },
+    });
+  }
+
+  async findAll(query: {
+    city?: string; state?: string; type?: string; minPrice?: number; maxPrice?: number;
+    bedrooms?: number; search?: string; page?: number; limit?: number; agentId?: string;
+  }) {
+    const { city, state, type, minPrice, maxPrice, bedrooms, search, page = 1, limit = 20, agentId } = query;
+    const skip = (page - 1) * limit;
+
+    const where: any = { isPublic: true, status: 'AVAILABLE' };
+    if (agentId) { where.agentId = agentId; delete where.isPublic; delete where.status; }
+    if (city) where.city = { contains: city, mode: 'insensitive' };
+    if (state) where.state = state;
+    if (type) where.type = type;
+    if (bedrooms) where.bedrooms = { gte: Number(bedrooms) };
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price.gte = Number(minPrice);
+      if (maxPrice) where.price.lte = Number(maxPrice);
+    }
+    if (search) where.OR = [
+      { title: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+      { neighborhood: { contains: search, mode: 'insensitive' } },
+    ];
+
+    const [properties, total] = await Promise.all([
+      this.prisma.property.findMany({
+        where, skip, take: Number(limit),
+        include: { agent: { select: { id: true, name: true, phone: true, email: true, avatarUrl: true } } },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.property.count({ where }),
+    ]);
+
+    return { data: properties, total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) };
+  }
+
+  async findOne(id: string) {
+    const property = await this.prisma.property.findUnique({
+      where: { id },
+      include: {
+        agent: { select: { id: true, name: true, phone: true, email: true, avatarUrl: true, agency: true, city: true } },
+        _count: { select: { matches: true, partnerships: true } },
+      },
+    });
+    if (!property) throw new NotFoundException('Imóvel não encontrado');
+    return property;
+  }
+
+  async update(id: string, agentId: string, dto: UpdatePropertyDto, role?: string) {
+    const property = await this.prisma.property.findUnique({ where: { id } });
+    if (!property) throw new NotFoundException('Imóvel não encontrado');
+    if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
+    const { status, ...rest } = dto;
+    return this.prisma.property.update({
+      where: { id },
+      data: { ...rest, ...(status && { status: status as PropertyStatus }) },
+    });
+  }
+
+  async remove(id: string, agentId: string, role?: string) {
+    const property = await this.prisma.property.findUnique({ where: { id } });
+    if (!property) throw new NotFoundException('Imóvel não encontrado');
+    if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
+    return this.prisma.property.delete({ where: { id } });
+  }
+
+  async getMyProperties(agentId: string, query: any) {
+    const { page = 1, limit = 20, status, search, city, state } = query;
+    const skip = (page - 1) * limit;
+    const where: any = { agentId };
+    if (status) where.status = status;
+    if (state) where.state = state;
+    if (city) where.city = { contains: city, mode: 'insensitive' };
+    if (search) where.OR = [
+      { title: { contains: search, mode: 'insensitive' } },
+      { city: { contains: search, mode: 'insensitive' } },
+      { neighborhood: { contains: search, mode: 'insensitive' } },
+      { address: { contains: search, mode: 'insensitive' } },
+    ];
+
+    const [properties, total] = await Promise.all([
+      this.prisma.property.findMany({
+        where, skip, take: Number(limit),
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.property.count({ where }),
+    ]);
+
+    return { data: properties, total, page: Number(page), totalPages: Math.ceil(total / limit) };
+  }
+}
