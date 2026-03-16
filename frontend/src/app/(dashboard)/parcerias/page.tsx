@@ -137,7 +137,7 @@ export default function ParceriasPage() {
                       {p.commissionSplit && <p className="font-medium">Comissão: {p.commissionSplit}%</p>}
                     </div>
                     <div className="mt-3 pt-3 border-t">
-                      <Link href={`/parcerias/${p.id}/termo`} target="_blank">
+                      <Link href={`/termo/${p.id}`} target="_blank">
                         <Button size="sm" variant="outline" className="gap-1.5 text-green-700 border-green-300 hover:bg-green-50 w-full">
                           <FileText className="h-4 w-4" />
                           Ver Termo de Parceria

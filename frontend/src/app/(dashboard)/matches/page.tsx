@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { formatCurrency, PROPERTY_TYPE_LABELS } from "@/lib/utils";
-import { Zap, RefreshCw, ArrowRight, User, Home, Phone, ChevronDown, Users, Lock } from "lucide-react";
+import { Zap, RefreshCw, ArrowRight, User, Home, Phone, ChevronDown, Users, Lock, X } from "lucide-react";
 import { getWhatsAppLink } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
 import toast from "react-hot-toast";
@@ -86,16 +86,19 @@ function StatusBadge({
   );
 }
 
-// ─── Partnership proposal form (inline) ───────────────────────────────────────
-function PartnershipForm({
-  propertyId,
-  receiverId,
-  receiverName,
-  onClose,
-}: {
+// ─── Partnership modal ─────────────────────────────────────────────────────────
+type PartnershipTarget = {
+  matchId: string;
   propertyId: string;
   receiverId: string;
   receiverName: string;
+};
+
+function PartnershipModal({
+  target,
+  onClose,
+}: {
+  target: PartnershipTarget;
   onClose: () => void;
 }) {
   const queryClient = useQueryClient();
@@ -105,8 +108,8 @@ function PartnershipForm({
   const mutation = useMutation({
     mutationFn: () =>
       api.post("/partnerships", {
-        propertyId,
-        receiverId,
+        propertyId: target.propertyId,
+        receiverId: target.receiverId,
         ...(commission ? { commissionSplit: Number(commission) } : {}),
         ...(message ? { message } : {}),
       }),
@@ -122,41 +125,66 @@ function PartnershipForm({
   });
 
   return (
-    <div className="mt-3 p-3 bg-violet-50 border border-violet-200 rounded-xl space-y-2">
-      <p className="text-xs font-medium text-violet-800">Proposta para <strong>{receiverName}</strong></p>
-      <div className="flex gap-2">
-        <div className="flex-1">
-          <input
-            type="number"
-            placeholder="Sua % de comissão (ex: 50)"
-            value={commission}
-            onChange={(e) => setCommission(e.target.value)}
-            min={1}
-            max={99}
-            className="w-full text-xs rounded-lg border border-violet-200 px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-400"
-          />
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
+        <div className="flex items-center justify-between p-5 border-b">
+          <div>
+            <h2 className="text-base font-semibold text-gray-900">Propor Parceria</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Para: <strong>{target.receiverName}</strong></p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <X className="h-5 w-5 text-gray-500" />
+          </button>
         </div>
-      </div>
-      <textarea
-        placeholder="Mensagem para o corretor (opcional)..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        rows={2}
-        className="w-full text-xs rounded-lg border border-violet-200 px-3 py-1.5 resize-none focus:outline-none focus:ring-1 focus:ring-violet-400"
-      />
-      <div className="flex gap-2">
-        <Button
-          size="sm"
-          onClick={() => mutation.mutate()}
-          disabled={mutation.isPending}
-          className="bg-violet-600 hover:bg-violet-700 text-xs h-7 px-3"
-        >
-          {mutation.isPending ? <RefreshCw className="h-3 w-3 animate-spin mr-1" /> : null}
-          Enviar proposta
-        </Button>
-        <Button size="sm" variant="ghost" onClick={onClose} className="text-xs h-7 px-3">
-          Cancelar
-        </Button>
+        <div className="p-5 space-y-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-1.5">
+              Sua % de comissão (opcional)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                placeholder="Ex: 50"
+                value={commission}
+                onChange={(e) => setCommission(e.target.value)}
+                min={1}
+                max={99}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-violet-400 text-sm"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+            </div>
+            {commission && Number(commission) > 0 && Number(commission) < 100 && (
+              <p className="text-xs text-gray-400 mt-1">
+                Você: {commission}% · {target.receiverName}: {100 - Number(commission)}%
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-1.5">
+              Mensagem (opcional)
+            </label>
+            <textarea
+              placeholder="Apresente-se e explique a proposta..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={3}
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-violet-400 text-sm"
+            />
+          </div>
+          <div className="flex gap-3 pt-1">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => mutation.mutate()}
+              disabled={mutation.isPending}
+              className="flex-1 bg-violet-600 hover:bg-violet-700 gap-2"
+            >
+              {mutation.isPending ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4" />}
+              Enviar proposta
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -168,7 +196,7 @@ export default function MatchesPage() {
   const { user } = useAuthStore();
   const myId = user?.id;
   const [filterStatus, setFilterStatus] = useState("");
-  const [partnershipOpen, setPartnershipOpen] = useState<string | null>(null);
+  const [partnershipTarget, setPartnershipTarget] = useState<PartnershipTarget | null>(null);
 
   const { data: matches, isLoading } = useQuery({
     queryKey: ["matches", filterStatus],
@@ -215,6 +243,14 @@ export default function MatchesPage() {
 
   return (
     <div>
+      {/* Partnership modal — rendered at page root, completely isolated from match cards */}
+      {partnershipTarget && (
+        <PartnershipModal
+          target={partnershipTarget}
+          onClose={() => setPartnershipTarget(null)}
+        />
+      )}
+
       <Header title="Matches" />
       <div className="p-4 md:p-6 space-y-6">
 
@@ -346,19 +382,16 @@ export default function MatchesPage() {
               const isSameAgent = m.buyer?.agent?.id === m.property?.agentId;
               const statusCfg = STATUS_MAP[m.status] ?? STATUS_MAP.PENDING;
               const isRejected = m.status === "REJECTED";
-              const isClosed = m.status === "CLOSED";
+              const isClosed   = m.status === "CLOSED";
 
-              // Quem é o outro corretor nesse match cruzado
-              const otherAgentId = m.buyer?.agent?.id === myId ? m.property?.agentId : m.buyer?.agent?.id;
+              const otherAgentId   = m.buyer?.agent?.id === myId ? m.property?.agentId    : m.buyer?.agent?.id;
               const otherAgentName = m.buyer?.agent?.id === myId ? m.property?.agent?.name : m.buyer?.agent?.name;
-              const isPartnershipFormOpen = partnershipOpen === m.id;
 
-              // Parceria: backend já revela phone/email quando aceita
-              const partnershipStatus = m.partnership?.status ?? null;
-              const partnershipExists = !!m.partnership;
+              const partnershipStatus   = m.partnership?.status ?? null;
+              const partnershipExists   = !!m.partnership;
               const partnershipAccepted = partnershipStatus === "ACCEPTED";
 
-              // Contatos do comprador: backend revela quando é meu comprador OU parceria aceita
+              // Backend revela phone quando isMine || partnershipAccepted
               const buyerPhone = m.buyer?.phone ?? null;
 
               return (
@@ -411,7 +444,7 @@ export default function MatchesPage() {
                           {!isSameAgent && m.buyer?.agent && (
                             <p className="text-xs text-gray-400 mt-1">Corretor: {m.buyer.agent.name}</p>
                           )}
-                          {/* Contatos do comprador cruzado */}
+                          {/* Contato revelado quando parceria aceita */}
                           {!isSameAgent && partnershipAccepted && buyerPhone && (
                             <a
                               href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
@@ -461,13 +494,10 @@ export default function MatchesPage() {
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        {/* Match próprio: botão WhatsApp se tiver telefone */}
+                        {/* Match próprio: WhatsApp */}
                         {isSameAgent && buyerPhone && (
                           <a
-                            href={getWhatsAppLink(
-                              buyerPhone,
-                              `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`,
-                            )}
+                            href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
                             target="_blank"
                             rel="noreferrer"
                             className="flex items-center gap-1 text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition"
@@ -476,7 +506,7 @@ export default function MatchesPage() {
                           </a>
                         )}
 
-                        {/* Match cruzado: parceria já enviada → botão inativo */}
+                        {/* Match cruzado — parceria já existe */}
                         {!isSameAgent && otherAgentId && partnershipExists && (
                           <span
                             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium cursor-default ${
@@ -490,34 +520,25 @@ export default function MatchesPage() {
                           </span>
                         )}
 
-                        {/* Match cruzado: sem parceria → botão propor */}
+                        {/* Match cruzado — sem parceria: abre modal */}
                         {!isSameAgent && otherAgentId && !partnershipExists && (
                           <button
                             onClick={() =>
-                              setPartnershipOpen(isPartnershipFormOpen ? null : m.id)
+                              setPartnershipTarget({
+                                matchId: m.id,
+                                propertyId: m.property?.id,
+                                receiverId: otherAgentId,
+                                receiverName: otherAgentName ?? "corretor",
+                              })
                             }
-                            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition font-medium ${
-                              isPartnershipFormOpen
-                                ? "bg-violet-100 text-violet-700"
-                                : "bg-violet-600 text-white hover:bg-violet-700"
-                            }`}
+                            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition font-medium bg-violet-600 text-white hover:bg-violet-700"
                           >
                             <Users className="h-3.5 w-3.5" />
-                            {isPartnershipFormOpen ? "Fechar" : "Propor Parceria"}
+                            Propor Parceria
                           </button>
                         )}
                       </div>
                     </div>
-
-                    {/* Inline partnership form */}
-                    {!isSameAgent && isPartnershipFormOpen && otherAgentId && !partnershipExists && (
-                      <PartnershipForm
-                        propertyId={m.property?.id}
-                        receiverId={otherAgentId}
-                        receiverName={otherAgentName ?? "corretor"}
-                        onClose={() => setPartnershipOpen(null)}
-                      />
-                    )}
                   </CardContent>
                 </Card>
               );
