@@ -53,10 +53,10 @@ export default function HomePage() {
       <section className="bg-blue-600 py-12">
         <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
           {[
-            { value: "5.000+", label: "Corretores Ativos" },
-            { value: "20.000+", label: "Imóveis Cadastrados" },
-            { value: "R$ 2B+", label: "em Negócios Fechados" },
-            { value: "98%", label: "Satisfação dos Usuários" },
+            { value: "3.000+", label: "Corretores Ativos" },
+            { value: "10.000+", label: "Imóveis Cadastrados" },
+            { value: "R$ 900k+", label: "em Negócios Fechados" },
+            { value: "99%", label: "Satisfação dos Usuários" },
           ].map((stat) => (
             <div key={stat.label}>
               <div className="text-3xl font-bold">{stat.value}</div>

@@ -29,9 +29,8 @@ export default async function ImoveisPublicPage({ searchParams }: { searchParams
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Building2 className="h-7 w-7 text-blue-600" />
-            <span className="text-xl font-bold text-blue-600">ImobMatch</span>
+          <Link href="/" className="flex items-center">
+            <img src="/logo.png" alt="ImobMatch" className="h-9 w-auto object-contain" />
           </Link>
           <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
             Entrar / Cadastrar

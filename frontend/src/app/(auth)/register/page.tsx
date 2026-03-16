@@ -47,11 +47,14 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { acceptTerms: false },
   });
+
+  const termsAccepted = watch("acceptTerms");
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -289,8 +292,8 @@ export default function RegisterPage() {
               {/* Submit */}
               <Button
                 type="submit"
-                className="w-full h-11 bg-blue-600 hover:bg-blue-700 font-medium gap-2 mt-1"
-                disabled={isLoading}
+                className="w-full h-11 bg-blue-600 hover:bg-blue-700 font-medium gap-2 mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading || !termsAccepted}
               >
                 {isLoading ? (
                   <>
