@@ -173,6 +173,10 @@ model Partnership {
   status         PartnershipStatus @default(PENDING)
   commissionSplit Decimal?         @db.Decimal(5, 2)
   message        String?
+  requesterIp    String?
+  receiverIp     String?
+  agreementHash  String?
+  acceptedAt     DateTime?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 

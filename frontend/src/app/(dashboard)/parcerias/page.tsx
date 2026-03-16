@@ -7,8 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { UserCheck, Check, X, Building2 } from "lucide-react";
+import { UserCheck, Check, X, Building2, FileText } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
+import Link from "next/link";
 import toast from "react-hot-toast";
 
 const STATUS_COLORS: Record<string, any> = {
@@ -134,6 +135,14 @@ export default function ParceriasPage() {
                       <p>Solicitante: {p.requester?.name}</p>
                       <p>Receptor: {p.receiver?.name}</p>
                       {p.commissionSplit && <p className="font-medium">Comissão: {p.commissionSplit}%</p>}
+                    </div>
+                    <div className="mt-3 pt-3 border-t">
+                      <Link href={`/parcerias/${p.id}/termo`} target="_blank">
+                        <Button size="sm" variant="outline" className="gap-1.5 text-green-700 border-green-300 hover:bg-green-50 w-full">
+                          <FileText className="h-4 w-4" />
+                          Ver Termo de Parceria
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>

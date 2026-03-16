@@ -51,3 +51,12 @@
   * { @apply border-border; }
   body { @apply bg-background text-foreground; }
 }
+
+@media print {
+  /* Termo de Parceria — print styles */
+  nav, header, aside, .print\:hidden { display: none !important; }
+  body { background: white !important; }
+  #termo-parceria { box-shadow: none !important; border-radius: 0 !important; }
+  .bg-blue-600 { background-color: #1d4ed8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .bg-blue-50, .bg-green-50, .bg-amber-50, .bg-gray-50 { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

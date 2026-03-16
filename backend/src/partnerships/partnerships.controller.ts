@@ -12,14 +12,23 @@ export class PartnershipsController {
 
   @Post()
   @ApiOperation({ summary: 'Solicitar parceria em um imóvel' })
-  request(@Request() req, @Body() dto: { propertyId: string; receiverId: string; commissionSplit?: number; message?: string }) {
-    return this.partnershipsService.request(req.user.id, dto);
+  request(
+    @Request() req,
+    @Body() dto: { propertyId: string; receiverId: string; commissionSplit?: number; message?: string },
+  ) {
+    return this.partnershipsService.request(req.user.id, dto, req);
   }
 
   @Get()
   @ApiOperation({ summary: 'Listar minhas parcerias' })
   findAll(@Request() req, @Query() query: any) {
     return this.partnershipsService.findAll(req.user.id, query);
+  }
+
+  @Get(':id/agreement')
+  @ApiOperation({ summary: 'Obter dados do Termo de Parceria (somente parcerias aceitas)' })
+  getAgreement(@Param('id') id: string, @Request() req) {
+    return this.partnershipsService.getAgreement(id, req.user.id);
   }
 
   @Patch(':id/respond')
@@ -29,7 +38,7 @@ export class PartnershipsController {
     @Request() req,
     @Body() body: { status: 'ACCEPTED' | 'REJECTED'; commissionSplit?: number },
   ) {
-    return this.partnershipsService.respond(id, req.user.id, body.status, body.commissionSplit);
+    return this.partnershipsService.respond(id, req.user.id, body.status, body.commissionSplit, req);
   }
 
   @Patch(':id/cancel')
