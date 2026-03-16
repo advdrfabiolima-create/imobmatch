@@ -73,12 +73,15 @@ export class PropertiesService {
     });
   }
 
-  async remove(id: string, agentId: string, role?: string) {
-    const property = await this.prisma.property.findUnique({ where: { id } });
-    if (!property) throw new NotFoundException('Imóvel não encontrado');
-    if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
-    return this.prisma.property.delete({ where: { id } });
-  }
+async remove(id: string, agentId: string, role?: string) {
+  const property = await this.prisma.property.findUnique({ where: { id } });
+  if (!property) throw new NotFoundException('Imóvel não encontrado');
+  if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
+  
+  await this.prisma.match.deleteMany({ where: { propertyId: id } });
+  
+  return this.prisma.property.delete({ where: { id } });
+}
 
   async getMyProperties(agentId: string, query: any) {
     const { page = 1, limit = 20, status, search, city, state } = query;
