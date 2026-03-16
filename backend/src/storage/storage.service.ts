@@ -1,37 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { v4 as uuidv4 } from 'uuid';
-import * as fs from 'fs';
-import * as path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 
 @Injectable()
 export class StorageService {
-  private uploadDir: string;
-  private baseUrl: string;
-
   constructor(private config: ConfigService) {
-    this.uploadDir = path.join(process.cwd(), 'uploads');
-    this.baseUrl = config.get('BASE_URL') || 'http://localhost:3001';
-
-    // Garante que o diretório de uploads existe
-    if (!fs.existsSync(this.uploadDir)) {
-      fs.mkdirSync(this.uploadDir, { recursive: true });
-    }
+    cloudinary.config({
+      cloud_name: config.get('CLOUDINARY_CLOUD_NAME'),
+      api_key: config.get('CLOUDINARY_API_KEY'),
+      api_secret: config.get('CLOUDINARY_API_SECRET'),
+    });
   }
 
   async uploadFile(file: Express.Multer.File, folder: string = 'uploads'): Promise<string> {
-    const ext = file.originalname.split('.').pop();
-    const filename = `${uuidv4()}.${ext}`;
-    const folderPath = path.join(this.uploadDir, folder);
-
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath, { recursive: true });
-    }
-
-    const filePath = path.join(folderPath, filename);
-    fs.writeFileSync(filePath, file.buffer);
-
-    return `${this.baseUrl}/uploads/${folder}/${filename}`;
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        { folder: `imobmatch/${folder}`, resource_type: 'image' },
+        (error, result) => {
+          if (error || !result) return reject(error);
+          resolve(result.secure_url);
+        },
+      ).end(file.buffer);
+    });
   }
 
   async uploadMultiple(files: Express.Multer.File[], folder: string): Promise<string[]> {
@@ -40,10 +30,10 @@ export class StorageService {
 
   async deleteFile(url: string): Promise<void> {
     try {
-      const relativePath = url.replace(`${this.baseUrl}/uploads/`, '');
-      const filePath = path.join(this.uploadDir, relativePath);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      // Extrai o public_id da URL do Cloudinary
+      const match = url.match(/imobmatch\/[^/]+\/([^.]+)/);
+      if (match) {
+        await cloudinary.uploader.destroy(`imobmatch/${match[0].split('/').slice(1).join('/')}`);
       }
     } catch {
       // Ignora erros ao deletar
