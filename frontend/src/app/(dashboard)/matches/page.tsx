@@ -219,7 +219,7 @@ export default function MatchesPage() {
   const generateMutation = useMutation({
     mutationFn: () => api.post("/matches/generate"),
     onSuccess: (data) => {
-      toast.success(`${data.data.count} matches gerados!`);
+      toast.success(data.data.message);
       queryClient.invalidateQueries({ queryKey: ["matches"] });
       queryClient.invalidateQueries({ queryKey: ["best-matches"] });
     },
