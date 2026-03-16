@@ -11,21 +11,21 @@ export class BuyersService {
     return this.prisma.buyer.create({ data: { ...dto, agentId } });
   }
 
-  async findAll(agentId: string, query: any) {
-    const { page = 1, limit = 20, status, search } = query;
-    const skip = (page - 1) * limit;
-    const where: any = { agentId };
-    if (status) where.status = status;
-    if (search) where.AND = [
-  {
-    OR: [
-      { buyerName: { contains: search, mode: 'insensitive' } },
-      { desiredCity: { contains: search, mode: 'insensitive' } },
-    ],
-  },
-];
+async findAll(agentId: string, query: any) {
+  const { page = 1, limit = 20, status, search } = query;
+  const skip = (page - 1) * limit;
+  const where: any = { agentId };
+  if (status) where.status = status;
+  if (search) where.AND = [
+    {
+      OR: [
+        { buyerName: { contains: search, mode: 'insensitive' } },
+        { desiredCity: { contains: search, mode: 'insensitive' } },
+      ],
+    },
+  ];
 
-    const [buyers, total] = await Promise.all([
+  const [buyers, total] = await Promise.all([
     this.prisma.buyer.findMany({
       where, skip, take: Number(limit), orderBy: { createdAt: 'desc' },
     }),
