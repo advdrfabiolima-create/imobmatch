@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { UserCheck, Check, X, Building2, FileText } from "lucide-react";
+import { UserCheck, Check, X, Building2, FileText, User, AlertTriangle } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -26,9 +27,90 @@ const STATUS_LABELS: Record<string, string> = {
   CANCELLED: "Cancelada",
 };
 
+// ─── Modal de encerramento ────────────────────────────────────────────────────
+function CloseDealModal({
+  partnership,
+  onClose,
+}: {
+  partnership: any;
+  onClose: () => void;
+}) {
+  const queryClient = useQueryClient();
+
+  const closeMutation = useMutation({
+    mutationFn: (reason: "not_closed" | "buyer_quit") =>
+      api.patch(`/partnerships/${partnership.id}/close`, { reason }),
+    onSuccess: (_, reason) => {
+      toast.success(
+        reason === "buyer_quit"
+          ? "Parceria encerrada e comprador inativado."
+          : "Parceria encerrada. Comprador permanece ativo."
+      );
+      queryClient.invalidateQueries({ queryKey: ["partnerships"] });
+      onClose();
+    },
+    onError: () => toast.error("Erro ao encerrar parceria"),
+  });
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
+        <div className="flex items-center justify-between p-5 border-b">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            <h2 className="text-base font-semibold text-gray-900">Encerrar Parceria</h2>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <X className="h-5 w-5 text-gray-500" />
+          </button>
+        </div>
+
+        <div className="p-5 space-y-3">
+          <p className="text-sm text-gray-600">
+            O imóvel <strong>{partnership.property?.title}</strong> não foi negociado.
+            Como deseja prosseguir?
+          </p>
+
+          <button
+            onClick={() => closeMutation.mutate("not_closed")}
+            disabled={closeMutation.isPending}
+            className="w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-amber-400 hover:bg-amber-50 transition-all group"
+          >
+            <p className="font-semibold text-gray-900 group-hover:text-amber-700">
+              Venda não concluída — manter comprador ativo
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              A parceria é encerrada, mas o comprador permanece ativo e pode fechar negócio em outro imóvel.
+            </p>
+          </button>
+
+          <button
+            onClick={() => closeMutation.mutate("buyer_quit")}
+            disabled={closeMutation.isPending}
+            className="w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 transition-all group"
+          >
+            <p className="font-semibold text-gray-900 group-hover:text-red-700">
+              Comprador desistiu
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              A parceria é encerrada, o comprador é inativado e os matches relacionados são arquivados.
+            </p>
+          </button>
+
+          <p className="text-xs text-gray-400 text-center pt-1">
+            O Termo de Parceria é preservado como registro histórico em ambos os casos.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
 export default function ParceriasPage() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
+  const [closingPartnership, setClosingPartnership] = useState<any>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["partnerships"],
@@ -53,14 +135,22 @@ export default function ParceriasPage() {
   });
 
   const pending = data?.data?.filter((p: any) => p.receiverId === user?.id && p.status === "PENDING") || [];
-  const sent = data?.data?.filter((p: any) => p.requesterId === user?.id) || [];
-  const active = data?.data?.filter((p: any) => p.status === "ACCEPTED") || [];
+  const sent    = data?.data?.filter((p: any) => p.requesterId === user?.id) || [];
+  const active  = data?.data?.filter((p: any) => p.status === "ACCEPTED") || [];
 
   return (
     <div>
+      {closingPartnership && (
+        <CloseDealModal
+          partnership={closingPartnership}
+          onClose={() => setClosingPartnership(null)}
+        />
+      )}
+
       <Header title="Parcerias" />
       <div className="p-4 md:p-6 space-y-6">
-        {/* Pending received */}
+
+        {/* Pendentes recebidas */}
         {pending.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
@@ -78,6 +168,12 @@ export default function ParceriasPage() {
                           <span className="font-semibold text-gray-900">{p.property?.title}</span>
                           <span className="text-blue-600 font-medium">{formatCurrency(p.property?.price)}</span>
                         </div>
+                        {p.buyer && (
+                          <div className="flex items-center gap-1.5 text-sm text-gray-600 mb-1">
+                            <User className="h-3.5 w-3.5 text-gray-400" />
+                            <span>Cliente: <strong>{p.buyer?.buyerName}</strong></span>
+                          </div>
+                        )}
                         <p className="text-sm text-gray-600">
                           Solicitado por <strong>{p.requester?.name}</strong> em {formatDate(p.createdAt)}
                         </p>
@@ -113,7 +209,7 @@ export default function ParceriasPage() {
           </div>
         )}
 
-        {/* Active partnerships */}
+        {/* Parcerias ativas */}
         {active.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
@@ -131,18 +227,35 @@ export default function ParceriasPage() {
                       </div>
                       <Badge variant="success">Ativa</Badge>
                     </div>
+
                     <div className="text-sm text-gray-600 space-y-1">
+                      {p.buyer && (
+                        <div className="flex items-center gap-1.5 py-1.5 px-2 bg-blue-50 rounded-lg mb-2">
+                          <User className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
+                          <span>Cliente: <strong className="text-blue-800">{p.buyer?.buyerName}</strong></span>
+                        </div>
+                      )}
                       <p>Solicitante: {p.requester?.name}</p>
                       <p>Receptor: {p.receiver?.name}</p>
                       {p.commissionSplit && <p className="font-medium">Comissão: {p.commissionSplit}%</p>}
                     </div>
-                    <div className="mt-3 pt-3 border-t">
+
+                    <div className="mt-3 pt-3 border-t flex flex-col gap-2">
                       <Link href={`/termo/${p.id}`} target="_blank">
                         <Button size="sm" variant="outline" className="gap-1.5 text-green-700 border-green-300 hover:bg-green-50 w-full">
                           <FileText className="h-4 w-4" />
                           Ver Termo de Parceria
                         </Button>
                       </Link>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="gap-1.5 text-amber-700 border-amber-300 hover:bg-amber-50 w-full"
+                        onClick={() => setClosingPartnership(p)}
+                      >
+                        <AlertTriangle className="h-4 w-4" />
+                        Negócio não fechado
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -151,7 +264,7 @@ export default function ParceriasPage() {
           </div>
         )}
 
-        {/* Sent requests */}
+        {/* Minhas solicitações */}
         {sent.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold mb-3">Minhas Solicitações</h2>
@@ -161,6 +274,11 @@ export default function ParceriasPage() {
                   <CardContent className="p-5 flex items-center justify-between">
                     <div>
                       <p className="font-medium text-gray-900">{p.property?.title}</p>
+                      {p.buyer && (
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          Cliente: {p.buyer?.buyerName}
+                        </p>
+                      )}
                       <p className="text-sm text-gray-500">Para: {p.receiver?.name} • {formatDate(p.createdAt)}</p>
                     </div>
                     <div className="flex items-center gap-3">
