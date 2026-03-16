@@ -158,18 +158,22 @@ export class MatchesService {
       }),
     ]);
 
-    // Índice de parceria por propertyId — preferência para ACCEPTED sobre PENDING
-    const partnershipMap = new Map<string, any>();
-    for (const p of myPartnerships) {
-      const existing = partnershipMap.get(p.propertyId);
-      if (!existing || p.status === 'ACCEPTED') {
-        partnershipMap.set(p.propertyId, p);
-      }
-    }
-
     const processed = matches.map((m) => {
       const isMine = m.buyer?.agent?.id === agentId;
-      const partnership = partnershipMap.get(m.property?.id) ?? null;
+      // Identify the other agent in this specific match
+      const otherAgentId = isMine ? m.property?.agentId : m.buyer?.agent?.id;
+
+      // Find a partnership that matches this exact property + agent pair
+      // (property-level) — prefer ACCEPTED over PENDING if multiple exist
+      const candidates = myPartnerships.filter(p =>
+        p.propertyId === m.property?.id &&
+        (p.requesterId === otherAgentId || p.receiverId === otherAgentId)
+      );
+      const partnership =
+        candidates.find(p => p.status === 'ACCEPTED') ??
+        candidates.find(p => p.status === 'PENDING') ??
+        null;
+
       const partnershipAccepted = partnership?.status === 'ACCEPTED';
 
       // Revelar contatos do comprador se: é meu comprador, OU parceria foi aceita

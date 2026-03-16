@@ -12,9 +12,20 @@ export class PartnershipsService {
     if (!property) throw new NotFoundException('Imóvel não encontrado');
 
     const existing = await this.prisma.partnership.findFirst({
-      where: { propertyId: dto.propertyId, requesterId, receiverId: dto.receiverId, status: 'PENDING' },
+      where: {
+        propertyId: dto.propertyId,
+        OR: [
+          { requesterId, receiverId: dto.receiverId },
+          { requesterId: dto.receiverId, receiverId: requesterId },
+        ],
+        status: { in: ['PENDING', 'ACCEPTED'] },
+      },
     });
-    if (existing) throw new BadRequestException('Já existe uma solicitação de parceria pendente');
+    if (existing) throw new BadRequestException(
+      existing.status === 'ACCEPTED'
+        ? 'Já existe uma parceria aceita para este imóvel'
+        : 'Já existe uma solicitação de parceria pendente'
+    );
 
     return this.prisma.partnership.create({
       data: { ...dto, requesterId },
