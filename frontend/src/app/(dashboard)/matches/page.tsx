@@ -215,7 +215,7 @@ export default function MatchesPage() {
   return (
     <div>
       <Header title="Matches" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-6">
 
         {/* Top bar */}
         <div className="flex items-start justify-between gap-4">

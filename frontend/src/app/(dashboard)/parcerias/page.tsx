@@ -58,7 +58,7 @@ export default function ParceriasPage() {
   return (
     <div>
       <Header title="Parcerias" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-6">
         {/* Pending received */}
         {pending.length > 0 && (
           <div>

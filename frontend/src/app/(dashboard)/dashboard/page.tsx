@@ -156,7 +156,7 @@ export default function DashboardPage() {
     return (
       <div>
         <Header title="Dashboard" />
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           <div className="h-14 bg-gray-100 rounded-xl animate-pulse mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => <div key={i} className="h-28 bg-gray-100 rounded-xl animate-pulse" />)}
@@ -169,7 +169,7 @@ export default function DashboardPage() {
   return (
     <div>
       <Header title="Dashboard" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-6">
 
         {/* Plan + Trial Banner */}
         <PlanBanner />

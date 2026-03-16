@@ -2,24 +2,31 @@
 
 import { Bell, Menu } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
+import { useSidebarStore } from "@/store/sidebar.store";
 
 interface HeaderProps {
   title: string;
-  onMenuClick?: () => void;
 }
 
-export function Header({ title, onMenuClick }: HeaderProps) {
+export function Header({ title }: HeaderProps) {
   const { user } = useAuthStore();
+  const { toggle } = useSidebarStore();
 
   return (
-    <header className="h-16 border-b bg-white flex items-center justify-between px-6 sticky top-0 z-30">
-      <div className="flex items-center gap-4">
-        <button onClick={onMenuClick} className="md:hidden p-2 rounded-lg hover:bg-gray-100">
+    <header className="h-16 border-b bg-white flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
+      <div className="flex items-center gap-3">
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={toggle}
+          className="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+          aria-label="Abrir menu"
+        >
           <Menu className="h-5 w-5" />
         </button>
-        <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+        <h1 className="text-lg md:text-xl font-semibold text-gray-900 truncate">{title}</h1>
       </div>
-      <div className="flex items-center gap-3">
+
+      <div className="flex items-center gap-2 md:gap-3">
         <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
           <Bell className="h-5 w-5 text-gray-600" />
         </button>

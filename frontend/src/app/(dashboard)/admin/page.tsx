@@ -63,7 +63,7 @@ export default function AdminPage() {
   return (
     <div>
       <Header title="Administração" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-6">
         {/* Tabs */}
         <div className="flex gap-2 border-b">
           {(["stats", "users", "properties"] as const).map((t) => (

@@ -58,7 +58,7 @@ export default function CorretorPerfilPage() {
   return (
     <div>
       <Header title="Perfil do Corretor" />
-      <div className="p-6 max-w-3xl space-y-5">
+      <div className="p-4 md:p-6 max-w-3xl space-y-5">
 
         {/* Back */}
         <button

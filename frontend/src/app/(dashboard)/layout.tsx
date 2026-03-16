@@ -72,7 +72,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="ml-64 min-h-screen flex flex-col">
+      <main className="md:ml-64 min-h-screen flex flex-col">
         <EmailVerificationBanner />
         <div className="flex-1">{children}</div>
       </main>

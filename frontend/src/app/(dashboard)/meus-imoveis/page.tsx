@@ -76,7 +76,7 @@ export default function ImoveisPage() {
   return (
     <div>
       <Header title="Meus Imóveis" />
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1">

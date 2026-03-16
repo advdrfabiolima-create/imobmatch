@@ -158,7 +158,7 @@ export default function PlansPage() {
   return (
     <div>
       <Header title="Planos" />
-      <div className="p-6 max-w-5xl">
+      <div className="p-4 md:p-6 max-w-5xl">
         {/* Header */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Escolha seu plano</h2>

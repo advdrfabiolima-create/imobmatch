@@ -216,9 +216,9 @@ export default function TeamPage() {
 
       <div>
         <Header title="Gestão de Equipe" />
-        <div className="p-6 max-w-5xl">
+        <div className="p-4 md:p-6 max-w-5xl">
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
             {[
               { label: "Membros ativos", value: members.filter((m) => m.isActive).length },
               { label: "Administradores", value: members.filter((m) => m.role === "ADMIN").length },
@@ -235,14 +235,16 @@ export default function TeamPage() {
 
           {/* Main Table Card */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardHeader className="flex flex-row items-center justify-between pb-4 gap-3">
               <CardTitle className="text-lg">Membros da Equipe</CardTitle>
               <Button
-                className="bg-blue-600 hover:bg-blue-700 gap-2"
+                className="bg-blue-600 hover:bg-blue-700 gap-2 flex-shrink-0"
                 onClick={() => setShowInvite(true)}
+                size="sm"
               >
                 <UserPlus className="h-4 w-4" />
-                Convidar membro
+                <span className="hidden sm:inline">Convidar membro</span>
+                <span className="sm:hidden">Convidar</span>
               </Button>
             </CardHeader>
             <CardContent className="p-0">

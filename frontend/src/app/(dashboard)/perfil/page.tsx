@@ -103,7 +103,7 @@ export default function PerfilPage() {
     )}
     <div>
       <Header title="Meu Perfil" />
-      <div className="p-6 max-w-2xl">
+      <div className="p-4 md:p-6 max-w-2xl">
         {/* Profile Summary Card */}
         <Card className="mb-6">
           <CardContent className="p-6">

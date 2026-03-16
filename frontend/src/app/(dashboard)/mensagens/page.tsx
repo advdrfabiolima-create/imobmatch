@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { EmojiPicker } from "@/components/ui/emoji-picker";
 import { api } from "@/lib/api";
 import {
-  MessageSquare, Send, Smile, Home, X, Reply, Check, CheckCheck,
+  MessageSquare, Send, Smile, Home, X, Reply, Check, CheckCheck, ArrowLeft,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { formatCurrency, PROPERTY_TYPE_LABELS } from "@/lib/utils";
@@ -293,7 +293,7 @@ function MensagensContent() {
       <div className="flex h-[calc(100vh-64px)]">
 
         {/* ── Conversations sidebar ── */}
-        <div className="w-80 border-r bg-white flex flex-col flex-shrink-0">
+        <div className={`border-r bg-white flex flex-col flex-shrink-0 w-full md:w-80 ${activeConversation ? "hidden md:flex" : "flex"}`}>
           <div className="p-4 border-b">
             <h2 className="font-semibold text-gray-900">Conversas</h2>
           </div>
@@ -339,10 +339,18 @@ function MensagensContent() {
 
         {/* ── Chat area ── */}
         {activeConversation ? (
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className={`flex-1 flex flex-col min-w-0 ${activeConversation ? "flex" : "hidden md:flex"}`}>
 
             {/* Chat header */}
-            <div className="px-5 py-3 border-b bg-white flex items-center gap-3 flex-shrink-0 shadow-sm">
+            <div className="px-4 py-3 border-b bg-white flex items-center gap-3 flex-shrink-0 shadow-sm">
+              {/* Back button — mobile only */}
+              <button
+                onClick={() => setActiveConversation(null)}
+                className="md:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors flex-shrink-0"
+                aria-label="Voltar"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
               <Avatar
                 name={activeConversation.partner.name}
                 avatarUrl={activeConversation.partner.avatarUrl}
