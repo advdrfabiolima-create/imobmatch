@@ -17,7 +17,7 @@ export default function HomePage() {
           </nav>
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-gray-600 hover:text-blue-600 font-medium">Entrar</Link>
-            <Link href="/register" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium">
+            <Link href="/plans" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium">
               Cadastrar Grátis
             </Link>
           </div>
@@ -39,7 +39,7 @@ export default function HomePage() {
           encontrar compradores ideais e criar parcerias lucrativas.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/register" className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+          <Link href="/plans" className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
             Começar Gratuitamente
           </Link>
           <Link href="/imoveis" className="border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl text-lg font-semibold hover:border-blue-300 transition">
@@ -127,7 +127,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Pronto para crescer?</h2>
           <p className="text-xl text-gray-600 mb-8">Junte-se a milhares de corretores que já usam o ImobMatch</p>
-          <Link href="/register" className="bg-blue-600 text-white px-10 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+          <Link href="/plans" className="bg-blue-600 text-white px-10 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
             Criar conta grátis agora
           </Link>
         </div>

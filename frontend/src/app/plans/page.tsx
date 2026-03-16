@@ -92,7 +92,7 @@ export default function PlansPage() {
 
               {/* CTA Button */}
               <Link
-                href="/register"
+                href={`/register?plan=${plan.id}`}
                 className={`w-full text-center py-3 px-6 rounded-xl font-semibold text-sm transition-colors mb-2 ${
                   plan.highlighted
                     ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200"
@@ -174,7 +174,7 @@ export default function PlansPage() {
             Crie sua conta agora e teste grátis por {TRIAL_DAYS} dias. Sem cartão de crédito.
           </p>
           <Link
-            href="/register"
+            href="/register?plan=starter"
             className="inline-block bg-white text-blue-600 font-semibold px-8 py-3 rounded-xl hover:bg-blue-50 transition"
           >
             Criar conta gratuita
