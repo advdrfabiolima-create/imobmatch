@@ -46,4 +46,14 @@ export class PartnershipsController {
   cancel(@Param('id') id: string, @Request() req) {
     return this.partnershipsService.cancel(id, req.user.id);
   }
+
+  @Patch(':id/close')
+  @ApiOperation({ summary: 'Encerrar parceria ativa' })
+  closeDeal(
+    @Param('id') id: string,
+    @Body('reason') reason: 'not_closed' | 'buyer_quit',
+    @Request() req,
+  ) {
+    return this.partnershipsService.closeDeal(id, req.user.id, reason);
+  }
 }

@@ -132,6 +132,36 @@ export class PartnershipsService {
     return this.prisma.partnership.update({ where: { id }, data: { status: 'CANCELLED' } });
   }
 
+  async closeDeal(id: string, userId: string, reason: 'not_closed' | 'buyer_quit') {
+  const partnership = await this.prisma.partnership.findUnique({
+    where: { id },
+    include: { buyer: true },
+  });
+  if (!partnership) throw new NotFoundException('Parceria não encontrada');
+  if (partnership.requesterId !== userId && partnership.receiverId !== userId)
+    throw new ForbiddenException('Sem permissão');
+  if (partnership.status !== 'ACCEPTED')
+    throw new BadRequestException('Apenas parcerias ativas podem ser encerradas');
+
+  await this.prisma.partnership.update({
+    where: { id },
+    data: { status: 'CANCELLED' },
+  });
+
+  if (reason === 'buyer_quit' && partnership.buyerId) {
+    await this.prisma.buyer.update({
+      where: { id: partnership.buyerId },
+      data: { status: 'INACTIVE' },
+    });
+    await this.prisma.match.updateMany({
+      where: { buyerId: partnership.buyerId },
+      data: { status: 'REJECTED' },
+    });
+  }
+
+  return { message: reason === 'buyer_quit' ? 'Parceria encerrada e comprador inativado' : 'Parceria encerrada' };
+}
+
   async getAgreement(id: string, userId: string) {
     const partnership = await this.prisma.partnership.findUnique({
       where: { id },
