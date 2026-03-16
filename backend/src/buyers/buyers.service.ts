@@ -16,10 +16,14 @@ export class BuyersService {
     const skip = (page - 1) * limit;
     const where: any = { agentId };
     if (status) where.status = status;
-    if (search) where.OR = [
+    if (search) where.AND = [
+  {
+    OR: [
       { buyerName: { contains: search, mode: 'insensitive' } },
       { desiredCity: { contains: search, mode: 'insensitive' } },
-    ];
+    ],
+  },
+];
 
     const [buyers, total] = await Promise.all([
       this.prisma.buyer.findMany({
