@@ -20,7 +20,7 @@ const PLANS = [
   {
     id: "starter" as const,
     name: "Starter",
-    price: "R$ 59",
+    price: "R$ 97",
     period: "/mês",
     highlight: false,
     features: ["Até 20 imóveis", "Matches básicos", "Mensagens"],
