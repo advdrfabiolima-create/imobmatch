@@ -61,9 +61,12 @@ async findAll(agentId: string, query: any) {
   }
 
   async remove(id: string, agentId: string) {
-    const buyer = await this.prisma.buyer.findUnique({ where: { id } });
-    if (!buyer) throw new NotFoundException('Comprador não encontrado');
-    if (buyer.agentId !== agentId) throw new ForbiddenException('Sem permissão');
-    return this.prisma.buyer.delete({ where: { id } });
-  }
+  const buyer = await this.prisma.buyer.findUnique({ where: { id } });
+  if (!buyer) throw new NotFoundException('Comprador não encontrado');
+  if (buyer.agentId !== agentId) throw new ForbiddenException('Sem permissão');
+  
+  await this.prisma.match.deleteMany({ where: { buyerId: id } });
+  
+  return this.prisma.buyer.delete({ where: { id } });
+}
 }
