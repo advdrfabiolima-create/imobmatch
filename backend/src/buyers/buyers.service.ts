@@ -26,14 +26,14 @@ export class BuyersService {
 ];
 
     const [buyers, total] = await Promise.all([
-      this.prisma.buyer.findMany({
-        where, skip, take: Number(limit), orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.buyer.count({ where }),
-    ]);
+    this.prisma.buyer.findMany({
+      where, skip, take: Number(limit), orderBy: { createdAt: 'desc' },
+    }),
+    this.prisma.buyer.count({ where }),
+  ]);
 
-    return { data: buyers, total, page: Number(page), totalPages: Math.ceil(total / limit) };
-  }
+  return { data: buyers, total, page: Number(page), totalPages: Math.ceil(total / limit) };
+}
 
   async findOne(id: string, agentId: string) {
     const buyer = await this.prisma.buyer.findUnique({
