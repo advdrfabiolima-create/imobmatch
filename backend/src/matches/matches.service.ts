@@ -7,11 +7,21 @@ export class MatchesService {
   constructor(private prisma: PrismaService) {}
 
   // ==================== ALGORITMO DE MATCHING ====================
+  private normalizeCity(city: string): string {
+    return city
+      .toLowerCase()
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, ''); // remove acentos
+  }
+
   private calculateScore(buyer: any, property: any): number {
     let score = 0;
 
-    // Cidade (peso: 40 pontos)
-    if (buyer.desiredCity.toLowerCase() === property.city.toLowerCase()) {
+    // Cidade (peso: 40 pontos) — comparação sem acentos e case-insensitive
+    const buyerCity = this.normalizeCity(buyer.desiredCity);
+    const propCity  = this.normalizeCity(property.city);
+    if (buyerCity === propCity || buyerCity.includes(propCity) || propCity.includes(buyerCity)) {
       score += 40;
     }
 
@@ -21,14 +31,13 @@ export class MatchesService {
     }
 
     // Preço dentro do orçamento (peso: 25 pontos)
-    const price = Number(property.price);
+    const price    = Number(property.price);
     const maxPrice = Number(buyer.maxPrice);
-    const minPrice = Number(buyer.minPrice || 0);
 
     if (price <= maxPrice) {
-      if (price >= maxPrice * 0.8) score += 25; // Preço ideal (80-100% do máximo)
+      if (price >= maxPrice * 0.8) score += 25;      // Preço ideal (80-100% do máximo)
       else if (price >= maxPrice * 0.5) score += 15; // Preço bom
-      else score += 5; // Dentro do orçamento mas distante
+      else score += 8;                               // Dentro do orçamento mas distante
     }
 
     // Quartos (peso: 10 pontos)
@@ -39,7 +48,9 @@ export class MatchesService {
 
     // Bairro desejado (bônus: 10 pontos)
     if (buyer.desiredNeighborhood && property.neighborhood) {
-      if (buyer.desiredNeighborhood.toLowerCase() === property.neighborhood.toLowerCase()) {
+      const buyerNeigh = this.normalizeCity(buyer.desiredNeighborhood);
+      const propNeigh  = this.normalizeCity(property.neighborhood);
+      if (buyerNeigh === propNeigh || buyerNeigh.includes(propNeigh) || propNeigh.includes(buyerNeigh)) {
         score += 10;
       }
     }
@@ -47,31 +58,53 @@ export class MatchesService {
     return Math.min(score, 100);
   }
 
+  private async upsertMatch(buyerId: string, propertyId: string, score: number) {
+    return this.prisma.match.upsert({
+      where:  { buyerId_propertyId: { buyerId, propertyId } },
+      update: { score },
+      create: { buyerId, propertyId, score },
+    });
+  }
+
   async generateMatches(agentId: string) {
-    // Buscar todos os compradores ativos do corretor
-    const buyers = await this.prisma.buyer.findMany({
-      where: { agentId, status: 'ACTIVE' },
-    });
+    // Buscar dados do agente para matching bidirecional
+    const [myBuyers, myProperties, allBuyers, allProperties] = await Promise.all([
+      // Meus compradores ativos
+      this.prisma.buyer.findMany({ where: { agentId, status: 'ACTIVE' } }),
+      // Meus imóveis disponíveis
+      this.prisma.property.findMany({ where: { agentId, status: 'AVAILABLE', isPublic: true } }),
+      // Todos os compradores ativos da plataforma
+      this.prisma.buyer.findMany({ where: { status: 'ACTIVE' } }),
+      // Todos os imóveis disponíveis da plataforma
+      this.prisma.property.findMany({ where: { status: 'AVAILABLE', isPublic: true } }),
+    ]);
 
-    // Buscar todos os imóveis disponíveis e públicos
-    const properties = await this.prisma.property.findMany({
-      where: { status: 'AVAILABLE', isPublic: true },
-    });
+    const THRESHOLD = 20; // score mínimo para criar match
+    const processed = new Set<string>(); // evitar duplicatas
+    const matchesCreated: any[] = [];
 
-    const matchesCreated = [];
-
-    for (const buyer of buyers) {
-      for (const property of properties) {
+    // ── Cenário 1: meus compradores × todos os imóveis da plataforma ──────────
+    for (const buyer of myBuyers) {
+      for (const property of allProperties) {
+        const key = `${buyer.id}:${property.id}`;
+        if (processed.has(key)) continue;
+        processed.add(key);
         const score = this.calculateScore(buyer, property);
-        if (score >= 30) { // Threshold mínimo de relevância
-          try {
-            const match = await this.prisma.match.upsert({
-              where: { buyerId_propertyId: { buyerId: buyer.id, propertyId: property.id } },
-              update: { score },
-              create: { buyerId: buyer.id, propertyId: property.id, score },
-            });
-            matchesCreated.push(match);
-          } catch {}
+        if (score >= THRESHOLD) {
+          try { matchesCreated.push(await this.upsertMatch(buyer.id, property.id, score)); } catch {}
+        }
+      }
+    }
+
+    // ── Cenário 2: todos os compradores da plataforma × meus imóveis ──────────
+    for (const buyer of allBuyers) {
+      for (const property of myProperties) {
+        const key = `${buyer.id}:${property.id}`;
+        if (processed.has(key)) continue;
+        processed.add(key);
+        const score = this.calculateScore(buyer, property);
+        if (score >= THRESHOLD) {
+          try { matchesCreated.push(await this.upsertMatch(buyer.id, property.id, score)); } catch {}
         }
       }
     }
