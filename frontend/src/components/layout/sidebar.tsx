@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, Users, Zap, UserCheck,
-  MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2,
+  MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2, CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
@@ -71,6 +71,20 @@ export function Sidebar() {
             </Link>
           );
         })}
+
+        {/* Plans */}
+        <Link
+          href="/plans"
+          className={cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+            pathname === "/plans"
+              ? "bg-amber-50 text-amber-600"
+              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          )}
+        >
+          <CreditCard className={cn("h-5 w-5", pathname === "/plans" ? "text-amber-500" : "text-gray-400")} />
+          Planos
+        </Link>
 
         {/* Agency-only: Team Management */}
         {(user?.plan === "agency" || user?.isLifetime) && (

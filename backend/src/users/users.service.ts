@@ -93,6 +93,14 @@ export class UsersService {
     });
   }
 
+  async changePlan(id: string, plan: 'starter' | 'professional' | 'agency') {
+    return this.prisma.user.update({
+      where: { id },
+      data: { plan },
+      select: { id: true, plan: true },
+    });
+  }
+
   async getDashboardStats(userId: string) {
     const [propertiesCount, buyersCount, matchesCount, partnershipsPending] = await Promise.all([
       this.prisma.property.count({ where: { agentId: userId } }),

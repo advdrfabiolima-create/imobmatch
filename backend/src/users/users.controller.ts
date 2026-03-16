@@ -84,4 +84,12 @@ export class UsersController {
   completeOnboarding(@Request() req) {
     return this.usersService.completeOnboarding(req.user.id);
   }
+
+  @Patch('plan')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Alterar plano do usuário' })
+  changePlan(@Request() req, @Body() body: { plan: 'starter' | 'professional' | 'agency' }) {
+    return this.usersService.changePlan(req.user.id, body.plan);
+  }
 }
