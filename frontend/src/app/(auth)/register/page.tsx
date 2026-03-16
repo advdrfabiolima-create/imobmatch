@@ -20,8 +20,8 @@ const PLANS = [
   {
     id: "starter" as const,
     name: "Starter",
-    price: "Grátis",
-    period: "",
+    price: "R$ 59",
+    period: "/mês",
     highlight: false,
     features: ["Até 20 imóveis", "Matches básicos", "Mensagens"],
   },
@@ -119,9 +119,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
         ))}
       </div>
       <p className="text-xs text-gray-400 mt-2">
-        {selected === "starter"
-          ? "Teste grátis, sem cartão de crédito."
-          : "7 dias de teste grátis. Cancele quando quiser."}
+        7 dias de teste grátis em todos os planos. Cancele quando quiser.
       </p>
     </div>
   );
@@ -417,7 +415,7 @@ export default function RegisterPage() {
 
           {/* Trust */}
           <p className="text-center text-xs text-gray-400 mt-4">
-            7 dias de teste grátis em todos os planos. Sem cartão de crédito.
+            7 dias de teste grátis em todos os planos. Cancele quando quiser.
           </p>
         </div>
       </div>
