@@ -113,6 +113,7 @@ function PartnershipForm({
     onSuccess: () => {
       toast.success("Proposta de parceria enviada!");
       queryClient.invalidateQueries({ queryKey: ["partnerships"] });
+      queryClient.invalidateQueries({ queryKey: ["matches"] });
       onClose();
     },
     onError: (err: any) => {
@@ -352,8 +353,13 @@ export default function MatchesPage() {
               const otherAgentName = m.buyer?.agent?.id === myId ? m.property?.agent?.name : m.buyer?.agent?.name;
               const isPartnershipFormOpen = partnershipOpen === m.id;
 
-              // Contatos do comprador: só visíveis se o comprador é meu
-              const buyerPhone = m.buyer?.agent?.id === myId ? m.buyer?.phone : null;
+              // Parceria: backend já revela phone/email quando aceita
+              const partnershipStatus = m.partnership?.status ?? null;
+              const partnershipExists = !!m.partnership;
+              const partnershipAccepted = partnershipStatus === "ACCEPTED";
+
+              // Contatos do comprador: backend revela quando é meu comprador OU parceria aceita
+              const buyerPhone = m.buyer?.phone ?? null;
 
               return (
                 <Card
@@ -405,8 +411,18 @@ export default function MatchesPage() {
                           {!isSameAgent && m.buyer?.agent && (
                             <p className="text-xs text-gray-400 mt-1">Corretor: {m.buyer.agent.name}</p>
                           )}
-                          {/* Contatos bloqueados para compradores de outros corretores */}
-                          {!isSameAgent && (
+                          {/* Contatos do comprador cruzado */}
+                          {!isSameAgent && partnershipAccepted && buyerPhone && (
+                            <a
+                              href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-1 text-xs bg-green-600 text-white px-2 py-0.5 rounded mt-1.5 hover:bg-green-700 transition"
+                            >
+                              <Phone className="h-3 w-3" /> {buyerPhone}
+                            </a>
+                          )}
+                          {!isSameAgent && !partnershipAccepted && (
                             <p className="inline-flex items-center gap-1 text-xs text-gray-400 mt-1.5 bg-white border border-gray-200 px-2 py-0.5 rounded">
                               <Lock className="h-3 w-3" /> Contatos visíveis após parceria
                             </p>
@@ -460,8 +476,22 @@ export default function MatchesPage() {
                           </a>
                         )}
 
-                        {/* Match cruzado: botão propor parceria */}
-                        {!isSameAgent && otherAgentId && (
+                        {/* Match cruzado: parceria já enviada → botão inativo */}
+                        {!isSameAgent && otherAgentId && partnershipExists && (
+                          <span
+                            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium cursor-default ${
+                              partnershipAccepted
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-500"
+                            }`}
+                          >
+                            <Users className="h-3.5 w-3.5" />
+                            {partnershipAccepted ? "Parceria Aceita" : "Proposta Enviada"}
+                          </span>
+                        )}
+
+                        {/* Match cruzado: sem parceria → botão propor */}
+                        {!isSameAgent && otherAgentId && !partnershipExists && (
                           <button
                             onClick={() =>
                               setPartnershipOpen(isPartnershipFormOpen ? null : m.id)
@@ -480,7 +510,7 @@ export default function MatchesPage() {
                     </div>
 
                     {/* Inline partnership form */}
-                    {!isSameAgent && isPartnershipFormOpen && otherAgentId && (
+                    {!isSameAgent && isPartnershipFormOpen && otherAgentId && !partnershipExists && (
                       <PartnershipForm
                         propertyId={m.property?.id}
                         receiverId={otherAgentId}

@@ -125,7 +125,7 @@ export class MatchesService {
       ...(status && { status: status as MatchStatus }),
     };
 
-    const [matches, total] = await Promise.all([
+    const [matches, total, myPartnerships] = await Promise.all([
       this.prisma.match.findMany({
         where: where as Prisma.MatchWhereInput, skip, take: Number(limit),
         include: {
@@ -148,14 +148,36 @@ export class MatchesService {
         orderBy: { score: 'desc' },
       }),
       this.prisma.match.count({ where }),
+      // Todas as parcerias do agente (pendentes ou aceitas) para cruzar com os matches
+      this.prisma.partnership.findMany({
+        where: {
+          OR: [{ requesterId: agentId }, { receiverId: agentId }],
+          status: { in: ['PENDING', 'ACCEPTED'] },
+        },
+        select: { id: true, propertyId: true, requesterId: true, receiverId: true, status: true },
+      }),
     ]);
 
-    // Ocultar contatos do comprador em matches cruzados (comprador de outro corretor)
-    const processed = matches.map((m) => {
-      if (m.buyer?.agent?.id !== agentId) {
-        return { ...m, buyer: { ...m.buyer, phone: null, email: null } };
+    // Índice de parceria por propertyId — preferência para ACCEPTED sobre PENDING
+    const partnershipMap = new Map<string, any>();
+    for (const p of myPartnerships) {
+      const existing = partnershipMap.get(p.propertyId);
+      if (!existing || p.status === 'ACCEPTED') {
+        partnershipMap.set(p.propertyId, p);
       }
-      return m;
+    }
+
+    const processed = matches.map((m) => {
+      const isMine = m.buyer?.agent?.id === agentId;
+      const partnership = partnershipMap.get(m.property?.id) ?? null;
+      const partnershipAccepted = partnership?.status === 'ACCEPTED';
+
+      // Revelar contatos do comprador se: é meu comprador, OU parceria foi aceita
+      const buyer = isMine || partnershipAccepted
+        ? m.buyer
+        : { ...m.buyer, phone: null, email: null };
+
+      return { ...m, buyer, partnership };
     });
 
     return { data: processed, total, page: Number(page), totalPages: Math.ceil(total / limit) };
