@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, Users, Zap, UserCheck,
-  MessageSquare, Search, Settings, LogOut, Shield, UsersRound,
+  MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
@@ -17,6 +17,7 @@ const navItems = [
   { href: "/parcerias", label: "Parcerias", icon: UserCheck },
   { href: "/mensagens", label: "Mensagens", icon: MessageSquare },
   { href: "/corretores", label: "Corretores", icon: Search },
+  { href: "/analytics", label: "Analytics", icon: BarChart2 },
   { href: "/perfil", label: "Perfil", icon: Settings },
 ];
 

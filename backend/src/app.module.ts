@@ -13,6 +13,7 @@ import { MessagesModule } from './messages/messages.module';
 import { AdminModule } from './admin/admin.module';
 import { StorageModule } from './storage/storage.module';
 import { MailModule } from './mail/mail.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MailModule } from './mail/mail.module';
     AdminModule,
     StorageModule,
     MailModule,
+    AnalyticsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
