@@ -17,6 +17,7 @@ interface User {
   isFirstLogin?: boolean;
   emailVerified?: boolean;
   plan?: "starter" | "professional" | "agency";
+  isLifetime?: boolean;
   createdAt?: string;
 }
 

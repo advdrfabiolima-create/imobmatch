@@ -145,7 +145,7 @@ export default function TeamPage() {
   const [showInvite, setShowInvite] = useState(false);
 
   // Access control — Agency plan only
-  if (user?.plan !== "agency") {
+  if (user?.plan !== "agency" && !user?.isLifetime) {
     return (
       <div>
         <Header title="Gestão de Equipe" />

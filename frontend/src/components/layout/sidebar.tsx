@@ -73,7 +73,7 @@ export function Sidebar() {
         })}
 
         {/* Agency-only: Team Management */}
-        {user?.plan === "agency" && (
+        {(user?.plan === "agency" || user?.isLifetime) && (
           <Link
             href="/team"
             className={cn(

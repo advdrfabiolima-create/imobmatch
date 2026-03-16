@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import { formatCurrency, formatDate, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from "@/lib/utils";
-import { Building2, Users, Zap, UserCheck, TrendingUp, ArrowRight, Clock, Crown, Sparkles } from "lucide-react";
+import { Building2, Users, Zap, UserCheck, TrendingUp, ArrowRight, Clock, Crown, Sparkles, Infinity } from "lucide-react";
 import Link from "next/link";
 import { TRIAL_DAYS } from "@/config/plans";
 
@@ -22,6 +22,30 @@ const PLAN_META = {
 function PlanBanner() {
   const { user } = useAuthStore();
 
+  // Lifetime — founder account
+  if (user?.isLifetime) {
+    return (
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl border border-amber-200 shadow-sm">
+        <div className="flex items-center gap-2">
+          <Crown className="h-4 w-4 text-amber-500 flex-shrink-0" />
+          <span className="text-sm font-medium text-amber-800">Seu plano:</span>
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full border bg-amber-100 text-amber-800 border-amber-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            Agency
+          </span>
+        </div>
+        <div className="hidden sm:block w-px h-5 bg-amber-200" />
+        <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border bg-amber-100 text-amber-700 border-amber-300">
+          <Infinity className="h-3.5 w-3.5" />
+          Acesso vitalício
+        </div>
+        <div className="sm:ml-auto text-xs text-amber-600 flex items-center gap-1 font-medium">
+          <Crown className="h-3 w-3" /> Fundador
+        </div>
+      </div>
+    );
+  }
+
   const plan = user?.plan ?? "starter";
   const meta = PLAN_META[plan] ?? PLAN_META.starter;
 
@@ -33,7 +57,6 @@ function PlanBanner() {
   const trialActive = daysLeft > 0;
   const trialExpired = createdAt !== null && !trialActive;
 
-  // Urgency color for trial days
   const urgencyColor =
     daysLeft <= 1 ? "text-red-600 bg-red-50 border-red-200" :
     daysLeft <= 3 ? "text-amber-600 bg-amber-50 border-amber-200" :

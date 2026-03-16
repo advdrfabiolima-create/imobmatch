@@ -139,7 +139,7 @@ function UpgradeBanner() {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function AnalyticsPage() {
   const { user } = useAuthStore();
-  const isPro = user?.plan === "professional" || user?.plan === "agency";
+  const isPro = user?.plan === "professional" || user?.plan === "agency" || user?.isLifetime === true;
 
   const { data, isLoading } = useQuery<AnalyticsData>({
     queryKey: ["analytics"],
