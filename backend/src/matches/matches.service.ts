@@ -58,59 +58,77 @@ export class MatchesService {
     return Math.min(score, 100);
   }
 
-  private async upsertMatch(buyerId: string, propertyId: string, score: number) {
-    return this.prisma.match.upsert({
-      where:  { buyerId_propertyId: { buyerId, propertyId } },
-      update: { score },
-      create: { buyerId, propertyId, score },
+private async upsertMatch(buyerId: string, propertyId: string, score: number) {
+  const existing = await this.prisma.match.findUnique({
+    where: { buyerId_propertyId: { buyerId, propertyId } },
+  });
+
+  if (existing) {
+    await this.prisma.match.update({
+      where: { buyerId_propertyId: { buyerId, propertyId } },
+      data: { score },
     });
+    return { match: existing, isNew: false };
   }
 
-  async generateMatches(agentId: string) {
-    // Buscar dados do agente para matching bidirecional
-    const [myBuyers, myProperties, allBuyers, allProperties] = await Promise.all([
-      // Meus compradores ativos
-      this.prisma.buyer.findMany({ where: { agentId, status: 'ACTIVE' } }),
-      // Meus imóveis disponíveis
-      this.prisma.property.findMany({ where: { agentId, status: 'AVAILABLE', isPublic: true } }),
-      // Todos os compradores ativos da plataforma
-      this.prisma.buyer.findMany({ where: { status: 'ACTIVE' } }),
-      // Todos os imóveis disponíveis da plataforma
-      this.prisma.property.findMany({ where: { status: 'AVAILABLE', isPublic: true } }),
-    ]);
+  const match = await this.prisma.match.create({
+    data: { buyerId, propertyId, score },
+  });
+  return { match, isNew: true };
+}
 
-    const THRESHOLD = 20; // score mínimo para criar match
-    const processed = new Set<string>(); // evitar duplicatas
-    const matchesCreated: any[] = [];
+async generateMatches(agentId: string) {
+  const [myBuyers, myProperties, allBuyers, allProperties] = await Promise.all([
+    this.prisma.buyer.findMany({ where: { agentId, status: 'ACTIVE' } }),
+    this.prisma.property.findMany({ where: { agentId, status: 'AVAILABLE', isPublic: true } }),
+    this.prisma.buyer.findMany({ where: { status: 'ACTIVE' } }),
+    this.prisma.property.findMany({ where: { status: 'AVAILABLE', isPublic: true } }),
+  ]);
 
-    // ── Cenário 1: meus compradores × todos os imóveis da plataforma ──────────
-    for (const buyer of myBuyers) {
-      for (const property of allProperties) {
-        const key = `${buyer.id}:${property.id}`;
-        if (processed.has(key)) continue;
-        processed.add(key);
-        const score = this.calculateScore(buyer, property);
-        if (score >= THRESHOLD) {
-          try { matchesCreated.push(await this.upsertMatch(buyer.id, property.id, score)); } catch {}
-        }
+  const THRESHOLD = 20;
+  const processed = new Set<string>();
+  let newMatches = 0;
+  let existingMatches = 0;
+
+  for (const buyer of myBuyers) {
+    for (const property of allProperties) {
+      const key = `${buyer.id}:${property.id}`;
+      if (processed.has(key)) continue;
+      processed.add(key);
+      const score = this.calculateScore(buyer, property);
+      if (score >= THRESHOLD) {
+        try {
+          const result = await this.upsertMatch(buyer.id, property.id, score);
+          result.isNew ? newMatches++ : existingMatches++;
+        } catch {}
       }
     }
-
-    // ── Cenário 2: todos os compradores da plataforma × meus imóveis ──────────
-    for (const buyer of allBuyers) {
-      for (const property of myProperties) {
-        const key = `${buyer.id}:${property.id}`;
-        if (processed.has(key)) continue;
-        processed.add(key);
-        const score = this.calculateScore(buyer, property);
-        if (score >= THRESHOLD) {
-          try { matchesCreated.push(await this.upsertMatch(buyer.id, property.id, score)); } catch {}
-        }
-      }
-    }
-
-    return { message: `${matchesCreated.length} matches processados`, count: matchesCreated.length };
   }
+
+  for (const buyer of allBuyers) {
+    for (const property of myProperties) {
+      const key = `${buyer.id}:${property.id}`;
+      if (processed.has(key)) continue;
+      processed.add(key);
+      const score = this.calculateScore(buyer, property);
+      if (score >= THRESHOLD) {
+        try {
+          const result = await this.upsertMatch(buyer.id, property.id, score);
+          result.isNew ? newMatches++ : existingMatches++;
+        } catch {}
+      }
+    }
+  }
+
+  return {
+    message: newMatches > 0
+      ? `${newMatches} novo(s) match(es) encontrado(s)`
+      : 'Nenhum novo match encontrado',
+    newMatches,
+    existingMatches,
+    total: newMatches + existingMatches,
+  };
+}
 
   async getMyMatches(agentId: string, query: any) {
     const { page = 1, limit = 20, minScore = 0, status } = query;
