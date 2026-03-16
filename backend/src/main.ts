@@ -14,8 +14,15 @@ async function bootstrap() {
   });
 
   // CORS
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://useimobmatch.com.br',
+    'https://www.useimobmatch.com.br',
+    process.env.FRONTEND_URL,
+  ].filter(Boolean);
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: allowedOrigins,
     credentials: true,
   });
 
