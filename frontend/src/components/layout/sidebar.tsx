@@ -115,7 +115,7 @@ export function Sidebar() {
             href="/parcerias"
             label="Parcerias"
             icon={UserCheck}
-            badge={pendingCount > 0 ? pendingCount : newlyAccepted > 0 ? newlyAccepted : undefined}
+            badge={pendingCount > 0 ? pendingCount : undefined}
           />
           <NavLink href="/mensagens"  label="Mensagens"  icon={MessageSquare} />
           <NavLink href="/corretores" label="Corretores" icon={Search} />
