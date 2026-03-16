@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Check, X, Zap } from "lucide-react";
-import { plans, TRIAL_DAYS } from "@/config/plans";
+import { plans, TRIAL_DAYS, PROMO_DAYS } from "@/config/plans";
 
 export const metadata = {
   title: "Planos e Preços - ImobMatch",
@@ -18,7 +18,6 @@ function formatCurrency(value: number) {
 export default function PlansPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center">
@@ -43,7 +42,7 @@ export default function PlansPage() {
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Zap className="h-4 w-4" />
-            {TRIAL_DAYS} dias de teste grátis · Sem cartão de crédito
+            Preço promocional por {PROMO_DAYS} dias · Sem cartão de crédito
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Planos para cada etapa
@@ -66,7 +65,6 @@ export default function PlansPage() {
                   : "border-gray-200 shadow-sm"
               }`}
             >
-              {/* Badge */}
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                   <span className="bg-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow">
@@ -75,22 +73,28 @@ export default function PlansPage() {
                 </div>
               )}
 
-              {/* Plan Header */}
               <div className="mb-5">
                 <h2 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h2>
                 <p className="text-sm text-gray-500 leading-relaxed">{plan.description}</p>
               </div>
 
-              {/* Price */}
+              {/* Price com promocional */}
               <div className="mb-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm text-gray-400 line-through">{formatCurrency(plan.priceRegular)}/mês</span>
+                  <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-0.5 rounded-full">
+                    Promo {PROMO_DAYS} dias
+                  </span>
+                </div>
                 <div className="flex items-end gap-1">
                   <span className="text-4xl font-bold text-gray-900">{formatCurrency(plan.price)}</span>
                   <span className="text-gray-500 mb-1.5 text-sm">/mês</span>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">Cobrado mensalmente · Cancele quando quiser</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  ou {formatCurrency(plan.priceAnnual)}/ano · Cancele quando quiser
+                </p>
               </div>
 
-              {/* CTA Button */}
               <Link
                 href={`/register?plan=${plan.id}`}
                 className={`w-full text-center py-3 px-6 rounded-xl font-semibold text-sm transition-colors mb-2 ${
@@ -102,15 +106,12 @@ export default function PlansPage() {
                 {plan.cta}
               </Link>
 
-              {/* Trial sub-text */}
               <p className="text-center text-xs text-gray-400 mb-7">
                 {TRIAL_DAYS} dias de teste grátis · Sem cartão de crédito
               </p>
 
-              {/* Divider */}
               <div className="border-t border-gray-100 mb-5" />
 
-              {/* Features */}
               <ul className="space-y-3 flex-1">
                 {plan.features.map((feature, i) => (
                   <li
@@ -144,7 +145,7 @@ export default function PlansPage() {
           ))}
         </div>
 
-        {/* FAQ / Trust Cards */}
+        {/* FAQ Cards */}
         <div className="mt-16 grid md:grid-cols-3 gap-8 text-center">
           {[
             {

@@ -7,21 +7,24 @@ export interface Plan {
   id: string;
   name: string;
   price: number;
+  priceRegular: number;
+  priceAnnual: number;
   description: string;
   highlighted: boolean;
   badge?: string;
   features: PlanFeature[];
   cta: string;
-  // Preparado para futura integração com gateway de pagamento
-  priceId?: string; // Stripe price ID (future)
-  paymentLink?: string; // Link direto de pagamento (future)
+  priceId?: string;
+  paymentLink?: string;
 }
 
 export const plans: Plan[] = [
   {
     id: 'starter',
     name: 'Starter',
-    price: 59,
+    price: 97,
+    priceRegular: 149,
+    priceAnnual: 1499,
     description: 'Ideal para corretores autônomos organizarem seus primeiros imóveis.',
     highlighted: false,
     features: [
@@ -35,12 +38,14 @@ export const plans: Plan[] = [
       { text: 'Analytics e relatórios', included: false },
       { text: 'Multi-corretor / equipe', included: false },
     ],
-    cta: 'Começar grátis',
+    cta: 'Começar agora',
   },
   {
     id: 'professional',
     name: 'Professional',
     price: 149,
+    priceRegular: 199,
+    priceAnnual: 1999,
     description: 'Para corretores ativos que querem fechar mais negócios.',
     highlighted: true,
     badge: 'Mais popular',
@@ -55,12 +60,14 @@ export const plans: Plan[] = [
       { text: 'Analytics e relatórios', included: true },
       { text: 'Multi-corretor / equipe', included: false },
     ],
-    cta: 'Começar grátis',
+    cta: 'Começar agora',
   },
   {
     id: 'agency',
     name: 'Agency',
     price: 399,
+    priceRegular: 449,
+    priceAnnual: 4490,
     description: 'Para imobiliárias e equipes que precisam escalar operações.',
     highlighted: false,
     features: [
@@ -73,8 +80,9 @@ export const plans: Plan[] = [
       { text: 'Permissões por usuário', included: true },
       { text: 'Dashboard de equipe', included: true },
     ],
-    cta: 'Começar grátis',
+    cta: 'Começar agora',
   },
 ];
 
 export const TRIAL_DAYS = 7;
+export const PROMO_DAYS = 90;
