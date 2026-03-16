@@ -15,6 +15,7 @@ interface User {
   avatarUrl?: string;
   role: "AGENT" | "ADMIN";
   isFirstLogin?: boolean;
+  emailVerified?: boolean;
 }
 
 interface AuthState {
