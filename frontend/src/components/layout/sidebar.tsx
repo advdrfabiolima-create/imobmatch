@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Building2, LayoutDashboard, Home, Users, Zap, UserCheck,
-  MessageSquare, Search, Settings, LogOut, Shield,
+  LayoutDashboard, Home, Users, Zap, UserCheck,
+  MessageSquare, Search, Settings, LogOut, Shield, UsersRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
@@ -70,6 +70,27 @@ export function Sidebar() {
             </Link>
           );
         })}
+
+        {/* Agency-only: Team Management */}
+        {user?.plan === "agency" && (
+          <Link
+            href="/team"
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+              pathname === "/team" || pathname.startsWith("/team/")
+                ? "bg-blue-50 text-blue-600"
+                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+            )}
+          >
+            <UsersRound
+              className={cn(
+                "h-5 w-5",
+                pathname === "/team" || pathname.startsWith("/team/") ? "text-blue-600" : "text-gray-400"
+              )}
+            />
+            Gestão de equipe
+          </Link>
+        )}
 
         {user?.role === "ADMIN" && (
           <Link

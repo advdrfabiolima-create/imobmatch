@@ -16,6 +16,7 @@ interface User {
   role: "AGENT" | "ADMIN";
   isFirstLogin?: boolean;
   emailVerified?: boolean;
+  plan?: "starter" | "professional" | "agency";
 }
 
 interface AuthState {

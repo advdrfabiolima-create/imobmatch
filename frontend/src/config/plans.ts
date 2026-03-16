@@ -22,10 +22,10 @@ export const plans: Plan[] = [
     id: 'starter',
     name: 'Starter',
     price: 59,
-    description: 'Ideal para corretores autônomos começando a organizar sua carteira.',
+    description: 'Ideal para corretores autônomos organizarem seus primeiros imóveis.',
     highlighted: false,
     features: [
-      { text: 'Até 20 imóveis cadastrados', included: true },
+      { text: 'Até 20 imóveis ativos', included: true },
       { text: 'Até 30 compradores', included: true },
       { text: 'Matching básico automático', included: true },
       { text: 'Dashboard de gestão', included: true },
@@ -35,7 +35,7 @@ export const plans: Plan[] = [
       { text: 'Analytics e relatórios', included: false },
       { text: 'Multi-corretor / equipe', included: false },
     ],
-    cta: 'Iniciar teste grátis',
+    cta: 'Começar grátis',
   },
   {
     id: 'professional',
@@ -55,27 +55,26 @@ export const plans: Plan[] = [
       { text: 'Analytics e relatórios', included: true },
       { text: 'Multi-corretor / equipe', included: false },
     ],
-    cta: 'Iniciar teste grátis',
+    cta: 'Começar grátis',
   },
   {
     id: 'agency',
     name: 'Agency',
     price: 399,
-    description: 'Para imobiliárias e equipes que precisam de escala.',
+    description: 'Para imobiliárias e equipes que precisam escalar operações.',
     highlighted: false,
     features: [
       { text: 'Imóveis ilimitados', included: true },
       { text: 'Compradores ilimitados', included: true },
-      { text: 'Matching básico automático', included: true },
-      { text: 'Dashboard de gestão', included: true },
-      { text: 'Importação de imóveis por link', included: true },
       { text: 'Matching avançado com score', included: true },
       { text: 'Sistema de parcerias', included: true },
       { text: 'Analytics e relatórios avançados', included: true },
       { text: 'Multi-corretor / gestão de equipe', included: true },
+      { text: 'Permissões por usuário', included: true },
+      { text: 'Dashboard de equipe', included: true },
     ],
-    cta: 'Iniciar teste grátis',
+    cta: 'Começar grátis',
   },
 ];
 
-export const TRIAL_DAYS = 14;
+export const TRIAL_DAYS = 7;

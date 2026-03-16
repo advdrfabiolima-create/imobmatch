@@ -37,7 +37,7 @@ export class AuthService {
       select: {
         id: true, name: true, email: true, phone: true,
         city: true, state: true, agency: true, creci: true,
-        role: true, isFirstLogin: true, emailVerified: true, createdAt: true,
+        role: true, plan: true, isFirstLogin: true, emailVerified: true, createdAt: true,
       },
     });
 
@@ -129,7 +129,7 @@ export class AuthService {
       select: {
         id: true, name: true, email: true, phone: true, city: true,
         state: true, agency: true, creci: true, bio: true, avatarUrl: true,
-        role: true, isFirstLogin: true, emailVerified: true, createdAt: true,
+        role: true, plan: true, isFirstLogin: true, emailVerified: true, createdAt: true,
         _count: { select: { properties: true, buyers: true } },
       },
     });

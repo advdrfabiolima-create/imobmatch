@@ -25,6 +25,7 @@ model User {
   bio          String?
   avatarUrl    String?
   role         Role     @default(AGENT)
+  plan         String   @default("starter")
   isActive     Boolean  @default(true)
   isFirstLogin Boolean  @default(true)
   lastSeen     DateTime?
