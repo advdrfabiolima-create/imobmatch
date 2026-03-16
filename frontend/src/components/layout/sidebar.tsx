@@ -9,34 +9,36 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
 import { useSidebarStore } from "@/store/sidebar.store";
-
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/meus-imoveis", label: "Imóveis", icon: Home },
-  { href: "/compradores", label: "Compradores", icon: Users },
-  { href: "/matches", label: "Matches", icon: Zap },
-  { href: "/parcerias", label: "Parcerias", icon: UserCheck },
-  { href: "/mensagens", label: "Mensagens", icon: MessageSquare },
-  { href: "/corretores", label: "Corretores", icon: Search },
-  { href: "/analytics", label: "Analytics", icon: BarChart2 },
-  { href: "/perfil", label: "Perfil", icon: Settings },
-];
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
   const { isOpen, close } = useSidebarStore();
 
-  const NavLink = ({ href, label, icon: Icon, activeColor = "blue" }: {
-    href: string; label: string; icon: React.ElementType; activeColor?: string;
+  const { data: partnershipsData } = useQuery({
+    queryKey: ["partnerships-badge"],
+    queryFn: () => api.get("/partnerships").then((r) => r.data),
+    refetchInterval: 30000,
+  });
+
+  const pendingCount = partnershipsData?.data?.filter(
+    (p: any) => p.receiverId === user?.id && p.status === "PENDING"
+  ).length ?? 0;
+
+  const newlyAccepted = partnershipsData?.data?.filter(
+    (p: any) => p.requesterId === user?.id && p.status === "ACCEPTED"
+  ).length ?? 0;
+
+  const NavLink = ({ href, label, icon: Icon, badge, activeColor = "blue" }: {
+    href: string; label: string; icon: React.ElementType; badge?: number; activeColor?: string;
   }) => {
     const active = pathname === href || pathname.startsWith(href + "/");
     const activeClass =
-      activeColor === "purple"
-        ? "bg-purple-50 text-purple-600"
-        : activeColor === "amber"
-        ? "bg-amber-50 text-amber-600"
-        : "bg-blue-50 text-blue-600";
+      activeColor === "purple" ? "bg-purple-50 text-purple-600"
+      : activeColor === "amber" ? "bg-amber-50 text-amber-600"
+      : "bg-blue-50 text-blue-600";
     const activeIconClass =
       activeColor === "purple" ? "text-purple-600"
       : activeColor === "amber" ? "text-amber-500"
@@ -52,33 +54,29 @@ export function Sidebar() {
         )}
       >
         <Icon className={cn("h-5 w-5", active ? activeIconClass : "text-gray-400")} />
-        {label}
+        <span className="flex-1">{label}</span>
+        {badge != null && badge > 0 && (
+          <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
+            {badge}
+          </span>
+        )}
       </Link>
     );
   };
 
   return (
     <>
-      {/* Mobile backdrop */}
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden"
-          onClick={close}
-          aria-hidden="true"
-        />
+        <div className="fixed inset-0 bg-black/40 z-30 md:hidden" onClick={close} aria-hidden="true" />
       )}
 
-      {/* Sidebar panel */}
       <aside
         className={cn(
           "fixed left-0 top-0 h-full w-64 bg-white border-r flex flex-col z-40 transition-transform duration-300",
-          // Mobile: off-screen by default, slides in when open
           isOpen ? "translate-x-0" : "-translate-x-full",
-          // Desktop: always visible
           "md:translate-x-0"
         )}
       >
-        {/* Logo + mobile close button */}
         <div className="p-4 border-b flex items-center justify-between gap-2">
           <Link href="/dashboard" className="flex items-center" onClick={close}>
             <img src="/logo.png" alt="ImobMatch" className="h-10 w-auto object-contain" />
@@ -92,7 +90,6 @@ export function Sidebar() {
           </button>
         </div>
 
-        {/* User Info */}
         <div className="p-4 border-b">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-blue-100 flex-shrink-0 overflow-hidden flex items-center justify-center text-blue-600 font-semibold text-sm">
@@ -109,16 +106,23 @@ export function Sidebar() {
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <NavLink key={item.href} href={item.href} label={item.label} icon={item.icon} />
-          ))}
+          <NavLink href="/dashboard"    label="Dashboard"   icon={LayoutDashboard} />
+          <NavLink href="/meus-imoveis" label="Imóveis"     icon={Home} />
+          <NavLink href="/compradores"  label="Compradores" icon={Users} />
+          <NavLink href="/matches"      label="Matches"     icon={Zap} />
+          <NavLink
+            href="/parcerias"
+            label="Parcerias"
+            icon={UserCheck}
+            badge={pendingCount > 0 ? pendingCount : newlyAccepted > 0 ? newlyAccepted : undefined}
+          />
+          <NavLink href="/mensagens"  label="Mensagens"  icon={MessageSquare} />
+          <NavLink href="/corretores" label="Corretores" icon={Search} />
+          <NavLink href="/analytics"  label="Analytics"  icon={BarChart2} />
+          <NavLink href="/perfil"     label="Perfil"     icon={Settings} />
+          <NavLink href="/meu-plano"  label="Planos"     icon={CreditCard} activeColor="amber" />
 
-          {/* Plans */}
-          <NavLink href="/meu-plano" label="Planos" icon={CreditCard} activeColor="amber" />
-
-          {/* Agency-only: Team Management */}
           {(user?.plan === "agency" || user?.isLifetime) && (
             <NavLink href="/team" label="Gestão de Equipe" icon={UsersRound} />
           )}
@@ -128,7 +132,6 @@ export function Sidebar() {
           )}
         </nav>
 
-        {/* Logout */}
         <div className="p-4 border-t">
           <button
             onClick={() => { close(); logout(); }}

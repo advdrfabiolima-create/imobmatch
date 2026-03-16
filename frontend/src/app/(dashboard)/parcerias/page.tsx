@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { UserCheck, Check, X, Building2, FileText } from "lucide-react";
+import { UserCheck, Check, X, Building2, FileText, User } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -41,6 +41,7 @@ export default function ParceriasPage() {
     onSuccess: (_, vars) => {
       toast.success(vars.status === "ACCEPTED" ? "Parceria aceita!" : "Parceria recusada");
       queryClient.invalidateQueries({ queryKey: ["partnerships"] });
+      queryClient.invalidateQueries({ queryKey: ["partnerships-badge"] });
     },
   });
 
@@ -49,18 +50,20 @@ export default function ParceriasPage() {
     onSuccess: () => {
       toast.success("Parceria cancelada");
       queryClient.invalidateQueries({ queryKey: ["partnerships"] });
+      queryClient.invalidateQueries({ queryKey: ["partnerships-badge"] });
     },
   });
 
-  const pending = data?.data?.filter((p: any) => p.receiverId === user?.id && p.status === "PENDING") || [];
-  const sent = data?.data?.filter((p: any) => p.requesterId === user?.id) || [];
-  const active = data?.data?.filter((p: any) => p.status === "ACCEPTED") || [];
+  const pending  = data?.data?.filter((p: any) => p.receiverId === user?.id && p.status === "PENDING") || [];
+  const sent     = data?.data?.filter((p: any) => p.requesterId === user?.id) || [];
+  const active   = data?.data?.filter((p: any) => p.status === "ACCEPTED") || [];
 
   return (
     <div>
       <Header title="Parcerias" />
       <div className="p-4 md:p-6 space-y-6">
-        {/* Pending received */}
+
+        {/* Pendentes recebidas */}
         {pending.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
@@ -78,6 +81,12 @@ export default function ParceriasPage() {
                           <span className="font-semibold text-gray-900">{p.property?.title}</span>
                           <span className="text-blue-600 font-medium">{formatCurrency(p.property?.price)}</span>
                         </div>
+                        {p.buyer && (
+                          <div className="flex items-center gap-1.5 text-sm text-gray-600 mb-1">
+                            <User className="h-3.5 w-3.5 text-gray-400" />
+                            <span>Cliente: <strong>{p.buyer?.buyerName}</strong></span>
+                          </div>
+                        )}
                         <p className="text-sm text-gray-600">
                           Solicitado por <strong>{p.requester?.name}</strong> em {formatDate(p.createdAt)}
                         </p>
@@ -113,7 +122,7 @@ export default function ParceriasPage() {
           </div>
         )}
 
-        {/* Active partnerships */}
+        {/* Parcerias ativas */}
         {active.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
@@ -132,12 +141,18 @@ export default function ParceriasPage() {
                       <Badge variant="success">Ativa</Badge>
                     </div>
                     <div className="text-sm text-gray-600 space-y-1">
+                      {p.buyer && (
+                        <div className="flex items-center gap-1.5 py-1 px-2 bg-blue-50 rounded-lg mb-2">
+                          <User className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />
+                          <span>Cliente: <strong className="text-blue-800">{p.buyer?.buyerName}</strong></span>
+                        </div>
+                      )}
                       <p>Solicitante: {p.requester?.name}</p>
                       <p>Receptor: {p.receiver?.name}</p>
                       {p.commissionSplit && <p className="font-medium">Comissão: {p.commissionSplit}%</p>}
                     </div>
                     <div className="mt-3 pt-3 border-t">
-                      <Link href={`/termo/${p.id}`} target="_blank">
+                      <Link href={`/parcerias/${p.id}/termo`} target="_blank">
                         <Button size="sm" variant="outline" className="gap-1.5 text-green-700 border-green-300 hover:bg-green-50 w-full">
                           <FileText className="h-4 w-4" />
                           Ver Termo de Parceria
@@ -151,7 +166,7 @@ export default function ParceriasPage() {
           </div>
         )}
 
-        {/* Sent requests */}
+        {/* Minhas solicitações */}
         {sent.length > 0 && (
           <div>
             <h2 className="text-lg font-semibold mb-3">Minhas Solicitações</h2>
@@ -161,6 +176,11 @@ export default function ParceriasPage() {
                   <CardContent className="p-5 flex items-center justify-between">
                     <div>
                       <p className="font-medium text-gray-900">{p.property?.title}</p>
+                      {p.buyer && (
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          Cliente: {p.buyer?.buyerName}
+                        </p>
+                      )}
                       <p className="text-sm text-gray-500">Para: {p.receiver?.name} • {formatDate(p.createdAt)}</p>
                     </div>
                     <div className="flex items-center gap-3">
