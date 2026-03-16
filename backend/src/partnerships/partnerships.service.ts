@@ -14,7 +14,7 @@ export class PartnershipsService {
 
   async request(
     requesterId: string,
-    dto: { propertyId: string; receiverId: string; commissionSplit?: number; message?: string },
+    dto: { buyerId?: string; propertyId: string; receiverId: string; commissionSplit?: number; message?: string },
     req?: any,
   ) {
     if (requesterId === dto.receiverId)
@@ -26,6 +26,8 @@ export class PartnershipsService {
     const existing = await this.prisma.partnership.findFirst({
       where: {
         propertyId: dto.propertyId,
+        // if buyerId is provided, scope the uniqueness check to that buyer
+        ...(dto.buyerId ? { buyerId: dto.buyerId } : {}),
         OR: [
           { requesterId, receiverId: dto.receiverId },
           { requesterId: dto.receiverId, receiverId: requesterId },
@@ -36,8 +38,8 @@ export class PartnershipsService {
     if (existing)
       throw new BadRequestException(
         existing.status === 'ACCEPTED'
-          ? 'Já existe uma parceria aceita para este imóvel'
-          : 'Já existe uma solicitação de parceria pendente',
+          ? 'Já existe uma parceria aceita para este match'
+          : 'Já existe uma solicitação de parceria pendente para este match',
       );
 
     return this.prisma.partnership.create({

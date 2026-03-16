@@ -89,6 +89,7 @@ function StatusBadge({
 // ─── Partnership modal ─────────────────────────────────────────────────────────
 type PartnershipTarget = {
   matchId: string;
+  buyerId: string;
   propertyId: string;
   receiverId: string;
   receiverName: string;
@@ -108,6 +109,7 @@ function PartnershipModal({
   const mutation = useMutation({
     mutationFn: () =>
       api.post("/partnerships", {
+        buyerId: target.buyerId,
         propertyId: target.propertyId,
         receiverId: target.receiverId,
         ...(commission ? { commissionSplit: Number(commission) } : {}),
@@ -526,6 +528,7 @@ export default function MatchesPage() {
                             onClick={() =>
                               setPartnershipTarget({
                                 matchId: m.id,
+                                buyerId: m.buyer?.id,
                                 propertyId: m.property?.id,
                                 receiverId: otherAgentId,
                                 receiverName: otherAgentName ?? "corretor",

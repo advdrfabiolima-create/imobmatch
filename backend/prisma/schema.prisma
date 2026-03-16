@@ -123,6 +123,7 @@ model Buyer {
 
   // Relações
   matches             Match[]
+  partnerships        Partnership[]
 
   @@map("buyers")
 }
@@ -164,6 +165,8 @@ enum MatchStatus {
 
 model Partnership {
   id             String            @id @default(uuid())
+  buyerId        String?
+  buyer          Buyer?            @relation(fields: [buyerId], references: [id])
   propertyId     String
   property       Property          @relation(fields: [propertyId], references: [id])
   requesterId    String

@@ -154,7 +154,7 @@ export class MatchesService {
           OR: [{ requesterId: agentId }, { receiverId: agentId }],
           status: { in: ['PENDING', 'ACCEPTED'] },
         },
-        select: { id: true, propertyId: true, requesterId: true, receiverId: true, status: true },
+        select: { id: true, buyerId: true, propertyId: true, requesterId: true, receiverId: true, status: true },
       }),
     ]);
 
@@ -163,12 +163,14 @@ export class MatchesService {
       // Identify the other agent in this specific match
       const otherAgentId = isMine ? m.property?.agentId : m.buyer?.agent?.id;
 
-      // Find a partnership that matches this exact property + agent pair
-      // (property-level) — prefer ACCEPTED over PENDING if multiple exist
-      const candidates = myPartnerships.filter(p =>
-        p.propertyId === m.property?.id &&
-        (p.requesterId === otherAgentId || p.receiverId === otherAgentId)
-      );
+      // Find partnership specific to this exact buyer+property pair (match-level)
+      // Fall back to property+agent check for old partnerships without buyerId
+      const candidates = myPartnerships.filter(p => {
+        const propertyMatch = p.propertyId === m.property?.id;
+        const agentMatch = p.requesterId === otherAgentId || p.receiverId === otherAgentId;
+        const buyerMatch = p.buyerId ? p.buyerId === m.buyer?.id : true;
+        return propertyMatch && agentMatch && buyerMatch;
+      });
       const partnership =
         candidates.find(p => p.status === 'ACCEPTED') ??
         candidates.find(p => p.status === 'PENDING') ??
