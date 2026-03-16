@@ -1,6 +1,6 @@
 import { IsString, IsEnum, IsNumber, IsOptional, IsNotEmpty, IsEmail, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 
 export enum PropertyTypeEnum {
   HOUSE = 'HOUSE',
@@ -14,7 +14,11 @@ export class CreateBuyerDto {
   @ApiProperty({ example: 'Carlos Oliveira' })
   @IsString() @IsNotEmpty() buyerName: string;
 
-  @ApiPropertyOptional() @IsOptional() @IsEmail() email?: string;
+  @ApiPropertyOptional()
+@IsOptional()
+@IsEmail()
+@Transform(({ value }) => value === '' ? undefined : value)
+email?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() phone?: string;
 
   @ApiProperty({ example: 'São Paulo' })
