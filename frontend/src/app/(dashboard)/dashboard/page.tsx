@@ -98,7 +98,7 @@ function PlanBanner() {
       <div className="sm:ml-auto">
         {plan === "starter" ? (
           <Link
-            href="/plans"
+            href="/meu-plano"
             className="inline-flex items-center gap-1.5 text-xs font-semibold bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Sparkles className="h-3.5 w-3.5" />
@@ -106,7 +106,7 @@ function PlanBanner() {
           </Link>
         ) : plan === "professional" ? (
           <Link
-            href="/plans"
+            href="/meu-plano"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:text-purple-700 hover:underline"
           >
             Ver plano Agency <ArrowRight className="h-3 w-3" />

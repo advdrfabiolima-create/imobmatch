@@ -116,7 +116,7 @@ export function Sidebar() {
           ))}
 
           {/* Plans */}
-          <NavLink href="/plans" label="Planos" icon={CreditCard} activeColor="amber" />
+          <NavLink href="/meu-plano" label="Planos" icon={CreditCard} activeColor="amber" />
 
           {/* Agency-only: Team Management */}
           {(user?.plan === "agency" || user?.isLifetime) && (

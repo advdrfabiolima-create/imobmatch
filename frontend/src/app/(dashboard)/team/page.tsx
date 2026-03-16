@@ -162,7 +162,7 @@ export default function TeamPage() {
                 A Gestão de Equipe permite convidar corretores, definir permissões e gerenciar toda
                 a operação da sua imobiliária em um só lugar.
               </p>
-              <Link href="/plans">
+              <Link href="/meu-plano">
                 <Button className="bg-blue-600 hover:bg-blue-700 gap-2">
                   Ver planos
                   <ArrowRight className="h-4 w-4" />

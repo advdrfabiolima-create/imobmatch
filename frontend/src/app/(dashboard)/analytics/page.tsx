@@ -126,7 +126,7 @@ function UpgradeBanner() {
           Veja funil de conversão, distribuição de scores, performance de parcerias e muito mais.
         </p>
       </div>
-      <Link href="/plans">
+      <Link href="/meu-plano">
         <button className="flex-shrink-0 bg-white text-blue-600 font-semibold px-5 py-2.5 rounded-xl hover:bg-blue-50 transition flex items-center gap-2 text-sm">
           Fazer upgrade
           <ArrowRight className="h-4 w-4" />
@@ -304,7 +304,7 @@ export default function AnalyticsPage() {
               {!isPro && (
                 <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-xl">
                   <p className="text-sm font-semibold text-gray-700 mb-2">Disponível no plano Professional</p>
-                  <Link href="/plans">
+                  <Link href="/meu-plano">
                     <button className="text-xs text-blue-600 font-medium hover:underline flex items-center gap-1">
                       Ver planos <ArrowRight className="h-3 w-3" />
                     </button>
