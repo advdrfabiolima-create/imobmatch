@@ -54,7 +54,7 @@ const PLANS: {
   {
     key: "professional",
     name: "Professional",
-    price: 97,
+    price: 149,
     period: "/mês",
     description: "Para corretores que querem escalar seus resultados.",
     icon: Sparkles,
@@ -74,7 +74,7 @@ const PLANS: {
   {
     key: "agency",
     name: "Agency",
-    price: 197,
+    price: 399,
     period: "/mês",
     description: "Para imobiliárias e equipes de corretores.",
     icon: Crown,
