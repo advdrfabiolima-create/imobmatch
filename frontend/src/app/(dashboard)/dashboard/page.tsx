@@ -5,10 +5,100 @@ import { Header } from "@/components/layout/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
+import { useAuthStore } from "@/store/auth.store";
 import { formatCurrency, formatDate, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from "@/lib/utils";
-import { Building2, Users, Zap, UserCheck, TrendingUp, ArrowRight } from "lucide-react";
+import { Building2, Users, Zap, UserCheck, TrendingUp, ArrowRight, Clock, Crown, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { TRIAL_DAYS } from "@/config/plans";
 
+// ── Plan config ───────────────────────────────────────────────────────────────
+const PLAN_META = {
+  starter: { label: "Starter", color: "bg-gray-100 text-gray-700 border-gray-200", dot: "bg-gray-400" },
+  professional: { label: "Professional", color: "bg-blue-100 text-blue-700 border-blue-200", dot: "bg-blue-500" },
+  agency: { label: "Agency", color: "bg-purple-100 text-purple-700 border-purple-200", dot: "bg-purple-500" },
+};
+
+// ── Trial / Plan Banner ───────────────────────────────────────────────────────
+function PlanBanner() {
+  const { user } = useAuthStore();
+
+  const plan = user?.plan ?? "starter";
+  const meta = PLAN_META[plan] ?? PLAN_META.starter;
+
+  // Trial countdown — based on account creation date
+  const createdAt = user?.createdAt ? new Date(user.createdAt) : null;
+  const trialEnd = createdAt ? new Date(createdAt.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000) : null;
+  const now = new Date();
+  const daysLeft = trialEnd ? Math.max(0, Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))) : 0;
+  const trialActive = daysLeft > 0;
+  const trialExpired = createdAt !== null && !trialActive;
+
+  // Urgency color for trial days
+  const urgencyColor =
+    daysLeft <= 1 ? "text-red-600 bg-red-50 border-red-200" :
+    daysLeft <= 3 ? "text-amber-600 bg-amber-50 border-amber-200" :
+    "text-blue-600 bg-blue-50 border-blue-200";
+
+  return (
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+      {/* Plan badge */}
+      <div className="flex items-center gap-2">
+        <Crown className="h-4 w-4 text-gray-400 flex-shrink-0" />
+        <span className="text-sm font-medium text-gray-600">Seu plano:</span>
+        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${meta.color}`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />
+          {meta.label}
+        </span>
+      </div>
+
+      {/* Divider */}
+      <div className="hidden sm:block w-px h-5 bg-gray-200" />
+
+      {/* Trial countdown */}
+      {trialActive && (
+        <div className={`flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full border ${urgencyColor}`}>
+          <Clock className="h-3.5 w-3.5" />
+          <span>
+            {daysLeft === 1 ? "Último dia de trial!" : `${daysLeft} dias restantes de trial`}
+          </span>
+        </div>
+      )}
+
+      {trialExpired && plan === "starter" && (
+        <div className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full border text-orange-700 bg-orange-50 border-orange-200">
+          <Clock className="h-3.5 w-3.5" />
+          <span>Trial encerrado</span>
+        </div>
+      )}
+
+      {/* Upgrade CTA */}
+      <div className="sm:ml-auto">
+        {plan === "starter" ? (
+          <Link
+            href="/plans"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            Fazer upgrade
+          </Link>
+        ) : plan === "professional" ? (
+          <Link
+            href="/plans"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:text-purple-700 hover:underline"
+          >
+            Ver plano Agency <ArrowRight className="h-3 w-3" />
+          </Link>
+        ) : (
+          <span className="text-xs text-gray-400 flex items-center gap-1">
+            <Crown className="h-3 w-3" /> Plano completo
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Stat Card ─────────────────────────────────────────────────────────────────
 function StatCard({ title, value, icon: Icon, color, href }: any) {
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -32,6 +122,7 @@ function StatCard({ title, value, icon: Icon, color, href }: any) {
   );
 }
 
+// ── Main Page ─────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
   const { data: stats, isLoading } = useQuery({
     queryKey: ["dashboard-stats"],
@@ -43,6 +134,7 @@ export default function DashboardPage() {
       <div>
         <Header title="Dashboard" />
         <div className="p-6">
+          <div className="h-14 bg-gray-100 rounded-xl animate-pulse mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[...Array(4)].map((_, i) => <div key={i} className="h-28 bg-gray-100 rounded-xl animate-pulse" />)}
           </div>
@@ -55,6 +147,10 @@ export default function DashboardPage() {
     <div>
       <Header title="Dashboard" />
       <div className="p-6 space-y-6">
+
+        {/* Plan + Trial Banner */}
+        <PlanBanner />
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard title="Meus Imóveis" value={stats?.propertiesCount ?? 0} icon={Building2} color="blue" href="/meus-imoveis" />
