@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,234 @@ const STATUSES = [
   { value: "REJECTED",    label: "Rejeitado",      color: "bg-red-100 text-red-600",      dot: "bg-red-400",     border: "border-l-red-300" },
 ];
 const STATUS_MAP = Object.fromEntries(STATUSES.map((s) => [s.value, s]));
+
+// ─── Match Animation ──────────────────────────────────────────────────────────
+function MatchAnimation({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 3300);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0,
+      background: "rgba(8,6,26,0.80)",
+      zIndex: 9999,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      overflow: "hidden",
+    }}>
+      <style>{`
+        @keyframes mPopIn {
+          0%   { transform:scale(0.05); opacity:0; }
+          55%  { transform:scale(1.15); opacity:1; }
+          72%  { transform:scale(0.93); }
+          88%  { transform:scale(1.05); }
+          100% { transform:scale(1); opacity:1; }
+        }
+        @keyframes mFloat {
+          0%,100% { transform:translateY(0px); }
+          50%      { transform:translateY(-8px); }
+        }
+        @keyframes mRing {
+          0%   { transform:scale(0.1); opacity:1; }
+          100% { transform:scale(3.6); opacity:0; }
+        }
+        @keyframes mBurst {
+          0%   { transform:scale(0.15); opacity:0.85; }
+          100% { transform:scale(3.2); opacity:0; }
+        }
+        @keyframes mConfetti {
+          0%   { opacity:1; transform:translate(0,0) rotate(0deg) scale(1); }
+          100% { opacity:0; transform:var(--mend); }
+        }
+        @keyframes mSparkle {
+          0%,100% { opacity:0; transform:scale(0.3); }
+          50%      { opacity:1; transform:scale(1.3); }
+        }
+        @keyframes mFadeUp {
+          0%   { opacity:0; transform:translateY(10px); }
+          100% { opacity:1; transform:translateY(0); }
+        }
+        @keyframes mShimmer {
+          0%,100% { opacity:0.2; }
+          50%      { opacity:0.55; }
+        }
+      `}</style>
+
+      <MatchStars />
+      <MatchConfetti />
+
+      {/* Anéis de onda */}
+      {[
+        { delay: "0s",    border: "3px solid #AFA9EC" },
+        { delay: "0.1s",  border: "2px solid #7F77DD" },
+        { delay: "0.2s",  border: "1.5px solid rgba(83,74,183,0.55)" },
+      ].map((r, i) => (
+        <div key={i} style={{
+          position: "absolute",
+          width: 300, height: 300,
+          border: r.border,
+          borderRadius: "50%",
+          animation: `mRing 0.75s cubic-bezier(0.22,1,0.36,1) ${r.delay} forwards`,
+        }} />
+      ))}
+
+      {/* Burst de raios */}
+      <div style={{
+        position: "absolute",
+        width: 300, height: 300,
+        animation: "mBurst 0.65s ease-out forwards",
+      }}>
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          <polygon fill="#7F77DD" opacity="0.25"
+            points="100,2 112,38 132,12 126,50 156,30 140,64 176,58 150,84 182,92 150,106 176,122 142,120 154,156 124,140 120,176 100,156 80,176 76,140 46,156 58,120 24,122 50,106 18,92 50,84 24,58 60,64 44,30 74,50 68,12 88,38"
+          />
+        </svg>
+      </div>
+
+      {/* Estrelinhas decorativas */}
+      {[
+        { top: "calc(50% - 145px)", left: "calc(50% - 145px)", size: 20, color: "#FAC775", delay: "0.32s" },
+        { top: "calc(50% - 140px)", left: "calc(50% + 118px)", size: 16, color: "#fff",    delay: "0.44s" },
+        { top: "calc(50% + 118px)", left: "calc(50% - 140px)", size: 18, color: "#FAC775", delay: "0.38s" },
+        { top: "calc(50% + 112px)", left: "calc(50% + 110px)", size: 14, color: "#AFA9EC", delay: "0.50s" },
+        { top: "calc(50% - 20px)",  left: "calc(50% - 158px)", size: 13, color: "#5DCAA5", delay: "0.56s" },
+        { top: "calc(50% - 20px)",  left: "calc(50% + 132px)", size: 15, color: "#F4C0D1", delay: "0.42s" },
+      ].map((s, i) => (
+        <div key={i} style={{
+          position: "absolute",
+          top: s.top, left: s.left,
+          width: s.size, height: s.size,
+          animation: `mSparkle 0.65s ease ${s.delay} infinite`,
+        }}>
+          <svg viewBox="0 0 24 24" width="100%" height="100%">
+            <path fill={s.color} d="M12 2l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z"/>
+          </svg>
+        </div>
+      ))}
+
+      {/* Blob principal */}
+      <div style={{
+        position: "absolute",
+        width: 260, height: 260,
+        animation: "mPopIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards",
+      }}>
+        <svg viewBox="0 0 200 200" width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
+          <defs>
+            <radialGradient id="matchBlobGrad" cx="38%" cy="32%" r="68%">
+              <stop offset="0%" stopColor="#9088E8"/>
+              <stop offset="100%" stopColor="#3C3489"/>
+            </radialGradient>
+          </defs>
+          <path fill="url(#matchBlobGrad)"
+            d="M 40,26 C 58,4 104,2 136,19 C 172,38 190,70 186,108 C 182,148 156,174 116,183 C 74,193 36,176 18,148 C 0,118 2,74 14,50 C 20,38 30,32 40,26 Z"
+          />
+          <path fill="rgba(255,255,255,0.07)"
+            d="M 46,26 C 64,10 104,5 128,17 C 154,30 164,56 154,78 C 144,100 116,106 94,98 C 72,90 48,70 44,50 C 42,38 38,34 46,26 Z"
+          />
+        </svg>
+
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          gap: 0,
+        }}>
+          {/* Ícone imóvel */}
+          <div style={{ animation: "mFadeUp 0.38s ease 0.38s both" }}>
+            <svg width="54" height="54" viewBox="0 0 64 64"
+              style={{ display: "block", filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))" }}>
+              <polygon points="32,7 8,30 56,30"
+                fill="rgba(255,255,255,0.1)"
+                stroke="rgba(255,255,255,0.95)"
+                strokeWidth="2.5"
+                strokeLinejoin="round"
+              />
+              <rect x="11" y="30" width="42" height="26" rx="2"
+                fill="rgba(255,255,255,0.08)"
+                stroke="rgba(255,255,255,0.95)"
+                strokeWidth="2"
+              />
+              <rect x="24" y="38" width="16" height="18" rx="3" fill="rgba(255,255,255,0.92)"/>
+              <circle cx="37.5" cy="47" r="2" fill="#534AB7"/>
+              <rect x="14" y="33" width="10" height="9" rx="2" fill="rgba(255,255,255,0.55)"/>
+              <rect x="40" y="33" width="10" height="9" rx="2" fill="rgba(255,255,255,0.55)"/>
+            </svg>
+          </div>
+          {/* Texto */}
+          <div style={{
+            fontSize: 27, fontWeight: 800, color: "#fff",
+            whiteSpace: "nowrap", letterSpacing: "-0.3px",
+            textShadow: "0 2px 12px rgba(0,0,0,0.4)",
+            marginTop: 6,
+            animation: "mFadeUp 0.32s ease 0.54s both",
+          }}>
+            Deu Match!
+          </div>
+          <div style={{
+            fontSize: 11, color: "rgba(255,255,255,0.75)",
+            fontWeight: 500, marginTop: 3,
+            animation: "mFadeUp 0.32s ease 0.66s both",
+          }}>
+            Compatibilidade ≥ 70%
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MatchStars() {
+  return (
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+      {Array.from({ length: 48 }).map((_, i) => {
+        const size = 1 + Math.random() * 2;
+        return (
+          <div key={i} style={{
+            position: "absolute",
+            borderRadius: "50%",
+            background: `rgba(255,255,255,${0.15 + Math.random() * 0.4})`,
+            width: size, height: size,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animation: `mShimmer ${1.5 + Math.random() * 2.5}s ease-in-out ${Math.random() * 2}s infinite`,
+          }} />
+        );
+      })}
+    </div>
+  );
+}
+
+function MatchConfetti() {
+  const colors = ["#AFA9EC","#FAC775","#5DCAA5","#F4C0D1","#fff","#7F77DD","#EEEDFE","#EF9F27","#9088E8"];
+  return (
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+      {Array.from({ length: 52 }).map((_, i) => {
+        const angle = Math.random() * Math.PI * 2;
+        const dist  = 80 + Math.random() * 130;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist;
+        const rot = (Math.random() * 900 - 450) + "deg";
+        const size = 5 + Math.random() * 9;
+        const delay = Math.random() * 0.2;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const isCircle = Math.random() > 0.45;
+        return (
+          <div key={i} style={{
+            position: "absolute",
+            left: `calc(50% - ${size / 2}px)`,
+            top: `calc(50% - ${size / 2}px)`,
+            width: size, height: size,
+            background: color,
+            borderRadius: isCircle ? "50%" : "3px",
+            ["--mend" as any]: `translate(${tx}px,${ty}px) rotate(${rot}) scale(0)`,
+            animation: `mConfetti ${0.6 + Math.random() * 0.7}s cubic-bezier(0.22,1,0.36,1) ${delay}s forwards`,
+          }} />
+        );
+      })}
+    </div>
+  );
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 function ScoreBar({ score }: { score: number }) {
@@ -199,6 +427,7 @@ export default function MatchesPage() {
   const myId = user?.id;
   const [filterStatus, setFilterStatus] = useState("");
   const [partnershipTarget, setPartnershipTarget] = useState<PartnershipTarget | null>(null);
+  const [showMatchAnim, setShowMatchAnim] = useState(false);
 
   const { data: matches, isLoading } = useQuery({
     queryKey: ["matches", filterStatus],
@@ -222,6 +451,9 @@ export default function MatchesPage() {
       toast.success(data.data.message);
       queryClient.invalidateQueries({ queryKey: ["matches"] });
       queryClient.invalidateQueries({ queryKey: ["best-matches"] });
+      if (data.data.newMatches > 0) {
+        setShowMatchAnim(true);
+      }
     },
     onError: () => toast.error("Erro ao gerar matches"),
   });
@@ -245,6 +477,8 @@ export default function MatchesPage() {
 
   return (
     <div>
+      {showMatchAnim && <MatchAnimation onDone={() => setShowMatchAnim(false)} />}
+
       {/* Partnership modal — rendered at page root, completely isolated from match cards */}
       {partnershipTarget && (
         <PartnershipModal
@@ -393,7 +627,6 @@ export default function MatchesPage() {
               const partnershipExists   = !!m.partnership;
               const partnershipAccepted = partnershipStatus === "ACCEPTED";
 
-              // Backend revela phone quando isMine || partnershipAccepted
               const buyerPhone = m.buyer?.phone ?? null;
 
               return (
@@ -446,7 +679,6 @@ export default function MatchesPage() {
                           {!isSameAgent && m.buyer?.agent && (
                             <p className="text-xs text-gray-400 mt-1">Corretor: {m.buyer.agent.name}</p>
                           )}
-                          {/* Contato revelado quando parceria aceita */}
                           {!isSameAgent && partnershipAccepted && buyerPhone && (
                             <a
                               href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
@@ -496,7 +728,6 @@ export default function MatchesPage() {
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        {/* Match próprio: WhatsApp */}
                         {isSameAgent && buyerPhone && (
                           <a
                             href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
@@ -508,7 +739,6 @@ export default function MatchesPage() {
                           </a>
                         )}
 
-                        {/* Match cruzado — parceria já existe */}
                         {!isSameAgent && otherAgentId && partnershipExists && (
                           <span
                             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium cursor-default ${
@@ -522,7 +752,6 @@ export default function MatchesPage() {
                           </span>
                         )}
 
-                        {/* Match cruzado — sem parceria: abre modal */}
                         {!isSameAgent && otherAgentId && !partnershipExists && (
                           <button
                             onClick={() =>
