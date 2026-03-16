@@ -14,6 +14,7 @@ import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import { STATES } from "@/lib/utils";
 import { Loader2, Building2, MapPin, Mail, User, Camera } from "lucide-react";
+import { maskPhone } from "@/lib/masks";
 import toast from "react-hot-toast";
 import { AvatarCropModal } from "@/components/ui/avatar-crop-modal";
 
@@ -36,7 +37,7 @@ export default function PerfilPage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { register, handleSubmit, formState: { errors, isDirty } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState: { errors, isDirty } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: user?.name || "",
@@ -192,7 +193,11 @@ export default function PerfilPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">Telefone</label>
-                  <Input placeholder="(11) 99999-9999" {...register("phone")} />
+                  <Input
+                    placeholder="(11) 99999-9999"
+                    {...register("phone")}
+                    onChange={(e) => setValue("phone", maskPhone(e.target.value), { shouldDirty: true })}
+                  />
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">Imobiliária</label>

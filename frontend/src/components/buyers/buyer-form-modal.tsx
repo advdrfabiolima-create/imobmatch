@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 import { X, Loader2 } from "lucide-react";
 import { STATES } from "@/lib/utils";
+import { maskPhone, maskCurrency, parseCurrency } from "@/lib/masks";
 import toast from "react-hot-toast";
 
 const schema = z.object({
@@ -18,8 +19,8 @@ const schema = z.object({
   desiredCity: z.string().min(2, "Cidade obrigatória"),
   desiredState: z.string().optional(),
   desiredNeighborhood: z.string().optional(),
-  maxPrice: z.coerce.number().min(1, "Preço máximo obrigatório"),
-  minPrice: z.coerce.number().optional(),
+  maxPrice: z.string().min(1, "Preço máximo obrigatório"),
+  minPrice: z.string().optional(),
   propertyType: z.enum(["HOUSE", "APARTMENT", "LAND", "COMMERCIAL", "RURAL"]),
   bedrooms: z.coerce.number().optional(),
   notes: z.string().optional(),
@@ -36,14 +37,26 @@ interface Props {
 export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
   const isEditing = !!buyer;
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: buyer || { propertyType: "APARTMENT" },
+    defaultValues: buyer
+      ? {
+          ...buyer,
+          maxPrice: buyer.maxPrice ? parseCurrency("") || String(Number(buyer.maxPrice).toLocaleString("pt-BR", { minimumFractionDigits: 2 })) : "",
+          minPrice: buyer.minPrice ? String(Number(buyer.minPrice).toLocaleString("pt-BR", { minimumFractionDigits: 2 })) : "",
+        }
+      : { propertyType: "APARTMENT" },
   });
 
   const mutation = useMutation({
-    mutationFn: (data: FormData) =>
-      isEditing ? api.patch(`/buyers/${buyer.id}`, data) : api.post("/buyers", data),
+    mutationFn: (data: FormData) => {
+      const payload = {
+        ...data,
+        maxPrice: parseCurrency(data.maxPrice),
+        minPrice: data.minPrice ? parseCurrency(data.minPrice) : undefined,
+      };
+      return isEditing ? api.patch(`/buyers/${buyer.id}`, payload) : api.post("/buyers", payload);
+    },
     onSuccess: () => {
       toast.success(isEditing ? "Comprador atualizado!" : "Comprador cadastrado!");
       onSuccess();
@@ -68,7 +81,11 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Telefone</label>
-              <Input placeholder="(11) 99999-9999" {...register("phone")} />
+              <Input
+                placeholder="(11) 99999-9999"
+                {...register("phone")}
+                onChange={(e) => setValue("phone", maskPhone(e.target.value))}
+              />
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">E-mail</label>
@@ -97,11 +114,19 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium mb-1 block">Preço Mínimo (R$)</label>
-              <Input type="number" placeholder="300000" {...register("minPrice")} />
+              <Input
+                placeholder="0,00"
+                {...register("minPrice")}
+                onChange={(e) => setValue("minPrice", maskCurrency(e.target.value))}
+              />
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Preço Máximo (R$) *</label>
-              <Input type="number" placeholder="900000" {...register("maxPrice")} />
+              <Input
+                placeholder="0,00"
+                {...register("maxPrice")}
+                onChange={(e) => setValue("maxPrice", maskCurrency(e.target.value))}
+              />
               {errors.maxPrice && <p className="text-red-500 text-xs mt-1">{errors.maxPrice.message}</p>}
             </div>
             <div>

@@ -14,10 +14,13 @@ async function bootstrap() {
   });
 
   // CORS
-  app.enableCors({
-    origin: true,
-    credentials: true,
-  });
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://useimobmatch.com.br',
+    'https://www.useimobmatch.com.br',
+    process.env.FRONTEND_URL,
+  ].filter(Boolean);
+  app.enableCors({ origin: allowedOrigins, credentials: true });
 
   // Prefixo global da API
   app.setGlobalPrefix('api');

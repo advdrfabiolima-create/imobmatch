@@ -10,12 +10,13 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 import { X, Loader2, ImagePlus, Trash2, Link2, PenLine, Download } from "lucide-react";
 import { STATES } from "@/lib/utils";
+import { maskCurrency, parseCurrency } from "@/lib/masks";
 import toast from "react-hot-toast";
 
 const schema = z.object({
   title: z.string().min(5, "Título obrigatório"),
   type: z.enum(["HOUSE", "APARTMENT", "LAND", "COMMERCIAL", "RURAL"]),
-  price: z.coerce.number().min(1, "Preço obrigatório"),
+  price: z.string().min(1, "Preço obrigatório"),
   city: z.string().min(2, "Cidade obrigatória"),
   state: z.string().min(2, "Estado obrigatório"),
   neighborhood: z.string().optional(),
@@ -44,13 +45,13 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
   const [photos, setPhotos] = useState<string[]>(property?.photos || []);
   const [uploading, setUploading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<PropertyFormValues>({
+  const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm<PropertyFormValues>({
     resolver: zodResolver(schema),
     defaultValues: property
       ? {
           title: property.title,
           type: property.type,
-          price: property.price,
+          price: property.price ? Number(property.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) : "",
           city: property.city,
           state: property.state,
           neighborhood: property.neighborhood || "",
@@ -145,7 +146,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
   // ── Salvar imóvel ────────────────────────────────────────────────────────
   const mutation = useMutation({
     mutationFn: (formValues: PropertyFormValues) => {
-      const payload = { ...formValues, photos };
+      const payload = { ...formValues, price: parseCurrency(formValues.price), photos };
       return isEditing
         ? api.patch(`/properties/${property.id}`, payload)
         : api.post("/properties", payload);
@@ -268,7 +269,11 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">Preço (R$) *</label>
-                  <Input type="number" placeholder="850000" {...register("price")} />
+                  <Input
+                    placeholder="0,00"
+                    {...register("price")}
+                    onChange={(e) => setValue("price", maskCurrency(e.target.value))}
+                  />
                   {errors.price && (
                     <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
                   )}

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth.store";
 import { STATES } from "@/lib/utils";
+import { maskPhone } from "@/lib/masks";
 import toast from "react-hot-toast";
 
 const schema = z.object({
@@ -31,7 +32,7 @@ export default function RegisterPage() {
   const { register: authRegister, isLoading } = useAuthStore();
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
@@ -92,7 +93,11 @@ export default function RegisterPage() {
 
             <div>
               <label className="text-sm font-medium text-gray-700 block mb-1">Telefone</label>
-              <Input placeholder="(11) 99999-9999" {...register("phone")} />
+              <Input
+                placeholder="(11) 99999-9999"
+                {...register("phone")}
+                onChange={(e) => setValue("phone", maskPhone(e.target.value))}
+              />
             </div>
 
             <div>
