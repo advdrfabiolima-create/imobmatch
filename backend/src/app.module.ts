@@ -15,6 +15,9 @@ import { StorageModule } from './storage/storage.module';
 import { MailModule } from './mail/mail.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { TeamModule } from './team/team.module';
+import { OpportunitiesModule } from './opportunities/opportunities.module';
+import { FeedModule } from './feed/feed.module';
+import { RankingModule } from './ranking/ranking.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { TeamModule } from './team/team.module';
     MailModule,
     AnalyticsModule,
     TeamModule,
+    OpportunitiesModule,
+    FeedModule,
+    RankingModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

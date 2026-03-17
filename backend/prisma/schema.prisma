@@ -37,6 +37,11 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Ranking & Reputação
+  score             Int      @default(0)
+  partnershipsCount Int      @default(0)
+  dealsClosedCount  Int      @default(0)
+
   // Relações
   properties        Property[]
   buyers            Buyer[]
@@ -44,6 +49,8 @@ model User {
   receivedPartnerships Partnership[] @relation("PartnershipReceiver")
   sentMessages      Message[]     @relation("MessageSender")
   receivedMessages  Message[]     @relation("MessageReceiver")
+  opportunities     Opportunity[]
+  posts             Post[]
 
   @@map("users")
 }
@@ -191,6 +198,46 @@ enum PartnershipStatus {
   ACCEPTED
   REJECTED
   CANCELLED
+}
+
+// ==================== OPORTUNIDADES ====================
+
+model Opportunity {
+  id            String   @id @default(uuid())
+  title         String
+  propertyType  PropertyType
+  priceNormal   Decimal  @db.Decimal(12, 2)
+  priceUrgent   Decimal  @db.Decimal(12, 2)
+  city          String
+  neighborhood  String?
+  description   String?  @db.Text
+  acceptsOffer  Boolean  @default(false)
+  agentId       String
+  agent         User     @relation(fields: [agentId], references: [id])
+  createdAt     DateTime @default(now())
+
+  @@map("opportunities")
+}
+
+// ==================== FEED SOCIAL ====================
+
+model Post {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        PostType
+  content     String   @db.Text
+  referenceId String?
+  createdAt   DateTime @default(now())
+
+  @@map("posts")
+}
+
+enum PostType {
+  client
+  property
+  partnership
+  opportunity
 }
 
 // ==================== MENSAGENS ====================

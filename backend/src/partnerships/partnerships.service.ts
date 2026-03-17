@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { createHash } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
+import { RankingService } from '../ranking/ranking.service';
 
 @Injectable()
 export class PartnershipsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private rankingService: RankingService,
+  ) {}
 
   private extractIp(req: any): string | null {
     const forwarded = req?.headers?.['x-forwarded-for'];
@@ -110,7 +114,7 @@ export class PartnershipsService {
         .digest('hex');
     }
 
-    return this.prisma.partnership.update({
+    const updated = await this.prisma.partnership.update({
       where: { id },
       data: {
         status,
@@ -123,6 +127,16 @@ export class PartnershipsService {
         receiver:  { select: { id: true, name: true } },
       },
     });
+
+    // +10 pontos para ambos quando parceria é aceita
+    if (status === 'ACCEPTED') {
+      await Promise.all([
+        this.rankingService.addScore(partnership.requesterId, 10, 'partnershipsCount'),
+        this.rankingService.addScore(partnership.receiverId, 10, 'partnershipsCount'),
+      ]);
+    }
+
+    return updated;
   }
 
   async cancel(id: string, userId: string) {
@@ -157,6 +171,14 @@ export class PartnershipsService {
       where: { buyerId: partnership.buyerId },
       data: { status: 'REJECTED' },
     });
+  }
+
+  // +50 pontos para ambos quando negócio é fechado
+  if (reason !== 'buyer_quit') {
+    await Promise.all([
+      this.rankingService.addScore(partnership.requesterId, 50, 'dealsClosedCount'),
+      this.rankingService.addScore(partnership.receiverId, 50, 'dealsClosedCount'),
+    ]);
   }
 
   return { message: reason === 'buyer_quit' ? 'Parceria encerrada e comprador inativado' : 'Parceria encerrada' };

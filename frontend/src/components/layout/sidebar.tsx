@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, Users, Zap, UserCheck,
   MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2, CreditCard, X,
+  Rss, Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
@@ -118,8 +119,11 @@ export function Sidebar() {
             badge={pendingCount > 0 ? pendingCount : undefined}
           />
           <NavLink href="/mensagens"  label="Mensagens"  icon={MessageSquare} />
-          <NavLink href="/corretores" label="Corretores" icon={Search} />
-          <NavLink href="/analytics"  label="Analytics"  icon={BarChart2} />
+          <NavLink href="/corretores"   label="Corretores"    icon={Search} />
+          <NavLink href="/oportunidades" label="Oportunidades" icon={Zap} activeColor="amber" />
+          <NavLink href="/feed"          label="Feed da Rede"  icon={Rss} />
+          <NavLink href="/ranking"       label="Ranking"       icon={Trophy} />
+          <NavLink href="/analytics"     label="Analytics"     icon={BarChart2} />
           <NavLink href="/perfil"     label="Perfil"     icon={Settings} />
           <NavLink href="/meu-plano"  label="Planos"     icon={CreditCard} activeColor="amber" />
 
