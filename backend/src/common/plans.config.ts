@@ -17,7 +17,7 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
 
 // Aliases para nomes de planos antigos ou variações
 const PLAN_ALIASES: Record<string, PlanType> = {
-  professional: 'pro',
+  professional: 'starter',
   basic:        'free',
   enterprise:   'agency',
 };

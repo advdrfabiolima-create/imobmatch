@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useAuthStore } from "@/store/auth.store";
+import { UpgradeModal } from "@/components/ui/upgrade-modal";
 import { MailWarning, X } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -76,6 +77,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <EmailVerificationBanner />
         <div className="flex-1">{children}</div>
       </main>
+      <UpgradeModal />
     </div>
   );
 }
