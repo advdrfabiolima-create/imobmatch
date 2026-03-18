@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Loader2, ArrowRight, CheckCircle2, Check } from "lucide-react";
+import { Eye, EyeOff, Loader2, ArrowRight, Check, Building2, Users, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth.store";
@@ -30,7 +30,7 @@ const REGISTER_PLANS = [
     name: "Starter",
     price: "R$ 39",
     period: "/mês",
-    highlight: false,
+    highlight: true,
     features: ["20 imóveis", "30 compradores", "Matching automático"],
   },
   {
@@ -38,7 +38,7 @@ const REGISTER_PLANS = [
     name: "Pro",
     price: "R$ 79",
     period: "/mês",
-    highlight: true,
+    highlight: false,
     features: ["Ilimitados", "Prioridade no match", "Badge Profissional"],
   },
   {
@@ -78,14 +78,13 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const BENEFITS = [
-  "Match automático comprador × imóvel",
-  "Rede colaborativa de corretores parceiros",
-  "Importação de imóveis por link",
-  "Gestão completa da sua carteira",
+const LEFT_BULLETS = [
+  { icon: Building2, text: "Encontre imóveis para seus clientes" },
+  { icon: Users,     text: "Descubra compradores compatíveis" },
+  { icon: Zap,       text: "Faça parcerias com outros corretores" },
 ];
 
-// ── Plan Selector Component ───────────────────────────────────────────────────
+// ── Plan Selector ─────────────────────────────────────────────────────────────
 function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: PlanId) => void }) {
   return (
     <div className="mb-6">
@@ -125,7 +124,6 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
           );
         })}
       </div>
-      {/* Selected plan features */}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
         {REGISTER_PLANS.find((p) => p.id === selected)?.features.map((f) => (
           <span key={f} className="flex items-center gap-1 text-xs text-gray-500">
@@ -141,7 +139,30 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
   );
 }
 
-// ── Inner register form (needs useSearchParams inside Suspense) ───────────────
+// ── Step Indicator ────────────────────────────────────────────────────────────
+function StepIndicator({ step }: { step: 1 | 2 }) {
+  return (
+    <div className="flex items-center gap-1.5 flex-shrink-0">
+      <span
+        className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold transition-colors ${
+          step >= 1 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"
+        }`}
+      >
+        1
+      </span>
+      <div className={`w-8 h-0.5 rounded-full transition-colors ${step >= 2 ? "bg-blue-600" : "bg-gray-200"}`} />
+      <span
+        className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold transition-colors ${
+          step >= 2 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"
+        }`}
+      >
+        2
+      </span>
+    </div>
+  );
+}
+
+// ── Inner form (needs useSearchParams inside Suspense) ────────────────────────
 function RegisterForm() {
   const searchParams = useSearchParams();
   const initialPlan = (searchParams.get("plan") as PlanId) || "starter";
@@ -149,6 +170,7 @@ function RegisterForm() {
   const [selectedPlan, setSelectedPlan] = useState<PlanId>(
     validPlans.includes(initialPlan) ? initialPlan : "starter"
   );
+  const [step, setStep] = useState<1 | 2>(1);
   const [showPassword, setShowPassword] = useState(false);
   const { register: authRegister, isLoading } = useAuthStore();
   const router = useRouter();
@@ -158,6 +180,7 @@ function RegisterForm() {
     handleSubmit,
     setValue,
     watch,
+    trigger,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -165,6 +188,11 @@ function RegisterForm() {
   });
 
   const termsAccepted = watch("acceptTerms");
+
+  const handleNextStep = async () => {
+    const valid = await trigger(["name", "email", "password", "acceptTerms"]);
+    if (valid) setStep(2);
+  };
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -179,163 +207,201 @@ function RegisterForm() {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Criar conta gratuita</h2>
-        <p className="text-gray-500 mt-1.5 text-sm">
-          Já tem conta?{" "}
-          <Link href="/login" className="text-blue-600 font-medium hover:underline">
-            Fazer login
-          </Link>
-        </p>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">
+            {step === 1 ? "Crie sua conta e comece a encontrar oportunidades" : "Quase lá!"}
+          </h2>
+          <p className="text-gray-500 mt-1 text-sm">
+            {step === 1 ? (
+              <>
+                Já tem conta?{" "}
+                <Link href="/login" className="text-blue-600 font-medium hover:underline">
+                  Fazer login
+                </Link>
+              </>
+            ) : (
+              "Informações profissionais — opcional, complete depois se preferir"
+            )}
+          </p>
+        </div>
+        <StepIndicator step={step} />
       </div>
 
-      {/* Plan Selector */}
-      <PlanSelector selected={selectedPlan} onChange={setSelectedPlan} />
+      {/* Plan selector — only on step 1 */}
+      {step === 1 && <PlanSelector selected={selectedPlan} onChange={setSelectedPlan} />}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name + Email + Password */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="sm:col-span-2">
-            <label className="text-sm font-medium text-gray-700 block mb-1">Nome completo *</label>
-            <Input
-              placeholder="João Silva"
-              autoFocus
-              autoComplete="name"
-              {...register("name")}
-              className={errors.name ? "border-red-400 focus-visible:ring-red-400" : ""}
-            />
-            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className="text-sm font-medium text-gray-700 block mb-1">E-mail *</label>
-            <Input
-              type="email"
-              placeholder="joao@email.com"
-              autoComplete="email"
-              {...register("email")}
-              className={errors.email ? "border-red-400 focus-visible:ring-red-400" : ""}
-            />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className="text-sm font-medium text-gray-700 block mb-1">Senha *</label>
-            <div className="relative">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {step === 1 ? (
+          /* ── Step 1: dados obrigatórios ── */
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Nome completo *</label>
               <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="Mínimo 6 caracteres"
-                autoComplete="new-password"
-                {...register("password")}
-                className={`pr-10 ${errors.password ? "border-red-400 focus-visible:ring-red-400" : ""}`}
+                placeholder="João Silva"
+                autoFocus
+                autoComplete="name"
+                {...register("name")}
+                className={errors.name ? "border-red-400 focus-visible:ring-red-400" : ""}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
             </div>
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
-          </div>
-        </div>
 
-        {/* Divider */}
-        <div className="relative py-1">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-100" />
-          </div>
-          <div className="relative flex justify-center text-xs">
-            <span className="bg-white px-3 text-gray-400">Informações profissionais (opcional)</span>
-          </div>
-        </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">E-mail *</label>
+              <Input
+                type="email"
+                placeholder="joao@email.com"
+                autoComplete="email"
+                {...register("email")}
+                className={errors.email ? "border-red-400 focus-visible:ring-red-400" : ""}
+              />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+            </div>
 
-        {/* Professional info */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1">Telefone</label>
-            <Input
-              placeholder="(11) 99999-9999"
-              autoComplete="tel"
-              {...register("phone")}
-              onChange={(e) => setValue("phone", maskPhone(e.target.value))}
-            />
-          </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1">Senha *</label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Mínimo 6 caracteres"
+                  autoComplete="new-password"
+                  {...register("password")}
+                  className={`pr-10 ${errors.password ? "border-red-400 focus-visible:ring-red-400" : ""}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+            </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1">Estado</label>
-            <select
-              {...register("state")}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            {/* Terms */}
+            <div className="pt-1">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("acceptTerms")}
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                />
+                <span className="text-xs text-gray-600 leading-relaxed">
+                  Li e concordo com os{" "}
+                  <Link href="/termos" target="_blank" className="text-blue-600 hover:underline font-medium">
+                    Termos de Uso
+                  </Link>{" "}
+                  e a{" "}
+                  <Link href="/privacidade" target="_blank" className="text-blue-600 hover:underline font-medium">
+                    Política de Privacidade
+                  </Link>
+                  . Dados tratados conforme a{" "}
+                  <span className="font-medium text-gray-700">LGPD (Lei 13.709/2018)</span>.
+                </span>
+              </label>
+              {errors.acceptTerms && (
+                <p className="text-red-500 text-xs mt-1.5">{errors.acceptTerms.message}</p>
+              )}
+            </div>
+
+            <Button
+              type="button"
+              onClick={handleNextStep}
+              disabled={!termsAccepted}
+              className="w-full h-11 bg-blue-600 hover:bg-blue-700 font-medium gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <option value="">Selecione</option>
-              {STATES.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1">Cidade</label>
-            <Input placeholder="São Paulo" {...register("city")} />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1">Imobiliária</label>
-            <Input placeholder="Nome da imobiliária" {...register("agency")} />
-          </div>
-
-          <div className="col-span-2">
-            <label className="text-sm font-medium text-gray-700 block mb-1">CRECI</label>
-            <Input placeholder="Ex: CRECI-SP 12345 (opcional)" {...register("creci")} />
-          </div>
-        </div>
-
-        {/* LGPD / Terms */}
-        <div className="pt-1">
-          <label className="flex items-start gap-3 cursor-pointer group">
-            <input
-              type="checkbox"
-              {...register("acceptTerms")}
-              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-            />
-            <span className="text-xs text-gray-600 leading-relaxed">
-              Li e concordo com os{" "}
-              <Link href="/termos" target="_blank" className="text-blue-600 hover:underline font-medium">
-                Termos de Uso
-              </Link>{" "}
-              e a{" "}
-              <Link href="/privacidade" target="_blank" className="text-blue-600 hover:underline font-medium">
-                Política de Privacidade
-              </Link>
-              . Estou ciente de que meus dados serão tratados conforme a{" "}
-              <span className="font-medium text-gray-700">LGPD (Lei 13.709/2018)</span>.
-            </span>
-          </label>
-          {errors.acceptTerms && (
-            <p className="text-red-500 text-xs mt-1.5">{errors.acceptTerms.message}</p>
-          )}
-        </div>
-
-        {/* Submit */}
-        <Button
-          type="submit"
-          className="w-full h-11 bg-blue-600 hover:bg-blue-700 font-medium gap-2 mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isLoading || !termsAccepted}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Criando conta...
-            </>
-          ) : (
-            <>
-              Criar Conta — {REGISTER_PLANS.find((p) => p.id === selectedPlan)?.name}
+              Continuar
               <ArrowRight className="h-4 w-4" />
-            </>
-          )}
-        </Button>
+            </Button>
+          </div>
+        ) : (
+          /* ── Step 2: dados profissionais opcionais ── */
+          <div className="space-y-4">
+            <p className="text-xs text-gray-400 bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-100">
+              Essas informações ajudam outros corretores a encontrar você na rede. Pode preencher agora ou depois no perfil.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Telefone</label>
+                <Input
+                  autoFocus
+                  placeholder="(11) 99999-9999"
+                  autoComplete="tel"
+                  {...register("phone")}
+                  onChange={(e) => setValue("phone", maskPhone(e.target.value))}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Estado</label>
+                <select
+                  {...register("state")}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Selecione</option>
+                  {STATES.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Cidade</label>
+                <Input placeholder="São Paulo" {...register("city")} />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-1">Imobiliária</label>
+                <Input placeholder="Nome da imobiliária" {...register("agency")} />
+              </div>
+
+              <div className="col-span-2">
+                <label className="text-sm font-medium text-gray-700 block mb-1">CRECI</label>
+                <Input placeholder="Ex: CRECI-SP 12345 (opcional)" {...register("creci")} />
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep(1)}
+                className="flex-shrink-0"
+              >
+                ← Voltar
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 font-medium gap-2"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Criando conta...
+                  </>
+                ) : (
+                  <>
+                    Criar conta
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full text-center text-xs text-gray-400 hover:text-blue-600 transition-colors py-1 disabled:opacity-50"
+            >
+              Pular e criar conta agora
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );
@@ -371,37 +437,43 @@ export default function RegisterPage() {
         <div className="relative z-10 space-y-8">
           <div>
             <h1 className="text-4xl font-bold text-white leading-tight">
-              Pare de perder clientes por não ter o imóvel certo.
+              Mais oportunidades. Mais parcerias. Mais negócios.
             </h1>
-            <p className="mt-4 text-blue-100 text-lg leading-relaxed">
-              Conecte-se com outros corretores e encontre oportunidades reais de negócio.
+            <p className="mt-4 text-blue-100 text-base leading-relaxed">
+              Corretores já estão utilizando a plataforma para gerar novas oportunidades todos os dias.
             </p>
           </div>
 
-          {/* Benefit list */}
+          {/* Bullets */}
           <ul className="space-y-3">
-            {BENEFITS.map((text) => (
+            {LEFT_BULLETS.map(({ icon: Icon, text }) => (
               <li key={text} className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0" />
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                  <Icon className="h-4 w-4 text-white" />
+                </div>
                 <span className="text-blue-100 text-sm">{text}</span>
               </li>
             ))}
           </ul>
 
-          {/* Social proof real */}
-          <div className="flex items-center gap-3 pt-4 border-t border-white/20">
+          {/* Urgency line */}
+          <div className="flex items-start gap-3 pt-4 border-t border-white/20">
             <p className="text-blue-100 text-sm">
-              <span className="font-semibold text-white">Plataforma em crescimento</span> com corretores em todo o Brasil. Seja um dos primeiros.
+              <span className="font-semibold text-white">Você está entre os primeiros usuários.</span>{" "}
+              Corretores que entram agora têm vantagem competitiva na rede.
             </p>
           </div>
         </div>
 
-        {/* Bottom quote */}
-        <div className="relative z-10 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-          <p className="text-white text-sm leading-relaxed italic">
-            "Cadastrei minha carteira inteira em menos de 10 minutos. Os matches chegaram no mesmo dia. Recomendo!"
+        {/* Urgency card */}
+        <div className="relative z-10 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="flex-shrink-0 w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <p className="text-white font-semibold text-sm">Plataforma em crescimento ativo</p>
+          </div>
+          <p className="text-blue-100 text-xs leading-relaxed">
+            Novos matches e parcerias sendo gerados. Quanto antes você entrar, maior sua vantagem competitiva na rede.
           </p>
-          <p className="mt-3 text-blue-200 text-xs font-medium">— Corretor parceiro da ImobMatch</p>
         </div>
       </div>
 
@@ -421,7 +493,7 @@ export default function RegisterPage() {
 
           {/* Trust */}
           <p className="text-center text-xs text-gray-400 mt-4">
-            7 dias de teste grátis em todos os planos. Cancele quando quiser.
+            Sem cartão de crédito. Cancele quando quiser.
           </p>
         </div>
       </div>

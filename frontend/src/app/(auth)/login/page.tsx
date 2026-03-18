@@ -21,9 +21,9 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const FEATURES = [
-  { icon: Zap,       text: "Match automático entre compradores e imóveis" },
-  { icon: Users,     text: "Rede colaborativa de corretores parceiros" },
-  { icon: Building2, text: "Gestão completa de carteira de imóveis" },
+  { icon: Building2, text: "Encontre imóveis para seus clientes" },
+  { icon: Users,     text: "Descubra compradores compatíveis" },
+  { icon: Zap,       text: "Faça parcerias com outros corretores" },
 ];
 
 export default function LoginPage() {
@@ -68,10 +68,10 @@ export default function LoginPage() {
         <div className="relative z-10 space-y-8">
           <div>
             <h1 className="text-4xl font-bold text-white leading-tight">
-              Encontre o match perfeito entre compradores e imóveis.
+              Mais oportunidades. Mais parcerias. Mais negócios.
             </h1>
-            <p className="mt-4 text-blue-100 text-lg leading-relaxed">
-              O ImobMatch conecta corretores, compradores e imóveis em uma única plataforma inteligente.
+            <p className="mt-4 text-blue-100 text-base leading-relaxed">
+              Corretores já estão utilizando a plataforma para gerar novas oportunidades todos os dias.
             </p>
           </div>
 
@@ -87,20 +87,24 @@ export default function LoginPage() {
             ))}
           </ul>
 
-          {/* Honest copy */}
+          {/* Urgency */}
           <div className="flex items-center gap-3 pt-4 border-t border-white/20">
             <p className="text-blue-100 text-sm">
-              <span className="font-semibold text-white">Plataforma em crescimento</span> com corretores em todo o Brasil. Seja um dos primeiros.
+              <span className="font-semibold text-white">Você está entre os primeiros usuários.</span>{" "}
+              Corretores que entram agora têm vantagem competitiva.
             </p>
           </div>
         </div>
 
-        {/* Bottom quote */}
-        <div className="relative z-10 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-          <p className="text-white text-sm leading-relaxed italic">
-            "Com o ImobMatch encontrei parceiros para fechar negócios que sozinho não conseguiria. A plataforma transformou minha forma de trabalhar."
+        {/* Urgency card */}
+        <div className="relative z-10 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="flex-shrink-0 w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <p className="text-white font-semibold text-sm">Plataforma em crescimento ativo</p>
+          </div>
+          <p className="text-blue-100 text-xs leading-relaxed">
+            Novos matches e parcerias sendo gerados. Quanto antes você entrar, maior sua vantagem competitiva na rede.
           </p>
-          <p className="mt-3 text-blue-200 text-xs font-medium">— João Silva, Corretor em São Paulo</p>
         </div>
       </div>
 

@@ -42,6 +42,9 @@ export default function PlansPage() {
         </div>
 
         {/* Plans Grid */}
+        <p className="text-center text-sm text-gray-500 mb-8 max-w-xl mx-auto">
+          Usuários pagos têm mais visibilidade, mais oportunidades e maior prioridade na plataforma.
+        </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
           {PLANS.map(plan => {
             const colors = PLAN_COLORS[plan.id];
@@ -56,7 +59,7 @@ export default function PlansPage() {
               >
                 {plan.badge && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <span className="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow whitespace-nowrap">
+                    <span className="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow whitespace-nowrap">
                       {plan.badge}
                     </span>
                   </div>

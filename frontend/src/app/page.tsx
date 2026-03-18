@@ -332,8 +332,12 @@ export default function HomePage() {
             </h1>
 
             {/* Subtext */}
-            <p className="text-lg text-gray-500 mb-8 leading-relaxed max-w-md">
+            <p className="text-lg text-gray-500 mb-3 leading-relaxed max-w-md">
               {COPY.heroSubtext}
+            </p>
+            <p className="flex items-center gap-2 text-sm text-gray-500 mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+              Corretores já estão encontrando oportunidades reais na plataforma.
             </p>
 
             {/* CTAs */}
@@ -347,7 +351,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/plans"
-                className="inline-flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 px-6 py-3.5 rounded-xl font-semibold hover:border-blue-300 hover:text-blue-600 transition text-[15px]"
+                className="inline-flex items-center justify-center gap-2 border border-gray-200 text-gray-400 px-5 py-3 rounded-xl font-medium hover:border-blue-300 hover:text-blue-600 transition text-sm"
               >
                 Ver planos
               </Link>
@@ -366,10 +370,32 @@ export default function HomePage() {
       </section>
 
       {/* Growth banner */}
-      <section className="bg-blue-600 py-10">
-        <div className="container mx-auto px-6 text-center text-white">
-          <p className="text-lg font-semibold mb-1">{COPY.growthMsg}</p>
-          <p className="text-blue-200 text-sm">{COPY.founderMsg} — <Link href="/register" className="underline hover:text-white">Quero fazer parte</Link></p>
+      <section className="bg-blue-600 py-12">
+        <div className="container mx-auto px-6 text-center text-white max-w-3xl">
+          <p className="text-xl font-bold mb-3 leading-snug">
+            Torne-se um dos primeiros corretores a gerar oportunidades dentro da plataforma
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-blue-200 mb-6">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
+              Matches acontecendo
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
+              Parcerias sendo formadas
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-300 flex-shrink-0" />
+              Oportunidades disponíveis
+            </span>
+          </div>
+          <Link
+            href="/register"
+            className="inline-flex items-center gap-2 bg-white text-blue-600 font-semibold px-6 py-2.5 rounded-xl hover:bg-blue-50 transition text-sm"
+          >
+            Quero fazer parte
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
