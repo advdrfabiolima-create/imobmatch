@@ -1,6 +1,6 @@
 import {
   Controller, Post, Get, Delete,
-  Body, Query, Request, UseGuards, HttpCode,
+  Body, Headers, Request, UseGuards, HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BillingService } from './billing.service';
@@ -42,7 +42,10 @@ export class BillingController {
   @Post('webhook')
   @HttpCode(200)
   @ApiOperation({ summary: 'Webhook Asaas (chamado pela Asaas)' })
-  webhook(@Query('secret') secret: string, @Body() body: any) {
-    return this.billingService.handleWebhook(secret ?? '', body);
+  webhook(
+    @Headers('asaas-access-token') token: string,
+    @Body() body: any,
+  ) {
+    return this.billingService.handleWebhook(token ?? '', body);
   }
 }
