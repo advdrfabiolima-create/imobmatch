@@ -110,7 +110,7 @@ export const PLANS: Plan[] = [
     description: 'Para imobiliárias e equipes que precisam escalar.',
     highlighted: false,
     color: 'purple',
-    cta: 'Falar com o time',
+    cta: 'Começar agora',
     features: [
       { text: 'Tudo do plano Premium',               included: true  },
       { text: 'Multiusuário (equipe)',                included: true  },
@@ -135,7 +135,7 @@ export function formatPlanPrice(plan: Plan): string {
 export const PLAN_COLORS: Record<string, {
   ring: string; text: string; btn: string; iconBg: string; badge: string;
 }> = {
-  free:    { ring: 'ring-gray-200',   text: 'text-gray-600',   btn: 'bg-gray-700 hover:bg-gray-800',     iconBg: 'bg-gray-100',   badge: 'bg-gray-100 text-gray-700'    },
+  free:    { ring: 'ring-gray-200',   text: 'text-gray-600',   btn: 'bg-gray-800 hover:bg-gray-700',     iconBg: 'bg-gray-100',   badge: 'bg-gray-100 text-gray-700'    },
   starter: { ring: 'ring-blue-400',   text: 'text-blue-600',   btn: 'bg-blue-600 hover:bg-blue-700',     iconBg: 'bg-blue-50',    badge: 'bg-blue-100 text-blue-700'    },
   pro:     { ring: 'ring-indigo-500', text: 'text-indigo-600', btn: 'bg-indigo-600 hover:bg-indigo-700', iconBg: 'bg-indigo-50',  badge: 'bg-indigo-100 text-indigo-700' },
   premium: { ring: 'ring-violet-500', text: 'text-violet-600', btn: 'bg-violet-600 hover:bg-violet-700', iconBg: 'bg-violet-50',  badge: 'bg-violet-100 text-violet-700' },

@@ -42,7 +42,7 @@ export default function PlansPage() {
         </div>
 
         {/* Plans Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 items-start">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
           {PLANS.map(plan => {
             const colors = PLAN_COLORS[plan.id];
             const isFree = plan.price === null;
@@ -50,8 +50,8 @@ export default function PlansPage() {
             return (
               <div
                 key={plan.id}
-                className={`relative bg-white rounded-2xl border-2 p-6 flex flex-col transition-all hover:shadow-xl hover:-translate-y-0.5 ${
-                  plan.highlighted ? "border-indigo-500 shadow-xl shadow-indigo-100 lg:-mt-4 lg:mb-4" : "border-gray-200 shadow-sm"
+                className={`relative bg-white rounded-2xl border-2 p-6 flex flex-col h-full transition-all hover:shadow-xl hover:-translate-y-0.5 ${
+                  plan.highlighted ? "border-indigo-500 shadow-xl shadow-indigo-100" : "border-gray-200 shadow-sm"
                 }`}
               >
                 {plan.badge && (
@@ -62,7 +62,8 @@ export default function PlansPage() {
                   </div>
                 )}
 
-                <div className="mb-4">
+                {/* Top section grows to align price+button across cards */}
+                <div className="flex-1 mb-4">
                   <span className={`text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${colors.badge}`}>
                     {plan.name}
                   </span>
@@ -89,7 +90,7 @@ export default function PlansPage() {
                 </div>
 
                 <Link
-                  href={plan.id === 'agency' ? 'mailto:contato@useimobmatch.com.br' : `/register?plan=${plan.id}`}
+                  href={`/register?plan=${plan.id}`}
                   className={`w-full text-center py-2.5 px-4 rounded-xl font-semibold text-sm transition-colors mb-6 text-white ${colors.btn}`}
                 >
                   {plan.cta}
@@ -97,7 +98,7 @@ export default function PlansPage() {
 
                 <div className="border-t border-gray-100 mb-4" />
 
-                <ul className="space-y-2.5 flex-1">
+                <ul className="space-y-2.5">
                   {plan.features.map((feature, i) => (
                     <li
                       key={i}

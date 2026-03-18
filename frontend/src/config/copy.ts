@@ -4,7 +4,7 @@ export const COPY = {
   // Hero principal
   heroHeadline: 'Pare de perder clientes por não ter o imóvel certo.',
   heroSubtext:  'Conecte-se com outros corretores e encontre oportunidades reais de negócio.',
-  heroCta:      'Criar conta grátis',
+  heroCta:      'Começar a encontrar oportunidades',
   heroTrust:    'Sem cartão de crédito · Cancele quando quiser',
 
   // Proposta de valor

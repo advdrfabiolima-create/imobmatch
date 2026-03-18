@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Building2, Users, Zap, Shield, TrendingUp, MessageSquare, Menu, X, ArrowRight } from "lucide-react";
+import { Building2, Users, Zap, Shield, TrendingUp, MessageSquare, Menu, X, ArrowRight, MapPin } from "lucide-react";
 import { COPY } from "@/config/copy";
 
 const NAV_LINKS = [
@@ -50,6 +50,200 @@ const FEATURES = [
   },
 ];
 
+// ── Product Mockup ──────────────────────────────────────────────────────────
+function ProductMockup() {
+  return (
+    <div className="relative select-none">
+      {/* Ambient glow */}
+      <div className="absolute -inset-4 bg-gradient-to-br from-blue-100 via-indigo-50 to-blue-50 rounded-3xl blur-2xl opacity-80 pointer-events-none" />
+
+      {/* Browser frame */}
+      <div className="relative bg-white rounded-2xl shadow-2xl shadow-blue-100/60 border border-gray-200/80 overflow-hidden">
+
+        {/* ── Browser chrome ── */}
+        <div className="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex items-center gap-3">
+          <div className="flex gap-1.5 flex-shrink-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+            <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+          </div>
+          <div className="flex-1 bg-white border border-gray-200 rounded-md px-3 py-0.5 text-[10px] text-gray-400 text-center truncate">
+            app.useimobmatch.com.br
+          </div>
+        </div>
+
+        {/* ── App top bar ── */}
+        <div className="bg-white border-b border-gray-100 px-3.5 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-md bg-blue-600 flex items-center justify-center flex-shrink-0">
+              <Zap className="h-3 w-3 text-white" />
+            </div>
+            <span className="text-xs font-bold text-gray-800 tracking-tight">ImobMatch</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="relative flex-shrink-0">
+              <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
+                <Building2 className="h-2.5 w-2.5 text-gray-400" />
+              </div>
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-blue-500 rounded-full border border-white" />
+            </div>
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+              <span className="text-[9px] font-bold text-white leading-none">JS</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Navigation tabs ── */}
+        <div className="bg-white border-b border-gray-100 px-3.5 flex items-center gap-1">
+          {[
+            { label: "Radar",     active: true  },
+            { label: "Feed",      active: false },
+            { label: "Parcerias", active: false },
+            { label: "Ranking",   active: false },
+          ].map((tab) => (
+            <div
+              key={tab.label}
+              className={`px-2.5 py-2 text-[10px] font-semibold border-b-2 -mb-px transition-colors ${
+                tab.active
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-400"
+              }`}
+            >
+              {tab.label}
+            </div>
+          ))}
+        </div>
+
+        {/* ── App content ── */}
+        <div className="bg-gray-50/70 p-3 space-y-2.5">
+
+          {/* Section header */}
+          <div className="flex items-center justify-between px-0.5">
+            <div>
+              <p className="text-[11px] font-bold text-gray-800">Radar de Oportunidades</p>
+              <p className="text-[10px] text-gray-400 mt-0.5">5 imóveis com desconto urgente na rede</p>
+            </div>
+            <div className="flex items-center gap-1 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+              <Zap className="h-2.5 w-2.5" />
+              3 novos
+            </div>
+          </div>
+
+          {/* ── Featured property card ── */}
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
+            {/* Property thumbnail — gradient with building silhouette */}
+            <div className="relative h-[60px] bg-gradient-to-br from-blue-500 via-blue-400 to-indigo-500 overflow-hidden">
+              {/* Subtle grid lines */}
+              <div
+                className="absolute inset-0 opacity-10"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px)",
+                  backgroundSize: "16px 16px",
+                }}
+              />
+              {/* Building silhouette */}
+              <div className="absolute bottom-0 left-0 right-0 flex items-end px-3 gap-0.5">
+                <div className="w-5  h-7  bg-white/20 rounded-t"  />
+                <div className="w-7  h-10 bg-white/25 rounded-t"  />
+                <div className="w-4  h-5  bg-white/15 rounded-t"  />
+                <div className="w-8  h-9  bg-white/20 rounded-t"  />
+                <div className="w-4  h-6  bg-white/15 rounded-t"  />
+                <div className="w-6  h-8  bg-white/20 rounded-t"  />
+                <div className="w-3  h-4  bg-white/10 rounded-t"  />
+              </div>
+              {/* Overlay badges */}
+              <div className="absolute top-2 left-2 flex gap-1">
+                <span className="bg-amber-400 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                  Oportunidade
+                </span>
+                <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                  −15%
+                </span>
+              </div>
+            </div>
+
+            {/* Card body */}
+            <div className="p-3">
+              <div className="flex items-start justify-between gap-2 mb-1">
+                <div>
+                  <p className="text-xs font-semibold text-gray-900 leading-tight">Casa em Salvador, BA</p>
+                  <p className="text-blue-600 font-bold text-sm leading-tight mt-0.5">R$ 620.000</p>
+                </div>
+                <span className="text-[10px] text-gray-400 whitespace-nowrap mt-0.5">4q · 180 m²</span>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] text-gray-400 mb-2.5">
+                <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
+                <span>Pituba, Salvador</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded-md">
+                    <Zap className="h-2.5 w-2.5" />
+                    3 matches
+                  </span>
+                  <span className="bg-indigo-50 text-indigo-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">
+                    Parceria
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-0.5 text-[10px] text-blue-600 font-semibold">
+                  Ver <ArrowRight className="h-2.5 w-2.5" />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Match suggestion card ── */}
+          <div className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center flex-shrink-0">
+                <span className="text-[9px] font-bold text-white leading-none">CS</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <p className="text-[11px] font-semibold text-gray-800 truncate">Carlos Santos</p>
+                  <span className="bg-purple-100 text-purple-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">
+                    94% match
+                  </span>
+                </div>
+                <p className="text-[10px] text-gray-400 truncate mt-0.5">Apto · até R$ 500.000 · 3q · São Paulo</p>
+              </div>
+            </div>
+            {/* Compatibility bar */}
+            <div className="mt-2 flex items-center gap-2">
+              <div className="flex-1 bg-gray-100 rounded-full h-1 overflow-hidden">
+                <div className="bg-purple-500 h-1 rounded-full" style={{ width: "94%" }} />
+              </div>
+              <span className="text-[9px] text-gray-400 flex-shrink-0">Compatibilidade</span>
+            </div>
+          </div>
+
+          {/* ── Feed mini list ── */}
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm divide-y divide-gray-50">
+            {[
+              { title: "Apto em São Paulo, SP",    price: "R$ 480.000", label: "2 matches", cls: "bg-blue-50 text-blue-600",       dot: "bg-blue-500"    },
+              { title: "Studio no Rio de Janeiro", price: "R$ 320.000", label: "1 match",   cls: "bg-emerald-50 text-emerald-600", dot: "bg-emerald-500" },
+            ].map((item) => (
+              <div key={item.title} className="flex items-center gap-2.5 px-3 py-2">
+                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${item.dot}`} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-medium text-gray-700 truncate">{item.title}</p>
+                  <p className="text-[10px] text-gray-400">{item.price}</p>
+                </div>
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${item.cls}`}>
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -121,32 +315,54 @@ export default function HomePage() {
       </header>
 
       {/* Hero */}
-      <section className="container mx-auto px-6 py-16 md:py-24 text-center">
-        <div className="inline-flex items-center bg-blue-50 text-blue-700 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-          {COPY.socialProof}
+      <section className="container mx-auto px-6 pt-14 pb-10 md:pt-20 md:pb-14 lg:pt-24 lg:pb-16">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+          {/* Left — copy */}
+          <div>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 animate-pulse" />
+              {COPY.socialProof}
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-5 leading-[1.1] tracking-tight max-w-lg">
+              {COPY.heroHeadline}
+            </h1>
+
+            {/* Subtext */}
+            <p className="text-lg text-gray-500 mb-8 leading-relaxed max-w-md">
+              {COPY.heroSubtext}
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:scale-[0.98] transition shadow-lg shadow-blue-200 text-[15px]"
+              >
+                {COPY.heroCta}
+                <ArrowRight className="h-4 w-4 flex-shrink-0" />
+              </Link>
+              <Link
+                href="/plans"
+                className="inline-flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 px-6 py-3.5 rounded-xl font-semibold hover:border-blue-300 hover:text-blue-600 transition text-[15px]"
+              >
+                Ver planos
+              </Link>
+            </div>
+
+            {/* Trust line */}
+            <p className="text-sm text-gray-400">{COPY.heroTrust}</p>
+          </div>
+
+          {/* Right — mockup */}
+          <div className="w-full max-w-md mx-auto lg:max-w-none lg:mx-0 mt-6 lg:mt-0">
+            <ProductMockup />
+          </div>
+
         </div>
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-          {COPY.heroHeadline}
-        </h1>
-        <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-          {COPY.heroSubtext}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/register"
-            className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition shadow-lg shadow-blue-200"
-          >
-            {COPY.heroCta}
-            <ArrowRight className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/plans"
-            className="border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl text-lg font-semibold hover:border-blue-300 transition"
-          >
-            Ver planos
-          </Link>
-        </div>
-        <p className="text-sm text-gray-400 mt-4">{COPY.heroTrust}</p>
       </section>
 
       {/* Growth banner */}

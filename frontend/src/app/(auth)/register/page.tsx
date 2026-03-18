@@ -41,9 +41,25 @@ const REGISTER_PLANS = [
     highlight: true,
     features: ["Ilimitados", "Prioridade no match", "Badge Profissional"],
   },
+  {
+    id: "premium" as const,
+    name: "Premium",
+    price: "R$ 149",
+    period: "/mês",
+    highlight: false,
+    features: ["Tudo do Pro", "Prioridade máxima", "Destaque total"],
+  },
+  {
+    id: "agency" as const,
+    name: "Agency",
+    price: "R$ 399",
+    period: "/mês",
+    highlight: false,
+    features: ["Multi-usuário", "Gestão de equipe", "Analytics completo"],
+  },
 ];
 
-type PlanId = "free" | "starter" | "pro";
+type PlanId = "free" | "starter" | "pro" | "premium" | "agency";
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 const schema = z.object({
@@ -74,7 +90,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
   return (
     <div className="mb-6">
       <p className="text-sm font-semibold text-gray-700 mb-3">Escolha seu plano</p>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {REGISTER_PLANS.map((plan) => {
           const isSelected = selected === plan.id;
           return (
@@ -129,7 +145,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
 function RegisterForm() {
   const searchParams = useSearchParams();
   const initialPlan = (searchParams.get("plan") as PlanId) || "starter";
-  const validPlans: PlanId[] = ["free", "starter", "pro"];
+  const validPlans: PlanId[] = ["free", "starter", "pro", "premium", "agency"];
   const [selectedPlan, setSelectedPlan] = useState<PlanId>(
     validPlans.includes(initialPlan) ? initialPlan : "starter"
   );

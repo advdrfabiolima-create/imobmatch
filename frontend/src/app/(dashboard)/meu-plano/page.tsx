@@ -107,7 +107,7 @@ export default function MeuPlanoPage() {
             return (
               <Card
                 key={plan.id}
-                className={`relative overflow-hidden transition-all duration-200 ${
+                className={`relative overflow-hidden transition-all duration-200 flex flex-col ${
                   isCurrent ? `ring-2 ${colors.ring}` : plan.highlighted ? "ring-2 ring-indigo-400 shadow-lg" : ""
                 }`}
               >
@@ -126,27 +126,30 @@ export default function MeuPlanoPage() {
                   </div>
                 )}
 
-                <CardContent className="p-5">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors.iconBg}`}>
-                    <Icon className={`h-5 w-5 ${colors.text}`} />
+                <CardContent className="p-5 flex flex-col flex-1">
+                  {/* Top section — grows to align button across cards */}
+                  <div className="flex-1">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors.iconBg}`}>
+                      <Icon className={`h-5 w-5 ${colors.text}`} />
+                    </div>
+
+                    <h3 className="font-bold text-gray-900 mb-1">{plan.name}</h3>
+
+                    <div className="mb-3">
+                      {plan.price === null ? (
+                        <p className="text-2xl font-extrabold text-gray-900">Grátis</p>
+                      ) : (
+                        <>
+                          <p className="text-2xl font-extrabold text-gray-900">{formatPlanPrice(plan)}<span className="text-sm font-normal text-gray-400">/mês</span></p>
+                          {plan.priceAnnual && (
+                            <p className="text-xs text-gray-400">ou R$ {plan.priceAnnual}/ano</p>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    <p className="text-xs text-gray-500 mb-4 leading-relaxed">{plan.description}</p>
                   </div>
-
-                  <h3 className="font-bold text-gray-900 mb-1">{plan.name}</h3>
-
-                  <div className="mb-3">
-                    {plan.price === null ? (
-                      <p className="text-2xl font-extrabold text-gray-900">Grátis</p>
-                    ) : (
-                      <>
-                        <p className="text-2xl font-extrabold text-gray-900">{formatPlanPrice(plan)}<span className="text-sm font-normal text-gray-400">/mês</span></p>
-                        {plan.priceAnnual && (
-                          <p className="text-xs text-gray-400">ou R$ {plan.priceAnnual}/ano</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  <p className="text-xs text-gray-500 mb-4 leading-relaxed">{plan.description}</p>
 
                   <Button
                     className={`w-full text-white text-xs mb-4 gap-1.5 ${colors.btn}`}
@@ -159,7 +162,7 @@ export default function MeuPlanoPage() {
                     ) : isCurrent ? (
                       <><Check className="h-3.5 w-3.5" /> {COPY.currentPlan}</>
                     ) : plan.id === "agency" ? (
-                      "Falar com o time"
+                      <>{COPY.upgradeCta} <ArrowRight className="h-3.5 w-3.5" /></>
                     ) : (
                       <>{COPY.upgradeCta} <ArrowRight className="h-3.5 w-3.5" /></>
                     )}
