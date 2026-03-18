@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PropertyType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { PLAN_LIMITS, PlanType } from '../common/plans.config';
 
 @Injectable()
 export class OpportunitiesService {
@@ -58,13 +59,21 @@ export class OpportunitiesService {
         where,
         skip,
         take: Number(limit),
-        include: { agent: { select: { id: true, name: true, phone: true, avatarUrl: true, agency: true } } },
+        include: { agent: { select: { id: true, name: true, phone: true, avatarUrl: true, agency: true, plan: true } } },
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.opportunity.count({ where }),
     ]);
 
-    return { data, total, page: Number(page), totalPages: Math.ceil(total / Number(limit)) };
+    // Prioriza agentes com planos pagos no topo
+    const sorted = data.sort((a, b) => {
+      const aPriority = PLAN_LIMITS[(a.agent?.plan ?? 'free') as PlanType]?.feedPriority ?? 0;
+      const bPriority = PLAN_LIMITS[(b.agent?.plan ?? 'free') as PlanType]?.feedPriority ?? 0;
+      if (bPriority !== aPriority) return bPriority - aPriority;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
+    return { data: sorted, total, page: Number(page), totalPages: Math.ceil(total / Number(limit)) };
   }
 
   async findOne(id: string) {

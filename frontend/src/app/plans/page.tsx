@@ -1,166 +1,136 @@
 import Link from "next/link";
-import { Check, X, Zap } from "lucide-react";
-import { plans, TRIAL_DAYS, PROMO_DAYS } from "@/config/plans";
+import { Check, X, ArrowRight, Zap } from "lucide-react";
+import { PLANS, PLAN_COLORS, formatPlanPrice } from "@/config/plans";
+import { COPY } from "@/config/copy";
 
 export const metadata = {
-  title: "Planos e Preços - ImobMatch",
-  description: "Escolha o plano ideal para o seu negócio imobiliário. Teste grátis por 7 dias.",
+  title: "Planos e Preços — ImobMatch",
+  description: "Comece grátis e escale quando precisar. Planos para corretores autônomos e imobiliárias.",
 };
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 0,
-  }).format(value);
-}
 
 export default function PlansPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
+          <Link href="/">
             <img src="/logo.png" alt="ImobMatch" className="h-9 w-auto object-contain" />
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/imoveis" className="text-sm text-gray-600 hover:text-blue-600">
+            <Link href="/imoveis" className="text-sm text-gray-600 hover:text-blue-600 transition-colors">
               Ver imóveis
             </Link>
-            <Link
-              href="/login"
-              className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
+            <Link href="/login" className="text-sm text-gray-600 hover:text-blue-600 transition-colors">
               Entrar
+            </Link>
+            <Link href="/register" className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+              Criar conta grátis
             </Link>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-16 max-w-6xl">
+      <div className="container mx-auto px-6 py-16 max-w-7xl">
         {/* Hero */}
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <Zap className="h-4 w-4" />
-            Preço promocional por {PROMO_DAYS} dias · Sem cartão de crédito
-          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Planos para cada etapa
-            <br />
-            <span className="text-blue-600">do seu negócio</span>
+            {COPY.planPageTitle}
           </h1>
-          <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-            Do corretor autônomo à imobiliária completa. Escolha o plano que cresce com você.
+          <p className="text-xl text-gray-500 max-w-xl mx-auto">
+            {COPY.planPageSubtitle}
           </p>
         </div>
 
         {/* Plans Grid */}
-        <div className="grid md:grid-cols-3 gap-8 items-start">
-          {plans.map((plan) => (
-            <div
-              key={plan.id}
-              className={`relative bg-white rounded-2xl border-2 p-8 flex flex-col transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 ${
-                plan.highlighted
-                  ? "border-blue-600 shadow-xl shadow-blue-100 md:-mt-4 md:mb-4"
-                  : "border-gray-200 shadow-sm"
-              }`}
-            >
-              {plan.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="bg-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow">
-                    {plan.badge}
-                  </span>
-                </div>
-              )}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5 items-start">
+          {PLANS.map(plan => {
+            const colors = PLAN_COLORS[plan.id];
+            const isFree = plan.price === null;
 
-              <div className="mb-5">
-                <h2 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h2>
-                <p className="text-sm text-gray-500 leading-relaxed">{plan.description}</p>
-              </div>
-
-              {/* Price com promocional */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm text-gray-400 line-through">{formatCurrency(plan.priceRegular)}/mês</span>
-                  <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-0.5 rounded-full">
-                    Promo {PROMO_DAYS} dias
-                  </span>
-                </div>
-                <div className="flex items-end gap-1">
-                  <span className="text-4xl font-bold text-gray-900">{formatCurrency(plan.price)}</span>
-                  <span className="text-gray-500 mb-1.5 text-sm">/mês</span>
-                </div>
-                <p className="text-xs text-gray-400 mt-1">
-                  ou {formatCurrency(plan.priceAnnual)}/ano · Cancele quando quiser
-                </p>
-              </div>
-
-              <Link
-                href={`/register?plan=${plan.id}`}
-                className={`w-full text-center py-3 px-6 rounded-xl font-semibold text-sm transition-colors mb-2 ${
-                  plan.highlighted
-                    ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200"
-                    : "border-2 border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-600"
+            return (
+              <div
+                key={plan.id}
+                className={`relative bg-white rounded-2xl border-2 p-6 flex flex-col transition-all hover:shadow-xl hover:-translate-y-0.5 ${
+                  plan.highlighted ? "border-indigo-500 shadow-xl shadow-indigo-100 lg:-mt-4 lg:mb-4" : "border-gray-200 shadow-sm"
                 }`}
               >
-                {plan.cta}
-              </Link>
+                {plan.badge && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                    <span className="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow whitespace-nowrap">
+                      {plan.badge}
+                    </span>
+                  </div>
+                )}
 
-              <p className="text-center text-xs text-gray-400 mb-7">
-                {TRIAL_DAYS} dias de teste grátis · Sem cartão de crédito
-              </p>
+                <div className="mb-4">
+                  <span className={`text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${colors.badge}`}>
+                    {plan.name}
+                  </span>
+                  <p className="text-sm text-gray-500 mt-2 leading-relaxed">{plan.description}</p>
+                </div>
 
-              <div className="border-t border-gray-100 mb-5" />
+                {/* Preço */}
+                <div className="mb-5">
+                  {isFree ? (
+                    <p className="text-3xl font-bold text-gray-900">Grátis</p>
+                  ) : (
+                    <>
+                      <div className="flex items-end gap-1">
+                        <span className="text-3xl font-bold text-gray-900">{formatPlanPrice(plan)}</span>
+                        <span className="text-gray-400 mb-1 text-sm">/mês</span>
+                      </div>
+                      {plan.priceAnnual && (
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          ou R$ {plan.priceAnnual}/ano
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
 
-              <ul className="space-y-3 flex-1">
-                {plan.features.map((feature, i) => (
-                  <li
-                    key={i}
-                    className={`flex items-start gap-3 text-sm ${
-                      feature.included ? "text-gray-700" : "text-gray-400"
-                    }`}
-                  >
-                    {feature.included ? (
-                      <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
-                    ) : (
-                      <X className="h-4 w-4 text-gray-300 flex-shrink-0 mt-0.5" />
-                    )}
-                    <span>{feature.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                <Link
+                  href={plan.id === 'agency' ? 'mailto:contato@useimobmatch.com.br' : `/register?plan=${plan.id}`}
+                  className={`w-full text-center py-2.5 px-4 rounded-xl font-semibold text-sm transition-colors mb-6 text-white ${colors.btn}`}
+                >
+                  {plan.cta}
+                </Link>
+
+                <div className="border-t border-gray-100 mb-4" />
+
+                <ul className="space-y-2.5 flex-1">
+                  {plan.features.map((feature, i) => (
+                    <li
+                      key={i}
+                      className={`flex items-start gap-2.5 text-xs ${feature.included ? "text-gray-700" : "text-gray-400"}`}
+                    >
+                      {feature.included ? (
+                        <Check className={`h-3.5 w-3.5 flex-shrink-0 mt-0.5 ${colors.text}`} />
+                      ) : (
+                        <X className="h-3.5 w-3.5 text-gray-300 flex-shrink-0 mt-0.5" />
+                      )}
+                      {feature.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         {/* Trust strip */}
-        <div className="mt-10 flex flex-wrap justify-center gap-8 text-sm text-gray-500">
-          {[
-            "✓ Sem cartão de crédito",
-            "✓ Cancele quando quiser",
-            "✓ Suporte incluso",
-            "✓ Dados 100% seguros",
-          ].map((item) => (
+        <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-gray-500">
+          {COPY.trust.map(item => (
             <span key={item} className="font-medium">{item}</span>
           ))}
         </div>
 
-        {/* FAQ Cards */}
-        <div className="mt-16 grid md:grid-cols-3 gap-8 text-center">
+        {/* FAQ */}
+        <div className="mt-16 grid md:grid-cols-3 gap-6 text-center">
           {[
-            {
-              title: `Teste grátis por ${TRIAL_DAYS} dias`,
-              desc: "Experimente todos os recursos do plano escolhido sem precisar de cartão de crédito.",
-            },
-            {
-              title: "Cancele quando quiser",
-              desc: "Sem fidelidade, sem multa. Você está no controle da sua assinatura.",
-            },
-            {
-              title: "Suporte incluído",
-              desc: "Todos os planos incluem suporte via WhatsApp e e-mail nos dias úteis.",
-            },
-          ].map((item) => (
+            { title: "Comece sem compromisso",     desc: "O plano Free não pede cartão de crédito e não tem prazo de expiração." },
+            { title: "Cancele quando quiser",       desc: "Sem fidelidade, sem multa. Você está no controle da sua assinatura." },
+            { title: "Suporte em todos os planos",  desc: "Atendimento via WhatsApp e e-mail nos dias úteis para qualquer dúvida." },
+          ].map(item => (
             <div key={item.title} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-2">{item.title}</h3>
               <p className="text-sm text-gray-500">{item.desc}</p>
@@ -172,13 +142,14 @@ export default function PlansPage() {
         <div className="mt-16 text-center bg-blue-600 rounded-2xl p-10 text-white">
           <h2 className="text-2xl font-bold mb-2">Pronto para começar?</h2>
           <p className="text-blue-100 mb-6">
-            Crie sua conta agora e teste grátis por {TRIAL_DAYS} dias. Sem cartão de crédito.
+            Crie sua conta grátis agora. Sem cartão de crédito, sem prazo de expiração.
           </p>
           <Link
-            href="/register?plan=starter"
-            className="inline-block bg-white text-blue-600 font-semibold px-8 py-3 rounded-xl hover:bg-blue-50 transition"
+            href="/register"
+            className="inline-flex items-center gap-2 bg-white text-blue-600 font-semibold px-8 py-3 rounded-xl hover:bg-blue-50 transition"
           >
-            Criar conta gratuita
+            Criar conta grátis
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>

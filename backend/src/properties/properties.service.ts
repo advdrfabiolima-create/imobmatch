@@ -1,13 +1,28 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { PropertyStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePropertyDto, UpdatePropertyDto } from './dto/property.dto';
+import { getPlanLimits, isWithinLimit } from '../common/plans.config';
 
 @Injectable()
 export class PropertiesService {
   constructor(private prisma: PrismaService) {}
 
   async create(agentId: string, dto: CreatePropertyDto) {
+    const agent = await this.prisma.user.findUnique({ where: { id: agentId }, select: { plan: true } });
+    const limits = getPlanLimits(agent?.plan ?? 'free');
+
+    if (!isWithinLimit(-1, limits.maxProperties)) {
+      // unlimited
+    } else if (limits.maxProperties !== -1) {
+      const count = await this.prisma.property.count({ where: { agentId, status: { not: 'INACTIVE' } } });
+      if (count >= limits.maxProperties) {
+        throw new BadRequestException(
+          `Seu plano ${agent?.plan ?? 'free'} permite até ${limits.maxProperties} imóveis. Faça upgrade para adicionar mais.`
+        );
+      }
+    }
+
     return this.prisma.property.create({
       data: { ...dto, agentId },
       include: { agent: { select: { id: true, name: true, phone: true, email: true } } },

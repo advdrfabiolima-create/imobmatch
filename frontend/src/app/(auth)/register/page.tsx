@@ -16,34 +16,34 @@ import { maskPhone } from "@/lib/masks";
 import toast from "react-hot-toast";
 
 // ── Plan selector data ────────────────────────────────────────────────────────
-const PLANS = [
+const REGISTER_PLANS = [
+  {
+    id: "free" as const,
+    name: "Free",
+    price: "Grátis",
+    period: "",
+    highlight: false,
+    features: ["3 imóveis", "3 compradores", "Feed + Parcerias"],
+  },
   {
     id: "starter" as const,
     name: "Starter",
-    price: "R$ 97",
+    price: "R$ 39",
     period: "/mês",
     highlight: false,
-    features: ["Até 20 imóveis", "Matches básicos", "Mensagens"],
+    features: ["20 imóveis", "30 compradores", "Matching automático"],
   },
   {
-    id: "professional" as const,
-    name: "Professional",
-    price: "R$ 149",
+    id: "pro" as const,
+    name: "Pro",
+    price: "R$ 79",
     period: "/mês",
     highlight: true,
-    features: ["Imóveis ilimitados", "Matches avançados", "Analytics", "Parcerias"],
-  },
-  {
-    id: "agency" as const,
-    name: "Agency",
-    price: "R$ 399",
-    period: "/mês",
-    highlight: false,
-    features: ["Tudo do Professional", "Gestão de equipe", "Multi-corretor"],
+    features: ["Ilimitados", "Prioridade no match", "Badge Profissional"],
   },
 ];
 
-type PlanId = "starter" | "professional" | "agency";
+type PlanId = "free" | "starter" | "pro";
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 const schema = z.object({
@@ -75,7 +75,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
     <div className="mb-6">
       <p className="text-sm font-semibold text-gray-700 mb-3">Escolha seu plano</p>
       <div className="grid grid-cols-3 gap-2">
-        {PLANS.map((plan) => {
+        {REGISTER_PLANS.map((plan) => {
           const isSelected = selected === plan.id;
           return (
             <button
@@ -111,7 +111,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
       </div>
       {/* Selected plan features */}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
-        {PLANS.find((p) => p.id === selected)?.features.map((f) => (
+        {REGISTER_PLANS.find((p) => p.id === selected)?.features.map((f) => (
           <span key={f} className="flex items-center gap-1 text-xs text-gray-500">
             <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
             {f}
@@ -119,7 +119,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
         ))}
       </div>
       <p className="text-xs text-gray-400 mt-2">
-        7 dias de teste grátis em todos os planos. Cancele quando quiser.
+        Plano Free sempre grátis. Planos pagos sem cartão agora — ative quando quiser.
       </p>
     </div>
   );
@@ -129,7 +129,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
 function RegisterForm() {
   const searchParams = useSearchParams();
   const initialPlan = (searchParams.get("plan") as PlanId) || "starter";
-  const validPlans: PlanId[] = ["starter", "professional", "agency"];
+  const validPlans: PlanId[] = ["free", "starter", "pro"];
   const [selectedPlan, setSelectedPlan] = useState<PlanId>(
     validPlans.includes(initialPlan) ? initialPlan : "starter"
   );
@@ -315,7 +315,7 @@ function RegisterForm() {
             </>
           ) : (
             <>
-              Criar Conta — {PLANS.find((p) => p.id === selectedPlan)?.name}
+              Criar Conta — {REGISTER_PLANS.find((p) => p.id === selectedPlan)?.name}
               <ArrowRight className="h-4 w-4" />
             </>
           )}
@@ -355,10 +355,10 @@ export default function RegisterPage() {
         <div className="relative z-10 space-y-8">
           <div>
             <h1 className="text-4xl font-bold text-white leading-tight">
-              Crie sua conta gratuita e comece a fechar mais negócios.
+              Pare de perder clientes por não ter o imóvel certo.
             </h1>
             <p className="mt-4 text-blue-100 text-lg leading-relaxed">
-              Junte-se a mais de 3.000 corretores que já usam o ImobMatch para encontrar parceiros e compradores.
+              Conecte-se com outros corretores e encontre oportunidades reais de negócio.
             </p>
           </div>
 
@@ -372,20 +372,10 @@ export default function RegisterPage() {
             ))}
           </ul>
 
-          {/* Social proof */}
+          {/* Social proof real */}
           <div className="flex items-center gap-3 pt-4 border-t border-white/20">
-            <div className="flex -space-x-2">
-              {["A", "B", "C", "D"].map((l) => (
-                <div
-                  key={l}
-                  className="w-8 h-8 rounded-full bg-white/30 border-2 border-white flex items-center justify-center text-xs font-bold text-white"
-                >
-                  {l}
-                </div>
-              ))}
-            </div>
             <p className="text-blue-100 text-sm">
-              <span className="font-semibold text-white">+3.000 corretores</span> já utilizam o ImobMatch
+              <span className="font-semibold text-white">Plataforma em crescimento</span> com corretores em todo o Brasil. Seja um dos primeiros.
             </p>
           </div>
         </div>
@@ -395,7 +385,7 @@ export default function RegisterPage() {
           <p className="text-white text-sm leading-relaxed italic">
             "Cadastrei minha carteira inteira em menos de 10 minutos. Os matches chegaram no mesmo dia. Recomendo!"
           </p>
-          <p className="mt-3 text-blue-200 text-xs font-medium">— Maria Santos, Corretora em Campinas</p>
+          <p className="mt-3 text-blue-200 text-xs font-medium">— Corretor parceiro da ImobMatch</p>
         </div>
       </div>
 

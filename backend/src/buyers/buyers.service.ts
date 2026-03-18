@@ -1,13 +1,26 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { BuyerStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBuyerDto, UpdateBuyerDto } from './dto/buyer.dto';
+import { getPlanLimits } from '../common/plans.config';
 
 @Injectable()
 export class BuyersService {
   constructor(private prisma: PrismaService) {}
 
   async create(agentId: string, dto: CreateBuyerDto) {
+    const agent = await this.prisma.user.findUnique({ where: { id: agentId }, select: { plan: true } });
+    const limits = getPlanLimits(agent?.plan ?? 'free');
+
+    if (limits.maxBuyers !== -1) {
+      const count = await this.prisma.buyer.count({ where: { agentId, status: 'ACTIVE' } });
+      if (count >= limits.maxBuyers) {
+        throw new BadRequestException(
+          `Seu plano ${agent?.plan ?? 'free'} permite até ${limits.maxBuyers} compradores. Faça upgrade para adicionar mais.`
+        );
+      }
+    }
+
     return this.prisma.buyer.create({ data: { ...dto, agentId } });
   }
 

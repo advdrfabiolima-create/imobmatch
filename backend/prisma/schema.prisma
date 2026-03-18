@@ -25,7 +25,7 @@ model User {
   bio          String?
   avatarUrl    String?
   role         Role     @default(AGENT)
-  plan         String   @default("starter")
+  plan         String   @default("free")
   isLifetime   Boolean  @default(false)
   isActive     Boolean  @default(true)
   isFirstLogin Boolean  @default(true)

@@ -8,79 +8,66 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
-import { Check, Zap, Crown, Sparkles, Loader2, ArrowRight } from "lucide-react";
-import { plans, PROMO_DAYS } from "@/config/plans";
+import {
+  Check, X, Crown, Star, Loader2, ArrowRight,
+  Zap, Sparkles, Gem, Building2, Users,
+} from "lucide-react";
+import { PLANS, PLAN_COLORS, formatPlanPrice, getPlanById } from "@/config/plans";
+import { COPY } from "@/config/copy";
 import toast from "react-hot-toast";
 
-type PlanKey = "starter" | "professional" | "agency";
-
-const ICON_MAP: Record<string, React.ElementType> = {
+const PLAN_ICONS: Record<string, React.ElementType> = {
+  free:    Users,
   starter: Zap,
-  professional: Sparkles,
-  agency: Crown,
+  pro:     Sparkles,
+  premium: Gem,
+  agency:  Building2,
 };
 
-const COLOR_MAP: Record<string, { ring: string; text: string; btn: string; iconBg: string }> = {
-  starter: {
-    ring: "ring-gray-200",
-    text: "text-gray-600",
-    btn: "bg-gray-800 hover:bg-gray-900",
-    iconBg: "bg-gray-100",
-  },
-  professional: {
-    ring: "ring-blue-500",
-    text: "text-blue-600",
-    btn: "bg-blue-600 hover:bg-blue-700",
-    iconBg: "bg-blue-100",
-  },
-  agency: {
-    ring: "ring-purple-500",
-    text: "text-purple-600",
-    btn: "bg-purple-600 hover:bg-purple-700",
-    iconBg: "bg-purple-100",
-  },
-};
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 0,
-  }).format(value);
+function FounderBadge() {
+  return (
+    <div className="p-6 max-w-2xl mx-auto mt-8 text-center">
+      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-4">
+        <Crown className="h-10 w-10 text-white" />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">Acesso Vitalício Ativo</h2>
+      <p className="text-gray-500 mb-4">
+        Você possui acesso completo a todos os recursos da plataforma, para sempre.
+      </p>
+      <Badge className="bg-amber-100 text-amber-700 border border-amber-200 px-4 py-1.5 text-sm font-semibold">
+        {COPY.founderBadge} · Lifetime
+      </Badge>
+    </div>
+  );
 }
 
-export default function PlansPage() {
+export default function MeuPlanoPage() {
   const { user, updateUser } = useAuthStore();
   const router = useRouter();
-  const [loading, setLoading] = useState<PlanKey | null>(null);
+  const [loading, setLoading] = useState<string | null>(null);
 
   if (user?.isLifetime) {
     return (
       <div>
-        <Header title="Planos" />
-        <div className="p-6 max-w-2xl mx-auto mt-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-4">
-            <Crown className="h-10 w-10 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Acesso Vitalício Ativo</h2>
-          <p className="text-gray-500 mb-6">
-            Você possui o plano Founder com acesso a todos os recursos da plataforma, para sempre.
-          </p>
-          <Badge className="bg-amber-100 text-amber-700 border border-amber-200 px-4 py-1.5 text-sm font-semibold">
-            Founder / Lifetime
-          </Badge>
-        </div>
+        <Header title="Meu Plano" />
+        <FounderBadge />
       </div>
     );
   }
 
-  const handleSelectPlan = async (plan: PlanKey) => {
-    if (plan === user?.plan) return;
-    setLoading(plan);
+  const currentPlan = user?.plan ?? "free";
+
+  const handleSelectPlan = async (planId: string) => {
+    if (planId === currentPlan) return;
+    if (planId === "agency") {
+      window.open("mailto:contato@useimobmatch.com.br?subject=Plano Agency", "_blank");
+      return;
+    }
+    setLoading(planId);
     try {
-      await api.patch("/users/plan", { plan });
-      updateUser({ plan });
-      toast.success(`Plano ${plan === "agency" ? "Agency" : plan === "professional" ? "Professional" : "Starter"} ativado!`);
+      await api.patch("/users/plan", { plan: planId });
+      updateUser({ plan: planId as any });
+      toast.success(`Plano ${getPlanById(planId)?.name} ativado!`);
       router.push("/dashboard");
     } catch {
       toast.error("Erro ao alterar plano. Tente novamente.");
@@ -91,48 +78,42 @@ export default function PlansPage() {
 
   return (
     <div>
-      <Header title="Planos" />
-      <div className="p-4 md:p-6 max-w-5xl">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Escolha seu plano</h2>
-          <p className="text-gray-500">Escale seus resultados com o plano ideal para o seu perfil.</p>
-          {user?.plan && (
-            <p className="text-sm text-blue-600 font-medium mt-2">
-              Plano atual: <span className="capitalize font-semibold">{user.plan}</span>
-            </p>
-          )}
+      <Header title="Meu Plano" />
+      <div className="p-4 md:p-6 max-w-6xl">
+
+        {/* Founder badge para usuários iniciais */}
+        <div className="mb-6 flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+          <Star className="h-5 w-5 text-amber-500 flex-shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-amber-900">{COPY.founderMsg}</p>
+            <p className="text-xs text-amber-700">Corretores que entram agora têm vantagem competitiva na rede.</p>
+          </div>
         </div>
 
-        {/* Faixa promocional */}
-        <div className="mb-6 flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-800">
-          <Zap className="h-4 w-4 text-green-600 flex-shrink-0" />
-          <span>
-            <strong>Preço promocional de lançamento</strong> — válido pelos primeiros {PROMO_DAYS} dias.
-            Após esse período, o valor regular será aplicado automaticamente.
-          </span>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900">Escolha seu plano</h2>
+          <p className="text-gray-500 text-sm mt-1">
+            Plano atual: <span className="font-semibold text-blue-600 capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</span>
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {plans.map((plan) => {
-            const colors = COLOR_MAP[plan.id];
-            const Icon = ICON_MAP[plan.id];
-            const isCurrent = user?.plan === plan.id;
-            const isLoadingPlan = loading === plan.id;
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {PLANS.map(plan => {
+            const colors = PLAN_COLORS[plan.id];
+            const Icon = PLAN_ICONS[plan.id] ?? Zap;
+            const isCurrent = currentPlan === plan.id;
+            const isLoading = loading === plan.id;
 
             return (
               <Card
                 key={plan.id}
                 className={`relative overflow-hidden transition-all duration-200 ${
-                  isCurrent
-                    ? `ring-2 ${colors.ring}`
-                    : plan.highlighted
-                    ? "ring-2 ring-blue-400 shadow-lg"
-                    : ""
+                  isCurrent ? `ring-2 ${colors.ring}` : plan.highlighted ? "ring-2 ring-indigo-400 shadow-lg" : ""
                 }`}
               >
-                {plan.badge && (
+                {plan.badge && !isCurrent && (
                   <div className="absolute top-0 right-0">
-                    <div className="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-bl-xl">
+                    <div className="bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-bl-xl">
                       {plan.badge}
                     </div>
                   </div>
@@ -140,77 +121,69 @@ export default function PlansPage() {
                 {isCurrent && (
                   <div className="absolute top-0 left-0">
                     <div className="bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-br-xl">
-                      Plano atual
+                      {COPY.currentPlan}
                     </div>
                   </div>
                 )}
 
-                <CardContent className="p-6">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${colors.iconBg}`}>
-                    <Icon className={`h-6 w-6 ${colors.text}`} />
+                <CardContent className="p-5">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors.iconBg}`}>
+                    <Icon className={`h-5 w-5 ${colors.text}`} />
                   </div>
 
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{plan.name}</h3>
+                  <h3 className="font-bold text-gray-900 mb-1">{plan.name}</h3>
 
-                  {/* Preço com riscado */}
-                  <div className="mb-1">
-                    <span className="text-xs text-gray-400 line-through mr-2">{formatCurrency(plan.priceRegular)}/mês</span>
-                    <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-0.5 rounded-full">
-                      Promo {PROMO_DAYS} dias
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-sm text-gray-500">R$</span>
-                    <span className="text-3xl font-extrabold text-gray-900">{plan.price}</span>
-                    <span className="text-sm text-gray-500">/mês</span>
-                  </div>
-                  <p className="text-xs text-gray-400 mb-2">
-                    ou {formatCurrency(plan.priceAnnual)}/ano
-                  </p>
-                  <p className="text-sm text-gray-500 mb-5">{plan.description}</p>
-
-                  <Button
-                    className={`w-full text-white mb-5 gap-2 ${colors.btn}`}
-                    disabled={isCurrent || isLoadingPlan}
-                    onClick={() => handleSelectPlan(plan.id as PlanKey)}
-                  >
-                    {isLoadingPlan ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : isCurrent ? (
-                      <>
-                        <Check className="h-4 w-4" /> Plano atual
-                      </>
-                    ) : plan.id === "starter" && user?.plan !== "starter" ? (
-                      "Fazer downgrade"
+                  <div className="mb-3">
+                    {plan.price === null ? (
+                      <p className="text-2xl font-extrabold text-gray-900">Grátis</p>
                     ) : (
                       <>
-                        Assinar agora <ArrowRight className="h-4 w-4" />
+                        <p className="text-2xl font-extrabold text-gray-900">{formatPlanPrice(plan)}<span className="text-sm font-normal text-gray-400">/mês</span></p>
+                        {plan.priceAnnual && (
+                          <p className="text-xs text-gray-400">ou R$ {plan.priceAnnual}/ano</p>
+                        )}
                       </>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-gray-500 mb-4 leading-relaxed">{plan.description}</p>
+
+                  <Button
+                    className={`w-full text-white text-xs mb-4 gap-1.5 ${colors.btn}`}
+                    size="sm"
+                    disabled={isCurrent || isLoading}
+                    onClick={() => handleSelectPlan(plan.id)}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : isCurrent ? (
+                      <><Check className="h-3.5 w-3.5" /> {COPY.currentPlan}</>
+                    ) : plan.id === "agency" ? (
+                      "Falar com o time"
+                    ) : (
+                      <>{COPY.upgradeCta} <ArrowRight className="h-3.5 w-3.5" /></>
                     )}
                   </Button>
 
-                  <div className="space-y-2">
-                    {plan.features.map((feature) => (
-                      <div key={feature.text} className="flex items-start gap-2 text-sm">
-                        {feature.included ? (
-                          <Check className={`h-4 w-4 mt-0.5 flex-shrink-0 ${colors.text}`} />
-                        ) : (
-                          <span className="h-4 w-4 mt-0.5 flex-shrink-0 text-center text-gray-300 font-bold leading-none">×</span>
-                        )}
-                        <span className={feature.included ? "text-gray-700" : "text-gray-400"}>
-                          {feature.text}
-                        </span>
-                      </div>
+                  <ul className="space-y-1.5">
+                    {plan.features.slice(0, 5).map(feature => (
+                      <li key={feature.text} className={`flex items-start gap-1.5 text-xs ${feature.included ? "text-gray-700" : "text-gray-400"}`}>
+                        {feature.included
+                          ? <Check className={`h-3.5 w-3.5 flex-shrink-0 mt-0.5 ${colors.text}`} />
+                          : <X className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-gray-300" />
+                        }
+                        {feature.text}
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </CardContent>
               </Card>
             );
           })}
         </div>
 
-        <p className="text-xs text-gray-400 mt-4 text-center">
-          * Plataforma em fase MVP — cobrança real será ativada em breve. Teste todos os recursos gratuitamente.
+        <p className="text-xs text-gray-400 mt-6 text-center">
+          Pagamentos e cobranças serão ativados em breve. Explore todos os recursos gratuitamente até lá.
         </p>
       </div>
     </div>

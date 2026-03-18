@@ -16,7 +16,7 @@ interface User {
   role: "AGENT" | "ADMIN";
   isFirstLogin?: boolean;
   emailVerified?: boolean;
-  plan?: "starter" | "professional" | "agency";
+  plan?: "free" | "starter" | "pro" | "premium" | "agency";
   isLifetime?: boolean;
   createdAt?: string;
 }
