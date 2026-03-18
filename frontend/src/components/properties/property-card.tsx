@@ -13,6 +13,7 @@ interface PropertyCardProps {
     title: string;
     type: string;
     status: string;
+    listingType?: string;
     price: number;
     city: string;
     state: string;
@@ -72,13 +73,22 @@ export function PropertyCard({ property, showActions, onEdit, onDelete, onStatus
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute top-3 left-3 flex gap-2">
+        <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
           <Badge className="bg-white/90 text-gray-800 border-0 shadow-sm text-xs">
             {PROPERTY_TYPE_LABELS[property.type]}
           </Badge>
           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm ${STATUS_BADGE_STYLES[property.status] ?? "bg-gray-100 text-gray-500"}`}>
             {PROPERTY_STATUS_LABELS[property.status]}
           </span>
+          {property.listingType === "RENT" ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-orange-100 text-orange-700">
+              Aluguel
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-blue-100 text-blue-700">
+              Venda
+            </span>
+          )}
         </div>
         {showActions && (
           <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

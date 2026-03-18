@@ -15,8 +15,16 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
   agency:  { maxProperties: -1, maxBuyers: -1, feedPriority: 3, matchWeight: 4 },
 };
 
+// Aliases para nomes de planos antigos ou variações
+const PLAN_ALIASES: Record<string, PlanType> = {
+  professional: 'pro',
+  basic:        'free',
+  enterprise:   'agency',
+};
+
 export function getPlanLimits(plan: string): PlanLimits {
-  return PLAN_LIMITS[plan as PlanType] ?? PLAN_LIMITS.free;
+  const normalized = (PLAN_ALIASES[plan] ?? plan) as PlanType;
+  return PLAN_LIMITS[normalized] ?? PLAN_LIMITS.free;
 }
 
 export function isWithinLimit(current: number, max: number): boolean {
