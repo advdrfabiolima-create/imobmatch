@@ -72,12 +72,12 @@ export default function RankingPage() {
               <p className="font-bold text-green-700">+10 pts</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 mb-1">Negócio fechado</p>
-              <p className="font-bold text-blue-700">+50 pts</p>
+              <p className="text-xs text-gray-500 mb-1">Imóvel alugado</p>
+              <p className="font-bold text-orange-600">+20 pts</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 mb-1">Feedback positivo</p>
-              <p className="font-bold text-purple-700">+20 pts</p>
+              <p className="text-xs text-gray-500 mb-1">Negócio fechado / vendido</p>
+              <p className="font-bold text-blue-700">+50 pts</p>
             </div>
           </div>
           <div className="flex gap-4 mt-4 text-sm justify-center">

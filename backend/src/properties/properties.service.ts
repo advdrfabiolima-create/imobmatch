@@ -103,6 +103,11 @@ export class PropertiesService {
       this.rankingService.addScore(property.agentId, 50, 'dealsClosedCount').catch(() => {});
     }
 
+    // Imóvel marcado como ALUGADO: +20 pts para o corretor
+    if (status === 'RENTED' && property.status !== 'RENTED') {
+      this.rankingService.addScore(property.agentId, 20, 'dealsClosedCount').catch(() => {});
+    }
+
     return updated;
   }
 

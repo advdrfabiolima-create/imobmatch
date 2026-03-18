@@ -64,6 +64,10 @@ export default function ImoveisPage() {
         showPointsToast(50, "Imóvel vendido!");
         queryClient.invalidateQueries({ queryKey: ["ranking"] });
       }
+      if (newStatus === "RENTED") {
+        showPointsToast(20, "Imóvel alugado!");
+        queryClient.invalidateQueries({ queryKey: ["ranking"] });
+      }
       queryClient.invalidateQueries({ queryKey: ["my-properties"] });
     },
     onError: () => toast.error("Erro ao alterar status"),
