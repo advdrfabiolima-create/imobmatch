@@ -11,7 +11,7 @@ import {
   Check, X, Crown, Star, Loader2, ArrowRight,
   Zap, Sparkles, Gem, Building2, Users, AlertCircle,
 } from "lucide-react";
-import { PLANS, PLAN_COLORS, formatPlanPrice, getPlanById } from "@/config/plans";
+import { PLANS, PLAN_COLORS, formatPlanPrice, getPlanById, normalizePlan } from "@/config/plans";
 import { COPY } from "@/config/copy";
 import toast from "react-hot-toast";
 
@@ -70,7 +70,7 @@ export default function MeuPlanoPage() {
     );
   }
 
-  const currentPlan = user?.plan ?? "free";
+  const currentPlan = normalizePlan(user?.plan ?? "free");
 
   const handleSelectPlan = async (planId: string) => {
     if (planId === currentPlan) return;

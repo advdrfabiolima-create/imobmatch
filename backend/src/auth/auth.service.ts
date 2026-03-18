@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
+import { normalizePlan } from '../common/plans.config';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -71,7 +72,7 @@ export class AuthService {
 
     const { password, ...userWithoutPassword } = user;
     const token = this.jwtService.sign({ sub: user.id, email: user.email, role: user.role });
-    return { user: userWithoutPassword, token };
+    return { user: { ...userWithoutPassword, plan: normalizePlan(user.plan) }, token };
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
@@ -135,6 +136,6 @@ export class AuthService {
       },
     });
     if (!user) throw new NotFoundException('Usuário não encontrado');
-    return user;
+    return { ...user, plan: normalizePlan(user.plan) };
   }
 }

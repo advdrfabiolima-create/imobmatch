@@ -22,9 +22,13 @@ const PLAN_ALIASES: Record<string, PlanType> = {
   enterprise:   'agency',
 };
 
+export function normalizePlan(plan: string): PlanType {
+  const aliased = (PLAN_ALIASES[plan] ?? plan) as PlanType;
+  return PLAN_LIMITS[aliased] ? aliased : 'free';
+}
+
 export function getPlanLimits(plan: string): PlanLimits {
-  const normalized = (PLAN_ALIASES[plan] ?? plan) as PlanType;
-  return PLAN_LIMITS[normalized] ?? PLAN_LIMITS.free;
+  return PLAN_LIMITS[normalizePlan(plan)];
 }
 
 export function isWithinLimit(current: number, max: number): boolean {

@@ -9,7 +9,7 @@ import { useAuthStore } from "@/store/auth.store";
 import { formatCurrency, formatDate, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from "@/lib/utils";
 import { Building2, Users, Zap, UserCheck, TrendingUp, ArrowRight, Clock, Crown, Sparkles, Infinity } from "lucide-react";
 import Link from "next/link";
-import { getPlanById, PLAN_COLORS } from "@/config/plans";
+import { getPlanById, PLAN_COLORS, normalizePlan } from "@/config/plans";
 
 // ── Plan config ───────────────────────────────────────────────────────────────
 const PLAN_META: Record<string, { label: string; color: string; dot: string }> = {
@@ -48,7 +48,7 @@ function PlanBanner() {
     );
   }
 
-  const plan = user?.plan ?? "free";
+  const plan = normalizePlan(user?.plan ?? "free");
   const meta = PLAN_META[plan] ?? PLAN_META.free;
   const isPaidTop = plan === "premium" || plan === "agency";
 

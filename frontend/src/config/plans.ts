@@ -122,8 +122,19 @@ export const PLANS: Plan[] = [
   },
 ];
 
+const PLAN_ALIASES: Record<string, string> = {
+  professional: 'starter',
+  basic:        'free',
+  enterprise:   'agency',
+};
+
+export function normalizePlan(plan: string): string {
+  const aliased = PLAN_ALIASES[plan] ?? plan;
+  return PLANS.find(p => p.id === aliased) ? aliased : 'free';
+}
+
 export function getPlanById(id: string): Plan | undefined {
-  return PLANS.find(p => p.id === id);
+  return PLANS.find(p => p.id === normalizePlan(id));
 }
 
 export function formatPlanPrice(plan: Plan): string {
