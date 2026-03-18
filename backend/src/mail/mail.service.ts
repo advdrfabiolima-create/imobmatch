@@ -66,6 +66,35 @@ export class MailService {
     await this.send(to, name, 'Redefinição de senha — ImobMatch', content);
   }
 
+  // ─── Convite de acesso antecipado ───────────────────────────────────────────
+
+  async sendEarlyAccessInvite(to: string, name: string): Promise<void> {
+    const registerUrl = `${this.frontendUrl}/register?email=${encodeURIComponent(to)}`;
+
+    const content = `
+      <h2 style="color:#111827;font-size:20px;margin:0 0 8px;font-weight:700;">Olá, ${name}! 🎉</h2>
+      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 8px;">
+        Boa notícia! Sua vaga de acesso antecipado ao <strong>ImobMatch</strong> foi liberada.
+      </p>
+      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 24px;">
+        O ImobMatch é uma plataforma para corretores encontrarem imóveis, compradores
+        e parcerias com mais facilidade. Clique no botão abaixo para criar sua conta e começar:
+      </p>
+      <a href="${registerUrl}"
+         style="display:inline-block;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
+        🚀 Acessar minha conta
+      </a>
+      <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
+        Se você não se inscreveu na lista de acesso antecipado, ignore este e-mail.
+      </p>
+      <p style="color:#d1d5db;font-size:11px;margin:16px 0 0;word-break:break-all;">
+        Link direto: ${registerUrl}
+      </p>
+    `;
+
+    await this.send(to, name, '🎉 Sua vaga no ImobMatch foi liberada!', content);
+  }
+
   // ─── Envio via Brevo HTTP API ────────────────────────────────────────────────
 
   private async send(to: string, toName: string, subject: string, content: string): Promise<void> {

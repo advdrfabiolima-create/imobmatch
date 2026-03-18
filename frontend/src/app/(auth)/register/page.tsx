@@ -175,6 +175,9 @@ function RegisterForm() {
   const { register: authRegister, isLoading } = useAuthStore();
   const router = useRouter();
 
+  // Pré-preenche e-mail quando vindo do convite (/register?email=xxx)
+  const inviteEmail = searchParams.get("email") ?? "";
+
   const {
     register,
     handleSubmit,
@@ -184,7 +187,7 @@ function RegisterForm() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { acceptTerms: false },
+    defaultValues: { acceptTerms: false, email: inviteEmail },
   });
 
   const termsAccepted = watch("acceptTerms");

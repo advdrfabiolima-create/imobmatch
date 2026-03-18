@@ -1,4 +1,7 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail, IsNotEmpty, IsOptional, IsString,
+  MinLength, IsArray, ArrayNotEmpty,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateEarlyAccessLeadDto {
@@ -21,4 +24,12 @@ export class CreateEarlyAccessLeadDto {
   @IsOptional()
   @IsString()
   source?: string;
+}
+
+export class BulkInviteDto {
+  @ApiProperty({ example: ['uuid-1', 'uuid-2'] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  ids: string[];
 }

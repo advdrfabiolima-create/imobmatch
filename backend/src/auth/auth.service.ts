@@ -45,6 +45,12 @@ export class AuthService {
     // Send verification email (fire-and-forget; won't block registration)
     this.mailService.sendVerificationEmail(user.email, user.name, verificationToken);
 
+    // Se o e-mail estava na lista de acesso antecipado, marca como REGISTERED
+    this.prisma.earlyAccessLead.updateMany({
+      where: { email: dto.email, status: { not: 'REGISTERED' } },
+      data: { status: 'REGISTERED' },
+    }).catch(() => {});
+
     const token = this.jwtService.sign({ sub: user.id, email: user.email, role: user.role });
     return { user, token };
   }
