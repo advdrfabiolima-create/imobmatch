@@ -76,8 +76,8 @@ export default function AcessoAntecipadoPage() {
   return (
     <>
       {/* SEO */}
-      <title>Acesso Antecipado · ImobMatch</title>
-      <meta name="description" content="Cadastre-se na lista de acesso antecipado do ImobMatch — a plataforma que conecta corretores, imóveis e compradores para gerar mais parcerias e negócios." />
+      <title>Lista VIP · Acesso Exclusivo</title>
+      <meta name="description" content="Cadastre-se para garantir seu acesso exclusivo antecipado à plataforma." />
 
       <div className="min-h-screen bg-white">
 
