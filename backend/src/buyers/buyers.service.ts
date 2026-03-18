@@ -3,10 +3,14 @@ import { BuyerStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBuyerDto, UpdateBuyerDto } from './dto/buyer.dto';
 import { getPlanLimits } from '../common/plans.config';
+import { MatchesService } from '../matches/matches.service';
 
 @Injectable()
 export class BuyersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private matchesService: MatchesService,
+  ) {}
 
   async create(agentId: string, dto: CreateBuyerDto) {
     const agent = await this.prisma.user.findUnique({ where: { id: agentId }, select: { plan: true } });
@@ -21,32 +25,37 @@ export class BuyersService {
       }
     }
 
-    return this.prisma.buyer.create({ data: { ...dto, agentId } });
+    const buyer = await this.prisma.buyer.create({ data: { ...dto, agentId } });
+
+    // fire-and-forget: auto-match ao cadastrar comprador (score ≥ 70)
+    this.matchesService.generateForBuyer(buyer.id);
+
+    return buyer;
   }
 
-async findAll(agentId: string, query: any) {
-  const { page = 1, limit = 20, status, search } = query;
-  const skip = (page - 1) * limit;
-  const where: any = { agentId };
-  if (status) where.status = status;
-  if (search) where.AND = [
-    {
-      OR: [
-        { buyerName: { contains: search, mode: 'insensitive' } },
-        { desiredCity: { contains: search, mode: 'insensitive' } },
-      ],
-    },
-  ];
+  async findAll(agentId: string, query: any) {
+    const { page = 1, limit = 20, status, search } = query;
+    const skip = (page - 1) * limit;
+    const where: any = { agentId };
+    if (status) where.status = status;
+    if (search) where.AND = [
+      {
+        OR: [
+          { buyerName: { contains: search, mode: 'insensitive' } },
+          { desiredCity: { contains: search, mode: 'insensitive' } },
+        ],
+      },
+    ];
 
-  const [buyers, total] = await Promise.all([
-    this.prisma.buyer.findMany({
-      where, skip, take: Number(limit), orderBy: { createdAt: 'desc' },
-    }),
-    this.prisma.buyer.count({ where }),
-  ]);
+    const [buyers, total] = await Promise.all([
+      this.prisma.buyer.findMany({
+        where, skip, take: Number(limit), orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.buyer.count({ where }),
+    ]);
 
-  return { data: buyers, total, page: Number(page), totalPages: Math.ceil(total / limit) };
-}
+    return { data: buyers, total, page: Number(page), totalPages: Math.ceil(total / limit) };
+  }
 
   async findOne(id: string, agentId: string) {
     const buyer = await this.prisma.buyer.findUnique({
@@ -74,12 +83,12 @@ async findAll(agentId: string, query: any) {
   }
 
   async remove(id: string, agentId: string) {
-  const buyer = await this.prisma.buyer.findUnique({ where: { id } });
-  if (!buyer) throw new NotFoundException('Comprador não encontrado');
-  if (buyer.agentId !== agentId) throw new ForbiddenException('Sem permissão');
-  
-  await this.prisma.match.deleteMany({ where: { buyerId: id } });
-  
-  return this.prisma.buyer.delete({ where: { id } });
-}
+    const buyer = await this.prisma.buyer.findUnique({ where: { id } });
+    if (!buyer) throw new NotFoundException('Comprador não encontrado');
+    if (buyer.agentId !== agentId) throw new ForbiddenException('Sem permissão');
+
+    await this.prisma.match.deleteMany({ where: { buyerId: id } });
+
+    return this.prisma.buyer.delete({ where: { id } });
+  }
 }

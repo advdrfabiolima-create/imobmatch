@@ -3,10 +3,16 @@ import { PropertyStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePropertyDto, UpdatePropertyDto } from './dto/property.dto';
 import { getPlanLimits, isWithinLimit } from '../common/plans.config';
+import { MatchesService } from '../matches/matches.service';
+import { RankingService } from '../ranking/ranking.service';
 
 @Injectable()
 export class PropertiesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private matchesService: MatchesService,
+    private rankingService: RankingService,
+  ) {}
 
   async create(agentId: string, dto: CreatePropertyDto) {
     const agent = await this.prisma.user.findUnique({ where: { id: agentId }, select: { plan: true } });
@@ -23,10 +29,15 @@ export class PropertiesService {
       }
     }
 
-    return this.prisma.property.create({
+    const property = await this.prisma.property.create({
       data: { ...dto, agentId },
       include: { agent: { select: { id: true, name: true, phone: true, email: true } } },
     });
+
+    // fire-and-forget: auto-match ao cadastrar imóvel (score ≥ 70)
+    this.matchesService.generateForProperty(property.id);
+
+    return property;
   }
 
   async findAll(query: {
@@ -82,21 +93,28 @@ export class PropertiesService {
     if (!property) throw new NotFoundException('Imóvel não encontrado');
     if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
     const { status, ...rest } = dto;
-    return this.prisma.property.update({
+    const updated = await this.prisma.property.update({
       where: { id },
       data: { ...rest, ...(status && { status: status as PropertyStatus }) },
     });
+
+    // Imóvel marcado como VENDIDO: +50 pts para o corretor
+    if (status === 'SOLD' && property.status !== 'SOLD') {
+      this.rankingService.addScore(property.agentId, 50, 'dealsClosedCount').catch(() => {});
+    }
+
+    return updated;
   }
 
-async remove(id: string, agentId: string, role?: string) {
-  const property = await this.prisma.property.findUnique({ where: { id } });
-  if (!property) throw new NotFoundException('Imóvel não encontrado');
-  if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
-  
-  await this.prisma.match.deleteMany({ where: { propertyId: id } });
-  
-  return this.prisma.property.delete({ where: { id } });
-}
+  async remove(id: string, agentId: string, role?: string) {
+    const property = await this.prisma.property.findUnique({ where: { id } });
+    if (!property) throw new NotFoundException('Imóvel não encontrado');
+    if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
+
+    await this.prisma.match.deleteMany({ where: { propertyId: id } });
+
+    return this.prisma.property.delete({ where: { id } });
+  }
 
   async getMyProperties(agentId: string, query: any) {
     const { page = 1, limit = 20, status, search, city, state } = query;

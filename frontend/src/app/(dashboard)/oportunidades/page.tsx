@@ -248,7 +248,9 @@ function OpportunityCard({ opp }: { opp: any }) {
             </div>
           </div>
           <a
-            href={`tel:${opp.agent?.phone}`}
+            href={opp.agent?.phone ? `https://wa.me/55${opp.agent.phone.replace(/\D/g, "")}` : undefined}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition-colors"
           >
             <Phone className="h-3.5 w-3.5" />

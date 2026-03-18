@@ -14,7 +14,7 @@ import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import { STATES } from "@/lib/utils";
 import { Loader2, Building2, MapPin, Mail, User, Camera } from "lucide-react";
-import { maskPhone } from "@/lib/masks";
+import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import toast from "react-hot-toast";
 import { AvatarCropModal } from "@/components/ui/avatar-crop-modal";
 
@@ -26,6 +26,8 @@ const schema = z.object({
   agency: z.string().optional(),
   creci: z.string().optional(),
   bio: z.string().optional(),
+  cpfCnpj: z.string().optional(),
+  personType: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -37,7 +39,7 @@ export default function PerfilPage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { register, handleSubmit, setValue, formState: { errors, isDirty } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, formState: { errors, isDirty } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: user?.name || "",
@@ -47,8 +49,12 @@ export default function PerfilPage() {
       agency: user?.agency || "",
       creci: user?.creci || "",
       bio: user?.bio || "",
+      cpfCnpj: user?.cpfCnpj || "",
+      personType: user?.personType || "PF",
     },
   });
+
+  const personType = watch("personType") || "PF";
 
   const mutation = useMutation({
     mutationFn: (data: FormData) => api.patch("/users/profile", data),
@@ -225,6 +231,36 @@ export default function PerfilPage() {
                     rows={3}
                     placeholder="Fale um pouco sobre você e sua especialidade..."
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="text-sm font-medium mb-2 block">Tipo de Pessoa</label>
+                  <div className="flex rounded-lg border border-gray-200 overflow-hidden w-fit mb-3">
+                    {["PF", "PJ"].map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => {
+                          setValue("personType", type, { shouldDirty: true });
+                          setValue("cpfCnpj", "", { shouldDirty: true });
+                        }}
+                        className={`px-4 py-1.5 text-sm font-medium transition ${
+                          personType === type
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-gray-600 hover:bg-gray-50"
+                        }`}
+                      >
+                        {type === "PF" ? "Pessoa Física" : "Pessoa Jurídica"}
+                      </button>
+                    ))}
+                  </div>
+                  <Input
+                    placeholder={personType === "PJ" ? "00.000.000/0000-00" : "000.000.000-00"}
+                    {...register("cpfCnpj")}
+                    onChange={(e) =>
+                      setValue("cpfCnpj", maskCpfCnpj(e.target.value, personType), { shouldDirty: true })
+                    }
                   />
                 </div>
               </div>

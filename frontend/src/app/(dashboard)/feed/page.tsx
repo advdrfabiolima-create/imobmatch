@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
 import {
-  Rss, Home, User, UserCheck, Zap, Send, Image as ImageIcon,
+  Rss, Home, User, UserCheck, Zap, Send, Image as ImageIcon, MessageCircle,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import toast from "react-hot-toast";
@@ -110,9 +110,10 @@ function CreatePostCard() {
   );
 }
 
-function PostCard({ post }: { post: any }) {
+function PostCard({ post, currentUserId }: { post: any; currentUserId?: string }) {
   const config = POST_TYPE_CONFIG[post.type] ?? POST_TYPE_CONFIG.property;
   const Icon = config.icon;
+  const isOwnPost = post.userId === currentUserId;
 
   return (
     <Card className="hover:shadow-sm transition-shadow">
@@ -146,6 +147,21 @@ function PostCard({ post }: { post: any }) {
 
             <p className="text-sm text-gray-700 whitespace-pre-wrap">{post.content}</p>
 
+            {/* Contact button */}
+            {!isOwnPost && post.user?.phone && (
+              <div className="mt-3">
+                <a
+                  href={`https://wa.me/55${post.user.phone.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  <MessageCircle className="h-3.5 w-3.5" />
+                  Contatar via WhatsApp
+                </a>
+              </div>
+            )}
+
             {/* Score badge */}
             {post.user?.score != null && (
               <div className="mt-3 flex items-center gap-1.5">
@@ -168,6 +184,7 @@ function PostCard({ post }: { post: any }) {
 }
 
 export default function FeedPage() {
+  const { user } = useAuthStore();
   const [typeFilter, setTypeFilter] = useState("");
 
   const { data, isLoading } = useQuery({
@@ -227,7 +244,7 @@ export default function FeedPage() {
         ) : (
           <div className="space-y-4">
             {data?.data?.map((post: any) => (
-              <PostCard key={post.id} post={post} />
+              <PostCard key={post.id} post={post} currentUserId={user?.id} />
             ))}
           </div>
         )}

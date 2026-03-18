@@ -35,6 +35,8 @@ model User {
   emailVerified         Boolean  @default(false)
   emailVerificationToken String?
   asaasCustomerId       String?
+  cpfCnpj               String?
+  personType            String   @default("PF")  // PF | PJ
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -80,6 +82,7 @@ model Property {
   areaM2       Decimal?      @db.Decimal(8, 2)
   description  String?       @db.Text
   photos       String[]      @default([])
+  listingType  String        @default("SALE")  // SALE | RENT
   isPublic     Boolean       @default(true)
   slug         String?       @unique
   agentId      String

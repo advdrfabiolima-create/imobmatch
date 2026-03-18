@@ -52,6 +52,9 @@ export class CreatePropertyDto {
 
   @ApiPropertyOptional({ default: true })
   @IsOptional() @IsBoolean() isPublic?: boolean;
+
+  @ApiPropertyOptional({ example: 'SALE', enum: ['SALE', 'RENT'] })
+  @IsOptional() @IsString() listingType?: string;
 }
 
 export class UpdatePropertyDto {
@@ -70,4 +73,5 @@ export class UpdatePropertyDto {
   @IsOptional() @IsArray() photos?: string[];
   @IsOptional() @IsBoolean() isPublic?: boolean;
   @IsOptional() @IsString() status?: string;
+  @IsOptional() @IsString() listingType?: string;
 }

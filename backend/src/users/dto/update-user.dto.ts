@@ -10,4 +10,6 @@ export class UpdateUserDto {
   @ApiPropertyOptional() @IsOptional() @IsString() agency?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() creci?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() bio?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() cpfCnpj?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() personType?: string;
 }

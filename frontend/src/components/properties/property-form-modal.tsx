@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 const schema = z.object({
   title: z.string().min(5, "Título obrigatório"),
   type: z.enum(["HOUSE", "APARTMENT", "LAND", "COMMERCIAL", "RURAL"]),
+  listingType: z.enum(["SALE", "RENT"]).default("SALE"),
   price: z.string().min(1, "Preço obrigatório"),
   city: z.string().min(2, "Cidade obrigatória"),
   state: z.string().min(2, "Estado obrigatório"),
@@ -51,6 +52,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
       ? {
           title: property.title,
           type: property.type,
+          listingType: property.listingType || "SALE",
           price: property.price ? Number(property.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) : "",
           city: property.city,
           state: property.state,
@@ -61,10 +63,11 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
           areaM2: property.areaM2 || undefined,
           description: property.description || "",
         }
-      : undefined,
+      : { listingType: "SALE" },
   });
 
   const watchedType = watch("type");
+  const watchedListingType = watch("listingType");
   const areaLabel = (watchedType === "LAND" || watchedType === "RURAL")
     ? "Área total (m²)"
     : "Área construída (m²)";
@@ -84,6 +87,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
       reset({
         title: data.title || "",
         type: validTypes.includes(data.type) ? data.type : "APARTMENT",
+        listingType: data.listingType || "SALE",
         // data.price é número em reais → converte para centavos em string para maskCurrency
         price: data.price
           ? maskCurrency(String(Math.round(data.price * 100)))
@@ -276,16 +280,39 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Preço (R$) *</label>
-                  <Input
-                    placeholder="0,00"
-                    {...register("price")}
-                    onChange={(e) => setValue("price", maskCurrency(e.target.value))}
-                  />
-                  {errors.price && (
-                    <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
-                  )}
+                  <label className="text-sm font-medium mb-1 block">Modalidade *</label>
+                  <div className="flex rounded-md border overflow-hidden h-10">
+                    {[
+                      { value: "SALE", label: "Venda" },
+                      { value: "RENT", label: "Aluguel" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setValue("listingType", opt.value as "SALE" | "RENT")}
+                        className={`flex-1 text-sm font-medium transition ${
+                          watchedListingType === opt.value
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-gray-600 hover:bg-gray-50"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">Preço (R$) *</label>
+                <Input
+                  placeholder="0,00"
+                  {...register("price")}
+                  onChange={(e) => setValue("price", maskCurrency(e.target.value))}
+                />
+                {errors.price && (
+                  <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-3 gap-4">

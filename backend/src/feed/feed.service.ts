@@ -34,7 +34,7 @@ export class FeedService {
         skip,
         take: Number(limit),
         include: {
-          user: { select: { id: true, name: true, avatarUrl: true, agency: true, city: true, plan: true, score: true } },
+          user: { select: { id: true, name: true, avatarUrl: true, agency: true, city: true, plan: true, score: true, phone: true } },
         },
         orderBy: { createdAt: 'desc' },
       }),

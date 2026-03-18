@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { MatchStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { RankingService } from '../ranking/ranking.service';
 
 @Injectable()
 export class MatchesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private rankingService: RankingService,
+  ) {}
 
   // ==================== ALGORITMO DE MATCHING ====================
   private normalizeCity(city: string): string {
@@ -58,77 +62,119 @@ export class MatchesService {
     return Math.min(score, 100);
   }
 
-private async upsertMatch(buyerId: string, propertyId: string, score: number) {
-  const existing = await this.prisma.match.findUnique({
-    where: { buyerId_propertyId: { buyerId, propertyId } },
-  });
-
-  if (existing) {
-    await this.prisma.match.update({
+  private async upsertMatch(buyerId: string, propertyId: string, score: number) {
+    const existing = await this.prisma.match.findUnique({
       where: { buyerId_propertyId: { buyerId, propertyId } },
-      data: { score },
     });
-    return { match: existing, isNew: false };
+
+    if (existing) {
+      await this.prisma.match.update({
+        where: { buyerId_propertyId: { buyerId, propertyId } },
+        data: { score },
+      });
+      return { match: existing, isNew: false };
+    }
+
+    const match = await this.prisma.match.create({
+      data: { buyerId, propertyId, score },
+    });
+    return { match, isNew: true };
   }
 
-  const match = await this.prisma.match.create({
-    data: { buyerId, propertyId, score },
-  });
-  return { match, isNew: true };
-}
+  // ==================== MATCH MANUAL (botão "Verificar Matches") ====================
 
-async generateMatches(agentId: string) {
-  const [myBuyers, myProperties, allBuyers, allProperties] = await Promise.all([
-    this.prisma.buyer.findMany({ where: { agentId, status: 'ACTIVE' } }),
-    this.prisma.property.findMany({ where: { agentId, status: 'AVAILABLE', isPublic: true } }),
-    this.prisma.buyer.findMany({ where: { status: 'ACTIVE' } }),
-    this.prisma.property.findMany({ where: { status: 'AVAILABLE', isPublic: true } }),
-  ]);
+  async generateMatches(agentId: string) {
+    const [myBuyers, myProperties, allBuyers, allProperties] = await Promise.all([
+      this.prisma.buyer.findMany({ where: { agentId, status: 'ACTIVE' } }),
+      this.prisma.property.findMany({ where: { agentId, status: 'AVAILABLE', isPublic: true } }),
+      this.prisma.buyer.findMany({ where: { status: 'ACTIVE' } }),
+      this.prisma.property.findMany({ where: { status: 'AVAILABLE', isPublic: true } }),
+    ]);
 
-  const THRESHOLD = 20;
-  const processed = new Set<string>();
-  let newMatches = 0;
-  let existingMatches = 0;
+    const THRESHOLD = 20;
+    const processed = new Set<string>();
+    let newMatches = 0;
+    let existingMatches = 0;
 
-  for (const buyer of myBuyers) {
-    for (const property of allProperties) {
-      const key = `${buyer.id}:${property.id}`;
-      if (processed.has(key)) continue;
-      processed.add(key);
-      const score = this.calculateScore(buyer, property);
-      if (score >= THRESHOLD) {
-        try {
-          const result = await this.upsertMatch(buyer.id, property.id, score);
-          result.isNew ? newMatches++ : existingMatches++;
-        } catch {}
+    for (const buyer of myBuyers) {
+      for (const property of allProperties) {
+        const key = `${buyer.id}:${property.id}`;
+        if (processed.has(key)) continue;
+        processed.add(key);
+        const score = this.calculateScore(buyer, property);
+        if (score >= THRESHOLD) {
+          try {
+            const result = await this.upsertMatch(buyer.id, property.id, score);
+            result.isNew ? newMatches++ : existingMatches++;
+          } catch {}
+        }
       }
     }
-  }
 
-  for (const buyer of allBuyers) {
-    for (const property of myProperties) {
-      const key = `${buyer.id}:${property.id}`;
-      if (processed.has(key)) continue;
-      processed.add(key);
-      const score = this.calculateScore(buyer, property);
-      if (score >= THRESHOLD) {
-        try {
-          const result = await this.upsertMatch(buyer.id, property.id, score);
-          result.isNew ? newMatches++ : existingMatches++;
-        } catch {}
+    for (const buyer of allBuyers) {
+      for (const property of myProperties) {
+        const key = `${buyer.id}:${property.id}`;
+        if (processed.has(key)) continue;
+        processed.add(key);
+        const score = this.calculateScore(buyer, property);
+        if (score >= THRESHOLD) {
+          try {
+            const result = await this.upsertMatch(buyer.id, property.id, score);
+            result.isNew ? newMatches++ : existingMatches++;
+          } catch {}
+        }
       }
     }
+
+    return {
+      message: newMatches > 0
+        ? `${newMatches} novo(s) match(es) encontrado(s)`
+        : 'Nenhum novo match encontrado',
+      newMatches,
+      existingMatches,
+      total: newMatches + existingMatches,
+    };
   }
 
-  return {
-    message: newMatches > 0
-      ? `${newMatches} novo(s) match(es) encontrado(s)`
-      : 'Nenhum novo match encontrado',
-    newMatches,
-    existingMatches,
-    total: newMatches + existingMatches,
-  };
-}
+  // ==================== MATCH AUTOMÁTICO (ao cadastrar comprador/imóvel, score ≥ 70) ====================
+
+  async generateForBuyer(buyerId: string): Promise<void> {
+    try {
+      const buyer = await this.prisma.buyer.findUnique({ where: { id: buyerId } });
+      if (!buyer) return;
+
+      const properties = await this.prisma.property.findMany({
+        where: { status: 'AVAILABLE', isPublic: true },
+      });
+
+      for (const property of properties) {
+        const score = this.calculateScore(buyer, property);
+        if (score >= 70) {
+          try { await this.upsertMatch(buyer.id, property.id, score); } catch {}
+        }
+      }
+    } catch { /* fire-and-forget: não bloqueia o cadastro */ }
+  }
+
+  async generateForProperty(propertyId: string): Promise<void> {
+    try {
+      const property = await this.prisma.property.findUnique({ where: { id: propertyId } });
+      if (!property || property.status !== 'AVAILABLE' || !property.isPublic) return;
+
+      const buyers = await this.prisma.buyer.findMany({
+        where: { status: 'ACTIVE' },
+      });
+
+      for (const buyer of buyers) {
+        const score = this.calculateScore(buyer, property);
+        if (score >= 70) {
+          try { await this.upsertMatch(buyer.id, property.id, score); } catch {}
+        }
+      }
+    } catch { /* fire-and-forget */ }
+  }
+
+  // ==================== LISTAGEM ====================
 
   async getMyMatches(agentId: string, query: any) {
     const { page = 1, limit = 20, minScore = 0, status } = query;
@@ -166,7 +212,6 @@ async generateMatches(agentId: string) {
         orderBy: { score: 'desc' },
       }),
       this.prisma.match.count({ where }),
-      // Todas as parcerias do agente (pendentes ou aceitas) para cruzar com os matches
       this.prisma.partnership.findMany({
         where: {
           OR: [{ requesterId: agentId }, { receiverId: agentId }],
@@ -178,11 +223,8 @@ async generateMatches(agentId: string) {
 
     const processed = matches.map((m) => {
       const isMine = m.buyer?.agent?.id === agentId;
-      // Identify the other agent in this specific match
       const otherAgentId = isMine ? m.property?.agentId : m.buyer?.agent?.id;
 
-      // Find partnership specific to this exact buyer+property pair (match-level)
-      // Fall back to property+agent check for old partnerships without buyerId
       const candidates = myPartnerships.filter(p => {
         const propertyMatch = p.propertyId === m.property?.id;
         const agentMatch = p.requesterId === otherAgentId || p.receiverId === otherAgentId;
@@ -195,8 +237,6 @@ async generateMatches(agentId: string) {
         null;
 
       const partnershipAccepted = partnership?.status === 'ACCEPTED';
-
-      // Revelar contatos do comprador se: é meu comprador, OU parceria foi aceita
       const buyer = isMine || partnershipAccepted
         ? m.buyer
         : { ...m.buyer, phone: null, email: null };
@@ -235,9 +275,32 @@ async generateMatches(agentId: string) {
           { property: { agentId } },
         ],
       },
+      include: {
+        buyer:    { select: { agentId: true } },
+        property: { select: { agentId: true } },
+      },
     });
     if (!match) throw new Error('Match não encontrado');
-    return this.prisma.match.update({ where: { id: matchId }, data: { status: status as any } });
+
+    const updated = await this.prisma.match.update({
+      where: { id: matchId },
+      data: { status: status as any },
+    });
+
+    // ── Negócio fechado: +50 pts para ambos os corretores ─────────────────────
+    if (status === 'CLOSED') {
+      const buyerAgentId    = match.buyer?.agentId;
+      const propertyAgentId = match.property?.agentId;
+
+      if (buyerAgentId) {
+        await this.rankingService.addScore(buyerAgentId, 50, 'dealsClosedCount');
+      }
+      if (propertyAgentId && propertyAgentId !== buyerAgentId) {
+        await this.rankingService.addScore(propertyAgentId, 50, 'dealsClosedCount');
+      }
+    }
+
+    return updated;
   }
 
   async getMatchesForBuyer(buyerId: string, agentId: string) {

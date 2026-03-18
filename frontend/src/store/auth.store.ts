@@ -19,6 +19,8 @@ interface User {
   plan?: "free" | "starter" | "pro" | "premium" | "agency";
   isLifetime?: boolean;
   createdAt?: string;
+  cpfCnpj?: string;
+  personType?: string;
 }
 
 interface AuthState {
