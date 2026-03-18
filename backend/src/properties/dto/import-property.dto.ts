@@ -17,6 +17,7 @@ export interface ImportedPropertyData {
   neighborhood?: string;
   bedrooms?: number;
   bathrooms?: number;
+  parkingSpots?: number;
   areaM2?: number;
   description?: string;
   photos?: string[];

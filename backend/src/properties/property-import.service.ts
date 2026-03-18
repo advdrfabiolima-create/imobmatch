@@ -134,9 +134,18 @@ export class PropertyImportService {
     result.areaM2 =
       jsonLdData.areaM2 || scriptData.areaM2 || this.extractArea(bodyText);
 
+    result.parkingSpots =
+      jsonLdData.parkingSpots || scriptData.parkingSpots || this.extractNumber(bodyText, [
+        /(\d+)\s*(?:vaga|garagem)/i,
+        /(?:vaga|garagem)[s]?\s*:?\s*(\d+)/i,
+        /(\d+)\s*(?:parking|estacionamento)/i,
+      ]);
+
     // ── Fotos ─────────────────────────────────────────────────────────────────
-    const photos = [...ogImages, ...this.extractImagesFromDom($)];
-    result.photos = [...new Set(photos)].slice(0, 10);
+    const scriptPhotos = this.extractPhotosFromScripts($);
+    const domPhotos    = this.extractImagesFromDom($);
+    const photos       = [...new Set([...ogImages, ...scriptPhotos, ...domPhotos])];
+    result.photos      = photos.slice(0, 15);
 
     // ── Descrição do corpo da página ──────────────────────────────────────────
     if (!result.description) {
@@ -326,6 +335,11 @@ export class PropertyImportService {
         }
       }
 
+      if (!data.parkingSpots) {
+        const m = src.match(/"(?:parkingSpots|vagas|garagem|parking|garage|parkingLots)"\s*:\s*(\d+)/i);
+        if (m) data.parkingSpots = parseInt(m[1]);
+      }
+
       // Tenta parsear JSON completo
       if (!data.price || !data.city) {
         for (const pattern of patterns) {
@@ -374,26 +388,126 @@ export class PropertyImportService {
 
   // ── Imagens do DOM ───────────────────────────────────────────────────────
   private extractImagesFromDom($: ReturnType<typeof load>): string[] {
+    const seen = new Set<string>();
     const imgs: string[] = [];
-    const attrs = ['src', 'data-src', 'data-lazy-src', 'data-original', 'data-full'];
 
-    $('img').each((_, el) => {
-      for (const attr of attrs) {
-        const src = $(el).attr(attr);
-        if (!src || !src.startsWith('http')) continue;
-        const w = parseInt($(el).attr('width') || '0');
-        const srcL = src.toLowerCase();
-        if (
-          w > 300 ||
-          /foto|photo|imov|apart|casa|imovel|galeria|gallery|listing|property/.test(srcL)
-        ) {
-          imgs.push(src);
-          break;
+    const IMG_ATTRS = [
+      'src', 'data-src', 'data-lazy-src', 'data-lazy', 'data-original',
+      'data-full', 'data-zoom-src', 'data-zoom', 'data-image', 'data-image-src',
+      'data-large', 'data-hi-res-src', 'data-high-res', 'data-full-src',
+      'data-original-src', 'data-normal',
+    ];
+
+    const SKIP_PATTERN = /icon|logo|avatar|sprite|pixel|tracking|badge|favicon|\.gif|placeholder|blank|noimage|no-image|nophoto/i;
+    const SMALL_PATTERN = /[_\-x](?:16|24|32|48|64|80|96|100|128|150)(?:x|\.|_|$)/i;
+
+    const addUrl = (url: string) => {
+      if (!url || !url.startsWith('http') || seen.has(url)) return;
+      if (SKIP_PATTERN.test(url)) return;
+      if (SMALL_PATTERN.test(url)) return;
+      seen.add(url);
+      imgs.push(url);
+    };
+
+    const processEl = (el: any) => {
+      // Atributos de imagem
+      for (const attr of IMG_ATTRS) {
+        const val = $(el).attr(attr);
+        if (val?.startsWith('http')) { addUrl(val); break; }
+      }
+      // srcset — pega a maior resolução (último item)
+      const srcset = $(el).attr('srcset');
+      if (srcset) {
+        const parts = srcset.split(',').map(p => p.trim().split(/\s+/)[0]).filter(Boolean);
+        const last = parts[parts.length - 1];
+        if (last?.startsWith('http')) addUrl(last);
+      }
+      // background-image inline
+      const style = $(el).attr('style') || '';
+      const bg = style.match(/url\(['"]?(https?:\/\/[^'")\s]+)['"]?\)/);
+      if (bg) addUrl(bg[1]);
+    };
+
+    // Prioridade: containers de galeria/carousel
+    const GALLERY_SELECTORS = [
+      '[class*="gallery"]', '[class*="Gallery"]', '[class*="carousel"]',
+      '[class*="Carousel"]', '[class*="slider"]', '[class*="Slider"]',
+      '[class*="swiper"]', '[class*="foto"]', '[class*="Foto"]',
+      '[class*="photo"]', '[class*="Photo"]', '[class*="media"]',
+      '[data-testid*="gallery"]', '[data-testid*="photo"]',
+      '[class*="imagem"]', '[class*="lightbox"]',
+    ];
+    for (const sel of GALLERY_SELECTORS) {
+      try {
+        $(sel).find('img, [data-src], [data-lazy-src], [data-zoom-src]').each((_, el) => processEl(el));
+        $(sel).filter('[style*="background"]').each((_, el) => processEl(el));
+        $(sel).find('[style*="background"]').each((_, el) => processEl(el));
+      } catch { /* ignorar */ }
+    }
+
+    // Todas as imagens do DOM
+    $('img').each((_, el) => processEl(el));
+
+    // background-image em qualquer elemento
+    $('[style*="background-image"]').each((_, el) => processEl(el));
+
+    return imgs;
+  }
+
+  // ── Extrai fotos de arrays JSON dentro de <script> tags ─────────────────
+  private extractPhotosFromScripts($: ReturnType<typeof load>): string[] {
+    const seen  = new Set<string>();
+    const photos: string[] = [];
+
+    const SKIP = /icon|logo|avatar|sprite|favicon|placeholder|blank|noimage|tracking/i;
+    const IMG_EXT = /\.(jpg|jpeg|png|webp)(\?|$)/i;
+
+    const addUrl = (url: string) => {
+      if (!url || !url.startsWith('http') || seen.has(url)) return;
+      if (!IMG_EXT.test(url)) return;
+      if (SKIP.test(url)) return;
+      seen.add(url);
+      photos.push(url);
+    };
+
+    $('script:not([src]):not([type="application/ld+json"])').each((_, el) => {
+      const src = $(el).html() || '';
+      if (src.length < 50 || src.length > 600000) return;
+
+      // 1. Arrays nomeados: "photos": [...], "medias": [...], "images": [...], etc.
+      const arrayRx = /"(?:photos|images|fotos|galeria|gallery|imagens|pictures|medias|media|arquivos|imagens_venda|imagens_aluguel|galeria_fotos)"\s*:\s*\[([^\]]{10,50000})\]/gi;
+      let m: RegExpExecArray | null;
+      while ((m = arrayRx.exec(src)) !== null) {
+        const content = m[1];
+        // URLs diretas no array
+        const urlRx = /"(https?:\/\/[^"]{10,500})"/g;
+        let u: RegExpExecArray | null;
+        while ((u = urlRx.exec(content)) !== null) addUrl(u[1]);
+      }
+
+      // 2. Campos "url", "src", "original", "fullUrl" dentro de objetos de mídia
+      //    Filtra apenas URLs de CDNs/paths reconhecíveis como fotos de imóvel
+      const urlFieldRx = /"(?:url|src|original|fullUrl|highResUrl|largeUrl|hdUrl|imageUrl|photoUrl)"\s*:\s*"(https?:\/\/[^"]{10,500})"/gi;
+      while ((m = urlFieldRx.exec(src)) !== null) {
+        const url = m[1];
+        if (/(?:cdn|foto|photo|imov|imovel|property|listing|galeria|gallery|image|media|arquivo|content)/i.test(url)) {
+          addUrl(url);
+        }
+      }
+
+      // 3. __NEXT_DATA__ / __NUXT__ — tenta parsear JSON completo e extrair todas as URLs de imagem
+      if (/(?:__NEXT_DATA__|__NUXT__|__INITIAL_STATE__)/.test(src)) {
+        const allUrlRx = /"(https?:\/\/[^"]{10,500}\.(?:jpg|jpeg|png|webp)(?:\?[^"]*)?)"/gi;
+        while ((m = allUrlRx.exec(src)) !== null) {
+          const url = m[1];
+          if (/(?:cdn|foto|photo|imov|property|listing|galeria|image|media)/i.test(url)) {
+            addUrl(url);
+          }
         }
       }
     });
 
-    return imgs;
+    return photos;
   }
 
   // ── Extrai título do H1 ignorando elementos de nav ───────────────────────
@@ -753,6 +867,8 @@ export class PropertyImportService {
         target.bedrooms = parseInt(String(val)) || undefined;
       if (!target.bathrooms && /bathroom|banheiro/.test(k))
         target.bathrooms = parseInt(String(val)) || undefined;
+      if (!target.parkingSpots && /parking|vagas|garagem|garage/.test(k))
+        target.parkingSpots = parseInt(String(val)) || undefined;
       if (!target.areaM2 && /area|m2|metragem/.test(k)) {
         const a = parseFloat(String(val).replace(',', '.'));
         if (!isNaN(a) && a >= 5) target.areaM2 = a;

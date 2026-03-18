@@ -79,13 +79,16 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
       reset({
         title: data.title || "",
         type: validTypes.includes(data.type) ? data.type : "APARTMENT",
-        price: data.price || (undefined as any),
+        // data.price é número em reais → converte para centavos em string para maskCurrency
+        price: data.price
+          ? maskCurrency(String(Math.round(data.price * 100)))
+          : (undefined as any),
         city: data.city || "",
         state: data.state || "",
         neighborhood: data.neighborhood || "",
         bedrooms: data.bedrooms || (undefined as any),
         bathrooms: data.bathrooms || (undefined as any),
-        parkingSpots: undefined,
+        parkingSpots: data.parkingSpots || (undefined as any),
         areaM2: data.areaM2 || (undefined as any),
         description: data.description || "",
       });
