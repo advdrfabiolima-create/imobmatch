@@ -19,6 +19,7 @@ import { OpportunitiesModule } from './opportunities/opportunities.module';
 import { FeedModule } from './feed/feed.module';
 import { RankingModule } from './ranking/ranking.module';
 import { BillingModule } from './billing/billing.module';
+import { EarlyAccessModule } from './early-access/early-access.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { BillingModule } from './billing/billing.module';
     FeedModule,
     RankingModule,
     BillingModule,
+    EarlyAccessModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

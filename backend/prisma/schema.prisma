@@ -271,6 +271,19 @@ enum SubscriptionStatus {
   INACTIVE
 }
 
+// ==================== ACESSO ANTECIPADO ====================
+
+model EarlyAccessLead {
+  id        String   @id @default(uuid())
+  fullName  String
+  email     String   @unique
+  whatsapp  String?
+  source    String   @default("facebook_group")
+  createdAt DateTime @default(now())
+
+  @@map("early_access_leads")
+}
+
 // ==================== MENSAGENS ====================
 
 model Message {
