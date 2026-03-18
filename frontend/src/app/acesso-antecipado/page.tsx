@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Link from "next/link";
 import {
   CheckCircle2, AlertCircle, ArrowRight, Building2,
   Users, Zap, HelpingHand, Lock, ChevronRight,
@@ -17,7 +16,7 @@ const COPY = {
   badge:      "Acesso exclusivo · Grupo Negócios Imobiliários",
   headline:   "Pare de perder clientes por não ter o imóvel certo.",
   subheadline:"Uma plataforma para corretores encontrarem imóveis, compradores e parcerias com mais facilidade.",
-  support:    "Estou liberando acesso antecipado para membros do grupo Negócios Imobiliários.",
+  support:    "Estamos liberando acesso antecipado para membros do grupo Negócios Imobiliários.",
   ctaButton:  "Quero acesso antecipado",
   scarcity:   "As vagas estão sendo liberadas de forma gradual para garantir qualidade na plataforma.",
   privacy:    "Seus dados serão usados apenas para liberar o acesso antecipado e comunicar novidades do ImobMatch.",
@@ -84,13 +83,8 @@ export default function AcessoAntecipadoPage() {
 
         {/* ── Header mínimo ── */}
         <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-10">
-          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/">
-              <img src="/logo.png" alt="ImobMatch" className="h-8 w-auto object-contain" />
-            </Link>
-            <Link href="/login" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">
-              Já tenho conta
-            </Link>
+          <div className="max-w-5xl mx-auto px-6 py-4">
+            <img src="/logo.png" alt="ImobMatch" className="h-8 w-auto object-contain" />
           </div>
         </header>
 
@@ -165,12 +159,9 @@ export default function AcessoAntecipadoPage() {
                         ))}
                       </ul>
                     </div>
-                    <Link
-                      href="/"
-                      className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
-                    >
-                      Conhecer a plataforma <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
+                    <p className="text-sm text-gray-400">
+                      Em breve você receberá seu convite por e-mail. 🎉
+                    </p>
                   </div>
                 ) : (
                   /* ── Formulário ── */
@@ -347,17 +338,10 @@ export default function AcessoAntecipadoPage() {
         </section>
 
         {/* ── Footer mínimo ── */}
-        <footer className="border-t py-8">
-          <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-gray-400">
-            <Link href="/">
-              <img src="/logo.png" alt="ImobMatch" className="h-6 w-auto object-contain" />
-            </Link>
-            <p>© {new Date().getFullYear()} ImobMatch · useimobmatch.com.br</p>
-            <div className="flex gap-4">
-              <Link href="/privacidade" className="hover:text-blue-600 transition-colors">Privacidade</Link>
-              <Link href="/termos"      className="hover:text-blue-600 transition-colors">Termos</Link>
-            </div>
-          </div>
+        <footer className="border-t py-6">
+          <p className="text-center text-xs text-gray-400">
+            © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados
+          </p>
         </footer>
       </div>
     </>
