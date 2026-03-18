@@ -108,22 +108,38 @@ export class PropertyImportService {
       this.extractPriceFromText(bodyText);
 
     // ── Montar localização ────────────────────────────────────────────────────
-    result.city = jsonLdData.city || scriptData.city || this.extractCityFromPage($, url);
+    // Extrai cidade+estado juntos de breadcrumb/endereço (evita falsos positivos de scripts)
+    const paired = this.extractCityStatePaired($);
+    result.city  = jsonLdData.city  || paired.city  || this.extractCityFromPage($, url)  || scriptData.city;
+    result.state = jsonLdData.state || paired.state || this.extractStateFromPage($, url) || scriptData.state;
     result.neighborhood =
       jsonLdData.neighborhood ||
       scriptData.neighborhood ||
       this.extractNeighborhoodFromPage($, result.city);
-    result.state = jsonLdData.state || scriptData.state || this.extractStateFromPage($, url);
 
     // ── Tipo do imóvel ────────────────────────────────────────────────────────
     result.type = jsonLdData.type || scriptData.type || this.extractTypeFromPage($, url);
 
     // ── Montar características ────────────────────────────────────────────────
-    result.bedrooms =
-      jsonLdData.bedrooms || scriptData.bedrooms || this.extractNumber(bodyText, [
-        /(\d+)\s*(?:quarto|dormit[oó]rio|suite|suíte)/i,
-        /(?:quarto|dorm|suite|suíte)[s]?\s*:?\s*(\d+)/i,
+    // Quartos e suítes: extraídos separadamente para combinar corretamente
+    const bedroomsRaw = jsonLdData.bedrooms || scriptData.bedrooms ||
+      this.extractNumber(bodyText, [
+        /(\d+)\s*(?:quarto[s]?|dormit[oó]rio[s]?)/i,
+        /(?:quarto[s]?|dormit[oó]rio[s]?)\s*:?\s*(\d+)/i,
       ]);
+    const suitesRaw = scriptData.suites ||
+      this.extractNumber(bodyText, [
+        /(\d+)\s*su[ií]te[s]?/i,
+        /su[ií]te[s]?\s*:?\s*(\d+)/i,
+      ]);
+
+    if (bedroomsRaw && suitesRaw) {
+      // Se quartos >= suítes: suítes são subconjunto (ex: "3 quartos, 1 suíte")
+      // Se quartos < suítes: estão listados separadamente — soma
+      result.bedrooms = bedroomsRaw >= suitesRaw ? bedroomsRaw : bedroomsRaw + suitesRaw;
+    } else {
+      result.bedrooms = bedroomsRaw || suitesRaw;
+    }
 
     result.bathrooms =
       jsonLdData.bathrooms || scriptData.bathrooms || this.extractNumber(bodyText, [
@@ -325,6 +341,11 @@ export class PropertyImportService {
       if (!data.bathrooms) {
         const m = src.match(/"(?:bathrooms|banheiros|wc)"\s*:\s*(\d+)/i);
         if (m) data.bathrooms = parseInt(m[1]);
+      }
+
+      if (!(data as any).suites) {
+        const m = src.match(/"(?:suites|su[ií]tes|suite_count|suitesQuantity)"\s*:\s*(\d+)/i);
+        if (m) (data as any).suites = parseInt(m[1]);
       }
 
       if (!data.areaM2) {
@@ -530,6 +551,33 @@ export class PropertyImportService {
     // Ignorar títulos genéricos
     if (/^(home|inicio|início|detalhes|imovel|imóvel)$/i.test(cleaned)) return undefined;
     return cleaned.slice(0, 200);
+  }
+
+  // ── Extrai cidade + estado juntos de padrões "Cidade, UF" ───────────────
+  private extractCityStatePaired($: ReturnType<typeof load>): { city?: string; state?: string } {
+    const UFS = 'AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO';
+    const PAIR = new RegExp(
+      `([A-ZÀ-Ú][a-zà-ú]+(?:\\s+(?:[A-ZÀ-Ú]?[a-zà-ú]+))*)\\s*[,\\-–/]\\s*(${UFS})\\b`,
+      'g',
+    );
+
+    // Fontes em ordem de confiabilidade
+    const sources: string[] = [
+      $('[class*="breadcrumb"], [class*="Breadcrumb"], nav[aria-label*="breadcrumb"], .bread').text(),
+      $('[class*="address"], [class*="endereco"], [class*="local"], [itemprop="address"]').first().text(),
+      $('[class*="location"], [class*="localizacao"], [data-testid*="address"], [data-testid*="location"]').first().text(),
+      $('title').text(),
+      $('meta[name="description"]').attr('content') ?? '',
+      $('h1').first().text(),
+    ];
+
+    for (const src of sources) {
+      if (!src.trim()) continue;
+      PAIR.lastIndex = 0;
+      const m = PAIR.exec(src);
+      if (m) return { city: m[1].trim(), state: m[2] };
+    }
+    return {};
   }
 
   // ── Extrai cidade de breadcrumb, title ou meta ───────────────────────────

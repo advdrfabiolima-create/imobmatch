@@ -45,7 +45,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
   const [photos, setPhotos] = useState<string[]>(property?.photos || []);
   const [uploading, setUploading] = useState(false);
 
-  const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm<PropertyFormValues>({
+  const { register, handleSubmit, setValue, watch, formState: { errors }, reset } = useForm<PropertyFormValues>({
     resolver: zodResolver(schema),
     defaultValues: property
       ? {
@@ -63,6 +63,11 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
         }
       : undefined,
   });
+
+  const watchedType = watch("type");
+  const areaLabel = (watchedType === "LAND" || watchedType === "RURAL")
+    ? "Área total (m²)"
+    : "Área construída (m²)";
 
   // ── Importação por link ──────────────────────────────────────────────────
   const handleImport = async () => {
@@ -328,7 +333,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                   <Input type="number" min="0" {...register("parkingSpots")} />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Área (m²)</label>
+                  <label className="text-sm font-medium mb-1 block">{areaLabel}</label>
                   <Input type="number" min="0" {...register("areaM2")} />
                 </div>
               </div>
