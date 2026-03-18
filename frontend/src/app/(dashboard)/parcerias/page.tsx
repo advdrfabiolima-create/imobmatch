@@ -12,6 +12,7 @@ import { UserCheck, Check, X, Building2, FileText, User, AlertTriangle } from "l
 import { useAuthStore } from "@/store/auth.store";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { showPointsToast } from "@/lib/points-toast";
 
 const STATUS_COLORS: Record<string, any> = {
   PENDING: "warning",
@@ -121,7 +122,13 @@ export default function ParceriasPage() {
     mutationFn: ({ id, status }: { id: string; status: string }) =>
       api.patch(`/partnerships/${id}/respond`, { status }),
     onSuccess: (_, vars) => {
-      toast.success(vars.status === "ACCEPTED" ? "Parceria aceita!" : "Parceria recusada");
+      if (vars.status === "ACCEPTED") {
+        toast.success("Parceria aceita!");
+        showPointsToast(10, "Parceria aceita!");
+        queryClient.invalidateQueries({ queryKey: ["ranking"] });
+      } else {
+        toast.success("Parceria recusada");
+      }
       queryClient.invalidateQueries({ queryKey: ["partnerships"] });
     },
   });

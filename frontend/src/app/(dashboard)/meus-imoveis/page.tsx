@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 import { Plus, Search, Home } from "lucide-react";
 import toast from "react-hot-toast";
 import { PropertyFormModal } from "@/components/properties/property-form-modal";
+import { showPointsToast } from "@/lib/points-toast";
 import { STATES } from "@/lib/utils";
 
 const STATUS_TABS = [
@@ -59,6 +60,10 @@ export default function ImoveisPage() {
         SOLD: "vendido", RENTED: "alugado", INACTIVE: "inativo", AVAILABLE: "reativado",
       };
       toast.success(`Imóvel marcado como ${labels[newStatus] ?? newStatus}`);
+      if (newStatus === "SOLD") {
+        showPointsToast(50, "Imóvel vendido!");
+        queryClient.invalidateQueries({ queryKey: ["ranking"] });
+      }
       queryClient.invalidateQueries({ queryKey: ["my-properties"] });
     },
     onError: () => toast.error("Erro ao alterar status"),

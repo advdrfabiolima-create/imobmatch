@@ -44,6 +44,8 @@ export default function RankingPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["ranking"],
     queryFn: () => api.get("/ranking?limit=50").then(r => r.data),
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   const agents = data?.data ?? [];

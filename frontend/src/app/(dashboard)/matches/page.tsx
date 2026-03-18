@@ -11,6 +11,7 @@ import { Zap, RefreshCw, ArrowRight, User, Home, Phone, ChevronDown, Users, Lock
 import { getWhatsAppLink } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
 import toast from "react-hot-toast";
+import { showPointsToast } from "@/lib/points-toast";
 import Link from "next/link";
 
 // ─── Status config ────────────────────────────────────────────────────────────
@@ -248,6 +249,10 @@ export default function MatchesPage() {
     onSuccess: (_, { status }) => {
       const label = STATUS_MAP[status]?.label ?? status;
       toast.success(`Progresso atualizado para "${label}"`);
+      if (status === "CLOSED") {
+        showPointsToast(50, "Negócio fechado!");
+        queryClient.invalidateQueries({ queryKey: ["ranking"] });
+      }
       queryClient.invalidateQueries({ queryKey: ["matches"] });
     },
     onError: () => toast.error("Erro ao atualizar status"),
