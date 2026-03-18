@@ -11,6 +11,7 @@ import { api } from "@/lib/api";
 import { X, Loader2, ImagePlus, Trash2, Link2, PenLine, Download } from "lucide-react";
 import { STATES } from "@/lib/utils";
 import { maskCurrency, parseCurrency } from "@/lib/masks";
+import { CitySelect } from "@/components/ui/city-select";
 import toast from "react-hot-toast";
 
 const schema = z.object({
@@ -68,6 +69,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
 
   const watchedType = watch("type");
   const watchedListingType = watch("listingType");
+  const watchedState = watch("state");
   const areaLabel = (watchedType === "LAND" || watchedType === "RURAL")
     ? "Área total (m²)"
     : "Área construída (m²)";
@@ -317,27 +319,29 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Cidade *</label>
-                  <Input placeholder="São Paulo" {...register("city")} />
-                  {errors.city && (
-                    <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>
-                  )}
-                </div>
-                <div>
                   <label className="text-sm font-medium mb-1 block">Estado *</label>
                   <select
                     {...register("state")}
+                    onChange={(e) => {
+                      setValue("state", e.target.value, { shouldValidate: true });
+                      setValue("city", "");
+                    }}
                     className="h-10 w-full rounded-md border px-3 text-sm"
                   >
                     <option value="">Selecione</option>
                     {STATES.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
+                      <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
                   {errors.state && (
                     <p className="text-red-500 text-xs mt-1">{errors.state.message}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Cidade *</label>
+                  <CitySelect stateValue={watchedState ?? ""} {...register("city")} />
+                  {errors.city && (
+                    <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>
                   )}
                 </div>
                 <div>

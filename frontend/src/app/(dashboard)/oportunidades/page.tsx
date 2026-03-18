@@ -13,6 +13,8 @@ import {
   TrendingDown, Building2, Home, Landmark, Warehouse, Trees
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
+import { CitySelect } from "@/components/ui/city-select";
+import { STATES } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 const PROPERTY_TYPE_LABELS: Record<string, string> = {
@@ -35,7 +37,7 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     title: "", propertyType: "APARTMENT", priceNormal: "", priceUrgent: "",
-    city: "", neighborhood: "", description: "", acceptsOffer: false,
+    state: "", city: "", neighborhood: "", description: "", acceptsOffer: false,
   });
 
   const mutation = useMutation({
@@ -120,22 +122,36 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-gray-700">Cidade</label>
-              <input
+              <label className="text-sm font-medium text-gray-700">Estado *</label>
+              <select
                 required
-                value={form.city}
-                onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                value={form.state}
+                onChange={e => setForm(f => ({ ...f, state: e.target.value, city: "" }))}
                 className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
-              />
+              >
+                <option value="">Selecione</option>
+                {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Bairro</label>
-              <input
-                value={form.neighborhood}
-                onChange={e => setForm(f => ({ ...f, neighborhood: e.target.value }))}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              <label className="text-sm font-medium text-gray-700">Cidade *</label>
+              <CitySelect
+                required
+                stateValue={form.state}
+                value={form.city}
+                onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">Bairro</label>
+            <input
+              value={form.neighborhood}
+              onChange={e => setForm(f => ({ ...f, neighborhood: e.target.value }))}
+              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
           </div>
 
           <div>

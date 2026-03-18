@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 import { X, Loader2 } from "lucide-react";
 import { STATES } from "@/lib/utils";
 import { maskPhone, maskCurrency, parseCurrency } from "@/lib/masks";
+import { CitySelect } from "@/components/ui/city-select";
 import toast from "react-hot-toast";
 
 const schema = z.object({
@@ -37,7 +38,7 @@ interface Props {
 export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
   const isEditing = !!buyer;
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: buyer
       ? {
@@ -47,6 +48,8 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
         }
       : { propertyType: "APARTMENT" },
   });
+
+  const watchedState = watch("desiredState");
 
   const mutation = useMutation({
     mutationFn: (data: FormData) => {
@@ -95,15 +98,23 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Cidade Desejada *</label>
-              <Input placeholder="São Paulo" {...register("desiredCity")} />
-            </div>
-            <div>
-              <label className="text-sm font-medium mb-1 block">Estado</label>
-              <select {...register("desiredState")} className="h-10 w-full rounded-md border px-3 text-sm">
-                <option value="">UF</option>
+              <label className="text-sm font-medium mb-1 block">Estado *</label>
+              <select
+                {...register("desiredState")}
+                onChange={(e) => {
+                  setValue("desiredState", e.target.value, { shouldDirty: true });
+                  setValue("desiredCity", "");
+                }}
+                className="h-10 w-full rounded-md border px-3 text-sm"
+              >
+                <option value="">Selecione</option>
                 {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Cidade Desejada *</label>
+              <CitySelect stateValue={watchedState ?? ""} {...register("desiredCity")} />
+              {errors.desiredCity && <p className="text-red-500 text-xs mt-1">{errors.desiredCity.message}</p>}
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Bairro</label>
