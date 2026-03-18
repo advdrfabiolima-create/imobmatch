@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Building2, Users, Zap, Shield, TrendingUp, MessageSquare,
   Menu, X, ArrowRight, MapPin, Check, Star, CheckCircle2,
-  HandshakeIcon, Trophy, ChevronRight,
+  HeartHandshake, Trophy, ChevronRight,
 } from "lucide-react";
 import { COPY } from "@/config/copy";
 
@@ -610,7 +610,7 @@ export default function HomePage() {
       <section className="container mx-auto px-6 py-20">
         <div className="bg-gray-50 rounded-3xl p-10 md:p-16 text-center max-w-3xl mx-auto border border-gray-100">
           <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <HandshakeIcon className="h-8 w-8 text-blue-600" />
+            <HeartHandshake className="h-8 w-8 text-blue-600" />
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Pronto para fechar mais negócios?
