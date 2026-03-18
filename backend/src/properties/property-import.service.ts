@@ -127,7 +127,7 @@ export class PropertyImportService {
         /(\d+)\s*(?:quarto[s]?|dormit[oó]rio[s]?)/i,
         /(?:quarto[s]?|dormit[oó]rio[s]?)\s*:?\s*(\d+)/i,
       ]);
-    const suitesRaw = scriptData.suites ||
+    const suitesRaw = (scriptData as any).suites ||
       this.extractNumber(bodyText, [
         /(\d+)\s*su[ií]te[s]?/i,
         /su[ií]te[s]?\s*:?\s*(\d+)/i,
