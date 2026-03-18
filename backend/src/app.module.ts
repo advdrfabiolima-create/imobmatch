@@ -18,6 +18,7 @@ import { TeamModule } from './team/team.module';
 import { OpportunitiesModule } from './opportunities/opportunities.module';
 import { FeedModule } from './feed/feed.module';
 import { RankingModule } from './ranking/ranking.module';
+import { BillingModule } from './billing/billing.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { RankingModule } from './ranking/ranking.module';
     OpportunitiesModule,
     FeedModule,
     RankingModule,
+    BillingModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

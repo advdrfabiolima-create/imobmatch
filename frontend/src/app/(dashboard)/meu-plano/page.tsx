@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,7 @@ import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import {
   Check, X, Crown, Star, Loader2, ArrowRight,
-  Zap, Sparkles, Gem, Building2, Users,
+  Zap, Sparkles, Gem, Building2, Users, AlertCircle,
 } from "lucide-react";
 import { PLANS, PLAN_COLORS, formatPlanPrice, getPlanById } from "@/config/plans";
 import { COPY } from "@/config/copy";
@@ -22,6 +21,14 @@ const PLAN_ICONS: Record<string, React.ElementType> = {
   pro:     Sparkles,
   premium: Gem,
   agency:  Building2,
+};
+
+const STATUS_LABELS: Record<string, { label: string; color: string }> = {
+  PENDING:  { label: "Aguardando pagamento", color: "text-amber-600 bg-amber-50 border-amber-200" },
+  ACTIVE:   { label: "Ativa",                color: "text-green-600 bg-green-50 border-green-200" },
+  OVERDUE:  { label: "Pagamento vencido",    color: "text-red-600 bg-red-50 border-red-200" },
+  CANCELLED:{ label: "Cancelada",            color: "text-gray-500 bg-gray-50 border-gray-200" },
+  INACTIVE: { label: "Inativa",              color: "text-gray-500 bg-gray-50 border-gray-200" },
 };
 
 function FounderBadge() {
@@ -43,8 +50,16 @@ function FounderBadge() {
 
 export default function MeuPlanoPage() {
   const { user, updateUser } = useAuthStore();
-  const router = useRouter();
-  const [loading, setLoading] = useState<string | null>(null);
+  const [loading, setLoading]           = useState<string | null>(null);
+  const [subscription, setSubscription] = useState<any>(null);
+  const [subLoading, setSubLoading]     = useState(true);
+
+  useEffect(() => {
+    api.get("/billing/subscription")
+      .then(r => setSubscription(r.data))
+      .catch(() => setSubscription(null))
+      .finally(() => setSubLoading(false));
+  }, []);
 
   if (user?.isLifetime) {
     return (
@@ -59,29 +74,53 @@ export default function MeuPlanoPage() {
 
   const handleSelectPlan = async (planId: string) => {
     if (planId === currentPlan) return;
+
+    // Downgrade para free → cancela assinatura
+    if (planId === "free") {
+      setLoading("free");
+      try {
+        await api.delete("/billing/subscription");
+        updateUser({ plan: "free" as any });
+        setSubscription(null);
+        toast.success("Plano alterado para free.");
+      } catch {
+        toast.error("Erro ao cancelar assinatura. Tente novamente.");
+      } finally {
+        setLoading(null);
+      }
+      return;
+    }
+
+    // Contato para Agency (pode ser por Asaas ou comercial)
     if (planId === "agency") {
       window.open("mailto:contato@useimobmatch.com.br?subject=Plano Agency", "_blank");
       return;
     }
+
+    // Planos pagos → criar checkout Asaas
     setLoading(planId);
     try {
-      await api.patch("/users/plan", { plan: planId });
-      updateUser({ plan: planId as any });
-      toast.success(`Plano ${getPlanById(planId)?.name} ativado!`);
-      router.push("/dashboard");
+      const { data } = await api.post("/billing/checkout", { planId });
+      if (data?.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        toast.error("Não foi possível gerar o link de pagamento.");
+      }
     } catch {
-      toast.error("Erro ao alterar plano. Tente novamente.");
+      toast.error("Erro ao iniciar pagamento. Tente novamente.");
     } finally {
       setLoading(null);
     }
   };
+
+  const subStatus = subscription ? STATUS_LABELS[subscription.status] : null;
 
   return (
     <div>
       <Header title="Meu Plano" />
       <div className="p-4 md:p-6 max-w-6xl">
 
-        {/* Founder badge para usuários iniciais */}
+        {/* Banner usuário fundador */}
         <div className="mb-6 flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
           <Star className="h-5 w-5 text-amber-500 flex-shrink-0" />
           <div>
@@ -89,6 +128,33 @@ export default function MeuPlanoPage() {
             <p className="text-xs text-amber-700">Corretores que entram agora têm vantagem competitiva na rede.</p>
           </div>
         </div>
+
+        {/* Status da assinatura atual */}
+        {!subLoading && subStatus && subscription?.status !== "CANCELLED" && (
+          <div className={`mb-6 flex items-center gap-3 border rounded-xl px-4 py-3 ${subStatus.color}`}>
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold">
+                Assinatura: {subStatus.label}
+                {subscription?.plan && (
+                  <span className="font-normal ml-1">
+                    — Plano {getPlanById(subscription.plan)?.name ?? subscription.plan}
+                  </span>
+                )}
+              </p>
+              {subscription?.status === "PENDING" && (
+                <p className="text-xs mt-0.5 opacity-80">
+                  Aguardando confirmação do pagamento. Após o pagamento, seu plano será ativado automaticamente.
+                </p>
+              )}
+              {subscription?.status === "OVERDUE" && (
+                <p className="text-xs mt-0.5 opacity-80">
+                  Seu pagamento está vencido. Regularize para evitar a suspensão do plano.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="mb-6">
           <h2 className="text-xl font-bold text-gray-900">Escolha seu plano</h2>
@@ -99,8 +165,8 @@ export default function MeuPlanoPage() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {PLANS.map(plan => {
-            const colors = PLAN_COLORS[plan.id];
-            const Icon = PLAN_ICONS[plan.id] ?? Zap;
+            const colors    = PLAN_COLORS[plan.id];
+            const Icon      = PLAN_ICONS[plan.id] ?? Zap;
             const isCurrent = currentPlan === plan.id;
             const isLoading = loading === plan.id;
 
@@ -127,7 +193,6 @@ export default function MeuPlanoPage() {
                 )}
 
                 <CardContent className="p-5 flex flex-col flex-1">
-                  {/* Top section — grows to align button across cards */}
                   <div className="flex-1">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors.iconBg}`}>
                       <Icon className={`h-5 w-5 ${colors.text}`} />
@@ -140,7 +205,10 @@ export default function MeuPlanoPage() {
                         <p className="text-2xl font-extrabold text-gray-900">Grátis</p>
                       ) : (
                         <>
-                          <p className="text-2xl font-extrabold text-gray-900">{formatPlanPrice(plan)}<span className="text-sm font-normal text-gray-400">/mês</span></p>
+                          <p className="text-2xl font-extrabold text-gray-900">
+                            {formatPlanPrice(plan)}
+                            <span className="text-sm font-normal text-gray-400">/mês</span>
+                          </p>
                           {plan.priceAnnual && (
                             <p className="text-xs text-gray-400">ou R$ {plan.priceAnnual}/ano</p>
                           )}
@@ -162,9 +230,11 @@ export default function MeuPlanoPage() {
                     ) : isCurrent ? (
                       <><Check className="h-3.5 w-3.5" /> {COPY.currentPlan}</>
                     ) : plan.id === "agency" ? (
-                      <>{COPY.upgradeCta} <ArrowRight className="h-3.5 w-3.5" /></>
+                      <>Falar com vendas <ArrowRight className="h-3.5 w-3.5" /></>
+                    ) : plan.id === "free" ? (
+                      <>Usar plano free</>
                     ) : (
-                      <>{COPY.upgradeCta} <ArrowRight className="h-3.5 w-3.5" /></>
+                      <>Assinar agora <ArrowRight className="h-3.5 w-3.5" /></>
                     )}
                   </Button>
 
@@ -186,7 +256,7 @@ export default function MeuPlanoPage() {
         </div>
 
         <p className="text-xs text-gray-400 mt-6 text-center">
-          Pagamentos e cobranças serão ativados em breve. Explore todos os recursos gratuitamente até lá.
+          Pagamentos processados com segurança via Asaas · Cancele quando quiser
         </p>
       </div>
     </div>
