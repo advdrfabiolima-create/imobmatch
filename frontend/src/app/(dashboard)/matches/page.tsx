@@ -42,13 +42,29 @@ function StatusBadge({
   status,
   matchId,
   onUpdate,
+  editable = true,
 }: {
   status: string;
   matchId: string;
   onUpdate: (id: string, status: string) => void;
+  editable?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const cfg = STATUS_MAP[status] ?? STATUS_MAP.PENDING;
+
+  // Não editável: badge estático com cadeado
+  if (!editable) {
+    return (
+      <span
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.color} opacity-70`}
+        title="Disponível após aceite da parceria"
+      >
+        <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+        {cfg.label}
+        <Lock className="h-3 w-3" />
+      </span>
+    );
+  }
 
   return (
     <div className="relative">
@@ -426,6 +442,7 @@ export default function MatchesPage() {
                         status={m.status}
                         matchId={m.id}
                         onUpdate={(id, status) => updateStatusMutation.mutate({ id, status })}
+                        editable={isSameAgent || partnershipAccepted}
                       />
                     </div>
 
