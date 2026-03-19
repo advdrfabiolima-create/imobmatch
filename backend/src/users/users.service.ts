@@ -103,21 +103,55 @@ export class UsersService {
   }
 
   async getDashboardStats(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { city: true, state: true },
+    });
+
     const [propertiesCount, buyersCount, matchesCount, partnershipsPending] = await Promise.all([
       this.prisma.property.count({ where: { agentId: userId } }),
       this.prisma.buyer.count({ where: { agentId: userId, status: 'ACTIVE' } }),
       this.prisma.match.count({
-        where: {
-          OR: [
-            { buyer: { agentId: userId } },
-            { property: { agentId: userId } },
-          ],
-        },
+        where: { OR: [{ buyer: { agentId: userId } }, { property: { agentId: userId } }] },
       }),
-      this.prisma.partnership.count({
-        where: { receiverId: userId, status: 'PENDING' },
-      }),
+      this.prisma.partnership.count({ where: { receiverId: userId, status: 'PENDING' } }),
     ]);
+
+    // Compradores sem nenhum match (precisam de imóvel)
+    const buyersWithCounts = await this.prisma.buyer.findMany({
+      where: { agentId: userId, status: 'ACTIVE' },
+      select: { id: true, buyerName: true, desiredCity: true, maxPrice: true, propertyType: true,
+                _count: { select: { matches: true } } },
+      take: 30,
+    });
+    const unmatchedBuyers = buyersWithCounts.filter(b => b._count.matches === 0).slice(0, 3);
+
+    // Imóveis disponíveis sem matches
+    const propsWithCounts = await this.prisma.property.findMany({
+      where: { agentId: userId, status: 'AVAILABLE' },
+      select: { id: true, title: true, type: true, price: true, city: true,
+                _count: { select: { matches: true } } },
+      take: 30,
+    });
+    const propertiesWithoutMatches = propsWithCounts.filter(p => p._count.matches === 0).slice(0, 3);
+
+    // Oportunidades da rede na cidade do usuário
+    const networkOpportunities = user?.city
+      ? await this.prisma.opportunity.findMany({
+          where: {
+            status: 'active',
+            city: { contains: user.city, mode: 'insensitive' },
+            agentId: { not: userId },
+          },
+          take: 3,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true, title: true, city: true, priceUrgent: true, priceNormal: true,
+            propertyType: true, createdAt: true,
+            agent: { select: { name: true, phone: true } },
+          },
+        })
+      : [];
 
     const recentProperties = await this.prisma.property.findMany({
       where: { agentId: userId },
@@ -127,20 +161,41 @@ export class UsersService {
     });
 
     const recentMatches = await this.prisma.match.findMany({
-      where: {
-        OR: [
-          { buyer: { agentId: userId } },
-          { property: { agentId: userId } },
-        ],
-      },
+      where: { OR: [{ buyer: { agentId: userId } }, { property: { agentId: userId } }] },
       take: 5,
       orderBy: { createdAt: 'desc' },
       include: {
-        buyer: { select: { buyerName: true, desiredCity: true, maxPrice: true } },
+        buyer:    { select: { buyerName: true, desiredCity: true, maxPrice: true } },
         property: { select: { title: true, price: true, city: true } },
       },
     });
 
-    return { propertiesCount, buyersCount, matchesCount, partnershipsPending, recentProperties, recentMatches };
+    const recentPartnerships = await this.prisma.partnership.findMany({
+      where: {
+        OR: [{ requesterId: userId }, { receiverId: userId }],
+        status: 'ACCEPTED',
+      },
+      take: 3,
+      orderBy: { acceptedAt: 'desc' },
+      include: {
+        requester: { select: { name: true } },
+        receiver:  { select: { name: true } },
+        property:  { select: { title: true, city: true } },
+      },
+    });
+
+    const myOpportunities = await this.prisma.opportunity.findMany({
+      where: { agentId: userId, status: 'active' },
+      take: 3,
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, title: true, city: true, priceUrgent: true, createdAt: true },
+    });
+
+    return {
+      propertiesCount, buyersCount, matchesCount, partnershipsPending,
+      recentProperties, recentMatches, recentPartnerships, myOpportunities,
+      unmatchedBuyers, propertiesWithoutMatches, networkOpportunities,
+      userCity: user?.city ?? null,
+    };
   }
 }

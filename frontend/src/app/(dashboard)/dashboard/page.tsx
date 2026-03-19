@@ -9,8 +9,9 @@ import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import { formatCurrency, formatDate, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from "@/lib/utils";
 import {
-  Building2, Users, Zap, UserCheck, TrendingUp, ArrowRight,
-  Crown, Sparkles, Infinity, Flame, Activity, Wifi,
+  Building2, Users, Zap, UserCheck, ArrowRight,
+  Crown, Sparkles, Infinity, Flame, MapPin,
+  Lightbulb, TrendingUp, Phone, ChevronRight, AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { normalizePlan } from "@/config/plans";
@@ -78,16 +79,16 @@ function PlanBanner() {
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
 function StatCard({ title, value, icon: Icon, color, href, pulse }: any) {
-  return (
-    <Card className="hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
-      <CardContent className="p-6">
+  const content = (
+    <Card className="hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer">
+      <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
+            <p className="text-xs font-medium text-gray-500">{title}</p>
+            <p className="text-2xl font-bold text-gray-900 mt-0.5">{value}</p>
           </div>
           <div className={`relative p-3 rounded-xl bg-${color}-50`}>
-            <Icon className={`h-6 w-6 text-${color}-600`} />
+            <Icon className={`h-5 w-5 text-${color}-600`} />
             {pulse && value > 0 && (
               <span className="absolute -top-1 -right-1 w-3 h-3">
                 <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-${color}-400 opacity-75`} />
@@ -96,127 +97,453 @@ function StatCard({ title, value, icon: Icon, color, href, pulse }: any) {
             )}
           </div>
         </div>
-        {href && (
-          <Link href={href} className={`text-xs text-${color}-600 hover:underline flex items-center gap-1 mt-3`}>
-            Ver todos <ArrowRight className="h-3 w-3" />
-          </Link>
+      </CardContent>
+    </Card>
+  );
+  return href ? <Link href={href}>{content}</Link> : content;
+}
+
+// ─── Network Opportunities Block ──────────────────────────────────────────────
+
+function NetworkOppsBlock({ opps, city }: { opps: any[]; city: string | null }) {
+  if (!opps.length) return null;
+
+  return (
+    <Card className="border-orange-200 bg-gradient-to-br from-orange-50/60 to-amber-50/40">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <Flame className="h-4 w-4 text-orange-500" />
+          🔥 Oportunidades para você agora
+          {city && (
+            <span className="ml-auto flex items-center gap-1 text-[11px] font-normal text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">
+              <MapPin className="h-3 w-3" />{city}
+            </span>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0 space-y-2.5">
+        {opps.map((opp: any) => {
+          const discount = Math.round(((Number(opp.priceNormal) - Number(opp.priceUrgent)) / Number(opp.priceNormal)) * 100);
+          const commission = Math.round(Number(opp.priceUrgent) * 0.03);
+          const wppUrl = opp.agent?.phone
+            ? `https://wa.me/55${opp.agent.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá ${opp.agent.name}, vi sua oportunidade "${opp.title}" no ImobMatch e tenho um cliente interessado!`)}`
+            : null;
+          return (
+            <div key={opp.id} className="bg-white rounded-xl p-3.5 border border-orange-100 hover:border-orange-200 hover:shadow-sm transition-all">
+              <div className="flex items-start justify-between gap-2 mb-1.5">
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-gray-900 truncate">{opp.title}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {PROPERTY_TYPE_LABELS[opp.propertyType]} · {opp.city}
+                  </p>
+                </div>
+                <span className="flex-shrink-0 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                  -{discount}%
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-base font-bold text-gray-900">{formatCurrency(opp.priceUrgent)}</p>
+                  <p className="text-[11px] text-emerald-700 font-medium">
+                    💰 Potencial de comissão: {formatCurrency(commission)}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  {wppUrl && (
+                    <a href={wppUrl} target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] font-semibold bg-green-600 text-white px-2.5 py-1.5 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1"
+                    >
+                      <Phone className="h-3 w-3" /> Tenho comprador
+                    </a>
+                  )}
+                  <Link href="/oportunidades"
+                    className="text-[11px] font-semibold bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 transition-colors"
+                  >
+                    Ver
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        <Link href="/oportunidades" className="flex items-center justify-center gap-1.5 text-xs text-orange-600 hover:text-orange-700 font-medium pt-1">
+          Ver todas as oportunidades do radar <ArrowRight className="h-3 w-3" />
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Smart Actions Block ───────────────────────────────────────────────────────
+
+function SmartActionsBlock({ stats }: { stats: any }) {
+  const actions: { icon: string; title: string; desc: string; cta: string; href: string; priority: "high" | "medium" | "low" }[] = [];
+
+  // Parcerias pendentes — urgente
+  if (stats.partnershipsPending > 0) {
+    actions.push({
+      icon: "🔔",
+      title: `${stats.partnershipsPending} parceria${stats.partnershipsPending > 1 ? "s" : ""} aguardando sua resposta`,
+      desc: "Aceite agora e marque presença na rede. Parceria fechada = +10 pontos no ranking.",
+      cta: "Responder agora",
+      href: "/parcerias",
+      priority: "high",
+    });
+  }
+
+  // Compradores sem match
+  if (stats.unmatchedBuyers?.length > 0) {
+    const b = stats.unmatchedBuyers[0];
+    actions.push({
+      icon: "👤",
+      title: `${b.buyerName} não tem imóvel compatível ainda`,
+      desc: `Busca ${PROPERTY_TYPE_LABELS[b.propertyType] ?? "imóvel"} em ${b.desiredCity} até ${formatCurrency(b.maxPrice)}. Você pode fechar isso.`,
+      cta: "Buscar oportunidades",
+      href: "/oportunidades",
+      priority: "high",
+    });
+  }
+
+  // Imóveis sem matches
+  if (stats.propertiesWithoutMatches?.length > 0) {
+    const p = stats.propertiesWithoutMatches[0];
+    actions.push({
+      icon: "🏠",
+      title: `"${p.title}" ainda sem matches`,
+      desc: "Esse imóvel pode ter compradores compatíveis na rede. Gere matches agora.",
+      cta: "Gerar matches",
+      href: "/matches",
+      priority: "medium",
+    });
+  }
+
+  // Sem compradores cadastrados
+  if (stats.buyersCount === 0) {
+    actions.push({
+      icon: "🎯",
+      title: "Cadastre seus compradores para gerar matches",
+      desc: "Quanto mais compradores você cadastrar, mais oportunidades o sistema encontra para você.",
+      cta: "Cadastrar comprador",
+      href: "/compradores",
+      priority: "medium",
+    });
+  }
+
+  // Sem imóveis
+  if (stats.propertiesCount === 0) {
+    actions.push({
+      icon: "🏗️",
+      title: "Nenhum imóvel cadastrado ainda",
+      desc: "Imóveis cadastrados aumentam suas chances de fechamento e aparecem nos matches da rede.",
+      cta: "Cadastrar imóvel",
+      href: "/meus-imoveis",
+      priority: "medium",
+    });
+  }
+
+  // Matches existentes — incentivo para ir a parcerias
+  if (stats.matchesCount > 0 && stats.partnershipsPending === 0) {
+    actions.push({
+      icon: "⚡",
+      title: `Você tem ${stats.matchesCount} match${stats.matchesCount > 1 ? "es" : ""} — explore parcerias`,
+      desc: "Corretores da rede podem ter o comprador certo para os seus imóveis.",
+      cta: "Ver parcerias",
+      href: "/parcerias",
+      priority: "low",
+    });
+  }
+
+  // Sugestão de publicar oportunidade urgente
+  if (stats.propertiesCount > 0 && (!stats.myOpportunities || stats.myOpportunities.length === 0)) {
+    actions.push({
+      icon: "📢",
+      title: "Publique uma oportunidade urgente no radar",
+      desc: "Corretores de toda a rede podem trazer compradores para os seus imóveis com desconto.",
+      cta: "Publicar no radar",
+      href: "/oportunidades",
+      priority: "low",
+    });
+  }
+
+  if (!actions.length) {
+    return (
+      <Card className="border-blue-100 bg-blue-50/40">
+        <CardContent className="p-5 text-center py-8">
+          <Sparkles className="h-8 w-8 text-blue-400 mx-auto mb-2" />
+          <p className="text-sm font-medium text-gray-700">Tudo em dia! Continue assim.</p>
+          <p className="text-xs text-gray-500 mt-1">Explore o radar de oportunidades para novas chances.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const priorityBorder: Record<string, string> = {
+    high: "border-l-4 border-l-red-400",
+    medium: "border-l-4 border-l-amber-400",
+    low: "border-l-4 border-l-blue-300",
+  };
+  const priorityBg: Record<string, string> = {
+    high: "bg-red-50",
+    medium: "bg-amber-50/60",
+    low: "bg-blue-50/40",
+  };
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <Lightbulb className="h-4 w-4 text-amber-500" />
+          ⚡ Próximas ações para aumentar seus resultados
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0 space-y-2.5">
+        {actions.slice(0, 4).map((action, i) => (
+          <div
+            key={i}
+            className={`rounded-xl p-3.5 ${priorityBorder[action.priority]} ${priorityBg[action.priority]} transition-all hover:shadow-sm`}
+          >
+            <div className="flex items-start gap-3">
+              <span className="text-xl leading-none mt-0.5">{action.icon}</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm text-gray-900">{action.title}</p>
+                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{action.desc}</p>
+              </div>
+              <Link
+                href={action.href}
+                className="flex-shrink-0 text-[11px] font-semibold bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors whitespace-nowrap"
+              >
+                {action.cta}
+              </Link>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── My Activity Block ────────────────────────────────────────────────────────
+
+function MyActivityBlock({ stats }: { stats: any }) {
+  const hasPartnerships = stats.recentPartnerships?.length > 0;
+  const hasMatches      = stats.recentMatches?.length > 0;
+  const hasOpportunities = stats.myOpportunities?.length > 0;
+
+  if (!hasPartnerships && !hasMatches && !hasOpportunities) return null;
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-blue-500" />
+          Atividade na sua conta
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0 space-y-3">
+
+        {/* Parcerias aceitas */}
+        {hasPartnerships && stats.recentPartnerships.map((p: any) => (
+          <div key={p.id} className="flex items-center gap-3 p-2.5 bg-emerald-50 rounded-lg border border-emerald-100">
+            <span className="text-lg">🤝</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-gray-900">Parceria aceita</p>
+              <p className="text-[11px] text-gray-500 truncate">
+                {p.property?.title} · com {p.requesterId === p.receiver?.id ? p.requester?.name : p.receiver?.name}
+              </p>
+            </div>
+            <Link href="/parcerias" className="text-[10px] text-emerald-600 font-medium whitespace-nowrap flex items-center gap-0.5">
+              Ver <ChevronRight className="h-3 w-3" />
+            </Link>
+          </div>
+        ))}
+
+        {/* Matches recentes */}
+        {hasMatches && stats.recentMatches.slice(0, 2).map((m: any) => (
+          <div key={m.id} className="flex items-center gap-3 p-2.5 bg-yellow-50 rounded-lg border border-yellow-100">
+            <span className="text-lg">⚡</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-gray-900">
+                {m.buyer?.buyerName} × {m.property?.title}
+              </p>
+              <p className="text-[11px] text-emerald-700 font-medium">
+                Alto potencial de fechamento · {formatCurrency(m.buyer?.maxPrice)}
+              </p>
+            </div>
+            <Link href="/matches" className="text-[10px] text-yellow-700 font-medium whitespace-nowrap flex items-center gap-0.5">
+              Ver <ChevronRight className="h-3 w-3" />
+            </Link>
+          </div>
+        ))}
+
+        {/* Minhas oportunidades ativas */}
+        {hasOpportunities && stats.myOpportunities.map((o: any) => (
+          <div key={o.id} className="flex items-center gap-3 p-2.5 bg-orange-50 rounded-lg border border-orange-100">
+            <span className="text-lg">🔥</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-gray-900 truncate">{o.title}</p>
+              <p className="text-[11px] text-orange-700 font-medium">
+                Oportunidade ativa no radar · {o.city}
+              </p>
+            </div>
+            <Link href="/oportunidades" className="text-[10px] text-orange-600 font-medium whitespace-nowrap flex items-center gap-0.5">
+              Ver <ChevronRight className="h-3 w-3" />
+            </Link>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Platform Activity (sem números falsos) ───────────────────────────────────
+
+function PlatformPulse() {
+  const items = [
+    { icon: "🟢", text: "Corretores ativos na plataforma agora" },
+    { icon: "🔥", text: "Novas oportunidades sendo publicadas" },
+    { icon: "⚡", text: "Matches acontecendo neste momento" },
+    { icon: "💰", text: "Negócios sendo fechados na plataforma" },
+  ];
+  return (
+    <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl px-4 py-3">
+      <div className="flex items-center gap-2 mb-2.5">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+        </span>
+        <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Atividade agora</span>
+      </div>
+      <div className="grid grid-cols-2 gap-y-1.5 gap-x-4">
+        {items.map((item, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <span className="text-sm leading-none">{item.icon}</span>
+            <span className="text-[11px] text-slate-300">{item.text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Recent Properties ────────────────────────────────────────────────────────
+
+function RecentPropertiesCard({ properties }: { properties: any[] }) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-3">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <Building2 className="h-4 w-4 text-blue-500" />
+          Meus Imóveis Recentes
+        </CardTitle>
+        <Link href="/meus-imoveis" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+          Ver todos <ArrowRight className="h-3 w-3" />
+        </Link>
+      </CardHeader>
+      <CardContent>
+        {!properties?.length ? (
+          <div className="text-center py-6">
+            <Building2 className="h-8 w-8 mx-auto mb-2 text-gray-200" />
+            <p className="text-xs text-gray-400 mb-2">Nenhum imóvel cadastrado</p>
+            <Link href="/meus-imoveis" className="text-xs font-semibold text-blue-600 hover:underline">
+              Cadastrar agora →
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {properties.map((p: any) => (
+              <Link key={p.id} href="/meus-imoveis"
+                className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group"
+              >
+                <div>
+                  <p className="font-medium text-xs text-gray-900 truncate max-w-[160px] group-hover:text-blue-700">{p.title}</p>
+                  <p className="text-[11px] text-gray-500">{PROPERTY_TYPE_LABELS[p.type]} · {formatDate(p.createdAt)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-xs text-blue-600">{formatCurrency(p.price)}</p>
+                  <Badge variant={p.status === "AVAILABLE" ? "success" : "secondary"} className="text-[10px] mt-0.5">
+                    {PROPERTY_STATUS_LABELS[p.status]}
+                  </Badge>
+                </div>
+              </Link>
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>
   );
 }
 
-// ─── Live Activity Block ───────────────────────────────────────────────────────
+// ─── Recent Matches ───────────────────────────────────────────────────────────
 
-function seeded(seed: string, min: number, max: number) {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
-  return Math.floor((Math.abs(Math.sin(h * 9301 + 49297)) % 1) * (max - min + 1)) + min;
-}
-
-function LiveActivityBlock({ stats }: { stats: any }) {
-  const now        = new Date().toISOString();
-  const activeNow  = seeded(now.slice(0, 13), 12, 67); // muda por hora
-  const oppsToday  = seeded(now.slice(0, 10) + "o", 3, 18);
-  const matchesToday = seeded(now.slice(0, 10) + "m", 2, 11);
-  const dealsToday = seeded(now.slice(0, 10) + "d", 0, 4);
-
-  const items = [
-    { icon: "🟢", label: `${activeNow} corretores ativos agora na plataforma`,  highlight: true  },
-    { icon: "🔥", label: `${oppsToday} novas oportunidades publicadas hoje`,     highlight: false },
-    { icon: "⚡", label: `${matchesToday} novos matches gerados hoje`,            highlight: false },
-    { icon: "💰", label: dealsToday > 0 ? `${dealsToday} negócios fechados hoje` : "Parcerias ativas em andamento", highlight: false },
-    ...(stats?.partnershipsPending > 0
-      ? [{ icon: "🔔", label: `${stats.partnershipsPending} parceria${stats.partnershipsPending > 1 ? "s" : ""} aguardando sua resposta`, highlight: true }]
-      : []
-    ),
-  ];
-
+function RecentMatchesCard({ matches }: { matches: any[] }) {
   return (
-    <Card className="border-emerald-200 bg-gradient-to-br from-emerald-50/50 to-teal-50/30">
-      <CardHeader className="pb-3">
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-          </span>
-          Atividade Recente na Plataforma
+          <Zap className="h-4 w-4 text-yellow-500" />
+          Matches Recentes
         </CardTitle>
+        <Link href="/matches" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+          Ver todos <ArrowRight className="h-3 w-3" />
+        </Link>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="space-y-2">
-          {items.map((item, i) => (
-            <div key={i} className={`flex items-center gap-2.5 text-sm py-1 ${item.highlight ? "font-semibold text-gray-900" : "text-gray-600"}`}>
-              <span className="text-base leading-none">{item.icon}</span>
-              <span>{item.label}</span>
-              {item.highlight && (
-                <span className="ml-auto text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-medium">agora</span>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 pt-3 border-t border-emerald-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs text-emerald-700">
-              <Wifi className="h-3.5 w-3.5" />
-              <span>Plataforma operando normalmente</span>
-            </div>
-            <Link href="/oportunidades" className="text-xs text-blue-600 hover:underline font-medium flex items-center gap-1">
-              Ver radar <ArrowRight className="h-3 w-3" />
+      <CardContent>
+        {!matches?.length ? (
+          <div className="text-center py-6">
+            <Zap className="h-8 w-8 mx-auto mb-2 text-gray-200" />
+            <p className="text-xs text-gray-400 mb-2">Nenhum match gerado ainda</p>
+            <Link href="/matches" className="text-xs font-semibold text-blue-600 hover:underline">
+              Gerar matches →
             </Link>
           </div>
-        </div>
+        ) : (
+          <div className="space-y-2">
+            {matches.map((m: any) => (
+              <Link key={m.id} href="/matches"
+                className="block p-2.5 bg-gray-50 rounded-lg hover:bg-yellow-50 transition-colors group"
+              >
+                <div className="flex items-center justify-between mb-0.5">
+                  <p className="font-medium text-xs text-gray-900 group-hover:text-yellow-800">{m.buyer?.buyerName}</p>
+                  <Badge variant="warning" className="text-[10px]">Score: {m.score}%</Badge>
+                </div>
+                <p className="text-[11px] text-gray-500 truncate">{m.property?.title}</p>
+                <p className="text-[11px] text-emerald-700 font-medium mt-0.5">
+                  Oportunidade com potencial de fechamento
+                </p>
+              </Link>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
-  );
-}
-
-// ─── FOMO Block ───────────────────────────────────────────────────────────────
-
-function FomoBlock() {
-  return (
-    <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-4 text-white">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Flame className="h-4 w-4" />
-            <span className="font-bold text-sm">Não perca oportunidades!</span>
-          </div>
-          <p className="text-xs text-orange-100 leading-relaxed">
-            Corretores ativos estão fechando negócios agora mesmo. Acesse o Radar de Oportunidades.
-          </p>
-        </div>
-        <Link
-          href="/oportunidades"
-          className="flex-shrink-0 ml-4 bg-white text-orange-600 text-xs font-bold px-3 py-2 rounded-xl hover:bg-orange-50 transition-colors"
-        >
-          Ver radar →
-        </Link>
-      </div>
-    </div>
   );
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const { user } = useAuthStore();
+
   const { data: stats, isLoading } = useQuery({
     queryKey:        ["dashboard-stats"],
     queryFn:         () => api.get("/users/dashboard").then(r => r.data),
-    refetchInterval: 60_000, // auto-refresh a cada 1 min
+    refetchInterval: 60_000,
     staleTime:       30_000,
   });
+
+  const firstName = user?.name?.split(" ")[0] ?? "Corretor";
 
   if (isLoading) {
     return (
       <div>
         <Header title="Dashboard" />
-        <div className="p-4 md:p-6">
-          <div className="h-8 bg-gray-800 animate-pulse mb-1" />
-          <div className="h-14 bg-gray-100 rounded-xl animate-pulse mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {[...Array(4)].map((_, i) => <div key={i} className="h-28 bg-gray-100 rounded-xl animate-pulse" />)}
+        <div className="p-4 md:p-6 space-y-4">
+          <div className="h-14 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />)}
           </div>
+          <div className="h-48 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-64 bg-gray-100 rounded-xl animate-pulse" />
         </div>
       </div>
     );
@@ -225,129 +552,48 @@ export default function DashboardPage() {
   return (
     <div>
       <Header title="Dashboard" />
-
-      {/* Activity Ticker — faixa escura acima de tudo */}
       <ActivityTicker />
 
       <div className="p-4 md:p-6 space-y-5">
 
+        {/* Saudação */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Olá, {firstName} 👋</h2>
+            <p className="text-sm text-gray-500">O que você pode fechar hoje?</p>
+          </div>
+        </div>
+
         <PlanBanner />
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Meus Imóveis"       value={stats?.propertiesCount ?? 0}    icon={Building2} color="blue"   href="/meus-imoveis" />
-          <StatCard title="Compradores Ativos" value={stats?.buyersCount ?? 0}         icon={Users}     color="green"  href="/compradores"  />
-          <StatCard title="Matches Gerados"    value={stats?.matchesCount ?? 0}        icon={Zap}       color="yellow" href="/matches"       pulse />
-          <StatCard title="Parcerias Pendentes" value={stats?.partnershipsPending ?? 0} icon={UserCheck} color="purple" href="/parcerias"    pulse />
+        {/* Stats reais do usuário */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <StatCard title="Meus Imóveis"        value={stats?.propertiesCount ?? 0}    icon={Building2} color="blue"   href="/meus-imoveis" />
+          <StatCard title="Compradores Ativos"  value={stats?.buyersCount ?? 0}         icon={Users}     color="green"  href="/compradores"  />
+          <StatCard title="Matches Gerados"     value={stats?.matchesCount ?? 0}        icon={Zap}       color="yellow" href="/matches"       pulse />
+          <StatCard title="Parcerias Pendentes" value={stats?.partnershipsPending ?? 0} icon={UserCheck} color="purple" href="/parcerias"     pulse />
         </div>
 
-        {/* FOMO + Live Activity */}
+        {/* Oportunidades da rede na minha região */}
+        {stats?.networkOpportunities?.length > 0 && (
+          <NetworkOppsBlock opps={stats.networkOpportunities} city={stats.userCity} />
+        )}
+
+        {/* Próximas ações inteligentes */}
+        <SmartActionsBlock stats={stats ?? {}} />
+
+        {/* Grid: imóveis + matches */}
         <div className="grid lg:grid-cols-2 gap-5">
-          <div className="space-y-4">
-            <FomoBlock />
-            <LiveActivityBlock stats={stats} />
-          </div>
-
-          {/* Imóveis + Matches */}
-          <div className="space-y-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-blue-500" />
-                  Imóveis Recentes
-                </CardTitle>
-                <Link href="/meus-imoveis" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-                  Ver todos <ArrowRight className="h-3 w-3" />
-                </Link>
-              </CardHeader>
-              <CardContent>
-                {!stats?.recentProperties?.length ? (
-                  <div className="text-center py-6 text-gray-400">
-                    <Building2 className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                    <p className="text-xs">Nenhum imóvel cadastrado</p>
-                    <Link href="/meus-imoveis" className="text-blue-600 text-xs hover:underline">Cadastrar agora</Link>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {stats.recentProperties.map((p: any) => (
-                      <div key={p.id} className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div>
-                          <p className="font-medium text-xs text-gray-900 truncate max-w-[160px]">{p.title}</p>
-                          <p className="text-[11px] text-gray-500">{PROPERTY_TYPE_LABELS[p.type]} · {formatDate(p.createdAt)}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-xs text-blue-600">{formatCurrency(p.price)}</p>
-                          <Badge variant={p.status === "AVAILABLE" ? "success" : "secondary"} className="text-[10px] mt-0.5">
-                            {PROPERTY_STATUS_LABELS[p.status]}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-yellow-500" />
-                  Matches Recentes
-                </CardTitle>
-                <Link href="/matches" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-                  Ver todos <ArrowRight className="h-3 w-3" />
-                </Link>
-              </CardHeader>
-              <CardContent>
-                {!stats?.recentMatches?.length ? (
-                  <div className="text-center py-6 text-gray-400">
-                    <Zap className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                    <p className="text-xs">Nenhum match gerado</p>
-                    <Link href="/matches" className="text-blue-600 text-xs hover:underline">Gerar agora</Link>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {stats.recentMatches.map((m: any) => (
-                      <div key={m.id} className="p-2.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <p className="font-medium text-xs text-gray-900">{m.buyer?.buyerName}</p>
-                          <Badge variant="warning" className="text-[10px]">Score: {m.score}%</Badge>
-                        </div>
-                        <p className="text-[11px] text-gray-500 truncate">{m.property?.title}</p>
-                        <div className="flex justify-between text-[10px] text-gray-400 mt-0.5">
-                          <span>Busca: {formatCurrency(m.buyer?.maxPrice)}</span>
-                          <span>Imóvel: {formatCurrency(m.property?.price)}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+          <RecentPropertiesCard properties={stats?.recentProperties ?? []} />
+          <RecentMatchesCard    matches={stats?.recentMatches ?? []} />
         </div>
 
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader><CardTitle className="text-sm">Ações Rápidas</CardTitle></CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { href: "/meus-imoveis", label: "Novo Imóvel",        icon: Building2, color: "blue"   },
-                { href: "/compradores",  label: "Novo Comprador",      icon: Users,     color: "green"  },
-                { href: "/matches",      label: "Gerar Matches",       icon: Zap,       color: "yellow" },
-                { href: "/corretores",   label: "Buscar Corretores",   icon: TrendingUp, color: "purple" },
-              ].map(a => (
-                <Link key={a.href} href={a.href}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-xl bg-${a.color}-50 hover:bg-${a.color}-100 hover:-translate-y-0.5 transition-all duration-200 text-center`}
-                >
-                  <a.icon className={`h-6 w-6 text-${a.color}-600`} />
-                  <span className={`text-xs font-medium text-${a.color}-700`}>{a.label}</span>
-                </Link>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Atividade na conta (dados reais) */}
+        <MyActivityBlock stats={stats ?? {}} />
+
+        {/* Plataforma ao vivo — texto, sem números falsos */}
+        <PlatformPulse />
+
       </div>
     </div>
   );
