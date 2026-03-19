@@ -330,9 +330,9 @@ export default function HeroSection() {
         </div>
 
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
-        <div className="relative min-h-[700px] lg:min-h-[820px] overflow-hidden">
+        <div className="relative min-h-[700px] lg:min-h-[820px]">
 
-          {/* Photo — contida na coluna direita, alinhada ao topo */}
+          {/* Photo */}
           <img
             src="/corretores.png"
             alt="Corretores fechando parceria"
@@ -342,11 +342,11 @@ export default function HeroSection() {
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
               width: "auto",
-              height: "800px",
+              height: "920px",
               objectFit: "contain",
               objectPosition: "top center",
-              top: "10%",
-              left: "0%",
+              top: "0px",
+              left: "-10%",
             }}
             draggable={false}
           />
@@ -371,9 +371,9 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Match encontrado — centro, sobre o aperto de mão */}
+          {/* Card: Match encontrado — centro-esquerdo sobre o aperto de mão */}
           <FloatingCard
-            className="absolute left-[5%] top-[38%] z-20 w-[270px] px-4 py-4"
+            className="absolute left-[-8%] top-[40%] z-20 w-[270px] px-4 py-4"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(12px)",
