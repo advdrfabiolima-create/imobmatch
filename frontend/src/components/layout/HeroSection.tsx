@@ -330,9 +330,9 @@ export default function HeroSection() {
         </div>
 
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
-        <div className="relative min-h-[700px] lg:min-h-[820px]">
+        <div className="relative min-h-[700px] lg:min-h-[860px]">
 
-          {/* Photo */}
+          {/* Photo — ocupa a coluna inteira, sem cards sobre os rostos */}
           <img
             src="/corretores.png"
             alt="Corretores fechando parceria"
@@ -340,44 +340,26 @@ export default function HeroSection() {
             style={{
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
-              filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
-              width: "auto",
-              height: "920px",
+              filter: "drop-shadow(0 28px 55px rgba(37,99,235,0.13))",
+              width: "90%",
+              height: "auto",
               objectFit: "contain",
               objectPosition: "top center",
               top: "0px",
-              left: "-10%",
+              left: "5%",
             }}
             draggable={false}
           />
 
-          {/* Card: Negócio fechado — topo esquerdo */}
-          <FloatingCard
-            className="absolute left-[5%] top-[5%] z-20 px-4 py-3"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(12px)",
-              transition: "opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s",
-            } as React.CSSProperties}
-          >
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-100 text-orange-500">
-                <Users className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="text-[14px] font-semibold text-slate-800">Negócio fechado</div>
-                <div className="text-xs text-slate-400">na plataforma</div>
-              </div>
-            </div>
-          </FloatingCard>
+          {/* ── Cards: todos posicionados abaixo da linha dos ombros (~35%+) ── */}
 
-          {/* Card: Match encontrado — centro-esquerdo sobre o aperto de mão */}
+          {/* Card: Match encontrado — esquerda, região do peito/mãos */}
           <FloatingCard
-            className="absolute left-[-8%] top-[40%] z-20 w-[270px] px-4 py-4"
+            className="absolute left-[-4%] top-[40%] z-20 w-[280px] px-4 py-4"
             style={{
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(12px)",
-              transition: "opacity 0.6s ease 0.55s, transform 0.6s ease 0.55s",
+              transform: visible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.6s ease 0.45s, transform 0.6s ease 0.45s",
             } as React.CSSProperties}
           >
             <div className="flex items-start gap-3">
@@ -413,34 +395,33 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Compatibilidade — topo direito */}
+          {/* Card: Negócio fechado — direita, mesma altura do Match */}
           <FloatingCard
-            className="absolute right-[2%] top-[4%] z-20 px-4 py-3"
+            className="absolute right-[0%] top-[38%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(12px)",
+              transform: visible ? "translateY(0)" : "translateY(14px)",
               transition: "opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s",
             } as React.CSSProperties}
           >
-            <div className="flex items-start gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-amber-50 border border-amber-100 text-xl flex-shrink-0">
-                <span className="text-amber-500">✓</span>
+            <div className="flex items-center gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-100 text-orange-500 flex-shrink-0">
+                <Users className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-xs text-slate-400">Compatibilidade</div>
-                <div className="text-base font-bold text-slate-800">Negócio</div>
-                <div className="mt-0.5 text-xs text-slate-400">Match encontrado</div>
+                <div className="text-[14px] font-semibold text-slate-800">Negócio fechado</div>
+                <div className="text-xs text-slate-400">na plataforma</div>
               </div>
             </div>
           </FloatingCard>
 
-          {/* Card: Parceria iniciada — inferior centro */}
+          {/* Card: Parceria iniciada — esquerda inferior */}
           <FloatingCard
-            className="absolute bottom-[22%] left-[30%] z-20 px-4 py-3"
+            className="absolute left-[2%] bottom-[22%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(12px)",
-              transition: "opacity 0.6s ease 0.65s, transform 0.6s ease 0.65s",
+              transform: visible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s",
             } as React.CSSProperties}
           >
             <div className="flex items-center gap-3">
@@ -457,13 +438,33 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Comissão estimada — inferior direito */}
+          {/* Card: Compatibilidade — centro inferior */}
           <FloatingCard
-            className="absolute bottom-[4%] right-[1%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]"
+            className="absolute left-[28%] bottom-[8%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(12px)",
-              transition: "opacity 0.6s ease 0.75s, transform 0.6s ease 0.75s",
+              transform: visible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s",
+            } as React.CSSProperties}
+          >
+            <div className="flex items-center gap-3">
+              <div className="grid h-9 w-9 place-items-center rounded-2xl bg-amber-50 border border-amber-100 flex-shrink-0">
+                <span className="text-amber-500 text-base font-bold">✓</span>
+              </div>
+              <div>
+                <div className="text-[13px] font-semibold text-slate-800">Alta compatibilidade</div>
+                <div className="text-xs text-slate-400 mt-0.5">imóvel + comprador</div>
+              </div>
+            </div>
+          </FloatingCard>
+
+          {/* Card: Comissão estimada — direita inferior */}
+          <FloatingCard
+            className="absolute right-[0%] bottom-[18%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]"
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0)" : "translateY(14px)",
+              transition: "opacity 0.6s ease 0.7s, transform 0.6s ease 0.7s",
             } as React.CSSProperties}
           >
             <div className="flex items-center gap-3">
@@ -476,7 +477,7 @@ export default function HeroSection() {
               </div>
             </div>
             <div className="mt-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-600 text-center">
-              e sua parte neste match
+              sua parte neste match
             </div>
           </FloatingCard>
         </div>
