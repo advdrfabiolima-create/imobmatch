@@ -494,32 +494,32 @@ const OPP_POOL = [
     label: "São Paulo, SP",
     type: "Apartamento · 3 quartos · 90 m²",
     from: "R$ 550.000", to: "R$ 460.000", save: "−R$ 90.000", pct: "16%", matches: 5,
-    gradient: "from-blue-500 to-violet-600", featured: true,
+    gradient: "from-orange-400 to-orange-600", featured: true,
   },
   {
     label: "Rio de Janeiro, RJ",
     type: "Studio · 1 quarto · 48 m²",
     from: "R$ 380.000", to: "R$ 320.000", save: "−R$ 60.000", pct: "16%", matches: 2,
-    gradient: "from-emerald-500 to-teal-600",
+    gradient: "from-amber-500 to-orange-500",
   },
   // Grupo B
   {
     label: "Fortaleza, CE",
     type: "Cobertura · 3 quartos · 120 m²",
     from: "R$ 620.000", to: "R$ 510.000", save: "−R$ 110.000", pct: "18%", matches: 4,
-    gradient: "from-amber-500 to-orange-600", featured: true,
+    gradient: "from-orange-500 to-red-500", featured: true,
   },
   {
     label: "Belo Horizonte, MG",
     type: "Apartamento · 2 quartos · 65 m²",
     from: "R$ 420.000", to: "R$ 360.000", save: "−R$ 60.000", pct: "14%", matches: 3,
-    gradient: "from-rose-500 to-pink-600",
+    gradient: "from-orange-400 to-orange-600",
   },
   {
     label: "Recife, PE",
     type: "Casa · 3 quartos · 150 m²",
     from: "R$ 480.000", to: "R$ 400.000", save: "−R$ 80.000", pct: "17%", matches: 2,
-    gradient: "from-cyan-500 to-blue-600",
+    gradient: "from-amber-500 to-orange-500",
   },
 ];
 
