@@ -9,7 +9,7 @@ import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import {
   Check, X, Crown, Star, Loader2, ArrowRight,
-  Zap, Sparkles, Gem, Building2, Users, AlertCircle,
+  Zap, Sparkles, Gem, Building2, Users, AlertCircle, XCircle,
 } from "lucide-react";
 import { PLANS, PLAN_COLORS, formatPlanPrice, getPlanById, normalizePlan } from "@/config/plans";
 import { COPY } from "@/config/copy";
@@ -50,9 +50,11 @@ function FounderBadge() {
 
 export default function MeuPlanoPage() {
   const { user, updateUser } = useAuthStore();
-  const [loading, setLoading]           = useState<string | null>(null);
-  const [subscription, setSubscription] = useState<any>(null);
-  const [subLoading, setSubLoading]     = useState(true);
+  const [loading, setLoading]               = useState<string | null>(null);
+  const [subscription, setSubscription]     = useState<any>(null);
+  const [subLoading, setSubLoading]         = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelling, setCancelling]         = useState(false);
 
   useEffect(() => {
     api.get("/billing/subscription")
@@ -113,7 +115,23 @@ export default function MeuPlanoPage() {
     }
   };
 
+  const handleCancelSubscription = async () => {
+    setCancelling(true);
+    try {
+      await api.delete("/billing/subscription");
+      updateUser({ plan: "free" as any });
+      setSubscription(null);
+      setShowCancelModal(false);
+      toast.success("Assinatura cancelada. Seu plano foi alterado para Free.");
+    } catch {
+      toast.error("Erro ao cancelar assinatura. Tente novamente.");
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   const subStatus = subscription ? STATUS_LABELS[subscription.status] : null;
+  const hasActivePaidPlan = currentPlan !== "free" && !user?.isLifetime;
 
   return (
     <div>
@@ -258,7 +276,80 @@ export default function MeuPlanoPage() {
         <p className="text-xs text-gray-400 mt-6 text-center">
           Pagamentos processados com segurança via Asaas · Cancele quando quiser
         </p>
+
+        {/* Botão cancelar assinatura — só aparece para quem tem plano pago */}
+        {hasActivePaidPlan && (
+          <div className="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+            <button
+              onClick={() => setShowCancelModal(true)}
+              className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 hover:underline transition-colors"
+            >
+              <XCircle className="h-4 w-4" />
+              Cancelar assinatura
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Modal de confirmação de cancelamento */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+            <div className="p-6">
+              {/* Ícone */}
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <XCircle className="h-6 w-6 text-red-500" />
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+                Cancelar assinatura?
+              </h3>
+              <p className="text-sm text-gray-500 text-center mb-4 leading-relaxed">
+                Ao cancelar, seu plano será rebaixado para <strong>Free</strong> imediatamente.
+                Você perderá acesso aos recursos pagos do plano{" "}
+                <strong className="capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</strong>.
+              </p>
+
+              {/* O que será perdido */}
+              <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-6">
+                <p className="text-xs font-semibold text-red-700 mb-2">Você perderá acesso a:</p>
+                <ul className="space-y-1">
+                  {(getPlanById(currentPlan)?.features ?? [])
+                    .filter(f => f.included)
+                    .slice(0, 4)
+                    .map(f => (
+                      <li key={f.text} className="flex items-center gap-2 text-xs text-red-600">
+                        <X className="h-3 w-3 flex-shrink-0" /> {f.text}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setShowCancelModal(false)}
+                  disabled={cancelling}
+                >
+                  Manter plano
+                </Button>
+                <Button
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                  onClick={handleCancelSubscription}
+                  disabled={cancelling}
+                >
+                  {cancelling ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Confirmar cancelamento"
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
