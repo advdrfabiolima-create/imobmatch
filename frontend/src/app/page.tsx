@@ -242,8 +242,8 @@ function HeroVisual() {
         .hv-fl3 { animation: hv-flow-in 0.1s ease both 3.4s, hv-flow 5.0s linear infinite 3.5s; opacity: 0; }
       `}</style>
 
-      {/* Wrapper — padding cria zonas para cards sangrarem nas bordas */}
-      <div className="relative select-none" style={{ padding: "62px 40px 80px 48px" }}>
+      {/* Wrapper — padding mínimo para dar protagonismo à imagem */}
+      <div className="relative select-none" style={{ padding: "12px 26px 52px 30px" }}>
 
         {/* ── Aura atmosférica ── */}
         <div className="hv-aura absolute pointer-events-none" style={{
@@ -369,7 +369,7 @@ function HeroVisual() {
             alt="Corretores ImobMatch fechando parceria"
             className="w-full h-auto block relative"
             style={{
-              transform: "scale(1.2)",
+              transform: "scale(1.38)",
               transformOrigin: "center center",
               filter:
                 "drop-shadow(0 28px 56px rgba(37,99,235,0.38)) " +
@@ -383,73 +383,72 @@ function HeroVisual() {
 
         {/* ════ CARDS FLUTUANTES ════ */}
 
-        {/* ── CARD A: Match encontrado — TOPO ESQUERDO, card principal ── */}
-        <div className="absolute hv-ea" style={{ top: "4%", left: "-44px", zIndex: 20 }}>
+        {/* ── CARD A: Match encontrado — TOPO ESQUERDO, informativo (não dominante) ── */}
+        <div className="absolute hv-ea" style={{ top: "3%", left: "-36px", zIndex: 20 }}>
           <div className="hv-fa">
             <div style={{
               background: "rgba(255,255,255,0.97)",
-              backdropFilter: "blur(32px)",
-              WebkitBackdropFilter: "blur(32px)",
-              border: "1.5px solid rgba(99,102,241,0.30)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              border: "1px solid rgba(99,102,241,0.24)",
               boxShadow:
-                "0 28px 72px rgba(37,99,235,0.40), " +
-                "0 10px 32px rgba(99,102,241,0.28), " +
-                "0 0 0 1px rgba(99,102,241,0.14), " +
-                "inset 0 1px 0 rgba(255,255,255,0.92)",
-              borderRadius: "20px",
-              padding: "16px 20px",
-              minWidth: "248px",
+                "0 16px 48px rgba(37,99,235,0.30), " +
+                "0 6px 20px rgba(99,102,241,0.18), " +
+                "0 0 0 1px rgba(99,102,241,0.10)",
+              borderRadius: "15px",
+              padding: "11px 14px",
+              minWidth: "192px",
             }}>
               {/* Topo */}
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-2 mb-2">
                 <div style={{
-                  width: "42px", height: "42px", borderRadius: "13px", flexShrink: 0,
+                  width: "30px", height: "30px", borderRadius: "9px", flexShrink: 0,
                   background: "linear-gradient(135deg,#3b82f6,#7c3aed)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "0 6px 24px rgba(99,102,241,0.60)",
+                  boxShadow: "0 4px 14px rgba(99,102,241,0.50)",
                 }}>
-                  <Zap style={{ width: "20px", height: "20px", color: "white" }} />
+                  <Zap style={{ width: "14px", height: "14px", color: "white" }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: "14px", fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>
+                  <p style={{ fontSize: "11px", fontWeight: 700, color: "#111827", lineHeight: 1.2 }}>
                     Match encontrado
                   </p>
-                  <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "3px" }}>
-                    <span className="relative flex" style={{ width: "6px", height: "6px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
+                    <span className="relative flex" style={{ width: "5px", height: "5px" }}>
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full"
                         style={{ background: "#22c55e", opacity: 0.75 }} />
                       <span className="relative inline-flex rounded-full"
-                        style={{ width: "6px", height: "6px", background: "#22c55e" }} />
+                        style={{ width: "5px", height: "5px", background: "#22c55e" }} />
                     </span>
-                    <p style={{ fontSize: "10px", color: "#6b7280" }}>IA ativa em tempo real</p>
+                    <p style={{ fontSize: "9px", color: "#6b7280" }}>IA ativa em tempo real</p>
                   </div>
                 </div>
                 <span style={{
-                  fontSize: "16px", fontWeight: 900, color: "#6d28d9",
+                  fontSize: "12px", fontWeight: 900, color: "#6d28d9",
                   background: "linear-gradient(135deg,#ede9fe,#f5f3ff)",
-                  padding: "4px 10px", borderRadius: "20px",
-                  border: "1px solid rgba(139,92,246,0.30)",
+                  padding: "3px 7px", borderRadius: "14px",
+                  border: "1px solid rgba(139,92,246,0.24)",
                 }}>93%</span>
               </div>
               {/* Barra de progresso */}
-              <div style={{ marginBottom: "11px" }}>
+              <div style={{ marginBottom: "8px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between",
-                  fontSize: "10px", color: "#9ca3af", marginBottom: "5px" }}>
+                  fontSize: "9px", color: "#9ca3af", marginBottom: "4px" }}>
                   <span>Compatibilidade</span>
                   <span style={{ color: "#6d28d9", fontWeight: 700 }}>93 / 100</span>
                 </div>
-                <div style={{ height: "6px", background: "#f3f4f6", borderRadius: "999px", overflow: "hidden" }}>
+                <div style={{ height: "5px", background: "#f3f4f6", borderRadius: "999px", overflow: "hidden" }}>
                   <div style={{
-                    height: "6px", width: "93%", borderRadius: "999px",
+                    height: "5px", width: "93%", borderRadius: "999px",
                     background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
                   }} />
                 </div>
               </div>
               {/* Avatars */}
               <div style={{
-                display: "flex", alignItems: "center", gap: "8px",
-                background: "#f9fafb", borderRadius: "12px",
-                padding: "8px 10px", border: "1px solid #f3f4f6",
+                display: "flex", alignItems: "center", gap: "6px",
+                background: "#f9fafb", borderRadius: "9px",
+                padding: "6px 8px", border: "1px solid #f3f4f6",
               }}>
                 <div style={{ display: "flex" }}>
                   {[
@@ -457,17 +456,17 @@ function HeroVisual() {
                     { txt: "MC", bg: "linear-gradient(135deg,#8b5cf6,#7c3aed)" },
                   ].map((av, i) => (
                     <div key={i} style={{
-                      width: "26px", height: "26px", borderRadius: "50%",
+                      width: "20px", height: "20px", borderRadius: "50%",
                       border: "2px solid white",
-                      marginLeft: i > 0 ? "-9px" : "0",
+                      marginLeft: i > 0 ? "-7px" : "0",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "9px", fontWeight: 700, color: "white",
+                      fontSize: "7px", fontWeight: 700, color: "white",
                       background: av.bg,
-                      boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
                     }}>{av.txt}</div>
                   ))}
                 </div>
-                <p style={{ fontSize: "10px", color: "#6b7280", flex: 1 }}>
+                <p style={{ fontSize: "9px", color: "#6b7280", flex: 1 }}>
                   <span style={{ fontWeight: 600, color: "#374151" }}>2 corretores</span> conectados
                 </p>
               </div>
@@ -476,7 +475,7 @@ function HeroVisual() {
         </div>
 
         {/* ── CARD B: Compatibilidade — TOPO DIREITO, menor ── */}
-        <div className="absolute hv-eb" style={{ top: "4%", right: "-28px", zIndex: 20 }}>
+        <div className="absolute hv-eb" style={{ top: "3%", right: "-22px", zIndex: 20 }}>
           <div className="hv-fb">
             <div style={{
               background: "rgba(255,255,255,0.94)",
@@ -519,7 +518,7 @@ function HeroVisual() {
         </div>
 
         {/* ── CARD C: Parceria iniciada — INFERIOR CENTRAL ── */}
-        <div className="absolute hv-ec" style={{ bottom: "5%", left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
+        <div className="absolute hv-ec" style={{ bottom: "8%", left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
           <div className="hv-fc">
             <div style={{
               background: "rgba(255,255,255,0.94)",
@@ -560,7 +559,7 @@ function HeroVisual() {
         </div>
 
         {/* ── CARD D: Comissão estimada — CANTO INFERIOR DIREITO, destaque visual ── */}
-        <div className="absolute hv-ed" style={{ bottom: "2%", right: "-36px", zIndex: 20 }}>
+        <div className="absolute hv-ed" style={{ bottom: "3%", right: "-30px", zIndex: 20 }}>
           <div className="hv-fd">
             <div className="hv-money" style={{
               background: "rgba(255,255,255,0.97)",
@@ -611,7 +610,7 @@ function HeroVisual() {
         </div>
 
         {/* ── CARD E: Negócio fechado — INFERIOR DIREITO, acima da comissão ── */}
-        <div className="absolute hv-ee" style={{ bottom: "32%", right: "-28px", zIndex: 20 }}>
+        <div className="absolute hv-ee" style={{ bottom: "30%", right: "-24px", zIndex: 20 }}>
           <div className="hv-fe">
             <div style={{
               background: "rgba(255,255,255,0.94)",
@@ -1243,7 +1242,7 @@ export default function HomePage() {
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-[40%_60%] gap-6 lg:gap-8 items-center">
 
             {/* Left */}
             <div>
