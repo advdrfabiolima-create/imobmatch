@@ -9,6 +9,7 @@ import {
   ArrowRightLeft,
 } from "lucide-react";
 import { COPY } from "@/config/copy";
+import HeroSection from "@/components/layout/HeroSection";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA
@@ -138,40 +139,6 @@ function useFadeIn(threshold = 0.1) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HERO VISUAL — foto dos corretores + efeitos premium
-// ─────────────────────────────────────────────────────────────────────────────
-
-function FloatingCard({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className={[
-        "rounded-3xl border border-white/70 bg-white/80 shadow-[0_20px_60px_rgba(37,99,235,0.12)]",
-        "backdrop-blur-xl",
-        className ?? "",
-      ].join(" ")}
-    >
-      {children}
-    </div>
-  );
-}
-
-function HeroStat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="min-w-[110px]">
-      <div className="text-2xl font-bold tracking-tight text-slate-950">{value}</div>
-      <div className="mt-1 text-sm text-slate-500">{label}</div>
-    </div>
-  );
-}
-
-
-// ─────────────────────────────────────────────────────────────────────────────
 // ACTIVITY TICKER — auto-scroll marquee
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -255,18 +222,16 @@ function LiveActivitySection() {
   const { ref, visible } = useFadeIn(0.08);
   const poolIdxRef = useRef(6);
   const uidRef = useRef(100);
-  const startRef = useRef(Date.now());
 
   const [feed, setFeed] = useState<FeedEvent[]>(() =>
     FEED_POOL.slice(0, 6).map((e, i) => ({
       ...e,
       uid: i,
-      time: formatAgo(i * 150), // espacados no passado simulado
+      time: formatAgo(i * 150),
     }))
   );
   const [newUid, setNewUid] = useState<number | null>(null);
 
-  // Novo evento a cada 8 segundos
   useEffect(() => {
     const timer = setInterval(() => {
       const next = FEED_POOL[poolIdxRef.current % FEED_POOL.length];
@@ -290,7 +255,6 @@ function LiveActivitySection() {
       `}</style>
 
       <div ref={ref} className="mx-auto max-w-7xl px-6">
-        {/* Heading */}
         <div
           className="text-center mb-12"
           style={{
@@ -314,7 +278,6 @@ function LiveActivitySection() {
           </p>
         </div>
 
-        {/* Feed ao vivo */}
         <div className="max-w-3xl mx-auto space-y-3">
           {feed.map((ev) => (
             <div
@@ -338,7 +301,6 @@ function LiveActivitySection() {
           ))}
         </div>
 
-        {/* Rodapé do feed */}
         <div
           className="text-center mt-8"
           style={{ opacity: visible ? 1 : 0, transition: "opacity 0.5s ease 700ms" }}
@@ -364,7 +326,6 @@ function LiveActivitySection() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const OPP_POOL = [
-  // Grupo A
   {
     label: "Salvador, BA",
     type: "Casa · 4 quartos · 180 m²",
@@ -383,7 +344,6 @@ const OPP_POOL = [
     from: "R$ 380.000", to: "R$ 320.000", save: "−R$ 60.000", pct: "16%", matches: 2,
     gradient: "from-amber-500 to-orange-500",
   },
-  // Grupo B
   {
     label: "Fortaleza, CE",
     type: "Cobertura · 3 quartos · 120 m²",
@@ -413,7 +373,6 @@ function OpportunityImpactSection() {
     setTimeout(() => { setGroupIdx(next); setCardOpacity(1); }, 420);
   };
 
-  // Rotação automática a cada 22 segundos
   useEffect(() => {
     const timer = setInterval(() => {
       rotate((groupIdx + 1) % 2);
@@ -425,14 +384,12 @@ function OpportunityImpactSection() {
 
   return (
     <section className="bg-[#0F1117] py-20 relative overflow-hidden">
-      {/* Background glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-500/10 blur-3xl rounded-full" />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-600/10 blur-3xl rounded-full" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
-        {/* Heading */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider">
             <Flame className="h-3.5 w-3.5" />
@@ -449,7 +406,6 @@ function OpportunityImpactSection() {
           </p>
         </div>
 
-        {/* Cards rotativos */}
         <div
           className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto mb-8"
           style={{ opacity: cardOpacity, transition: "opacity 0.42s ease" }}
@@ -507,7 +463,6 @@ function OpportunityImpactSection() {
           ))}
         </div>
 
-        {/* Dots de navegação */}
         <div className="flex justify-center gap-2 mb-10">
           {[0, 1].map((i) => (
             <button
@@ -521,7 +476,6 @@ function OpportunityImpactSection() {
           ))}
         </div>
 
-        {/* Rodapé */}
         <div className="text-center">
           <p className="text-gray-500 text-sm mb-4">
             Exemplos do tipo de oportunidade publicada por corretores da plataforma todos os dias
@@ -599,11 +553,9 @@ function MatchShowcaseSection() {
             }}
             className="relative"
           >
-            {/* Glow */}
             <div className="absolute -inset-4 bg-gradient-to-br from-violet-100/70 to-blue-100/50 rounded-3xl blur-2xl pointer-events-none" />
 
             <div className="relative bg-white rounded-2xl border border-violet-100 p-5 shadow-xl shadow-violet-100/60">
-              {/* Header */}
               <div className="flex items-center gap-2.5 mb-5">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md">
                   <Zap className="h-4.5 w-4.5 text-white" style={{ height: "18px", width: "18px" }} />
@@ -617,7 +569,6 @@ function MatchShowcaseSection() {
                 </span>
               </div>
 
-              {/* Progress bar */}
               <div className="mb-5">
                 <div className="flex justify-between text-[11px] text-gray-400 mb-1.5">
                   <span>Compatibilidade</span>
@@ -634,7 +585,6 @@ function MatchShowcaseSection() {
                 </div>
               </div>
 
-              {/* Match detail */}
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="bg-blue-50 rounded-xl p-3.5 border border-blue-100">
                   <p className="text-[9px] font-bold text-blue-600 uppercase tracking-wider mb-1.5">Imóvel disponível</p>
@@ -648,7 +598,6 @@ function MatchShowcaseSection() {
                 </div>
               </div>
 
-              {/* Corretores */}
               <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
                 <div className="flex -space-x-2 flex-shrink-0">
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[9px] font-bold text-white border-2 border-white shadow-sm">JS</div>
@@ -662,7 +611,6 @@ function MatchShowcaseSection() {
                 </span>
               </div>
 
-              {/* Bottom label */}
               <p className="text-center text-[11px] text-gray-400 mt-3">
                 Corretores entrando na rede · Novos matches todos os dias
               </p>
@@ -681,7 +629,6 @@ function MatchShowcaseSection() {
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Fade-in refs for each major section heading
   const fadeComoFunciona    = useFadeIn(0.1);
   const fadeProblema        = useFadeIn(0.1);
   const fadeFuncionalidades = useFadeIn(0.1);
@@ -752,214 +699,10 @@ export default function HomePage() {
         )}
       </header>
 
-
       {/* ══════════════════════════════════════════════════════════════════
-          HERO
+          HERO — componente com canvas animado
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#f5f4ff_100%)]">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-[12%] top-[20%] h-[420px] w-[420px] rounded-full bg-blue-300/10 blur-3xl" />
-          <div className="absolute right-[8%] top-[8%] h-[560px] w-[560px] rounded-full bg-violet-400/[0.16] blur-3xl" />
-          <div className="absolute bottom-[6%] right-[18%] h-[380px] w-[380px] rounded-full bg-cyan-300/10 blur-3xl" />
-        </div>
-
-        <div className="relative mx-auto grid min-h-[860px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-24 pt-14 md:px-10 lg:grid-cols-[1.05fr_1.15fr] lg:gap-8 lg:px-12 lg:pt-20">
-
-          {/* Left */}
-          <div className="z-10 flex max-w-[620px] flex-col justify-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/60 px-4 py-2 text-sm font-medium text-blue-600 shadow-sm backdrop-blur">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
-              </span>
-              Plataforma em crescimento com corretores em todo o Brasil
-            </div>
-
-            <h1 className="mt-8 text-5xl font-black leading-[0.96] tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-[72px]">
-              Pare de perder
-              <br />
-              clientes por{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-                não ter o
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-                imóvel certo.
-              </span>
-            </h1>
-
-            <p className="mt-8 max-w-[560px] text-[22px] leading-relaxed text-slate-600">
-              Conecte-se com outros corretores e encontre oportunidades reais de negócio.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-base text-slate-500">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                Novos matches sendo gerados
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
-                Corretores entrando na rede
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-orange-400 animate-pulse" />
-                Novas oportunidades todos os dias
-              </div>
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link
-                href="/register"
-                className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-violet-600 px-8 py-5 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(79,70,229,0.28)] transition hover:-translate-y-px hover:shadow-[0_20px_45px_rgba(79,70,229,0.34)]"
-              >
-                Começar a gerar oportunidades
-                <ArrowRight className="ml-3 h-5 w-5" />
-              </Link>
-              <Link
-                href="/imoveis"
-                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-8 py-5 text-lg font-semibold text-slate-700 shadow-sm backdrop-blur transition hover:border-slate-300 hover:bg-white"
-              >
-                <Flame className="mr-3 h-5 w-5 text-orange-500" />
-                Ver oportunidades
-              </Link>
-            </div>
-
-            <p className="mt-6 text-sm text-slate-400">Sem cartão de crédito · Cancele quando quiser</p>
-
-            <div className="mt-12 flex flex-wrap gap-8 border-t border-slate-200/80 pt-8">
-              <HeroStat value="100%" label="gratuito para começar" />
-              <HeroStat value="+3" label="negócios fechados na rede" />
-              <HeroStat value="2" label="estados ativos" />
-            </div>
-          </div>
-
-          {/* Right */}
-          <div className="relative min-h-[620px] lg:min-h-[700px]">
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute left-[12%] top-[12%] h-[520px] w-[520px] rounded-full bg-violet-400/20 blur-3xl" />
-              <div className="absolute left-[24%] top-[24%] h-[300px] w-[300px] rounded-full bg-blue-400/20 blur-3xl" />
-              <div className="absolute left-[36%] top-[52%] h-[180px] w-[180px] animate-pulse rounded-full bg-fuchsia-400/25 blur-2xl" />
-            </div>
-
-            <svg
-              className="pointer-events-none absolute left-[18%] top-[18%] h-[70%] w-[70%] opacity-60"
-              viewBox="0 0 800 600"
-              fill="none"
-              aria-hidden="true"
-            >
-              <defs>
-                <linearGradient id="lineA" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#60A5FA" stopOpacity="0.15" />
-                  <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.9" />
-                </linearGradient>
-              </defs>
-              <path d="M140 120 L420 310" stroke="url(#lineA)" strokeWidth="2.2" />
-              <path d="M650 120 L420 310" stroke="url(#lineA)" strokeWidth="2.2" />
-              <path d="M220 520 L420 310" stroke="url(#lineA)" strokeWidth="2.2" />
-              <path d="M620 470 L420 310" stroke="url(#lineA)" strokeWidth="2.2" />
-              <circle cx="420" cy="310" r="10" fill="#8B5CF6" fillOpacity="0.85" />
-              <circle cx="420" cy="310" r="40" fill="#8B5CF6" fillOpacity="0.12" className="animate-pulse" />
-            </svg>
-
-            {/* Imagem principal */}
-            <div className="absolute right-[-2%] top-[7%] w-[92%] max-w-[900px] lg:right-[-4%] lg:top-[3%] lg:w-[100%]">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-[44px] bg-gradient-to-br from-blue-300/20 via-violet-300/20 to-cyan-200/15 blur-2xl" />
-                <img
-                  src="/corretores.png"
-                  alt="Corretores fechando parceria"
-                  className="relative z-10 w-full select-none object-contain drop-shadow-[0_28px_60px_rgba(37,99,235,0.16)]"
-                  draggable={false}
-                />
-              </div>
-            </div>
-
-            {/* Card: Negócio fechado — topo esquerdo */}
-            <FloatingCard className="absolute left-[8%] top-[11%] z-20 px-5 py-4">
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-100 text-orange-500">
-                  <Users className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="text-[15px] font-semibold text-slate-800">Negócio fechado</div>
-                  <div className="text-sm text-slate-400">na plataforma</div>
-                </div>
-              </div>
-            </FloatingCard>
-
-            {/* Card: Match encontrado — centro esquerdo */}
-            <FloatingCard className="absolute left-[6%] top-[37%] z-20 w-[300px] px-5 py-4 lg:w-[330px]">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet-100 text-violet-600">
-                    <Zap className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <div className="text-[15px] font-semibold text-slate-800">Match encontrado</div>
-                    <div className="text-sm text-slate-400">IA ativa em tempo real</div>
-                  </div>
-                </div>
-                <div className="rounded-full bg-violet-100 px-3 py-1 text-sm font-bold text-violet-700">93%</div>
-              </div>
-              <div className="mt-4 flex items-center justify-between text-xs font-medium text-slate-400">
-                <span>Compatibilidade</span>
-                <span className="text-violet-700">93 / 100</span>
-              </div>
-              <div className="mt-2 h-2 rounded-full bg-slate-100">
-                <div className="h-2 w-[93%] rounded-full bg-gradient-to-r from-blue-500 to-violet-500" />
-              </div>
-              <div className="mt-4 flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
-                <div className="flex -space-x-2">
-                  <div className="grid h-7 w-7 place-items-center rounded-full border-2 border-white bg-blue-500 text-[10px] font-bold text-white">J</div>
-                  <div className="grid h-7 w-7 place-items-center rounded-full border-2 border-white bg-violet-500 text-[10px] font-bold text-white">MC</div>
-                </div>
-                <span className="text-sm text-slate-500">2 corretores conectados</span>
-              </div>
-            </FloatingCard>
-
-            {/* Card: Compatibilidade — topo direito */}
-            <FloatingCard className="absolute right-[5%] top-[12%] z-20 px-5 py-4">
-              <div className="flex items-start gap-3">
-                <div className="grid h-11 w-11 place-items-center rounded-2xl bg-violet-100 text-2xl">🎯</div>
-                <div>
-                  <div className="text-sm text-slate-400">Compatibilidade</div>
-                  <div className="text-2xl font-bold text-violet-700">93%</div>
-                  <div className="mt-1 text-sm text-slate-400">calculando agora</div>
-                </div>
-              </div>
-            </FloatingCard>
-
-            {/* Card: Parceria iniciada — inferior esquerdo */}
-            <FloatingCard className="absolute bottom-[13%] left-[6%] z-20 px-5 py-4">
-              <div className="flex items-center gap-3">
-                <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100">
-                  <HeartHandshake className="h-6 w-6 text-emerald-600" />
-                </div>
-                <div>
-                  <div className="text-[15px] font-semibold text-slate-800">Parceria iniciada</div>
-                  <div className="text-sm font-medium text-emerald-500">Comissão acordada</div>
-                </div>
-              </div>
-            </FloatingCard>
-
-            {/* Card: Comissão estimada — canto inferior direito */}
-            <FloatingCard className="absolute bottom-[9%] right-[4%] z-20 px-5 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]">
-              <div className="flex items-center gap-3">
-                <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-500 text-white">
-                  <TrendingUp className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="text-sm text-slate-400">Comissão estimada</div>
-                  <div className="text-[20px] font-black text-emerald-600">R$ 14.200</div>
-                </div>
-              </div>
-              <div className="mt-3 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-600">
-                sua parte neste match
-              </div>
-            </FloatingCard>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* ══════════════════════════════════════════════════════════════════
           ACTIVITY TICKER — auto-scroll
@@ -1044,9 +787,7 @@ export default function HomePage() {
           PROBLEMA vs SOLUÇÃO
       ══════════════════════════════════════════════════════════════════ */}
       <section className="relative py-24 overflow-hidden">
-        {/* Fundo gradiente azul → roxo */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-800" />
-        {/* Blobs decorativos */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
           <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl" />
@@ -1073,7 +814,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-            {/* Sem */}
+            {/* Sem ImobMatch */}
             <div
               style={{
                 opacity: fadeProblema.visible ? 1 : 0,
@@ -1110,7 +851,7 @@ export default function HomePage() {
               </ul>
             </div>
 
-            {/* Com */}
+            {/* Com ImobMatch */}
             <div
               style={{
                 opacity: fadeProblema.visible ? 1 : 0,
@@ -1398,7 +1139,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Disclaimer de responsabilidade */}
           <div className="border-t border-gray-800 pt-7 mb-6">
             <p className="text-[11px] leading-relaxed text-gray-600 text-center max-w-4xl mx-auto">
               <span className="text-amber-500 font-semibold">⚠ Aviso Legal:</span>{" "}
