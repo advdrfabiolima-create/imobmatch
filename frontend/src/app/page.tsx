@@ -383,8 +383,8 @@ function HeroVisual() {
 
         {/* ════ CARDS FLUTUANTES ════ */}
 
-        {/* ── CARD A: Match encontrado — TOPO ESQUERDO, informativo (não dominante) ── */}
-        <div className="absolute hv-ea" style={{ top: "3%", left: "-36px", zIndex: 20 }}>
+        {/* ── CARD A: Match encontrado — CENTRO ESQUERDO, entre topo e base ── */}
+        <div className="absolute hv-ea" style={{ top: "40%", left: "-36px", zIndex: 20 }}>
           <div className="hv-fa">
             <div style={{
               background: "rgba(255,255,255,0.97)",
@@ -517,8 +517,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD C: Parceria iniciada — INFERIOR CENTRAL ── */}
-        <div className="absolute hv-ec" style={{ bottom: "8%", left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
+        {/* ── CARD C: Parceria iniciada — INFERIOR CENTRAL, próximo ao aperto de mão ── */}
+        <div className="absolute hv-ec" style={{ bottom: "11%", left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
           <div className="hv-fc">
             <div style={{
               background: "rgba(255,255,255,0.94)",
@@ -609,8 +609,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD E: Negócio fechado — INFERIOR DIREITO, acima da comissão ── */}
-        <div className="absolute hv-ee" style={{ bottom: "30%", right: "-24px", zIndex: 20 }}>
+        {/* ── CARD E: Negócio fechado — TOPO ESQUERDO, pequeno e discreto ── */}
+        <div className="absolute hv-ee" style={{ top: "3%", left: "-36px", zIndex: 20 }}>
           <div className="hv-fe">
             <div style={{
               background: "rgba(255,255,255,0.94)",
