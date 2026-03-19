@@ -346,71 +346,68 @@ function ActivityTicker() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LIVE ACTIVITY SECTION — "O que está acontecendo agora"
+// LIVE ACTIVITY SECTION — feed rotativo com novas entradas
 // ─────────────────────────────────────────────────────────────────────────────
+
+const FEED_POOL = [
+  { icon: "🔥", title: "Nova oportunidade publicada", desc: "Apartamento em Salvador com −18% de desconto", border: "border-orange-100", bg: "bg-orange-50/70", dot: "bg-orange-400" },
+  { icon: "💡", title: "Match encontrado", desc: "92% de compatibilidade — comprador em Salvador, BA", border: "border-violet-100", bg: "bg-violet-50/70", dot: "bg-violet-400" },
+  { icon: "🤝", title: "Parceria iniciada", desc: "Dois corretores formalizaram acordo de comissão", border: "border-blue-100", bg: "bg-blue-50/70", dot: "bg-blue-400" },
+  { icon: "📈", title: "Imóvel adicionado à rede", desc: "Casa em São Paulo · R$ 650.000 · 3 quartos", border: "border-emerald-100", bg: "bg-emerald-50/70", dot: "bg-emerald-400" },
+  { icon: "💡", title: "Match de alto impacto", desc: "94% de compatibilidade — Rio de Janeiro, RJ", border: "border-violet-100", bg: "bg-violet-50/70", dot: "bg-violet-400" },
+  { icon: "🔥", title: "Oportunidade urgente", desc: "Studio no RJ com −15% · 3 interessados na fila", border: "border-orange-100", bg: "bg-orange-50/70", dot: "bg-orange-400" },
+  { icon: "🤝", title: "Negócio fechado", desc: "Comissão dividida entre dois corretores — BH, MG", border: "border-blue-100", bg: "bg-blue-50/70", dot: "bg-blue-400" },
+  { icon: "📈", title: "Corretor entrou na rede", desc: "Novo membro em Fortaleza, CE — perfil ativo", border: "border-emerald-100", bg: "bg-emerald-50/70", dot: "bg-emerald-400" },
+  { icon: "🔥", title: "Oportunidade publicada", desc: "Cobertura em Fortaleza com −18% — 4 matches", border: "border-orange-100", bg: "bg-orange-50/70", dot: "bg-orange-400" },
+  { icon: "💡", title: "Match gerado automaticamente", desc: "88% de compatibilidade — Recife, PE", border: "border-violet-100", bg: "bg-violet-50/70", dot: "bg-violet-400" },
+];
+
+type FeedEvent = typeof FEED_POOL[0] & { uid: number; time: string };
+
+function formatAgo(secsAgo: number): string {
+  if (secsAgo < 60) return "agora";
+  const m = Math.floor(secsAgo / 60);
+  return `${m} min`;
+}
 
 function LiveActivitySection() {
   const { ref, visible } = useFadeIn(0.08);
+  const poolIdxRef = useRef(6);
+  const uidRef = useRef(100);
+  const startRef = useRef(Date.now());
 
-  const events = [
-    {
-      icon: "🔥",
-      title: "Nova oportunidade publicada",
-      desc: "Apartamento em Salvador com −18% de desconto urgente",
-      time: "agora",
-      border: "border-orange-100",
-      bg: "bg-orange-50/70",
-      dot: "bg-orange-400",
-    },
-    {
-      icon: "💡",
-      title: "Match encontrado",
-      desc: "92% de compatibilidade — comprador em Salvador, BA",
-      time: "2 min",
-      border: "border-violet-100",
-      bg: "bg-violet-50/70",
-      dot: "bg-violet-400",
-    },
-    {
-      icon: "🤝",
-      title: "Parceria iniciada",
-      desc: "Dois corretores formalizaram acordo de comissão",
-      time: "5 min",
-      border: "border-blue-100",
-      bg: "bg-blue-50/70",
-      dot: "bg-blue-400",
-    },
-    {
-      icon: "📈",
-      title: "Imóvel adicionado à rede",
-      desc: "Casa em São Paulo · R$ 650.000 · 3 quartos",
-      time: "8 min",
-      border: "border-emerald-100",
-      bg: "bg-emerald-50/70",
-      dot: "bg-emerald-400",
-    },
-    {
-      icon: "💡",
-      title: "Match de alto impacto",
-      desc: "94% de compatibilidade — Rio de Janeiro, RJ",
-      time: "12 min",
-      border: "border-violet-100",
-      bg: "bg-violet-50/70",
-      dot: "bg-violet-400",
-    },
-    {
-      icon: "🔥",
-      title: "Oportunidade urgente",
-      desc: "Studio no Rio de Janeiro com −15% · 3 interessados",
-      time: "15 min",
-      border: "border-orange-100",
-      bg: "bg-orange-50/70",
-      dot: "bg-orange-400",
-    },
-  ];
+  const [feed, setFeed] = useState<FeedEvent[]>(() =>
+    FEED_POOL.slice(0, 6).map((e, i) => ({
+      ...e,
+      uid: i,
+      time: formatAgo(i * 150), // espacados no passado simulado
+    }))
+  );
+  const [newUid, setNewUid] = useState<number | null>(null);
+
+  // Novo evento a cada 8 segundos
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const next = FEED_POOL[poolIdxRef.current % FEED_POOL.length];
+      poolIdxRef.current++;
+      const uid = uidRef.current++;
+      setFeed(prev => [{ ...next, uid, time: "agora" }, ...prev.slice(0, 5)]);
+      setNewUid(uid);
+      setTimeout(() => setNewUid(null), 700);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <section className="bg-white py-20">
+      <style>{`
+        @keyframes feed-slide-in {
+          from { opacity: 0; transform: translateY(-10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .feed-new { animation: feed-slide-in 0.5s ease forwards; }
+      `}</style>
+
       <div ref={ref} className="mx-auto max-w-7xl px-6">
         {/* Heading */}
         <div
@@ -426,27 +423,22 @@ function LiveActivitySection() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
             </span>
-            Em tempo real
+            Atividade na rede
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
             O que está acontecendo agora
           </h2>
           <p className="text-lg text-gray-500 max-w-xl mx-auto">
-            Matches sendo gerados, parcerias sendo fechadas e oportunidades surgindo todos os dias na rede.
+            Matches, parcerias e oportunidades como essas surgem todos os dias na rede ImobMatch.
           </p>
         </div>
 
-        {/* Cards grid com entrada sequencial */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
-          {events.map((ev, i) => (
+        {/* Feed ao vivo */}
+        <div className="max-w-3xl mx-auto space-y-3">
+          {feed.map((ev) => (
             <div
-              key={i}
-              style={{
-                opacity: visible ? 1 : 0,
-                transform: visible ? "translateY(0)" : "translateY(20px)",
-                transition: `opacity 0.5s ease ${120 + i * 80}ms, transform 0.5s ease ${120 + i * 80}ms`,
-              }}
-              className={`flex items-start gap-3 p-4 rounded-2xl border ${ev.border} ${ev.bg} hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 cursor-default`}
+              key={ev.uid}
+              className={`${ev.uid === newUid ? "feed-new" : ""} flex items-start gap-3 p-4 rounded-2xl border ${ev.border} ${ev.bg} hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 cursor-default`}
             >
               <div className="flex-shrink-0 w-9 h-9 bg-white rounded-xl flex items-center justify-center text-base shadow-sm border border-gray-100">
                 {ev.icon}
@@ -455,7 +447,7 @@ function LiveActivitySection() {
                 <div className="flex items-center justify-between gap-2 mb-0.5">
                   <p className="text-sm font-semibold text-gray-800 truncate">{ev.title}</p>
                   <span className="text-[10px] text-gray-400 flex-shrink-0 flex items-center gap-1 whitespace-nowrap">
-                    <span className={`w-1.5 h-1.5 rounded-full ${ev.dot}`} />
+                    <span className={`w-1.5 h-1.5 rounded-full ${ev.dot} ${ev.uid === newUid ? "animate-ping" : ""}`} />
                     {ev.time}
                   </span>
                 </div>
@@ -465,14 +457,14 @@ function LiveActivitySection() {
           ))}
         </div>
 
-        {/* CTA link */}
+        {/* Rodapé do feed */}
         <div
-          className="text-center mt-10"
-          style={{
-            opacity: visible ? 1 : 0,
-            transition: "opacity 0.5s ease 700ms",
-          }}
+          className="text-center mt-8"
+          style={{ opacity: visible ? 1 : 0, transition: "opacity 0.5s ease 700ms" }}
         >
+          <p className="text-xs text-gray-400 mb-3">
+            Esses são exemplos do tipo de atividade que acontece na plataforma
+          </p>
           <Link
             href="/register"
             className="group inline-flex items-center gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors"
@@ -487,10 +479,69 @@ function LiveActivitySection() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// OPPORTUNITY IMPACT CARD (Seção de Impacto)
+// OPPORTUNITY IMPACT — pool rotativo de 6 oportunidades (2 grupos de 3)
 // ─────────────────────────────────────────────────────────────────────────────
 
+const OPP_POOL = [
+  // Grupo A
+  {
+    label: "Salvador, BA",
+    type: "Casa · 4 quartos · 180 m²",
+    from: "R$ 800.000", to: "R$ 680.000", save: "−R$ 120.000", pct: "15%", matches: 3,
+    gradient: "from-orange-500 to-red-500",
+  },
+  {
+    label: "São Paulo, SP",
+    type: "Apartamento · 3 quartos · 90 m²",
+    from: "R$ 550.000", to: "R$ 460.000", save: "−R$ 90.000", pct: "16%", matches: 5,
+    gradient: "from-blue-500 to-violet-600", featured: true,
+  },
+  {
+    label: "Rio de Janeiro, RJ",
+    type: "Studio · 1 quarto · 48 m²",
+    from: "R$ 380.000", to: "R$ 320.000", save: "−R$ 60.000", pct: "16%", matches: 2,
+    gradient: "from-emerald-500 to-teal-600",
+  },
+  // Grupo B
+  {
+    label: "Fortaleza, CE",
+    type: "Cobertura · 3 quartos · 120 m²",
+    from: "R$ 620.000", to: "R$ 510.000", save: "−R$ 110.000", pct: "18%", matches: 4,
+    gradient: "from-amber-500 to-orange-600", featured: true,
+  },
+  {
+    label: "Belo Horizonte, MG",
+    type: "Apartamento · 2 quartos · 65 m²",
+    from: "R$ 420.000", to: "R$ 360.000", save: "−R$ 60.000", pct: "14%", matches: 3,
+    gradient: "from-rose-500 to-pink-600",
+  },
+  {
+    label: "Recife, PE",
+    type: "Casa · 3 quartos · 150 m²",
+    from: "R$ 480.000", to: "R$ 400.000", save: "−R$ 80.000", pct: "17%", matches: 2,
+    gradient: "from-cyan-500 to-blue-600",
+  },
+];
+
 function OpportunityImpactSection() {
+  const [groupIdx, setGroupIdx] = useState(0);
+  const [cardOpacity, setCardOpacity] = useState(1);
+
+  const rotate = (next: number) => {
+    setCardOpacity(0);
+    setTimeout(() => { setGroupIdx(next); setCardOpacity(1); }, 420);
+  };
+
+  // Rotação automática a cada 22 segundos
+  useEffect(() => {
+    const timer = setInterval(() => {
+      rotate((groupIdx + 1) % 2);
+    }, 22000);
+    return () => clearInterval(timer);
+  }, [groupIdx]);
+
+  const currentGroup = OPP_POOL.slice(groupIdx * 3, groupIdx * 3 + 3);
+
   return (
     <section className="bg-[#0F1117] py-20 relative overflow-hidden">
       {/* Background glow */}
@@ -500,57 +551,29 @@ function OpportunityImpactSection() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
+        {/* Heading */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider">
             <Flame className="h-3.5 w-3.5" />
-            Oportunidades no radar agora
+            Exemplos de oportunidades na plataforma
           </div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
-            Imóveis com desconto urgente{" "}
+            Oportunidades como essa{" "}
             <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-              esperando você
+              surgem todos os dias
             </span>
           </h2>
           <p className="text-gray-400 text-lg max-w-xl mx-auto">
-            Corretores publicam oportunidades urgentes todos os dias. Cadastre-se e acesse antes de qualquer um.
+            Corretores publicam imóveis com desconto urgente na rede. Quem está cadastrado acessa primeiro.
           </p>
         </div>
 
-        {/* Cards de oportunidades */}
-        <div className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto mb-12">
-          {[
-            {
-              label: "Salvador, BA",
-              type: "Casa · 4 quartos · 180 m²",
-              from: "R$ 800.000",
-              to: "R$ 680.000",
-              save: "−R$ 120.000",
-              pct: "15%",
-              matches: 3,
-              gradient: "from-orange-500 to-red-500",
-            },
-            {
-              label: "São Paulo, SP",
-              type: "Apartamento · 3q · 90 m²",
-              from: "R$ 550.000",
-              to: "R$ 460.000",
-              save: "−R$ 90.000",
-              pct: "16%",
-              matches: 5,
-              gradient: "from-blue-500 to-violet-600",
-              featured: true,
-            },
-            {
-              label: "Rio de Janeiro, RJ",
-              type: "Studio · 1q · 48 m²",
-              from: "R$ 380.000",
-              to: "R$ 320.000",
-              save: "−R$ 60.000",
-              pct: "16%",
-              matches: 2,
-              gradient: "from-emerald-500 to-teal-600",
-            },
-          ].map((opp) => (
+        {/* Cards rotativos */}
+        <div
+          className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto mb-8"
+          style={{ opacity: cardOpacity, transition: "opacity 0.42s ease" }}
+        >
+          {currentGroup.map((opp) => (
             <div
               key={opp.label}
               className={`relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
@@ -595,7 +618,7 @@ function OpportunityImpactSection() {
                   href="/register"
                   className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition"
                 >
-                  Quero essa oportunidade
+                  Ver oportunidades reais
                   <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </div>
@@ -603,15 +626,30 @@ function OpportunityImpactSection() {
           ))}
         </div>
 
+        {/* Dots de navegação */}
+        <div className="flex justify-center gap-2 mb-10">
+          {[0, 1].map((i) => (
+            <button
+              key={i}
+              onClick={() => rotate(i)}
+              aria-label={`Grupo ${i + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === groupIdx ? "w-6 bg-orange-400" : "w-1.5 bg-white/25 hover:bg-white/40"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Rodapé */}
         <div className="text-center">
           <p className="text-gray-500 text-sm mb-4">
-            Essas são <span className="text-white font-semibold">simulações reais</span> do tipo de oportunidade disponível na plataforma
+            Exemplos do tipo de oportunidade publicada por corretores da plataforma todos os dias
           </p>
           <Link
             href="/register"
             className="group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.99] transition-all duration-200"
           >
-            Acessar oportunidades reais
+            Começar a gerar oportunidades
             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
