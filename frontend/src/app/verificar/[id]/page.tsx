@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
 import { ShieldCheck, ShieldX, Loader2, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("pt-BR", {
@@ -40,7 +41,13 @@ export default function VerificarTermoPage() {
         {/* Header */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-block mb-4">
-            <span className="text-2xl font-extrabold text-blue-700 tracking-tight">ImobMatch</span>
+            <Image
+              src="/logo.png"
+              alt="ImobMatch"
+              width={160}
+              height={48}
+              className="h-11 w-auto object-contain mx-auto"
+            />
           </Link>
           <h1 className="text-xl font-bold text-gray-900">Verificação de Autenticidade</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -185,7 +192,7 @@ export default function VerificarTermoPage() {
         )}
 
         <p className="text-center text-xs text-gray-400 pt-2">
-          ImobMatch — Verificação pública de autenticidade de termos de parceria
+          useimobmatch.com.br — Verificação pública de autenticidade de termos de parceria
         </p>
       </div>
     </div>

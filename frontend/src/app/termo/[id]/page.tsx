@@ -230,14 +230,25 @@ export default function TermoParceriaPage() {
                 <code className="break-all">{agreement.id}</code>
               </div>
               {agreement.agreementHash && (
-                <div className="pt-2 border-t">
-                  <p className="text-gray-500 mb-1">Hash de verificação (SHA-256):</p>
-                  <code className="break-all text-[11px] bg-white border rounded p-2 block font-mono text-gray-700">
-                    {agreement.agreementHash}
-                  </code>
-                  <p className="text-gray-400 mt-1">
-                    Este código foi gerado no momento da aceitação e identifica unicamente este acordo.
-                  </p>
+                <div className="pt-2 border-t space-y-3">
+                  <div>
+                    <p className="text-gray-500 mb-1">Hash de verificação (SHA-256):</p>
+                    <code className="break-all text-[11px] bg-white border rounded p-2 block font-mono text-gray-700">
+                      {agreement.agreementHash}
+                    </code>
+                    <p className="text-gray-400 mt-1">
+                      Este código foi gerado no momento da aceitação e identifica unicamente este acordo.
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-gray-600 mb-1 font-medium">Link de verificação pública:</p>
+                    <p className="break-all text-blue-700 font-mono text-[11px]">
+                      https://useimobmatch.com.br/verificar/{agreement.id}
+                    </p>
+                    <p className="text-gray-400 mt-1 text-[10px]">
+                      Qualquer pessoa pode acessar este link para confirmar a autenticidade do documento, sem necessidade de login.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
