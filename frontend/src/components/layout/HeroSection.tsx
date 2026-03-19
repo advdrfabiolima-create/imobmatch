@@ -336,17 +336,17 @@ export default function HeroSection() {
           <img
             src="/corretores.png"
             alt="Corretores fechando parceria"
-            className="absolute inset-0 z-0 select-none"
+            className="absolute z-0 select-none"
             style={{
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
-              width: "100%",
-              height: "108%",
+              width: "130%",
+              height: "125%",
               objectFit: "contain",
               objectPosition: "top center",
-              top: 0,
-              left: 0,
+              top: "-5%",
+              left: "-15%",
             }}
             draggable={false}
           />
