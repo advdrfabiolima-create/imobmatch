@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { normalizePlan } from '../common/plans.config';
 
 @Injectable()
 export class AdminService {
@@ -45,7 +46,8 @@ export class AdminService {
       this.prisma.user.count({ where }),
     ]);
 
-    return { data: users, total, page: Number(page), totalPages: Math.ceil(total / limit) };
+    const normalized = users.map((u) => ({ ...u, plan: normalizePlan(u.plan) }));
+    return { data: normalized, total, page: Number(page), totalPages: Math.ceil(total / limit) };
   }
 
   async toggleUserStatus(id: string) {
