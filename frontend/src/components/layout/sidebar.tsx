@@ -5,13 +5,46 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, Users, Zap, UserCheck,
   MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2, CreditCard, X,
-  Rss, Trophy,
+  Rss, Trophy, AlertTriangle, ChevronDown, ChevronUp,
 } from "lucide-react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
 import { useSidebarStore } from "@/store/sidebar.store";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+
+function DisclaimerCompact() {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="text-[9.5px] leading-relaxed text-[#475569]">
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        className="flex items-center gap-1.5 text-[#475569] hover:text-[#94A3B8] transition-colors w-full text-left"
+        aria-expanded={expanded}
+      >
+        <AlertTriangle className="h-3 w-3 flex-shrink-0 text-amber-500/60" />
+        <span className="font-medium">Aviso legal</span>
+        {expanded
+          ? <ChevronUp className="h-3 w-3 ml-auto flex-shrink-0" />
+          : <ChevronDown className="h-3 w-3 ml-auto flex-shrink-0" />
+        }
+      </button>
+      {expanded && (
+        <p className="mt-1.5 text-[9px] leading-relaxed text-[#475569]">
+          A ImobMatch é uma plataforma de publicidade. Não é responsável por
+          negociações de compra, venda, locação ou permuta entre usuários.
+          Toda transação é de responsabilidade exclusiva das partes e do
+          corretor habilitado pelo CRECI.{" "}
+          <Link href="/termos" className="underline hover:text-[#94A3B8]">
+            Termos de Uso
+          </Link>
+          .
+        </p>
+      )}
+    </div>
+  );
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -155,8 +188,13 @@ export function Sidebar() {
           )}
         </nav>
 
+        {/* Aviso legal compacto */}
+        <div className="px-4 py-3 border-t border-white/8">
+          <DisclaimerCompact />
+        </div>
+
         {/* Logout */}
-        <div className="px-3 py-4 border-t border-white/8">
+        <div className="px-3 py-3 border-t border-white/8">
           <button
             onClick={() => { close(); logout(); }}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 w-full"

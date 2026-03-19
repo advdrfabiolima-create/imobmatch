@@ -1401,6 +1401,23 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Disclaimer de responsabilidade */}
+          <div className="border-t border-gray-800 pt-7 mb-6">
+            <p className="text-[11px] leading-relaxed text-gray-600 text-center max-w-4xl mx-auto">
+              <span className="text-amber-500 font-semibold">⚠ Aviso Legal:</span>{" "}
+              A ImobMatch é uma plataforma de publicidade tecnológica e <strong className="text-gray-500">não se
+              responsabiliza</strong> por negociações de compra, venda, locação, permuta ou qualquer outra
+              transação imobiliária realizada entre usuários. Toda negociação é de responsabilidade exclusiva
+              das partes envolvidas e do corretor habilitado pelo CRECI (Lei nº 6.530/1978). A Plataforma não
+              verifica a regularidade documental dos imóveis anunciados nem garante a veracidade das informações
+              publicadas pelos usuários. Consulte nossos{" "}
+              <Link href="/termos" className="text-gray-400 hover:text-gray-300 underline underline-offset-2">
+                Termos de Uso
+              </Link>{" "}
+              para mais detalhes.
+            </p>
+          </div>
+
           <div className="border-t border-gray-800 pt-7 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-gray-600">
             <p>useimobmatch.com.br — Conectando corretores de imóveis no Brasil</p>
             <div className="flex items-center gap-1.5">

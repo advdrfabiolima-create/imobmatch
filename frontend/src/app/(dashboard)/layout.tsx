@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Sidebar } from "@/components/layout/sidebar";
 import { useAuthStore } from "@/store/auth.store";
 import { UpgradeModal } from "@/components/ui/upgrade-modal";
-import { MailWarning, X } from "lucide-react";
+import { MailWarning, X, AlertTriangle } from "lucide-react";
 import { api } from "@/lib/api";
 
 function EmailVerificationBanner() {
@@ -76,6 +76,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <main className="md:ml-64 min-h-screen flex flex-col">
         <EmailVerificationBanner />
         <div className="flex-1">{children}</div>
+        {/* Rodapé com aviso de isenção de responsabilidade */}
+        <footer className="border-t border-gray-200 bg-white px-6 py-3">
+          <div className="flex items-start gap-2 text-[11px] text-gray-400 leading-relaxed max-w-5xl">
+            <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0 text-amber-400 mt-0.5" />
+            <p>
+              <span className="font-semibold text-gray-500">Aviso Legal:</span>{" "}
+              A ImobMatch é uma plataforma de publicidade e não é responsável por negociações de compra, venda,
+              locação ou permuta entre usuários. Toda transação é de responsabilidade exclusiva das partes
+              e do corretor habilitado pelo CRECI (Lei nº 6.530/1978).{" "}
+              <Link href="/termos" className="underline hover:text-gray-600 transition-colors">
+                Termos de Uso
+              </Link>
+              .
+            </p>
+          </div>
+        </footer>
       </main>
       <UpgradeModal />
     </div>

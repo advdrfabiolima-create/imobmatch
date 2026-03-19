@@ -107,12 +107,73 @@ export default function TermosPage() {
               </p>
             </section>
 
+            {/* ── AVISO EM DESTAQUE ── */}
+            <section className="rounded-xl border-2 border-amber-300 bg-amber-50 p-6">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl flex-shrink-0">⚠️</span>
+                <div className="space-y-3 text-sm leading-relaxed text-amber-900">
+                  <h2 className="text-base font-bold text-amber-900">
+                    Isenção de Responsabilidade por Transações Imobiliárias
+                  </h2>
+                  <p>
+                    A <strong>ImobMatch</strong> é uma <strong>plataforma de publicidade e intermediação
+                    tecnológica</strong>, destinada exclusivamente a profissionais do mercado imobiliário. Nos
+                    termos dos arts. 186 e 927 do Código Civil Brasileiro (Lei nº 10.406/2002) e do art. 3º do
+                    Código de Defesa do Consumidor (Lei nº 8.078/1990), a ImobMatch <strong>não é parte
+                    integrante, mandante, interveniente, garante ou avalista</strong> em quaisquer negociações,
+                    contratos de compra e venda, locação, permuta, cessão de direitos ou qualquer outra
+                    modalidade de transação imobiliária realizadas entre os usuários da Plataforma.
+                  </p>
+                  <p>
+                    Todo e qualquer negócio jurídico celebrado entre corretores, compradores, vendedores,
+                    locatários ou demais partes é de <strong>responsabilidade exclusiva dos envolvidos</strong>.
+                    A condução, o assessoramento técnico e a formalização das transações são atribuições do
+                    corretor de imóveis devidamente habilitado perante o CRECI de sua unidade federativa, nos
+                    termos da Lei Federal nº 6.530/1978 e do Decreto nº 81.871/1978, que regulamentam o
+                    exercício da profissão.
+                  </p>
+                  <p>
+                    A ImobMatch <strong>não realiza</strong> avaliações de imóveis, não emite laudos de vistoria,
+                    não verifica a regularidade urbanística, cartorial ou tributária dos imóveis anunciados, e
+                    não garante a veracidade, completude ou atualidade das informações publicadas pelos usuários.
+                    A pesquisa e análise de certidões — incluindo, sem limitação, matrícula atualizada, certidões
+                    negativas de débitos fiscais (IPTU, ITR, condomínio), certidões pessoais dos vendedores,
+                    habite-se e demais documentos exigidos por lei — são de responsabilidade integral das partes
+                    contratantes.
+                  </p>
+                  <p>
+                    Eventuais litígios decorrentes de vícios ocultos, inadimplemento contratual, disputas
+                    possessórias, irregularidades documentais ou quaisquer outros danos oriundos das negociações
+                    realizadas por meio dos anúncios publicados na Plataforma devem ser resolvidos
+                    <strong> diretamente entre as partes</strong>, sem envolvimento ou responsabilização da
+                    ImobMatch, que se limita ao fornecimento de infraestrutura tecnológica para publicação e
+                    divulgação de anúncios imobiliários.
+                  </p>
+                  <p className="text-xs text-amber-700 italic">
+                    Este aviso tem fundamento nos princípios da boa-fé objetiva (art. 422 do CC), na teoria da
+                    responsabilidade civil subjetiva (art. 927 do CC) e no Marco Civil da Internet (Lei nº
+                    12.965/2014, art. 19), que estabelece que os provedores de aplicações de internet não são
+                    responsáveis pelo conteúdo gerado por terceiros.
+                  </p>
+                </div>
+              </div>
+            </section>
+
             <section>
               <h2 className="text-lg font-semibold text-gray-900 mb-3">8. Limitação de Responsabilidade</h2>
               <p>
-                O ImobMatch não se responsabiliza por perdas ou danos decorrentes de: (i) uso ou impossibilidade de
-                uso da Plataforma; (ii) informações incorretas publicadas por usuários; (iii) transações realizadas
-                entre usuários; (iv) falhas de conectividade ou indisponibilidade temporária do serviço.
+                Sem prejuízo do disposto na seção anterior, o ImobMatch não se responsabiliza por perdas
+                ou danos decorrentes de: (i) uso ou impossibilidade de uso da Plataforma; (ii) informações
+                incorretas, incompletas ou desatualizadas publicadas por usuários; (iii) transações, acordos
+                ou negociações realizadas entre usuários; (iv) falhas de conectividade, indisponibilidade
+                temporária ou interrupção do serviço; (v) acesso não autorizado à conta do usuário resultante
+                de negligência do próprio usuário; (vi) decisões tomadas com base em informações divulgadas
+                na Plataforma.
+              </p>
+              <p className="mt-2">
+                A responsabilidade total da ImobMatch, em qualquer hipótese admitida em lei, fica limitada
+                ao valor pago pelo usuário à Plataforma nos últimos 3 (três) meses anteriores ao evento
+                gerador do dano.
               </p>
             </section>
 
