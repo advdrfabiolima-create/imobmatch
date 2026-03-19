@@ -242,8 +242,8 @@ function HeroVisual() {
         .hv-fl3 { animation: hv-flow-in 0.1s ease both 3.4s, hv-flow 5.0s linear infinite 3.5s; opacity: 0; }
       `}</style>
 
-      {/* Wrapper */}
-      <div className="relative select-none" style={{ padding: "52px 10px 52px 62px" }}>
+      {/* Wrapper — padding cria zonas para cards sangrarem nas bordas */}
+      <div className="relative select-none" style={{ padding: "62px 40px 80px 48px" }}>
 
         {/* ── Aura atmosférica ── */}
         <div className="hv-aura absolute pointer-events-none" style={{
@@ -383,8 +383,8 @@ function HeroVisual() {
 
         {/* ════ CARDS FLUTUANTES ════ */}
 
-        {/* ── CARD A: Match encontrado — hero card, maior e mais impactante ── */}
-        <div className="absolute hv-ea" style={{ top: "9%", left: "-50px", zIndex: 20 }}>
+        {/* ── CARD A: Match encontrado — TOPO ESQUERDO, card principal ── */}
+        <div className="absolute hv-ea" style={{ top: "4%", left: "-44px", zIndex: 20 }}>
           <div className="hv-fa">
             <div style={{
               background: "rgba(255,255,255,0.97)",
@@ -475,8 +475,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD B: Compatibilidade — direita superior ── */}
-        <div className="absolute hv-eb" style={{ top: "5%", right: "-38px", zIndex: 20 }}>
+        {/* ── CARD B: Compatibilidade — TOPO DIREITO, menor ── */}
+        <div className="absolute hv-eb" style={{ top: "4%", right: "-28px", zIndex: 20 }}>
           <div className="hv-fb">
             <div style={{
               background: "rgba(255,255,255,0.94)",
@@ -518,8 +518,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD C: Parceria iniciada — esquerda inferior ── */}
-        <div className="absolute hv-ec" style={{ bottom: "11%", left: "-44px", zIndex: 20 }}>
+        {/* ── CARD C: Parceria iniciada — INFERIOR CENTRAL ── */}
+        <div className="absolute hv-ec" style={{ bottom: "5%", left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
           <div className="hv-fc">
             <div style={{
               background: "rgba(255,255,255,0.94)",
@@ -559,8 +559,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD D: Comissão estimada — direita inferior (NOVO — impacto financeiro) ── */}
-        <div className="absolute hv-ed" style={{ bottom: "7%", right: "-34px", zIndex: 20 }}>
+        {/* ── CARD D: Comissão estimada — CANTO INFERIOR DIREITO, destaque visual ── */}
+        <div className="absolute hv-ed" style={{ bottom: "2%", right: "-36px", zIndex: 20 }}>
           <div className="hv-fd">
             <div className="hv-money" style={{
               background: "rgba(255,255,255,0.97)",
@@ -610,8 +610,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD E: Negócio fechado — direita centro ── */}
-        <div className="absolute hv-ee" style={{ top: "50%", right: "-30px", zIndex: 20 }}>
+        {/* ── CARD E: Negócio fechado — INFERIOR DIREITO, acima da comissão ── */}
+        <div className="absolute hv-ee" style={{ bottom: "32%", right: "-28px", zIndex: 20 }}>
           <div className="hv-fe">
             <div style={{
               background: "rgba(255,255,255,0.94)",
@@ -1243,7 +1243,7 @@ export default function HomePage() {
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20">
-          <div className="grid lg:grid-cols-[44%_56%] gap-8 lg:gap-10 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
             {/* Left */}
             <div>
