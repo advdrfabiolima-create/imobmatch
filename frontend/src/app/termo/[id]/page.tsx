@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
 import { Loader2, Printer, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("pt-BR", {
@@ -255,13 +256,20 @@ export default function TermoParceriaPage() {
           )}
 
           {/* Footer */}
-          <div className="text-center text-xs text-gray-400 pt-4 border-t">
+          <div className="text-center text-xs text-gray-400 pt-4 border-t space-y-2">
             <p>
               Documento gerado automaticamente por <strong>ImobMatch</strong> em{" "}
               {formatDate(agreement.acceptedAt)}.
             </p>
-            <p className="mt-1">
-              A autenticidade pode ser verificada pelo hash SHA-256 registrado acima.
+            <p>
+              <Link
+                href={`/verificar/${id}`}
+                target="_blank"
+                className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium text-xs"
+              >
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Verificar autenticidade deste documento
+              </Link>
             </p>
           </div>
         </div>

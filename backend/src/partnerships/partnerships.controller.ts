@@ -31,6 +31,13 @@ export class PartnershipsController {
     return this.partnershipsService.getAgreement(id, req.user.id);
   }
 
+  @Get(':id/verify')
+  @UseGuards()
+  @ApiOperation({ summary: 'Verificar autenticidade do termo de parceria (público, sem login)' })
+  verify(@Param('id') id: string) {
+    return this.partnershipsService.verify(id);
+  }
+
   @Patch(':id/respond')
   @ApiOperation({ summary: 'Aceitar ou rejeitar parceria' })
   respond(

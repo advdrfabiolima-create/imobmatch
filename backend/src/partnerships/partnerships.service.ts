@@ -184,6 +184,49 @@ export class PartnershipsService {
   return { message: reason === 'buyer_quit' ? 'Parceria encerrada e comprador inativado' : 'Parceria encerrada' };
 }
 
+  async verify(id: string) {
+    const partnership = await this.prisma.partnership.findUnique({
+      where: { id },
+      include: {
+        property:  { select: { title: true, city: true, type: true } },
+        requester: { select: { name: true, creci: true, agency: true } },
+        receiver:  { select: { name: true, creci: true, agency: true } },
+      },
+    });
+
+    if (!partnership) throw new NotFoundException('Parceria não encontrada');
+    if (!partnership.agreementHash) {
+      return { valid: false, reason: 'Parceria ainda não foi aceita — nenhum documento gerado.' };
+    }
+
+    const recalculated = createHash('sha256')
+      .update(
+        [
+          id,
+          partnership.requesterId,
+          partnership.receiverId,
+          partnership.propertyId,
+          partnership.commissionSplit ?? '',
+          partnership.acceptedAt!.toISOString(),
+        ].join(':'),
+      )
+      .digest('hex');
+
+    const valid = recalculated === partnership.agreementHash;
+
+    return {
+      valid,
+      partnershipId: id,
+      hash: partnership.agreementHash,
+      acceptedAt: partnership.acceptedAt,
+      commissionSplit: partnership.commissionSplit,
+      property: partnership.property,
+      requester: partnership.requester,
+      receiver:  partnership.receiver,
+      ...(valid ? {} : { reason: 'O hash recalculado não corresponde ao hash registrado. Documento pode ter sido adulterado.' }),
+    };
+  }
+
   async getAgreement(id: string, userId: string) {
     const partnership = await this.prisma.partnership.findUnique({
       where: { id },
