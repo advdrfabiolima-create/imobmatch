@@ -52,13 +52,13 @@ function buildEvents(opps: any[], partnerships: any[]): EventItem[] {
     events.push({
       id:    `opp-${o.id}`,
       msg:   `🔥 ${type} em ${o.city} com ${discount}% OFF — ${views} corretores viram`,
-      color: "text-orange-600",
+      color: "text-orange-300",
     });
     if (seeded(o.id + "v", 0, 1) === 1) {
       events.push({
         id:    `opp-view-${o.id}`,
         msg:   `👀 ${views} corretores visualizaram oportunidade em ${o.city} ${timeAgo(o.createdAt)}`,
-        color: "text-gray-600",
+        color: "text-slate-300",
       });
     }
   });
@@ -71,21 +71,21 @@ function buildEvents(opps: any[], partnerships: any[]): EventItem[] {
       events.push({
         id:    `par-${p.id}`,
         msg:   `🤝 Parceria aceita em ${p.property?.city ?? "rede"} ${timeAgo(p.acceptedAt ?? p.createdAt)}`,
-        color: "text-emerald-600",
+        color: "text-emerald-300",
       });
     });
 
   // Supplemental seeded (baseados em datas reais para não parecer inventado)
   const now  = Date.now();
   const POOL = [
-    { msg: "💰 Negócio fechado na plataforma há poucos minutos",    color: "text-green-700"  },
-    { msg: "⚡ Novo match gerado automaticamente pelo sistema",       color: "text-blue-600"  },
-    { msg: "🔔 Corretor demonstrou interesse em oportunidade urgente", color: "text-orange-500" },
-    { msg: "📍 Nova oportunidade publicada na rede",                  color: "text-red-600"   },
-    { msg: "🤝 Dois corretores iniciaram parceria agora",             color: "text-emerald-600"},
-    { msg: "💼 Comissão estimada de R$ 18.000 em negociação ativa",  color: "text-violet-600" },
-    { msg: "⏱ Oportunidade com 31% OFF ainda disponível",            color: "text-orange-600" },
-    { msg: "🏆 Corretor subiu de nível no ranking",                   color: "text-yellow-600" },
+    { msg: "💰 Negócio fechado na plataforma há poucos minutos",      color: "text-green-300"   },
+    { msg: "⚡ Novo match gerado automaticamente pelo sistema",         color: "text-blue-300"    },
+    { msg: "🔔 Corretor demonstrou interesse em oportunidade urgente", color: "text-orange-300"  },
+    { msg: "📍 Nova oportunidade publicada na rede",                    color: "text-red-300"     },
+    { msg: "🤝 Dois corretores iniciaram parceria agora",               color: "text-emerald-300" },
+    { msg: "💼 Comissão estimada de R$ 18.000 em negociação ativa",    color: "text-violet-300"  },
+    { msg: "⏱ Oportunidade com 31% OFF ainda disponível",              color: "text-orange-300"  },
+    { msg: "🏆 Corretor subiu de nível no ranking",                     color: "text-yellow-300"  },
   ];
 
   // Usar eventos do pool que ainda não existem
@@ -153,17 +153,17 @@ export function ActivityTicker() {
   const item = items[current];
 
   return (
-    <div className="flex items-center gap-3 bg-gradient-to-r from-slate-900 to-slate-800 text-white px-4 py-2 text-xs overflow-hidden">
+    <div className="flex items-center gap-3 bg-gradient-to-r from-blue-800 via-blue-700 to-indigo-800 text-white px-4 py-2 text-xs overflow-hidden">
       {/* Live dot */}
       <div className="flex items-center gap-1.5 flex-shrink-0">
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
         </span>
-        <span className="text-slate-400 font-medium uppercase tracking-wider text-[10px]">AO VIVO</span>
+        <span className="text-blue-200 font-medium uppercase tracking-wider text-[10px]">AO VIVO</span>
       </div>
 
-      <div className="w-px h-3 bg-slate-600 flex-shrink-0" />
+      <div className="w-px h-3 bg-blue-600 flex-shrink-0" />
 
       {/* Rotating message */}
       <div className="flex-1 overflow-hidden">
@@ -176,7 +176,7 @@ export function ActivityTicker() {
       </div>
 
       {/* Counter */}
-      <span className="flex-shrink-0 text-slate-500 text-[10px]">
+      <span className="flex-shrink-0 text-blue-300 text-[10px]">
         {current + 1}/{items.length}
       </span>
     </div>
