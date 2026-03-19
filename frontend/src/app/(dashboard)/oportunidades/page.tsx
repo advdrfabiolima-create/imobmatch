@@ -93,6 +93,26 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
     title: "", propertyType: "APARTMENT", priceNormal: "", priceUrgent: "",
     state: "", city: "", neighborhood: "", description: "", acceptsOffer: false,
   });
+  const [photoUrl, setPhotoUrl]       = useState<string | null>(null);
+  const [uploading, setUploading]     = useState(false);
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("files", file);
+      const res = await api.post("/upload/images", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setPhotoUrl(res.data.urls?.[0] ?? null);
+    } catch {
+      toast.error("Erro ao enviar foto");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const mutation = useMutation({
     mutationFn: (data: any) => api.post("/opportunities", data),
@@ -110,6 +130,7 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
       ...form,
       priceNormal: Number(form.priceNormal),
       priceUrgent: Number(form.priceUrgent),
+      photoUrl: photoUrl ?? undefined,
     });
   };
 
@@ -197,6 +218,38 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
               placeholder="Descreva o motivo da urgência..."
             />
           </div>
+          {/* Foto do imóvel */}
+          <div>
+            <label className="text-sm font-medium text-gray-700">Foto do Imóvel</label>
+            <div className="mt-1">
+              {photoUrl ? (
+                <div className="relative rounded-xl overflow-hidden border border-gray-200" style={{ height: 140 }}>
+                  <img src={photoUrl} alt="preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrl(null)}
+                    className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition-colors"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <label className={`flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-200 rounded-xl py-6 cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-colors ${uploading ? "opacity-60 pointer-events-none" : ""}`}>
+                  <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                  {uploading ? (
+                    <span className="text-xs text-orange-500 font-medium">Enviando foto...</span>
+                  ) : (
+                    <>
+                      <span className="text-2xl mb-1">📷</span>
+                      <span className="text-xs text-gray-500">Clique para adicionar foto</span>
+                      <span className="text-[11px] text-gray-400">JPG, PNG até 10MB</span>
+                    </>
+                  )}
+                </label>
+              )}
+            </div>
+          </div>
+
           <label className="flex items-center gap-2 text-sm cursor-pointer">
             <input type="checkbox" checked={form.acceptsOffer}
               onChange={e => setForm(f => ({ ...f, acceptsOffer: e.target.checked }))}
@@ -204,7 +257,7 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
             />
             <span className="text-gray-700">Aceita proposta / contraproposta</span>
           </label>
-          <Button type="submit" disabled={mutation.isPending}
+          <Button type="submit" disabled={mutation.isPending || uploading}
             className="w-full bg-orange-500 hover:bg-orange-600 h-11 font-semibold"
           >
             {mutation.isPending ? "Publicando..." : "🔥 Publicar no Radar"}
