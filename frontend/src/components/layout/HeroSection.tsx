@@ -332,17 +332,15 @@ export default function HeroSection() {
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
         <div className="relative min-h-[700px] lg:min-h-[820px]">
 
-          {/* Photo — maior e posicionada do topo ao fundo da section */}
+          {/* Photo — tamanho ajustado, alinhada à direita */}
           <div
             className="absolute pointer-events-none z-10"
             style={{
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
-              left: "50%",
+              right: "-5%",
               top: "0px",
-              transform: "translateX(-50%)",
               height: "100%",
-              width: "auto",
               display: "flex",
               alignItems: "flex-start",
             }}
@@ -353,10 +351,10 @@ export default function HeroSection() {
               className="select-none object-contain object-top"
               style={{
                 filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
-                height: "115%",
+                height: "102%",
                 width: "auto",
                 maxWidth: "none",
-                marginTop: "-2%",
+                marginTop: "-1%",
               }}
               draggable={false}
             />
