@@ -383,8 +383,8 @@ function HeroVisual() {
 
         {/* ════ CARDS FLUTUANTES ════ */}
 
-        {/* ── CARD A: Match encontrado — CENTRO ESQUERDO, entre topo e base ── */}
-        <div className="absolute hv-ea" style={{ top: "40%", left: "-36px", zIndex: 20 }}>
+        {/* ── CARD A: Match encontrado — levemente acima do centro, mais à esquerda ── */}
+        <div className="absolute hv-ea" style={{ top: "33%", left: "-44px", zIndex: 20 }}>
           <div className="hv-fa">
             <div style={{
               background: "rgba(255,255,255,0.97)",
@@ -517,8 +517,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD C: Parceria iniciada — INFERIOR ESQUERDO, abaixo do Match ── */}
-        <div className="absolute hv-ec" style={{ bottom: "11%", left: "-38px", zIndex: 20 }}>
+        {/* ── CARD C: Parceria iniciada — INFERIOR ESQUERDO, mais próximo da base ── */}
+        <div className="absolute hv-ec" style={{ bottom: "5%", left: "-38px", zIndex: 20 }}>
           <div className="hv-fc">
             <div style={{
               background: "rgba(255,255,255,0.94)",
