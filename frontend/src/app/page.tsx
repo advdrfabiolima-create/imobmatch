@@ -517,8 +517,8 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD C: Parceria iniciada — INFERIOR CENTRAL, próximo ao aperto de mão ── */}
-        <div className="absolute hv-ec" style={{ bottom: "11%", left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
+        {/* ── CARD C: Parceria iniciada — INFERIOR ESQUERDO, abaixo do Match ── */}
+        <div className="absolute hv-ec" style={{ bottom: "11%", left: "-38px", zIndex: 20 }}>
           <div className="hv-fc">
             <div style={{
               background: "rgba(255,255,255,0.94)",
