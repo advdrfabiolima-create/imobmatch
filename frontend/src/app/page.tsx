@@ -145,277 +145,444 @@ function HeroVisual() {
   return (
     <>
       <style>{`
+        /* ── Entrada: fade + slide up ── */
+        @keyframes hv-enter {
+          from { opacity: 0; transform: translateY(16px) scale(0.96); }
+          to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+        /* ── Float vertical ── */
         @keyframes hv-float-a {
-          0%,100% { transform: translateY(0px) rotate(-1deg); }
-          50%      { transform: translateY(-10px) rotate(-1deg); }
+          0%,100% { transform: translateY(0px); }
+          50%      { transform: translateY(-12px); }
         }
         @keyframes hv-float-b {
-          0%,100% { transform: translateY(0px) rotate(0.8deg); }
-          50%      { transform: translateY(-8px) rotate(0.8deg); }
+          0%,100% { transform: translateY(0px); }
+          50%      { transform: translateY(-9px); }
         }
         @keyframes hv-float-c {
-          0%,100% { transform: translateY(0px) rotate(1deg); }
-          50%      { transform: translateY(-9px) rotate(1deg); }
+          0%,100% { transform: translateY(0px); }
+          50%      { transform: translateY(-10px); }
         }
+        @keyframes hv-float-d {
+          0%,100% { transform: translateY(0px); }
+          50%      { transform: translateY(-7px); }
+        }
+        /* ── Glow handshake ── */
         @keyframes hv-glow-pulse {
-          0%,100% { opacity: 0.45; transform: translate(-50%,-50%) scale(1); }
-          50%      { opacity: 0.80; transform: translate(-50%,-50%) scale(1.30); }
+          0%,100% { opacity: 0.50; transform: translate(-50%,-50%) scale(1); }
+          50%      { opacity: 0.92; transform: translate(-50%,-50%) scale(1.40); }
         }
         @keyframes hv-ring-pulse {
-          0%,100% { opacity: 0.20; transform: translate(-50%,-50%) scale(1); }
-          50%      { opacity: 0.45; transform: translate(-50%,-50%) scale(1.5); }
+          0%,100% { opacity: 0.18; transform: translate(-50%,-50%) scale(1); }
+          50%      { opacity: 0.55; transform: translate(-50%,-50%) scale(1.65); }
         }
+        /* ── Partículas ── */
         @keyframes hv-dot {
-          0%,100% { opacity: 0.10; transform: scale(1); }
-          50%      { opacity: 0.80; transform: scale(1.6); }
+          0%,100% { opacity: 0.08; transform: scale(0.8); }
+          50%      { opacity: 0.88; transform: scale(1.8); }
         }
+        /* ── Linha: draw-in ── */
         @keyframes hv-line-draw {
-          from { stroke-dashoffset: 400; opacity: 0; }
+          from { stroke-dashoffset: 550; opacity: 0; }
           to   { stroke-dashoffset: 0;   opacity: 1; }
         }
-        @keyframes hv-aura {
-          0%,100% { opacity: 0.55; transform: scale(1); }
-          50%      { opacity: 0.85; transform: scale(1.08); }
+        /* ── Linha: fluxo contínuo de dados ── */
+        @keyframes hv-flow {
+          from { stroke-dashoffset: 0; }
+          to   { stroke-dashoffset: -120; }
         }
-        .hv-float-a { animation: hv-float-a 4.4s ease-in-out infinite; }
-        .hv-float-b { animation: hv-float-b 5.3s ease-in-out infinite 0.8s; }
-        .hv-float-c { animation: hv-float-c 4.7s ease-in-out infinite 1.4s; }
-        .hv-glow    { animation: hv-glow-pulse 3.0s ease-in-out infinite; }
-        .hv-ring    { animation: hv-ring-pulse  4.2s ease-in-out infinite 0.5s; }
-        .hv-aura    { animation: hv-aura 5s ease-in-out infinite; }
+        @keyframes hv-flow-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        /* ── Aura de fundo ── */
+        @keyframes hv-aura {
+          0%,100% { opacity: 0.62; transform: scale(1); }
+          50%      { opacity: 0.94; transform: scale(1.12); }
+        }
+
+        /* Card wrappers — entrada (outer) + float (inner) */
+        .hv-ea { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 0.15s; }
+        .hv-eb { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 0.45s; }
+        .hv-ec { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 0.75s; }
+        .hv-ed { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 1.05s; }
+
+        .hv-fa { animation: hv-float-a 4.6s ease-in-out infinite 1.0s; }
+        .hv-fb { animation: hv-float-b 5.4s ease-in-out infinite 1.3s; }
+        .hv-fc { animation: hv-float-c 5.0s ease-in-out infinite 1.6s; }
+        .hv-fd { animation: hv-float-d 4.3s ease-in-out infinite 1.9s; }
+
+        .hv-glow { animation: hv-glow-pulse 3.0s ease-in-out infinite; }
+        .hv-ring { animation: hv-ring-pulse 4.2s ease-in-out infinite 0.6s; }
+        .hv-aura { animation: hv-aura 5.5s ease-in-out infinite; }
+
         .hv-d1 { animation: hv-dot 3.6s ease-in-out infinite 0.0s; }
         .hv-d2 { animation: hv-dot 4.1s ease-in-out infinite 0.9s; }
-        .hv-d3 { animation: hv-dot 3.3s ease-in-out infinite 1.6s; }
+        .hv-d3 { animation: hv-dot 3.3s ease-in-out infinite 1.7s; }
         .hv-d4 { animation: hv-dot 4.6s ease-in-out infinite 0.4s; }
-        .hv-d5 { animation: hv-dot 3.9s ease-in-out infinite 2.1s; }
-        .hv-d6 { animation: hv-dot 4.3s ease-in-out infinite 1.2s; }
-        .hv-line {
-          stroke-dasharray: 400;
-          animation: hv-line-draw 2s ease-out forwards;
-        }
-        .hv-line-2 { animation-delay: 0.4s; opacity: 0; }
-        .hv-line-3 { animation-delay: 0.8s; opacity: 0; }
+        .hv-d5 { animation: hv-dot 3.9s ease-in-out infinite 2.2s; }
+        .hv-d6 { animation: hv-dot 4.3s ease-in-out infinite 1.3s; }
+
+        /* Draw-in inicial */
+        .hv-line   { stroke-dasharray: 550; animation: hv-line-draw 2.2s ease-out both; }
+        .hv-line-2 { animation-delay: 0.5s; }
+        .hv-line-3 { animation-delay: 1.0s; }
+
+        /* Fluxo contínuo — aparece após o draw */
+        .hv-fl1 { animation: hv-flow-in 0.1s ease both 2.4s, hv-flow 3.4s linear infinite 2.5s; opacity: 0; }
+        .hv-fl2 { animation: hv-flow-in 0.1s ease both 2.9s, hv-flow 4.2s linear infinite 3.0s; opacity: 0; }
+        .hv-fl3 { animation: hv-flow-in 0.1s ease both 3.4s, hv-flow 5.0s linear infinite 3.5s; opacity: 0; }
       `}</style>
 
-      {/* Wrapper — padding mínimo para os cards flutuantes não serem cortados */}
-      <div className="relative select-none" style={{ padding: "48px 28px 48px 0" }}>
+      {/* Wrapper — padding maior à esquerda para cards quebrarem a borda */}
+      <div className="relative select-none" style={{ padding: "52px 10px 52px 62px" }}>
 
-        {/* ── Aura atmosférica ATRÁS da imagem — projeta para fora ── */}
+        {/* ── Aura atmosférica — projeta para fora da imagem ── */}
         <div className="hv-aura absolute pointer-events-none" style={{
-          top: "10%", left: "-8%",
-          width: "116%", height: "80%",
-          background: "radial-gradient(ellipse at 55% 58%, rgba(99,102,241,0.30) 0%, rgba(59,130,246,0.22) 35%, rgba(139,92,246,0.10) 60%, transparent 80%)",
-          filter: "blur(40px)",
+          top: "4%", left: "-12%",
+          width: "124%", height: "92%",
+          background: "radial-gradient(ellipse at 52% 60%, rgba(79,70,229,0.32) 0%, rgba(37,99,235,0.22) 28%, rgba(139,92,246,0.12) 52%, transparent 72%)",
+          filter: "blur(52px)",
           zIndex: 0,
         }} />
-        {/* Halo superior direito */}
         <div className="absolute pointer-events-none" style={{
-          top: "-5%", right: "-5%",
-          width: "55%", height: "50%",
-          background: "radial-gradient(ellipse, rgba(59,130,246,0.18) 0%, transparent 70%)",
-          filter: "blur(30px)",
+          top: "-8%", right: "-6%",
+          width: "58%", height: "52%",
+          background: "radial-gradient(ellipse, rgba(59,130,246,0.24) 0%, rgba(139,92,246,0.12) 48%, transparent 72%)",
+          filter: "blur(36px)",
           zIndex: 0,
         }} />
 
-        {/* ── Imagem principal — ocupa toda a largura da coluna ── */}
-        <div
-          className="relative rounded-3xl overflow-hidden"
-          style={{
-            zIndex: 1,
+        {/* ── IMAGEM PRINCIPAL ── */}
+        <div className="relative" style={{ zIndex: 1 }}>
+          <div className="rounded-3xl overflow-hidden" style={{
             boxShadow:
-              "0 40px 100px -20px rgba(37,99,235,0.38), " +
-              "0 20px 50px -10px rgba(99,102,241,0.22), " +
-              "0 0 0 1px rgba(99,102,241,0.12), " +
-              "inset 0 1px 0 rgba(255,255,255,0.45)",
-          }}
-        >
-          <img
-            src="/corretores.png"
-            alt="Corretores ImobMatch fechando parceria"
-            className="w-full h-auto block object-cover"
-            draggable={false}
-          />
-
-          {/* Gradient overlay — integra a imagem ao fundo branco */}
-          <div className="absolute inset-0 bg-gradient-to-t from-indigo-950/50 via-blue-900/08 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/06 to-violet-600/12 pointer-events-none" />
-
-          {/* ── Glow principal no aperto de mão ── */}
-          <div className="absolute hv-glow pointer-events-none" style={{
-            top: "60%", left: "50%",
-            width: "280px", height: "130px",
-            background: "radial-gradient(ellipse, rgba(99,102,241,0.70) 0%, rgba(59,130,246,0.45) 38%, transparent 68%)",
-            filter: "blur(16px)",
-            transform: "translate(-50%,-50%)",
-          }} />
-
-          {/* Ring de energia expandindo */}
-          <div className="absolute hv-ring pointer-events-none" style={{
-            top: "60%", left: "50%",
-            width: "400px", height: "180px",
-            background: "radial-gradient(ellipse, transparent 38%, rgba(139,92,246,0.32) 55%, transparent 72%)",
-            filter: "blur(10px)",
-            transform: "translate(-50%,-50%)",
-          }} />
-
-          {/* ── SVG: rede de linhas convergindo para o handshake ── */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 560 420"
-            preserveAspectRatio="xMidYMid slice"
-          >
-            <defs>
-              <linearGradient id="hv-lg1" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%"   stopColor="#3b82f6" stopOpacity="0" />
-                <stop offset="50%"  stopColor="#8b5cf6" stopOpacity="0.75" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="hv-lg2" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%"   stopColor="#6366f1" stopOpacity="0" />
-                <stop offset="50%"  stopColor="#3b82f6" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="hv-lg3" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0%"   stopColor="#a78bfa" stopOpacity="0" />
-                <stop offset="50%"  stopColor="#60a5fa" stopOpacity="0.50" />
-                <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-
-            {/* Linha central horizontal — atravessa o aperto de mão */}
-            <line className="hv-line"
-              x1="40" y1="252" x2="520" y2="252"
-              stroke="url(#hv-lg1)" strokeWidth="1.4" strokeLinecap="round" />
-            {/* Diagonal 1 */}
-            <line className="hv-line hv-line-2"
-              x1="100" y1="70" x2="460" y2="360"
-              stroke="url(#hv-lg2)" strokeWidth="1.0" strokeLinecap="round" />
-            {/* Diagonal 2 */}
-            <line className="hv-line hv-line-3"
-              x1="460" y1="70" x2="100" y2="360"
-              stroke="url(#hv-lg3)" strokeWidth="1.0" strokeLinecap="round" />
-
-            {/* Raios convergindo ao nó central */}
-            <line x1="280" y1="252" x2="100" y2="70"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.32" />
-            <line x1="280" y1="252" x2="460" y2="70"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.32" />
-            <line x1="280" y1="252" x2="100" y2="360" stroke="#6366f1" strokeWidth="0.7" opacity="0.28" />
-            <line x1="280" y1="252" x2="460" y2="360" stroke="#6366f1" strokeWidth="0.7" opacity="0.28" />
-
-            {/* Nó central — ponto do match */}
-            <circle cx="280" cy="252" r="6"  fill="#8b5cf6" opacity="0.90" />
-            <circle cx="280" cy="252" r="14" fill="#8b5cf6" opacity="0.14" />
-            <circle cx="280" cy="252" r="26" fill="#8b5cf6" opacity="0.07" />
-
-            {/* Nós secundários nos cantos */}
-            <circle cx="100" cy="70"  r="3.5" fill="#3b82f6" opacity="0.55" />
-            <circle cx="460" cy="70"  r="3.5" fill="#3b82f6" opacity="0.55" />
-            <circle cx="100" cy="360" r="3.5" fill="#6366f1" opacity="0.45" />
-            <circle cx="460" cy="360" r="3.5" fill="#6366f1" opacity="0.45" />
-
-            {/* Partículas ao redor do handshake */}
-            <circle className="hv-d1" cx="210" cy="200" r="2.5" fill="#a78bfa" opacity="0.8" />
-            <circle className="hv-d2" cx="355" cy="212" r="2"   fill="#60a5fa" opacity="0.7" />
-            <circle className="hv-d3" cx="220" cy="295" r="2.5" fill="#818cf8" opacity="0.65" />
-            <circle className="hv-d4" cx="345" cy="282" r="2"   fill="#a78bfa" opacity="0.75" />
-            <circle className="hv-d5" cx="188" cy="252" r="2"   fill="#60a5fa" opacity="0.60" />
-            <circle className="hv-d6" cx="374" cy="248" r="2.5" fill="#818cf8" opacity="0.70" />
-          </svg>
-        </div>
-
-        {/* ══════════════════════════════════════════════════
-            CARDS FLUTUANTES — glassmorphism escalado +25%
-        ══════════════════════════════════════════════════ */}
-
-        {/* Card A: Match encontrado — lado esquerdo, meio superior */}
-        <div className="absolute hv-float-a" style={{ top: "12%", left: "-6px", zIndex: 20 }}>
-          <div style={{
-            background: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: "1px solid rgba(255,255,255,0.75)",
-            boxShadow: "0 16px 48px rgba(37,99,235,0.22), 0 4px 16px rgba(99,102,241,0.12), 0 0 0 1px rgba(255,255,255,0.6)",
-            borderRadius: "18px",
-            padding: "14px 18px",
-            minWidth: "210px",
+              "0 55px 130px -22px rgba(37,99,235,0.45), " +
+              "0 28px 65px -12px rgba(99,102,241,0.30), " +
+              "0 10px 28px -4px rgba(139,92,246,0.20), " +
+              "0 0 0 1px rgba(99,102,241,0.16), " +
+              "inset 0 1px 0 rgba(255,255,255,0.52)",
           }}>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center flex-shrink-0"
-                style={{ boxShadow: "0 6px 20px rgba(99,102,241,0.45)" }}>
-                <Zap className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <p className="text-[13px] font-bold text-gray-800 leading-tight">Match encontrado</p>
-                <p className="text-[11px] text-gray-400 mt-0.5">IA em tempo real</p>
-              </div>
-            </div>
-            <div className="mt-3 space-y-1.5">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-gray-400">Compatibilidade</span>
-                <span className="font-black text-violet-700">93%</span>
-              </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-2 rounded-full" style={{
-                  width: "93%",
-                  background: "linear-gradient(to right, #3b82f6, #8b5cf6)",
-                }} />
-              </div>
-            </div>
+            <img
+              src="/corretores.png"
+              alt="Corretores ImobMatch fechando parceria"
+              className="w-full h-auto block object-cover"
+              draggable={false}
+            />
+
+            {/* Gradients sobre a imagem */}
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: "linear-gradient(to top, rgba(30,27,75,0.55) 0%, rgba(30,27,75,0.06) 45%, transparent 70%)" }} />
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(139,92,246,0.14) 100%)" }} />
+
+            {/* ── GLOW no aperto de mão ── */}
+            <div className="absolute hv-glow pointer-events-none" style={{
+              top: "60%", left: "50%",
+              width: "330px", height: "155px",
+              background: "radial-gradient(ellipse, rgba(99,102,241,0.85) 0%, rgba(59,130,246,0.58) 32%, transparent 62%)",
+              filter: "blur(20px)",
+              transform: "translate(-50%,-50%)",
+            }} />
+
+            {/* ── Ring de energia ── */}
+            <div className="absolute hv-ring pointer-events-none" style={{
+              top: "60%", left: "50%",
+              width: "480px", height: "215px",
+              background: "radial-gradient(ellipse, transparent 34%, rgba(139,92,246,0.42) 50%, transparent 66%)",
+              filter: "blur(13px)",
+              transform: "translate(-50%,-50%)",
+            }} />
+
+            {/* ── SVG: rede + fluxo ── */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none"
+              viewBox="0 0 560 420" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="hv-lg1" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%"   stopColor="#3b82f6" stopOpacity="0" />
+                  <stop offset="50%"  stopColor="#8b5cf6" stopOpacity="0.82" />
+                  <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="hv-lg2" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%"   stopColor="#6366f1" stopOpacity="0" />
+                  <stop offset="50%"  stopColor="#3b82f6" stopOpacity="0.62" />
+                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="hv-lg3" x1="1" y1="0" x2="0" y2="1">
+                  <stop offset="0%"   stopColor="#a78bfa" stopOpacity="0" />
+                  <stop offset="50%"  stopColor="#60a5fa" stopOpacity="0.58" />
+                  <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="hv-fg1" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%"   stopColor="#c4b5fd" stopOpacity="0" />
+                  <stop offset="50%"  stopColor="#c4b5fd" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#c4b5fd" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+
+              {/* Linhas estáticas draw-in */}
+              <line className="hv-line"
+                x1="35" y1="252" x2="525" y2="252"
+                stroke="url(#hv-lg1)" strokeWidth="1.5" strokeLinecap="round" />
+              <line className="hv-line hv-line-2"
+                x1="95" y1="62" x2="465" y2="368"
+                stroke="url(#hv-lg2)" strokeWidth="1.1" strokeLinecap="round" />
+              <line className="hv-line hv-line-3"
+                x1="465" y1="62" x2="95" y2="368"
+                stroke="url(#hv-lg3)" strokeWidth="1.1" strokeLinecap="round" />
+
+              {/* Raios convergentes ao nó */}
+              <line x1="280" y1="252" x2="95"  y2="62"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.30" />
+              <line x1="280" y1="252" x2="465" y2="62"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.30" />
+              <line x1="280" y1="252" x2="95"  y2="368" stroke="#6366f1" strokeWidth="0.7" opacity="0.26" />
+              <line x1="280" y1="252" x2="465" y2="368" stroke="#6366f1" strokeWidth="0.7" opacity="0.26" />
+
+              {/* Fluxo contínuo de dados — dashes animados em cima */}
+              <line className="hv-fl1"
+                x1="35" y1="252" x2="525" y2="252"
+                stroke="url(#hv-fg1)" strokeWidth="2"
+                strokeDasharray="22 16" strokeLinecap="round" />
+              <line className="hv-fl2"
+                x1="95" y1="62" x2="465" y2="368"
+                stroke="#a5b4fc" strokeWidth="1.4"
+                strokeDasharray="15 20" strokeLinecap="round" opacity="0.72" />
+              <line className="hv-fl3"
+                x1="465" y1="62" x2="95" y2="368"
+                stroke="#93c5fd" strokeWidth="1.4"
+                strokeDasharray="18 18" strokeLinecap="round" opacity="0.68" />
+
+              {/* Nó central — match point */}
+              <circle cx="280" cy="252" r="7"  fill="#8b5cf6" opacity="0.93" />
+              <circle cx="280" cy="252" r="17" fill="#8b5cf6" opacity="0.15" />
+              <circle cx="280" cy="252" r="32" fill="#8b5cf6" opacity="0.06" />
+
+              {/* Nós secundários */}
+              <circle cx="95"  cy="62"  r="4" fill="#3b82f6" opacity="0.60" />
+              <circle cx="465" cy="62"  r="4" fill="#3b82f6" opacity="0.60" />
+              <circle cx="95"  cy="368" r="4" fill="#6366f1" opacity="0.50" />
+              <circle cx="465" cy="368" r="4" fill="#6366f1" opacity="0.50" />
+
+              {/* Partículas pulsantes */}
+              <circle className="hv-d1" cx="210" cy="196" r="2.5" fill="#a78bfa" />
+              <circle className="hv-d2" cx="356" cy="210" r="2"   fill="#60a5fa" />
+              <circle className="hv-d3" cx="218" cy="300" r="2.5" fill="#818cf8" />
+              <circle className="hv-d4" cx="346" cy="286" r="2"   fill="#a78bfa" />
+              <circle className="hv-d5" cx="183" cy="252" r="2"   fill="#60a5fa" />
+              <circle className="hv-d6" cx="378" cy="248" r="2.5" fill="#818cf8" />
+            </svg>
           </div>
         </div>
 
-        {/* Card B: Compatibilidade — lado direito, terço superior */}
-        <div className="absolute hv-float-b" style={{ top: "8%", right: "-6px", zIndex: 20 }}>
-          <div style={{
-            background: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: "1px solid rgba(255,255,255,0.75)",
-            boxShadow: "0 16px 48px rgba(109,40,217,0.20), 0 4px 16px rgba(139,92,246,0.12), 0 0 0 1px rgba(255,255,255,0.6)",
-            borderRadius: "18px",
-            padding: "14px 18px",
-          }}>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0"
-                style={{ boxShadow: "0 6px 20px rgba(139,92,246,0.45)" }}>
-                <span className="text-[18px] leading-none">🎯</span>
-              </div>
-              <div>
-                <p className="text-[11px] text-gray-400 leading-tight">Compatibilidade</p>
-                <p className="font-black text-violet-700 leading-none" style={{ fontSize: "22px" }}>93%</p>
-              </div>
-            </div>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-500" />
-              </span>
-              <span className="text-[10px] text-gray-400">calculando agora</span>
-            </div>
-          </div>
-        </div>
+        {/* ════════════════════════════════════════════════════════
+            CARDS FLUTUANTES — hierarquia visual + fade-in + float
+            Outer div: entrada | Inner div: float contínuo
+        ════════════════════════════════════════════════════════ */}
 
-        {/* Card C: Parceria iniciada — lado esquerdo, terço inferior */}
-        <div className="absolute hv-float-c" style={{ bottom: "14%", left: "-6px", zIndex: 20 }}>
-          <div style={{
-            background: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: "1px solid rgba(255,255,255,0.75)",
-            boxShadow: "0 16px 48px rgba(16,185,129,0.18), 0 4px 16px rgba(16,185,129,0.10), 0 0 0 1px rgba(255,255,255,0.6)",
-            borderRadius: "18px",
-            padding: "14px 18px",
-            minWidth: "208px",
-          }}>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0">
-                <HeartHandshake className="h-5 w-5 text-emerald-600" />
+        {/* ── CARD HERO: Match encontrado — quebra borda esquerda ── */}
+        <div className="absolute hv-ea" style={{ top: "9%", left: "-50px", zIndex: 20 }}>
+          <div className="hv-fa">
+            <div style={{
+              background: "rgba(255,255,255,0.96)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              border: "1px solid rgba(255,255,255,0.82)",
+              boxShadow:
+                "0 22px 65px rgba(37,99,235,0.30), " +
+                "0 8px 26px rgba(99,102,241,0.20), " +
+                "0 0 0 1px rgba(99,102,241,0.13)",
+              borderRadius: "20px",
+              padding: "16px 20px",
+              minWidth: "236px",
+            }}>
+              {/* Topo */}
+              <div className="flex items-center gap-3 mb-3">
+                <div style={{
+                  width: "42px", height: "42px", borderRadius: "13px", flexShrink: 0,
+                  background: "linear-gradient(135deg,#3b82f6,#7c3aed)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  boxShadow: "0 6px 22px rgba(99,102,241,0.52)",
+                }}>
+                  <Zap style={{ width: "19px", height: "19px", color: "white" }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>
+                    Match encontrado
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "3px" }}>
+                    <span className="relative flex" style={{ width: "6px", height: "6px" }}>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full"
+                        style={{ background: "#22c55e", opacity: 0.75 }} />
+                      <span className="relative inline-flex rounded-full"
+                        style={{ width: "6px", height: "6px", background: "#22c55e" }} />
+                    </span>
+                    <p style={{ fontSize: "10px", color: "#6b7280" }}>IA ativa em tempo real</p>
+                  </div>
+                </div>
+                <span style={{
+                  fontSize: "15px", fontWeight: 900, color: "#6d28d9",
+                  background: "linear-gradient(135deg,#ede9fe,#f5f3ff)",
+                  padding: "4px 10px", borderRadius: "20px",
+                  border: "1px solid rgba(139,92,246,0.22)",
+                }}>93%</span>
               </div>
-              <div>
-                <p className="text-[13px] font-bold text-gray-800 leading-tight">Parceria iniciada</p>
-                <p className="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
-                  Comissão acordada
+              {/* Barra de progresso */}
+              <div style={{ marginBottom: "11px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between",
+                  fontSize: "10px", color: "#9ca3af", marginBottom: "5px" }}>
+                  <span>Compatibilidade</span>
+                  <span style={{ color: "#6d28d9", fontWeight: 700 }}>93 / 100</span>
+                </div>
+                <div style={{ height: "6px", background: "#f3f4f6", borderRadius: "999px", overflow: "hidden" }}>
+                  <div style={{
+                    height: "6px", width: "93%", borderRadius: "999px",
+                    background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
+                  }} />
+                </div>
+              </div>
+              {/* Avatars dos corretores */}
+              <div style={{
+                display: "flex", alignItems: "center", gap: "8px",
+                background: "#f9fafb", borderRadius: "12px",
+                padding: "8px 10px", border: "1px solid #f3f4f6",
+              }}>
+                <div style={{ display: "flex" }}>
+                  {[
+                    { txt: "JS", bg: "linear-gradient(135deg,#3b82f6,#4f46e5)" },
+                    { txt: "MC", bg: "linear-gradient(135deg,#8b5cf6,#7c3aed)" },
+                  ].map((av, i) => (
+                    <div key={i} style={{
+                      width: "26px", height: "26px", borderRadius: "50%",
+                      border: "2px solid white",
+                      marginLeft: i > 0 ? "-9px" : "0",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "9px", fontWeight: 700, color: "white",
+                      background: av.bg,
+                      boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
+                    }}>{av.txt}</div>
+                  ))}
+                </div>
+                <p style={{ fontSize: "10px", color: "#6b7280", flex: 1 }}>
+                  <span style={{ fontWeight: 600, color: "#374151" }}>2 corretores</span> conectados
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── CARD B: Compatibilidade — direita superior ── */}
+        <div className="absolute hv-eb" style={{ top: "5%", right: "-38px", zIndex: 20 }}>
+          <div className="hv-fb">
+            <div style={{
+              background: "rgba(255,255,255,0.94)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              border: "1px solid rgba(255,255,255,0.80)",
+              boxShadow:
+                "0 18px 52px rgba(109,40,217,0.25), " +
+                "0 6px 20px rgba(139,92,246,0.15), " +
+                "0 0 0 1px rgba(139,92,246,0.11)",
+              borderRadius: "18px",
+              padding: "14px 18px",
+              minWidth: "156px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: "40px", height: "40px", borderRadius: "13px", flexShrink: 0,
+                  background: "linear-gradient(135deg,#8b5cf6,#6d28d9)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  boxShadow: "0 5px 18px rgba(139,92,246,0.52)",
+                }}>
+                  <span style={{ fontSize: "19px", lineHeight: 1 }}>🎯</span>
+                </div>
+                <div>
+                  <p style={{ fontSize: "10px", color: "#9ca3af", lineHeight: 1.2 }}>Compatibilidade</p>
+                  <p style={{ fontSize: "26px", fontWeight: 900, color: "#5b21b6", lineHeight: 1.05 }}>93%</p>
+                </div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "10px" }}>
+                <span className="relative flex" style={{ width: "7px", height: "7px" }}>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full"
+                    style={{ background: "#8b5cf6", opacity: 0.75 }} />
+                  <span className="relative inline-flex rounded-full"
+                    style={{ width: "7px", height: "7px", background: "#8b5cf6" }} />
+                </span>
+                <span style={{ fontSize: "10px", color: "#9ca3af" }}>calculando agora</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── CARD C: Parceria iniciada — esquerda inferior ── */}
+        <div className="absolute hv-ec" style={{ bottom: "11%", left: "-44px", zIndex: 20 }}>
+          <div className="hv-fc">
+            <div style={{
+              background: "rgba(255,255,255,0.94)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              border: "1px solid rgba(255,255,255,0.80)",
+              boxShadow:
+                "0 18px 52px rgba(16,185,129,0.22), " +
+                "0 6px 20px rgba(16,185,129,0.13), " +
+                "0 0 0 1px rgba(16,185,129,0.10)",
+              borderRadius: "18px",
+              padding: "14px 18px",
+              minWidth: "214px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: "40px", height: "40px", borderRadius: "13px", flexShrink: 0,
+                  background: "linear-gradient(135deg,#d1fae5,#6ee7b7)",
+                  border: "1px solid rgba(16,185,129,0.25)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <HeartHandshake style={{ width: "19px", height: "19px", color: "#059669" }} />
+                </div>
+                <div>
+                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>
+                    Parceria iniciada
+                  </p>
+                  <p style={{ fontSize: "10px", color: "#059669", fontWeight: 600,
+                    marginTop: "3px", display: "flex", alignItems: "center", gap: "4px" }}>
+                    <span className="inline-block rounded-full animate-pulse"
+                      style={{ width: "6px", height: "6px", background: "#10b981" }} />
+                    Comissão acordada
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── CARD D: Negócio fechado — direita inferior ── */}
+        <div className="absolute hv-ed" style={{ bottom: "7%", right: "-34px", zIndex: 20 }}>
+          <div className="hv-fd">
+            <div style={{
+              background: "rgba(255,255,255,0.94)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              border: "1px solid rgba(255,255,255,0.80)",
+              boxShadow:
+                "0 14px 44px rgba(234,88,12,0.18), " +
+                "0 0 0 1px rgba(234,88,12,0.09)",
+              borderRadius: "18px",
+              padding: "13px 17px",
+              minWidth: "170px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: "38px", height: "38px", borderRadius: "12px", flexShrink: 0,
+                  background: "linear-gradient(135deg,#fff7ed,#fed7aa)",
+                  border: "1px solid rgba(234,88,12,0.22)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <Users style={{ width: "17px", height: "17px", color: "#ea580c" }} />
+                </div>
+                <div>
+                  <p style={{ fontSize: "12px", fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>
+                    Negócio fechado
+                  </p>
+                  <p style={{ fontSize: "10px", color: "#9ca3af", marginTop: "2px" }}>na plataforma</p>
+                </div>
               </div>
             </div>
           </div>
@@ -1010,11 +1177,12 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           HERO
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-white">
+      <section className="relative overflow-hidden" style={{background:"linear-gradient(155deg,#ffffff 0%,#eef4ff 32%,#f2eeff 68%,#fdf9ff 100%)"}}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-blue-100/70 to-violet-100/50 blur-3xl" />
-          <div className="absolute -bottom-20 -left-32 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-blue-50/80 to-indigo-100/60 blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[600px] rounded-full bg-violet-50/40 blur-3xl" />
+          <div className="absolute -top-52 -right-52 h-[780px] w-[780px] rounded-full opacity-70 blur-3xl" style={{background:"radial-gradient(circle,rgba(147,197,253,0.55) 0%,rgba(196,181,253,0.35) 55%,transparent 100%)"}} />
+          <div className="absolute -bottom-32 -left-44 h-[680px] w-[680px] rounded-full opacity-60 blur-3xl" style={{background:"radial-gradient(circle,rgba(165,180,252,0.45) 0%,rgba(196,181,253,0.28) 50%,transparent 100%)"}} />
+          <div className="absolute top-1/3 left-1/3 h-[420px] w-[820px] rounded-full opacity-40 blur-3xl" style={{background:"radial-gradient(ellipse,rgba(224,231,255,0.7) 0%,rgba(237,233,254,0.4) 55%,transparent 100%)"}} />
+          <div className="absolute bottom-0 right-0 h-[350px] w-[560px] rounded-full opacity-35 blur-3xl" style={{background:"radial-gradient(ellipse,rgba(199,210,254,0.5) 0%,transparent 70%)"}} />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20">
