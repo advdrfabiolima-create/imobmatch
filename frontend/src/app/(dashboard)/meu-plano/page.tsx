@@ -310,9 +310,17 @@ export default function MeuPlanoPage() {
                 <strong className="capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</strong>.
               </p>
 
+              {/* Dado preservado — tranquiliza o usuário */}
+              <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-3 flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-green-700 leading-relaxed">
+                  <strong>Seus dados não serão apagados.</strong> Imóveis e compradores já cadastrados continuam salvos. Você apenas não poderá adicionar novos além do limite do plano Free (3 imóveis e 3 compradores).
+                </p>
+              </div>
+
               {/* O que será perdido */}
               <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-6">
-                <p className="text-xs font-semibold text-red-700 mb-2">Você perderá acesso a:</p>
+                <p className="text-xs font-semibold text-red-700 mb-2">Recursos que serão desativados:</p>
                 <ul className="space-y-1">
                   {(getPlanById(currentPlan)?.features ?? [])
                     .filter(f => f.included)
