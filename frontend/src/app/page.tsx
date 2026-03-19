@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   Building2, Users, Zap, Shield, TrendingUp, MessageSquare,
-  Menu, X, ArrowRight, MapPin, Check, Star, CheckCircle2,
+  Menu, X, ArrowRight, Check, Star, CheckCircle2,
   HeartHandshake, Trophy, ChevronRight, Flame,
   ArrowRightLeft,
 } from "lucide-react";
@@ -138,155 +138,307 @@ function useFadeIn(threshold = 0.1) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PRODUCT MOCKUP (Hero)
+// HERO VISUAL — foto dos corretores + efeitos premium
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ProductMockup() {
+function HeroVisual() {
   return (
-    <div className="relative select-none">
-      <div className="absolute -inset-6 bg-gradient-to-br from-blue-400/20 via-violet-400/15 to-blue-300/10 rounded-3xl blur-3xl pointer-events-none" />
-      <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/10 to-violet-500/10 rounded-3xl blur-xl pointer-events-none" />
+    <>
+      <style>{`
+        @keyframes hv-float-a {
+          0%,100% { transform: translateY(0px) rotate(-1.5deg); }
+          50%      { transform: translateY(-9px) rotate(-1.5deg); }
+        }
+        @keyframes hv-float-b {
+          0%,100% { transform: translateY(0px) rotate(1deg); }
+          50%      { transform: translateY(-7px) rotate(1deg); }
+        }
+        @keyframes hv-float-c {
+          0%,100% { transform: translateY(0px) rotate(1.5deg); }
+          50%      { transform: translateY(-8px) rotate(1.5deg); }
+        }
+        @keyframes hv-float-d {
+          0%,100% { transform: translateY(0px) rotate(-1deg); }
+          50%      { transform: translateY(-6px) rotate(-1deg); }
+        }
+        @keyframes hv-glow-pulse {
+          0%,100% { opacity: 0.30; transform: translate(-50%,-50%) scale(1); }
+          50%      { opacity: 0.65; transform: translate(-50%,-50%) scale(1.25); }
+        }
+        @keyframes hv-ring-pulse {
+          0%,100% { opacity: 0.15; transform: translate(-50%,-50%) scale(1); }
+          50%      { opacity: 0.35; transform: translate(-50%,-50%) scale(1.4); }
+        }
+        @keyframes hv-dot {
+          0%,100% { opacity: 0.15; transform: scale(1); }
+          50%      { opacity: 0.75; transform: scale(1.5); }
+        }
+        @keyframes hv-line-draw {
+          from { stroke-dashoffset: 300; opacity: 0; }
+          to   { stroke-dashoffset: 0;   opacity: 1; }
+        }
+        .hv-float-a { animation: hv-float-a 4.4s ease-in-out infinite; }
+        .hv-float-b { animation: hv-float-b 5.2s ease-in-out infinite 0.7s; }
+        .hv-float-c { animation: hv-float-c 4.8s ease-in-out infinite 1.2s; }
+        .hv-float-d { animation: hv-float-d 4.0s ease-in-out infinite 0.4s; }
+        .hv-glow    { animation: hv-glow-pulse 3.2s ease-in-out infinite; }
+        .hv-ring    { animation: hv-ring-pulse  4s ease-in-out infinite 0.6s; }
+        .hv-d1 { animation: hv-dot 3.6s ease-in-out infinite 0.0s; }
+        .hv-d2 { animation: hv-dot 4.1s ease-in-out infinite 0.8s; }
+        .hv-d3 { animation: hv-dot 3.3s ease-in-out infinite 1.5s; }
+        .hv-d4 { animation: hv-dot 4.6s ease-in-out infinite 0.3s; }
+        .hv-d5 { animation: hv-dot 3.9s ease-in-out infinite 1.9s; }
+        .hv-d6 { animation: hv-dot 4.3s ease-in-out infinite 1.1s; }
+        .hv-line {
+          stroke-dasharray: 300;
+          animation: hv-line-draw 1.8s ease-out forwards;
+        }
+        .hv-line-2 { animation-delay: 0.3s; opacity: 0; }
+        .hv-line-3 { animation-delay: 0.6s; opacity: 0; }
+      `}</style>
 
-      <div className="relative bg-white rounded-2xl overflow-hidden border border-gray-200/80"
-        style={{ boxShadow: "0 25px 60px -12px rgba(37,99,235,0.18), 0 0 0 1px rgba(37,99,235,0.06)" }}>
+      {/* Wrapper com padding para os cards flutuantes não serem cortados */}
+      <div className="relative select-none pt-10 pb-10 px-10">
 
-        {/* Browser chrome */}
-        <div className="bg-gray-50/90 border-b border-gray-200 px-4 py-2.5 flex items-center gap-3">
-          <div className="flex gap-1.5 flex-shrink-0">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-            <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
-          </div>
-          <div className="flex-1 bg-white border border-gray-200 rounded-md px-3 py-0.5 text-[10px] text-gray-400 text-center truncate">
-            app.useimobmatch.com.br
+        {/* ── Ambient background glows ── */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[380px] rounded-full bg-gradient-to-br from-blue-400/30 via-violet-400/20 to-indigo-300/15 blur-3xl" />
+          <div className="absolute -top-10 -right-10 w-[220px] h-[220px] rounded-full bg-blue-300/20 blur-2xl" />
+          <div className="absolute -bottom-10 -left-10 w-[200px] h-[200px] rounded-full bg-violet-300/20 blur-2xl" />
+        </div>
+
+        {/* ── Imagem principal ── */}
+        <div
+          className="relative rounded-2xl overflow-hidden"
+          style={{
+            boxShadow:
+              "0 32px 80px -15px rgba(37,99,235,0.28), 0 0 0 1px rgba(37,99,235,0.10), inset 0 1px 0 rgba(255,255,255,0.5)",
+          }}
+        >
+          <img
+            src="/corretores.png"
+            alt="Corretores ImobMatch fechando parceria"
+            className="w-full h-auto block object-cover"
+            draggable={false}
+          />
+
+          {/* Gradient overlay suave */}
+          <div className="absolute inset-0 bg-gradient-to-t from-blue-950/40 via-blue-900/05 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/08 to-violet-600/10 pointer-events-none" />
+
+          {/* ── Glow no aperto de mão (centro-baixo da imagem) ── */}
+          <div
+            className="absolute hv-glow pointer-events-none"
+            style={{
+              top: "58%", left: "50%",
+              width: "220px", height: "110px",
+              background: "radial-gradient(ellipse, rgba(99,102,241,0.55) 0%, rgba(59,130,246,0.35) 40%, transparent 70%)",
+              filter: "blur(14px)",
+              transform: "translate(-50%,-50%)",
+            }}
+          />
+          {/* Ring pulsante em volta do handshake */}
+          <div
+            className="absolute hv-ring pointer-events-none"
+            style={{
+              top: "58%", left: "50%",
+              width: "300px", height: "160px",
+              background: "radial-gradient(ellipse, transparent 40%, rgba(139,92,246,0.25) 60%, transparent 75%)",
+              filter: "blur(8px)",
+              transform: "translate(-50%,-50%)",
+            }}
+          />
+
+          {/* ── SVG: linhas de rede + nós + partículas ── */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 500 380"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs>
+              <linearGradient id="hv-lg1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="#3b82f6" stopOpacity="0" />
+                <stop offset="50%"  stopColor="#8b5cf6" stopOpacity="0.65" />
+                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="hv-lg2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stopColor="#6366f1" stopOpacity="0" />
+                <stop offset="50%"  stopColor="#3b82f6" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="hv-lg3" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stopColor="#a78bfa" stopOpacity="0" />
+                <stop offset="50%"  stopColor="#60a5fa" stopOpacity="0.40" />
+                <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+
+            {/* Linha horizontal pelo aperto de mão */}
+            <line className="hv-line"
+              x1="60" y1="220" x2="440" y2="220"
+              stroke="url(#hv-lg1)" strokeWidth="1.2" strokeLinecap="round" />
+            {/* Diagonais */}
+            <line className="hv-line hv-line-2"
+              x1="120" y1="80" x2="380" y2="310"
+              stroke="url(#hv-lg2)" strokeWidth="0.9" strokeLinecap="round" />
+            <line className="hv-line hv-line-3"
+              x1="380" y1="80" x2="120" y2="310"
+              stroke="url(#hv-lg3)" strokeWidth="0.9" strokeLinecap="round" />
+
+            {/* Linhas do nó central para os cantos */}
+            <line x1="250" y1="220" x2="120" y2="80"  stroke="#3b82f6" strokeWidth="0.6" opacity="0.30" />
+            <line x1="250" y1="220" x2="380" y2="80"  stroke="#3b82f6" strokeWidth="0.6" opacity="0.30" />
+            <line x1="250" y1="220" x2="120" y2="310" stroke="#6366f1" strokeWidth="0.6" opacity="0.28" />
+            <line x1="250" y1="220" x2="380" y2="310" stroke="#6366f1" strokeWidth="0.6" opacity="0.28" />
+
+            {/* Nó central (aperto de mão) */}
+            <circle cx="250" cy="220" r="5"  fill="#8b5cf6" opacity="0.85" />
+            <circle cx="250" cy="220" r="12" fill="#8b5cf6" opacity="0.12" />
+            <circle cx="250" cy="220" r="22" fill="#8b5cf6" opacity="0.06" />
+
+            {/* Nós nos cantos */}
+            <circle cx="120" cy="80"  r="3" fill="#3b82f6" opacity="0.55" />
+            <circle cx="380" cy="80"  r="3" fill="#3b82f6" opacity="0.55" />
+            <circle cx="120" cy="310" r="3" fill="#6366f1" opacity="0.45" />
+            <circle cx="380" cy="310" r="3" fill="#6366f1" opacity="0.45" />
+
+            {/* Partículas animadas */}
+            <circle className="hv-d1" cx="195" cy="178" r="2"   fill="#a78bfa" opacity="0.7" />
+            <circle className="hv-d2" cx="310" cy="190" r="1.5" fill="#60a5fa" opacity="0.65" />
+            <circle className="hv-d3" cx="205" cy="252" r="2"   fill="#818cf8" opacity="0.6" />
+            <circle className="hv-d4" cx="298" cy="240" r="1.5" fill="#a78bfa" opacity="0.7" />
+            <circle className="hv-d5" cx="172" cy="222" r="1.5" fill="#60a5fa" opacity="0.55" />
+            <circle className="hv-d6" cx="330" cy="218" r="2"   fill="#818cf8" opacity="0.65" />
+          </svg>
+        </div>
+
+        {/* ══════════════════════════════════════════════
+            CARDS FLUTUANTES — glassmorphism premium
+        ══════════════════════════════════════════════ */}
+
+        {/* Card A: Match encontrado — canto superior esquerdo */}
+        <div className="absolute top-0 left-0 hv-float-a" style={{ zIndex: 20 }}>
+          <div
+            className="rounded-2xl px-4 py-3 min-w-[178px]"
+            style={{
+              background: "rgba(255,255,255,0.88)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.7)",
+              boxShadow: "0 12px 40px rgba(37,99,235,0.18), 0 0 0 1px rgba(255,255,255,0.55)",
+            }}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-400/40">
+                <Zap className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <p className="text-[12px] font-bold text-gray-800 leading-tight">Match encontrado</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">IA em tempo real</p>
+              </div>
+            </div>
+            <div className="mt-2.5 space-y-1.5">
+              <div className="flex justify-between text-[10px]">
+                <span className="text-gray-400">Compatibilidade</span>
+                <span className="font-black text-violet-700">93%</span>
+              </div>
+              <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className="h-1.5 rounded-full"
+                  style={{
+                    width: "93%",
+                    background: "linear-gradient(to right, #3b82f6, #8b5cf6)",
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* App bar */}
-        <div className="bg-white border-b border-gray-100 px-3.5 py-2 flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center flex-shrink-0">
-              <Zap className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-xs font-bold text-gray-800 tracking-tight">ImobMatch</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="relative flex-shrink-0">
-              <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
-                <Building2 className="h-2.5 w-2.5 text-gray-400" />
+        {/* Card B: Compatibilidade — canto superior direito */}
+        <div className="absolute top-2 right-0 hv-float-b" style={{ zIndex: 20 }}>
+          <div
+            className="rounded-2xl px-4 py-3"
+            style={{
+              background: "rgba(255,255,255,0.88)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.7)",
+              boxShadow: "0 12px 40px rgba(109,40,217,0.16), 0 0 0 1px rgba(255,255,255,0.55)",
+            }}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-400/40">
+                <span className="text-sm leading-none">🎯</span>
               </div>
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-blue-500 rounded-full border border-white" />
+              <div>
+                <p className="text-[10px] text-gray-400 leading-tight">Compatibilidade</p>
+                <p className="text-[20px] font-black text-violet-700 leading-none">93%</p>
+              </div>
             </div>
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center flex-shrink-0">
-              <span className="text-[9px] font-bold text-white leading-none">JS</span>
+            <div className="mt-1.5 flex items-center gap-1.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-500" />
+              </span>
+              <span className="text-[9px] text-gray-400">calculando agora</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card C: Parceria iniciada — canto inferior esquerdo */}
+        <div className="absolute bottom-0 left-2 hv-float-c" style={{ zIndex: 20 }}>
+          <div
+            className="rounded-2xl px-4 py-3 min-w-[186px]"
+            style={{
+              background: "rgba(255,255,255,0.88)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.7)",
+              boxShadow: "0 12px 40px rgba(16,185,129,0.14), 0 0 0 1px rgba(255,255,255,0.55)",
+            }}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0">
+                <HeartHandshake className="h-4 w-4 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-[12px] font-bold text-gray-800 leading-tight">Parceria iniciada</p>
+                <p className="text-[10px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                  Comissão acordada
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="bg-white border-b border-gray-100 px-3.5 flex items-center gap-1">
-          {[
-            { label: "Radar",     active: true  },
-            { label: "Matches",   active: false },
-            { label: "Parcerias", active: false },
-          ].map((tab) => (
-            <div key={tab.label}
-              className={`px-2.5 py-2 text-[10px] font-semibold border-b-2 -mb-px ${
-                tab.active ? "border-blue-600 text-blue-600" : "border-transparent text-gray-400"
-              }`}
-            >
-              {tab.label}
+        {/* Card D: Cliente compatível — canto inferior direito */}
+        <div className="absolute bottom-2 right-0 hv-float-d" style={{ zIndex: 20 }}>
+          <div
+            className="rounded-2xl px-4 py-3"
+            style={{
+              background: "rgba(255,255,255,0.88)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.7)",
+              boxShadow: "0 12px 40px rgba(234,88,12,0.10), 0 0 0 1px rgba(255,255,255,0.55)",
+            }}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center flex-shrink-0">
+                <Users className="h-4 w-4 text-orange-500" />
+              </div>
+              <div>
+                <p className="text-[12px] font-bold text-gray-800 leading-tight">Cliente compatível</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">disponível na rede</p>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="bg-gray-50/70 p-3 space-y-2">
-          {/* Header */}
-          <div className="flex items-center justify-between px-0.5">
-            <div>
-              <p className="text-[11px] font-bold text-gray-800">Radar de Oportunidades</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">5 imóveis com desconto urgente</p>
-            </div>
-            <div className="flex items-center gap-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
-              🔥 3 novos
-            </div>
-          </div>
-
-          {/* Opportunity card */}
-          <div className="bg-white rounded-xl border border-orange-100 overflow-hidden shadow-sm">
-            <div className="h-[54px] bg-gradient-to-br from-orange-500 via-red-400 to-pink-500 relative overflow-hidden">
-              <div className="absolute inset-0 opacity-10"
-                style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px)", backgroundSize: "16px 16px" }}
-              />
-              <div className="absolute bottom-0 left-0 right-0 flex items-end px-3 gap-0.5">
-                {[7,10,5,9,6,8,4].map((h, i) => (
-                  <div key={i} className="bg-white/20 rounded-t flex-1" style={{ height: `${h * 4}px` }} />
-                ))}
-              </div>
-              <div className="absolute top-2 left-2 flex gap-1">
-                <span className="bg-amber-400 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full">Urgente</span>
-                <span className="bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">−15%</span>
-              </div>
-            </div>
-            <div className="p-2.5">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-xs font-semibold text-gray-900">Casa em Salvador, BA</p>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <p className="text-[10px] text-gray-400 line-through">R$ 800.000</p>
-                    <p className="text-sm font-bold text-orange-600">R$ 680.000</p>
-                  </div>
-                </div>
-                <span className="text-[9px] bg-red-50 text-red-700 font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap">
-                  −R$ 120k
-                </span>
-              </div>
-              <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-1">
-                <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
-                <span>Pituba, Salvador · 4q · 180 m²</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Match card */}
-          <div className="bg-white rounded-xl border border-violet-100 p-2.5 shadow-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                <span className="text-[9px] font-bold text-white">CS</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <p className="text-[11px] font-semibold text-gray-800">Match encontrado</p>
-                  <span className="bg-violet-100 text-violet-700 text-[9px] font-black px-1.5 py-0.5 rounded-full">92%</span>
-                </div>
-                <p className="text-[10px] text-gray-400">Comprador quer: Casa · até R$ 700k · Salvador</p>
-              </div>
-            </div>
-            <div className="mt-1.5 flex items-center gap-2">
-              <div className="flex-1 bg-gray-100 rounded-full h-1 overflow-hidden">
-                <div className="bg-gradient-to-r from-violet-500 to-purple-500 h-1 rounded-full" style={{ width: "92%" }} />
-              </div>
-              <span className="text-[9px] text-violet-600 font-semibold flex-shrink-0">Compatível</span>
-            </div>
-          </div>
-
-          {/* Activity feed */}
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm divide-y divide-gray-50">
-            {[
-              { dot: "bg-blue-500",    text: "Apto em SP · R$ 480k",    tag: "2 matches",  cls: "bg-blue-50 text-blue-700"    },
-              { dot: "bg-emerald-500", text: "Studio no RJ · R$ 320k",  tag: "Novo",       cls: "bg-emerald-50 text-emerald-700" },
-            ].map((item) => (
-              <div key={item.text} className="flex items-center gap-2.5 px-3 py-1.5">
-                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${item.dot}`} />
-                <p className="text-[11px] text-gray-700 flex-1 truncate">{item.text}</p>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${item.cls}`}>{item.tag}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -956,9 +1108,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right — mockup */}
-            <div className="w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
-              <ProductMockup />
+            {/* Right — hero visual */}
+            <div className="w-full max-w-lg mx-auto lg:max-w-none lg:mx-0">
+              <HeroVisual />
             </div>
           </div>
         </div>
