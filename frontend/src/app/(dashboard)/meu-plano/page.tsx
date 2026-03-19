@@ -305,7 +305,7 @@ export default function MeuPlanoPage() {
                 Cancelar assinatura?
               </h3>
               <p className="text-sm text-gray-500 text-center mb-4 leading-relaxed">
-                Ao cancelar, seu plano será rebaixado para <strong>Free</strong> imediatamente.
+                Ao cancelar, será feito o downgrade do seu plano para <strong>Free</strong> imediatamente.
                 Você perderá acesso aos recursos pagos do plano{" "}
                 <strong className="capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</strong>.
               </p>
