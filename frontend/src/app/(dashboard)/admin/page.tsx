@@ -10,9 +10,28 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import {
   Users, Building2, Zap, UserCheck, Search, ToggleLeft, Trash2,
-  Mail, Send, CheckCircle2, Clock, UserPlus, Phone,
+  Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+
+// ── Badge de plano ────────────────────────────────────────────────────────────
+const PLAN_STYLES: Record<string, string> = {
+  free:     "bg-gray-100 text-gray-600 border-gray-200",
+  starter:  "bg-blue-100 text-blue-700 border-blue-200",
+  pro:      "bg-violet-100 text-violet-700 border-violet-200",
+  premium:  "bg-amber-100 text-amber-700 border-amber-200",
+  agency:   "bg-emerald-100 text-emerald-700 border-emerald-200",
+};
+
+function PlanBadge({ plan }: { plan: string }) {
+  const style = PLAN_STYLES[plan] ?? PLAN_STYLES.free;
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${style}`}>
+      <CreditCard className="h-3 w-3" />
+      {plan ?? "free"}
+    </span>
+  );
+}
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
@@ -424,6 +443,7 @@ export default function AdminPage() {
                     <p className="text-xs text-gray-400">{u._count.properties} imóveis · {u._count.buyers} compradores</p>
                   </div>
                   <div className="flex items-center gap-3">
+                    <PlanBadge plan={u.plan} />
                     <Badge variant={u.isActive ? "success" : "destructive"}>
                       {u.isActive ? "Ativo" : "Inativo"}
                     </Badge>

@@ -37,7 +37,7 @@ export class AdminService {
         where, skip, take: Number(limit),
         select: {
           id: true, name: true, email: true, phone: true, city: true, state: true,
-          agency: true, role: true, isActive: true, createdAt: true,
+          agency: true, role: true, plan: true, isActive: true, createdAt: true,
           _count: { select: { properties: true, buyers: true } },
         },
         orderBy: { createdAt: 'desc' },
