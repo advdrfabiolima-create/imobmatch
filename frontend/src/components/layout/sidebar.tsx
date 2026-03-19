@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, Users, Zap, UserCheck,
   MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2, CreditCard, X,
-  Rss, Trophy, AlertTriangle, ChevronDown, ChevronUp,
+  Rss, Trophy,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -14,37 +14,6 @@ import { useSidebarStore } from "@/store/sidebar.store";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
-function DisclaimerCompact() {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <div className="text-[9.5px] leading-relaxed text-[#475569]">
-      <button
-        onClick={() => setExpanded((v) => !v)}
-        className="flex items-center gap-1.5 text-[#475569] hover:text-[#94A3B8] transition-colors w-full text-left"
-        aria-expanded={expanded}
-      >
-        <AlertTriangle className="h-3 w-3 flex-shrink-0 text-amber-500/60" />
-        <span className="font-medium">Aviso legal</span>
-        {expanded
-          ? <ChevronUp className="h-3 w-3 ml-auto flex-shrink-0" />
-          : <ChevronDown className="h-3 w-3 ml-auto flex-shrink-0" />
-        }
-      </button>
-      {expanded && (
-        <p className="mt-1.5 text-[9px] leading-relaxed text-[#475569]">
-          A ImobMatch é uma plataforma de publicidade. Não é responsável por
-          negociações de compra, venda, locação ou permuta entre usuários.
-          Toda transação é de responsabilidade exclusiva das partes e do
-          corretor habilitado pelo CRECI.{" "}
-          <Link href="/termos" className="underline hover:text-[#94A3B8]">
-            Termos de Uso
-          </Link>
-          .
-        </p>
-      )}
-    </div>
-  );
-}
 
 export function Sidebar() {
   const pathname = usePathname();
