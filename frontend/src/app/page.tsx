@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   Building2, Users, Zap, Shield, TrendingUp, MessageSquare,
   Menu, X, ArrowRight, MapPin, Check, Star, CheckCircle2,
-  HeartHandshake, Trophy, ChevronRight, TrendingDown, Flame,
+  HeartHandshake, Trophy, ChevronRight, Flame,
   ArrowRightLeft,
 } from "lucide-react";
 import { COPY } from "@/config/copy";
@@ -116,6 +116,26 @@ const STEPS = [
     desc: "Entre em contato pelo chat, formalize a parceria com termo digital e divida a comissão de forma justa.",
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILITY: FADE-IN ON SCROLL
+// ─────────────────────────────────────────────────────────────────────────────
+
+function useFadeIn(threshold = 0.1) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, visible };
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PRODUCT MOCKUP (Hero)
@@ -271,6 +291,202 @@ function ProductMockup() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ACTIVITY TICKER — auto-scroll marquee
+// ─────────────────────────────────────────────────────────────────────────────
+
+function ActivityTicker() {
+  const items = [
+    { icon: "🔥", text: "Nova oportunidade publicada em Salvador" },
+    { icon: "💡", text: "Match gerado com 92% de compatibilidade" },
+    { icon: "🤝", text: "Parceria iniciada entre dois corretores no RJ" },
+    { icon: "📈", text: "Novo imóvel adicionado à rede em SP" },
+    { icon: "💡", text: "Match de 94% encontrado em Fortaleza" },
+    { icon: "🔥", text: "Oportunidade urgente publicada em BH" },
+    { icon: "🤝", text: "Comissão dividida — negócio fechado" },
+    { icon: "📈", text: "Corretor novo entrou na rede" },
+  ];
+
+  return (
+    <div className="border-y border-gray-100 bg-gray-50/70 py-3 overflow-hidden">
+      <style>{`
+        @keyframes ticker-scroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .ticker-track {
+          animation: ticker-scroll 45s linear infinite;
+        }
+        .ticker-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+      <div className="flex items-center gap-4 px-6">
+        {/* Label */}
+        <span className="flex-shrink-0 flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full whitespace-nowrap">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
+          </span>
+          Ativo agora
+        </span>
+        {/* Marquee */}
+        <div className="overflow-hidden flex-1">
+          <div className="ticker-track flex gap-10 w-max">
+            {[...items, ...items].map((item, i) => (
+              <span key={i} className="flex items-center gap-1.5 text-sm text-gray-500 whitespace-nowrap">
+                <span>{item.icon}</span>
+                {item.text}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LIVE ACTIVITY SECTION — "O que está acontecendo agora"
+// ─────────────────────────────────────────────────────────────────────────────
+
+function LiveActivitySection() {
+  const { ref, visible } = useFadeIn(0.08);
+
+  const events = [
+    {
+      icon: "🔥",
+      title: "Nova oportunidade publicada",
+      desc: "Apartamento em Salvador com −18% de desconto urgente",
+      time: "agora",
+      border: "border-orange-100",
+      bg: "bg-orange-50/70",
+      dot: "bg-orange-400",
+    },
+    {
+      icon: "💡",
+      title: "Match encontrado",
+      desc: "92% de compatibilidade — comprador em Salvador, BA",
+      time: "2 min",
+      border: "border-violet-100",
+      bg: "bg-violet-50/70",
+      dot: "bg-violet-400",
+    },
+    {
+      icon: "🤝",
+      title: "Parceria iniciada",
+      desc: "Dois corretores formalizaram acordo de comissão",
+      time: "5 min",
+      border: "border-blue-100",
+      bg: "bg-blue-50/70",
+      dot: "bg-blue-400",
+    },
+    {
+      icon: "📈",
+      title: "Imóvel adicionado à rede",
+      desc: "Casa em São Paulo · R$ 650.000 · 3 quartos",
+      time: "8 min",
+      border: "border-emerald-100",
+      bg: "bg-emerald-50/70",
+      dot: "bg-emerald-400",
+    },
+    {
+      icon: "💡",
+      title: "Match de alto impacto",
+      desc: "94% de compatibilidade — Rio de Janeiro, RJ",
+      time: "12 min",
+      border: "border-violet-100",
+      bg: "bg-violet-50/70",
+      dot: "bg-violet-400",
+    },
+    {
+      icon: "🔥",
+      title: "Oportunidade urgente",
+      desc: "Studio no Rio de Janeiro com −15% · 3 interessados",
+      time: "15 min",
+      border: "border-orange-100",
+      bg: "bg-orange-50/70",
+      dot: "bg-orange-400",
+    },
+  ];
+
+  return (
+    <section className="bg-white py-20">
+      <div ref={ref} className="mx-auto max-w-7xl px-6">
+        {/* Heading */}
+        <div
+          className="text-center mb-12"
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(16px)",
+            transition: "opacity 0.55s ease, transform 0.55s ease",
+          }}
+        >
+          <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-4 py-1.5 rounded-full mb-5">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            </span>
+            Em tempo real
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+            O que está acontecendo agora
+          </h2>
+          <p className="text-lg text-gray-500 max-w-xl mx-auto">
+            Matches sendo gerados, parcerias sendo fechadas e oportunidades surgindo todos os dias na rede.
+          </p>
+        </div>
+
+        {/* Cards grid com entrada sequencial */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          {events.map((ev, i) => (
+            <div
+              key={i}
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(20px)",
+                transition: `opacity 0.5s ease ${120 + i * 80}ms, transform 0.5s ease ${120 + i * 80}ms`,
+              }}
+              className={`flex items-start gap-3 p-4 rounded-2xl border ${ev.border} ${ev.bg} hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 cursor-default`}
+            >
+              <div className="flex-shrink-0 w-9 h-9 bg-white rounded-xl flex items-center justify-center text-base shadow-sm border border-gray-100">
+                {ev.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <p className="text-sm font-semibold text-gray-800 truncate">{ev.title}</p>
+                  <span className="text-[10px] text-gray-400 flex-shrink-0 flex items-center gap-1 whitespace-nowrap">
+                    <span className={`w-1.5 h-1.5 rounded-full ${ev.dot}`} />
+                    {ev.time}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 leading-relaxed">{ev.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA link */}
+        <div
+          className="text-center mt-10"
+          style={{
+            opacity: visible ? 1 : 0,
+            transition: "opacity 0.5s ease 700ms",
+          }}
+        >
+          <Link
+            href="/register"
+            className="group inline-flex items-center gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors"
+          >
+            Quero fazer parte da rede
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // OPPORTUNITY IMPACT CARD (Seção de Impacto)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -346,12 +562,8 @@ function OpportunityImpactSection() {
               {opp.featured && (
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500" />
               )}
-
-              {/* Color bar */}
               <div className={`h-2 bg-gradient-to-r ${opp.gradient}`} />
-
               <div className="p-5">
-                {/* Location + type */}
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <p className="font-bold text-white text-sm">{opp.label}</p>
@@ -361,8 +573,6 @@ function OpportunityImpactSection() {
                     −{opp.pct} OFF
                   </span>
                 </div>
-
-                {/* Prices */}
                 <div className="bg-white/5 rounded-xl p-3.5 mb-4 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div>
@@ -375,16 +585,12 @@ function OpportunityImpactSection() {
                     </div>
                   </div>
                 </div>
-
-                {/* Match indicator */}
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
                     <Zap className="h-3 w-3" />
                     {opp.matches} compradores compatíveis
                   </div>
                 </div>
-
-                {/* CTA */}
                 <Link
                   href="/register"
                   className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition"
@@ -397,7 +603,6 @@ function OpportunityImpactSection() {
           ))}
         </div>
 
-        {/* Bottom CTA */}
         <div className="text-center">
           <p className="text-gray-500 text-sm mb-4">
             Essas são <span className="text-white font-semibold">simulações reais</span> do tipo de oportunidade disponível na plataforma
@@ -416,39 +621,137 @@ function OpportunityImpactSection() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LIVE ACTIVITY TICKER
+// MATCH SHOWCASE — prova visual do algoritmo
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ActivityTicker() {
-  const items = [
-    { icon: "🤝", text: "Parceria fechada em Salvador, BA" },
-    { icon: "⚡", text: "Match gerado: 94% compatibilidade" },
-    { icon: "🔥", text: "Nova oportunidade: −18% em SP" },
-    { icon: "🤝", text: "Comissão dividida no RJ" },
-    { icon: "⚡", text: "Match gerado: 89% em Fortaleza" },
-    { icon: "🔥", text: "Oportunidade urgente em BH" },
-  ];
+function MatchShowcaseSection() {
+  const { ref, visible } = useFadeIn(0.12);
 
   return (
-    <div className="border-y border-gray-100 bg-gray-50/60 overflow-hidden py-3">
-      <div className="flex items-center gap-3 px-6 overflow-x-auto scrollbar-hide">
-        <span className="flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
-          </span>
-          Ativo agora
-        </span>
-        <div className="flex items-center gap-6 flex-nowrap">
-          {items.map((item, i) => (
-            <span key={i} className="flex items-center gap-1.5 text-sm text-gray-500 whitespace-nowrap flex-shrink-0">
-              <span>{item.icon}</span>
-              {item.text}
-            </span>
-          ))}
+    <section className="bg-[#F8FAFC] py-20">
+      <div ref={ref} className="mx-auto max-w-7xl px-6">
+        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+
+          {/* Left: texto */}
+          <div
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateX(0)" : "translateX(-20px)",
+              transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
+            }}
+          >
+            <div className="inline-flex items-center gap-2 bg-violet-50 border border-violet-200 text-violet-700 text-xs font-bold px-3 py-1.5 rounded-full mb-5">
+              <ArrowRightLeft className="h-3.5 w-3.5" />
+              Matching inteligente
+            </div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 leading-tight tracking-tight">
+              Seu próximo negócio já pode estar esperando na rede.
+            </h2>
+            <p className="text-gray-500 leading-relaxed mb-6">
+              O algoritmo cruza automaticamente compradores e imóveis de toda a rede. Quando há alta compatibilidade, você recebe o match — e fecha o negócio com outro corretor dividindo a comissão.
+            </p>
+            <ul className="space-y-3">
+              {[
+                "Compatibilidade calculada por localização, tipo e faixa de preço",
+                "Notificação imediata quando um match é encontrado",
+                "Chat direto para formalizar a parceria sem burocracia",
+              ].map((t) => (
+                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-600">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 flex items-center gap-2">
+              <span className="text-xs text-gray-400">Novos matches sendo gerados</span>
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+                <span className="text-xs text-violet-600 font-medium">continuamente</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Right: card de match */}
+          <div
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateX(0)" : "translateX(20px)",
+              transition: "opacity 0.6s ease 220ms, transform 0.6s ease 220ms",
+            }}
+            className="relative"
+          >
+            {/* Glow */}
+            <div className="absolute -inset-4 bg-gradient-to-br from-violet-100/70 to-blue-100/50 rounded-3xl blur-2xl pointer-events-none" />
+
+            <div className="relative bg-white rounded-2xl border border-violet-100 p-5 shadow-xl shadow-violet-100/60">
+              {/* Header */}
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md">
+                  <Zap className="h-4.5 w-4.5 text-white" style={{ height: "18px", width: "18px" }} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-gray-800">Match encontrado</p>
+                  <p className="text-[11px] text-gray-400">Compatibilidade calculada pelo algoritmo</p>
+                </div>
+                <span className="text-sm font-black text-violet-700 bg-violet-100 px-3 py-1 rounded-full">
+                  94%
+                </span>
+              </div>
+
+              {/* Progress bar */}
+              <div className="mb-5">
+                <div className="flex justify-between text-[11px] text-gray-400 mb-1.5">
+                  <span>Compatibilidade</span>
+                  <span className="text-violet-600 font-semibold">94 / 100</span>
+                </div>
+                <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-2.5 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"
+                    style={{
+                      width: visible ? "94%" : "0%",
+                      transition: "width 1.3s cubic-bezier(0.4,0,0.2,1) 600ms",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Match detail */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-blue-50 rounded-xl p-3.5 border border-blue-100">
+                  <p className="text-[9px] font-bold text-blue-600 uppercase tracking-wider mb-1.5">Imóvel disponível</p>
+                  <p className="text-xs font-bold text-gray-800">Casa · Salvador</p>
+                  <p className="text-[11px] text-gray-500 mt-0.5">R$ 650.000 · 3 quartos</p>
+                </div>
+                <div className="bg-violet-50 rounded-xl p-3.5 border border-violet-100">
+                  <p className="text-[9px] font-bold text-violet-600 uppercase tracking-wider mb-1.5">Comprador na rede</p>
+                  <p className="text-xs font-bold text-gray-800">Quer: Casa · Salvador</p>
+                  <p className="text-[11px] text-gray-500 mt-0.5">Até R$ 700.000 · 2-4q</p>
+                </div>
+              </div>
+
+              {/* Corretores */}
+              <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
+                <div className="flex -space-x-2 flex-shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[9px] font-bold text-white border-2 border-white shadow-sm">JS</div>
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-[9px] font-bold text-white border-2 border-white shadow-sm">MC</div>
+                </div>
+                <p className="text-xs text-gray-600 flex-1">
+                  <span className="font-semibold">2 corretores</span> · divisão de comissão acordada
+                </p>
+                <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 flex-shrink-0">
+                  Ativo
+                </span>
+              </div>
+
+              {/* Bottom label */}
+              <p className="text-center text-[11px] text-gray-400 mt-3">
+                Corretores entrando na rede · Novos matches todos os dias
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -458,6 +761,13 @@ function ActivityTicker() {
 
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Fade-in refs for each major section heading
+  const fadeComoFunciona    = useFadeIn(0.1);
+  const fadeProblema        = useFadeIn(0.1);
+  const fadeFuncionalidades = useFadeIn(0.1);
+  const fadeDepoimentos     = useFadeIn(0.1);
+  const fadePlanos          = useFadeIn(0.1);
 
   return (
     <div className="min-h-screen bg-white antialiased">
@@ -485,7 +795,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/register"
-              className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition shadow-md shadow-blue-200/60"
+              className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition shadow-md shadow-blue-200/60 active:scale-[0.98]"
             >
               Cadastrar grátis
               <ArrowRight className="h-3.5 w-3.5" />
@@ -562,9 +872,9 @@ export default function HomePage() {
               {/* Micro indicators */}
               <div className="flex flex-wrap gap-4 mb-8">
                 {[
-                  { dot: "bg-emerald-500", text: "Plataforma em crescimento ativo" },
-                  { dot: "bg-blue-500",    text: "Novos matches sendo gerados" },
-                  { dot: "bg-violet-500",  text: "Corretores ativos na rede" },
+                  { dot: "bg-emerald-500 animate-pulse", text: "Novos matches sendo gerados" },
+                  { dot: "bg-blue-500 animate-pulse",    text: "Corretores entrando na rede" },
+                  { dot: "bg-orange-500 animate-pulse",  text: "Novas oportunidades todos os dias" },
                 ].map(({ dot, text }) => (
                   <span key={text} className="flex items-center gap-1.5 text-sm text-gray-500">
                     <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dot}`} />
@@ -617,21 +927,34 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
-          ACTIVITY TICKER
+          ACTIVITY TICKER — auto-scroll
       ══════════════════════════════════════════════════════════════════ */}
       <ActivityTicker />
 
       {/* ══════════════════════════════════════════════════════════════════
-          SEÇÃO DE IMPACTO — OPORTUNIDADES REAIS
+          "O QUE ESTÁ ACONTECENDO AGORA"
+      ══════════════════════════════════════════════════════════════════ */}
+      <LiveActivitySection />
+
+      {/* ══════════════════════════════════════════════════════════════════
+          SEÇÃO DE IMPACTO — OPORTUNIDADES REAIS (fundo escuro)
       ══════════════════════════════════════════════════════════════════ */}
       <OpportunityImpactSection />
 
       {/* ══════════════════════════════════════════════════════════════════
           COMO FUNCIONA
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="como-funciona" className="bg-[#F8FAFC] py-24">
+      <section id="como-funciona" className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
+          <div
+            ref={fadeComoFunciona.ref}
+            className="text-center mb-16"
+            style={{
+              opacity: fadeComoFunciona.visible ? 1 : 0,
+              transform: fadeComoFunciona.visible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.55s ease, transform 0.55s ease",
+            }}
+          >
             <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Simples assim</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Como funciona</h2>
             <p className="text-lg text-gray-500 max-w-xl mx-auto">
@@ -670,7 +993,7 @@ export default function HomePage() {
           <div className="text-center mt-14">
             <Link href="/register"
               className="group inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-300/40 hover:shadow-xl hover:opacity-95 active:scale-[0.98] transition-all duration-200">
-              Quero começar agora
+              Começar a gerar oportunidades
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
@@ -678,11 +1001,24 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
+          MATCH SHOWCASE — prova visual do matching
+      ══════════════════════════════════════════════════════════════════ */}
+      <MatchShowcaseSection />
+
+      {/* ══════════════════════════════════════════════════════════════════
           PROBLEMA vs SOLUÇÃO
       ══════════════════════════════════════════════════════════════════ */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-14">
+          <div
+            ref={fadeProblema.ref}
+            className="text-center mb-14"
+            style={{
+              opacity: fadeProblema.visible ? 1 : 0,
+              transform: fadeProblema.visible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.55s ease, transform 0.55s ease",
+            }}
+          >
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Por que mudar?</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
               O que muda com o ImobMatch
@@ -759,16 +1095,29 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════════════ */}
       <section id="funcionalidades" className="bg-[#F8FAFC] py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-14">
+          <div
+            ref={fadeFuncionalidades.ref}
+            className="text-center mb-14"
+            style={{
+              opacity: fadeFuncionalidades.visible ? 1 : 0,
+              transform: fadeFuncionalidades.visible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.55s ease, transform 0.55s ease",
+            }}
+          >
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Plataforma completa</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Tudo que você precisa</h2>
             <p className="text-lg text-gray-500 max-w-xl mx-auto">Uma plataforma completa para gestão e colaboração imobiliária.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
-            {FEATURES.map(feature => (
+            {FEATURES.map((feature, i) => (
               <div
                 key={feature.title}
+                style={{
+                  opacity: fadeFuncionalidades.visible ? 1 : 0,
+                  transform: fadeFuncionalidades.visible ? "translateY(0)" : "translateY(20px)",
+                  transition: `opacity 0.5s ease ${i * 70}ms, transform 0.5s ease ${i * 70}ms`,
+                }}
                 className="group relative rounded-2xl border border-gray-100 bg-white p-6 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-100/80 hover:-translate-y-1 transition-all duration-300 cursor-default"
               >
                 <div className={`mb-5 w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg ${feature.glow} group-hover:scale-110 transition-transform duration-300`}>
@@ -787,33 +1136,42 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════════════ */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-14">
+          <div
+            ref={fadeDepoimentos.ref}
+            className="text-center mb-14"
+            style={{
+              opacity: fadeDepoimentos.visible ? 1 : 0,
+              transform: fadeDepoimentos.visible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.55s ease, transform 0.55s ease",
+            }}
+          >
             <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Resultados reais</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">O que dizem os corretores</h2>
             <p className="text-lg text-gray-500">De quem já usa a plataforma para gerar negócios.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map(t => (
+            {TESTIMONIALS.map((t, i) => (
               <div
                 key={t.name}
+                style={{
+                  opacity: fadeDepoimentos.visible ? 1 : 0,
+                  transform: fadeDepoimentos.visible ? "translateY(0)" : "translateY(20px)",
+                  transition: `opacity 0.5s ease ${i * 100}ms, transform 0.5s ease ${i * 100}ms`,
+                }}
                 className="group flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-7 hover:shadow-xl hover:shadow-gray-100/80 hover:-translate-y-1 transition-all duration-300"
               >
-                {/* Highlight quote */}
                 <div className="bg-gray-50 rounded-xl px-3 py-2 border border-gray-100">
                   <p className="text-xs font-bold text-gray-700">&ldquo;{t.highlight}&rdquo;</p>
                 </div>
-
                 <div className="flex gap-0.5">
                   {Array.from({ length: t.stars }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-
                 <p className="text-gray-500 text-sm leading-relaxed flex-1">
                   &ldquo;{t.text}&rdquo;
                 </p>
-
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                   <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center flex-shrink-0 shadow-md`}>
                     <span className="text-xs font-bold text-white">{t.initial}</span>
@@ -834,7 +1192,15 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════════════ */}
       <section className="bg-[#F8FAFC] py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-12">
+          <div
+            ref={fadePlanos.ref}
+            className="text-center mb-12"
+            style={{
+              opacity: fadePlanos.visible ? 1 : 0,
+              transform: fadePlanos.visible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.55s ease, transform 0.55s ease",
+            }}
+          >
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Preços transparentes</p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
               Comece grátis. Escale quando quiser.
@@ -847,9 +1213,14 @@ export default function HomePage() {
               { name: "Free",    price: "Grátis",    desc: "3 imóveis · 3 compradores",           highlight: false },
               { name: "Starter", price: "R$ 39/mês", desc: "20 imóveis · 30 compradores",         highlight: true  },
               { name: "Pro",     price: "R$ 79/mês", desc: "Ilimitado · prioridade no algoritmo",  highlight: false },
-            ].map(p => (
+            ].map((p, i) => (
               <div
                 key={p.name}
+                style={{
+                  opacity: fadePlanos.visible ? 1 : 0,
+                  transform: fadePlanos.visible ? "translateY(0)" : "translateY(20px)",
+                  transition: `opacity 0.5s ease ${i * 80}ms, transform 0.5s ease ${i * 80}ms`,
+                }}
                 className={`relative rounded-2xl p-6 text-center transition-all duration-200 ${
                   p.highlight
                     ? "bg-white border-2 border-blue-600 shadow-xl shadow-blue-100/60 scale-[1.02]"
@@ -867,7 +1238,7 @@ export default function HomePage() {
                 </p>
                 <p className={`text-xs mb-5 ${p.highlight ? "text-gray-500" : "text-gray-400"}`}>{p.desc}</p>
                 <Link href="/register"
-                  className={`inline-flex items-center justify-center gap-1 w-full py-2.5 rounded-xl text-sm font-semibold transition ${
+                  className={`inline-flex items-center justify-center gap-1 w-full py-2.5 rounded-xl text-sm font-semibold transition active:scale-[0.98] ${
                     p.highlight
                       ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:opacity-90 shadow-md shadow-blue-200/60"
                       : "bg-gray-50 border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600"
@@ -913,7 +1284,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
             <Link href="/register"
               className="group inline-flex items-center justify-center gap-2 bg-white text-blue-700 px-8 py-4 rounded-xl text-base font-bold hover:bg-blue-50 active:scale-[0.98] transition-all duration-200 shadow-xl shadow-blue-900/30">
-              Criar conta grátis
+              Começar a gerar oportunidades
               <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link href="/imoveis"
