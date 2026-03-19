@@ -167,14 +167,14 @@ function HeroVisual() {
           0%,100% { transform: translateY(0px); }
           50%      { transform: translateY(-7px); }
         }
-        /* ── Glow handshake ── */
+        /* ── Glow do match — forte, pulsante ── */
         @keyframes hv-glow-pulse {
-          0%,100% { opacity: 0.50; transform: translate(-50%,-50%) scale(1); }
-          50%      { opacity: 0.92; transform: translate(-50%,-50%) scale(1.40); }
+          0%,100% { opacity: 0.65; transform: translate(-50%,-50%) scale(1);    }
+          50%      { opacity: 1.00; transform: translate(-50%,-50%) scale(1.55); }
         }
         @keyframes hv-ring-pulse {
-          0%,100% { opacity: 0.18; transform: translate(-50%,-50%) scale(1); }
-          50%      { opacity: 0.55; transform: translate(-50%,-50%) scale(1.65); }
+          0%,100% { opacity: 0.22; transform: translate(-50%,-50%) scale(1);    }
+          50%      { opacity: 0.72; transform: translate(-50%,-50%) scale(1.82); }
         }
         /* ── Partículas ── */
         @keyframes hv-dot {
@@ -197,24 +197,32 @@ function HeroVisual() {
         }
         /* ── Aura de fundo ── */
         @keyframes hv-aura {
-          0%,100% { opacity: 0.62; transform: scale(1); }
-          50%      { opacity: 0.94; transform: scale(1.12); }
+          0%,100% { opacity: 0.62; transform: scale(1);    }
+          50%      { opacity: 0.96; transform: scale(1.14); }
+        }
+        /* ── Gold shimmer card comissão ── */
+        @keyframes hv-gold-pulse {
+          0%,100% { box-shadow: 0 20px 56px rgba(16,185,129,0.28), 0 8px 24px rgba(5,150,105,0.18), 0 0 0 1px rgba(16,185,129,0.12); }
+          50%      { box-shadow: 0 26px 68px rgba(16,185,129,0.46), 0 10px 32px rgba(5,150,105,0.30), 0 0 0 1px rgba(16,185,129,0.22); }
         }
 
-        /* Card wrappers — entrada (outer) + float (inner) */
+        /* Card wrappers — entrada + float */
         .hv-ea { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 0.15s; }
         .hv-eb { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 0.45s; }
         .hv-ec { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 0.75s; }
         .hv-ed { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 1.05s; }
+        .hv-ee { animation: hv-enter 0.8s cubic-bezier(0.16,1,0.3,1) both 1.30s; }
 
         .hv-fa { animation: hv-float-a 4.6s ease-in-out infinite 1.0s; }
         .hv-fb { animation: hv-float-b 5.4s ease-in-out infinite 1.3s; }
         .hv-fc { animation: hv-float-c 5.0s ease-in-out infinite 1.6s; }
         .hv-fd { animation: hv-float-d 4.3s ease-in-out infinite 1.9s; }
+        .hv-fe { animation: hv-float-d 5.1s ease-in-out infinite 2.4s; }
 
-        .hv-glow { animation: hv-glow-pulse 3.0s ease-in-out infinite; }
-        .hv-ring { animation: hv-ring-pulse 4.2s ease-in-out infinite 0.6s; }
+        .hv-glow { animation: hv-glow-pulse 2.4s ease-in-out infinite; }
+        .hv-ring { animation: hv-ring-pulse 3.6s ease-in-out infinite 0.5s; }
         .hv-aura { animation: hv-aura 5.5s ease-in-out infinite; }
+        .hv-money { animation: hv-gold-pulse 2.8s ease-in-out infinite 0.6s; }
 
         .hv-d1 { animation: hv-dot 3.6s ease-in-out infinite 0.0s; }
         .hv-d2 { animation: hv-dot 4.1s ease-in-out infinite 0.9s; }
@@ -234,46 +242,128 @@ function HeroVisual() {
         .hv-fl3 { animation: hv-flow-in 0.1s ease both 3.4s, hv-flow 5.0s linear infinite 3.5s; opacity: 0; }
       `}</style>
 
-      {/* Wrapper — padding maior à esquerda para cards quebrarem a borda */}
+      {/* Wrapper */}
       <div className="relative select-none" style={{ padding: "52px 10px 52px 62px" }}>
 
-        {/* ── Aura atmosférica — projeta para fora da imagem ── */}
+        {/* ── Aura atmosférica ── */}
         <div className="hv-aura absolute pointer-events-none" style={{
           top: "4%", left: "-12%",
           width: "124%", height: "92%",
-          background: "radial-gradient(ellipse at 52% 60%, rgba(79,70,229,0.32) 0%, rgba(37,99,235,0.22) 28%, rgba(139,92,246,0.12) 52%, transparent 72%)",
+          background: "radial-gradient(ellipse at 52% 60%, rgba(79,70,229,0.36) 0%, rgba(37,99,235,0.24) 28%, rgba(139,92,246,0.14) 52%, transparent 72%)",
           filter: "blur(52px)",
           zIndex: 0,
         }} />
         <div className="absolute pointer-events-none" style={{
           top: "-8%", right: "-6%",
           width: "58%", height: "52%",
-          background: "radial-gradient(ellipse, rgba(59,130,246,0.24) 0%, rgba(139,92,246,0.12) 48%, transparent 72%)",
+          background: "radial-gradient(ellipse, rgba(59,130,246,0.28) 0%, rgba(139,92,246,0.14) 48%, transparent 72%)",
           filter: "blur(36px)",
           zIndex: 0,
         }} />
 
-        {/* ── IMAGEM PRINCIPAL — PNG com fundo transparente ── */}
+        {/* ── IMAGEM + GLOW DO MATCH + SVG DE CONEXÃO ── */}
         <div className="relative" style={{ zIndex: 1 }}>
-          {/* Glow atmosférico atrás dos corretores */}
+
+          {/* Glow principal do match — forte, grande, pulsante */}
           <div className="hv-glow absolute pointer-events-none" style={{
-            top: "55%", left: "50%",
-            width: "420px", height: "200px",
-            background: "radial-gradient(ellipse, rgba(99,102,241,0.55) 0%, rgba(59,130,246,0.30) 36%, transparent 68%)",
-            filter: "blur(32px)",
-            transform: "translate(-50%,-50%)",
-            zIndex: 0,
-          }} />
-          <div className="hv-ring absolute pointer-events-none" style={{
-            top: "55%", left: "50%",
-            width: "560px", height: "240px",
-            background: "radial-gradient(ellipse, transparent 36%, rgba(139,92,246,0.28) 52%, transparent 70%)",
-            filter: "blur(18px)",
+            top: "58%", left: "50%",
+            width: "540px", height: "260px",
+            background: "radial-gradient(ellipse, rgba(99,102,241,0.90) 0%, rgba(59,130,246,0.54) 32%, transparent 65%)",
+            filter: "blur(24px)",
             transform: "translate(-50%,-50%)",
             zIndex: 0,
           }} />
 
-          {/* Imagem: drop-shadow segue o contorno dos corretores */}
+          {/* Ring externo — pulsa revelando conexão acontecendo */}
+          <div className="hv-ring absolute pointer-events-none" style={{
+            top: "58%", left: "50%",
+            width: "720px", height: "310px",
+            background: "radial-gradient(ellipse, transparent 36%, rgba(139,92,246,0.48) 52%, transparent 70%)",
+            filter: "blur(13px)",
+            transform: "translate(-50%,-50%)",
+            zIndex: 0,
+          }} />
+
+          {/* SVG — rede de linhas convergindo para o ponto do match */}
+          <svg
+            className="absolute pointer-events-none"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }}
+            viewBox="0 0 560 420" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="hv-lg1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="#3b82f6" stopOpacity="0" />
+                <stop offset="50%"  stopColor="#8b5cf6" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="hv-lg2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stopColor="#6366f1" stopOpacity="0" />
+                <stop offset="50%"  stopColor="#3b82f6" stopOpacity="0.78" />
+                <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="hv-lg3" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stopColor="#a78bfa" stopOpacity="0" />
+                <stop offset="50%"  stopColor="#60a5fa" stopOpacity="0.72" />
+                <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="hv-fg1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stopColor="#c4b5fd" stopOpacity="0" />
+                <stop offset="50%"  stopColor="#c4b5fd" stopOpacity="1.00" />
+                <stop offset="100%" stopColor="#c4b5fd" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+
+            {/* Linhas estáticas draw-in */}
+            <line className="hv-line"
+              x1="35" y1="252" x2="525" y2="252"
+              stroke="url(#hv-lg1)" strokeWidth="1.8" strokeLinecap="round" />
+            <line className="hv-line hv-line-2"
+              x1="95" y1="62" x2="465" y2="368"
+              stroke="url(#hv-lg2)" strokeWidth="1.3" strokeLinecap="round" />
+            <line className="hv-line hv-line-3"
+              x1="465" y1="62" x2="95" y2="368"
+              stroke="url(#hv-lg3)" strokeWidth="1.3" strokeLinecap="round" />
+
+            {/* Raios convergentes ao nó central */}
+            <line x1="280" y1="252" x2="95"  y2="62"  stroke="#3b82f6" strokeWidth="0.9" opacity="0.44" />
+            <line x1="280" y1="252" x2="465" y2="62"  stroke="#3b82f6" strokeWidth="0.9" opacity="0.44" />
+            <line x1="280" y1="252" x2="95"  y2="368" stroke="#6366f1" strokeWidth="0.9" opacity="0.38" />
+            <line x1="280" y1="252" x2="465" y2="368" stroke="#6366f1" strokeWidth="0.9" opacity="0.38" />
+
+            {/* Fluxo contínuo de dados */}
+            <line className="hv-fl1"
+              x1="35" y1="252" x2="525" y2="252"
+              stroke="url(#hv-fg1)" strokeWidth="2.5"
+              strokeDasharray="22 16" strokeLinecap="round" />
+            <line className="hv-fl2"
+              x1="95" y1="62" x2="465" y2="368"
+              stroke="#a5b4fc" strokeWidth="1.6"
+              strokeDasharray="15 20" strokeLinecap="round" opacity="0.84" />
+            <line className="hv-fl3"
+              x1="465" y1="62" x2="95" y2="368"
+              stroke="#93c5fd" strokeWidth="1.6"
+              strokeDasharray="18 18" strokeLinecap="round" opacity="0.80" />
+
+            {/* Nó central — match point */}
+            <circle cx="280" cy="252" r="8"  fill="#8b5cf6" opacity="0.96" />
+            <circle cx="280" cy="252" r="20" fill="#8b5cf6" opacity="0.20" />
+            <circle cx="280" cy="252" r="38" fill="#8b5cf6" opacity="0.08" />
+
+            {/* Nós secundários */}
+            <circle cx="95"  cy="62"  r="5" fill="#3b82f6" opacity="0.74" />
+            <circle cx="465" cy="62"  r="5" fill="#3b82f6" opacity="0.74" />
+            <circle cx="95"  cy="368" r="5" fill="#6366f1" opacity="0.64" />
+            <circle cx="465" cy="368" r="5" fill="#6366f1" opacity="0.64" />
+
+            {/* Partículas pulsantes */}
+            <circle className="hv-d1" cx="210" cy="196" r="2.5" fill="#a78bfa" />
+            <circle className="hv-d2" cx="356" cy="210" r="2"   fill="#60a5fa" />
+            <circle className="hv-d3" cx="218" cy="300" r="2.5" fill="#818cf8" />
+            <circle className="hv-d4" cx="346" cy="286" r="2"   fill="#a78bfa" />
+            <circle className="hv-d5" cx="183" cy="252" r="2"   fill="#60a5fa" />
+            <circle className="hv-d6" cx="378" cy="248" r="2.5" fill="#818cf8" />
+          </svg>
+
+          {/* Imagem PNG transparente — drop-shadow no contorno das pessoas */}
           <img
             src="/corretores.png"
             alt="Corretores ImobMatch fechando parceria"
@@ -285,83 +375,81 @@ function HeroVisual() {
                 "drop-shadow(0 28px 56px rgba(37,99,235,0.38)) " +
                 "drop-shadow(0 10px 24px rgba(99,102,241,0.26)) " +
                 "drop-shadow(0 2px 8px rgba(139,92,246,0.18))",
-              zIndex: 1,
+              zIndex: 2,
             }}
             draggable={false}
           />
         </div>
 
-        {/* ════════════════════════════════════════════════════════
-            CARDS FLUTUANTES — hierarquia visual + fade-in + float
-            Outer div: entrada | Inner div: float contínuo
-        ════════════════════════════════════════════════════════ */}
+        {/* ════ CARDS FLUTUANTES ════ */}
 
-        {/* ── CARD HERO: Match encontrado — quebra borda esquerda ── */}
+        {/* ── CARD A: Match encontrado — hero card, maior e mais impactante ── */}
         <div className="absolute hv-ea" style={{ top: "9%", left: "-50px", zIndex: 20 }}>
           <div className="hv-fa">
             <div style={{
-              background: "rgba(255,255,255,0.96)",
-              backdropFilter: "blur(28px)",
-              WebkitBackdropFilter: "blur(28px)",
-              border: "1px solid rgba(255,255,255,0.82)",
+              background: "rgba(255,255,255,0.97)",
+              backdropFilter: "blur(32px)",
+              WebkitBackdropFilter: "blur(32px)",
+              border: "1.5px solid rgba(99,102,241,0.30)",
               boxShadow:
-                "0 16px 48px rgba(37,99,235,0.28), " +
-                "0 6px 18px rgba(99,102,241,0.18), " +
-                "0 0 0 1px rgba(99,102,241,0.12)",
-              borderRadius: "16px",
-              padding: "10px 14px",
-              minWidth: "192px",
+                "0 28px 72px rgba(37,99,235,0.40), " +
+                "0 10px 32px rgba(99,102,241,0.28), " +
+                "0 0 0 1px rgba(99,102,241,0.14), " +
+                "inset 0 1px 0 rgba(255,255,255,0.92)",
+              borderRadius: "20px",
+              padding: "16px 20px",
+              minWidth: "248px",
             }}>
               {/* Topo */}
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-3 mb-3">
                 <div style={{
-                  width: "32px", height: "32px", borderRadius: "10px", flexShrink: 0,
+                  width: "42px", height: "42px", borderRadius: "13px", flexShrink: 0,
                   background: "linear-gradient(135deg,#3b82f6,#7c3aed)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "0 4px 14px rgba(99,102,241,0.48)",
+                  boxShadow: "0 6px 24px rgba(99,102,241,0.60)",
                 }}>
-                  <Zap style={{ width: "15px", height: "15px", color: "white" }} />
+                  <Zap style={{ width: "20px", height: "20px", color: "white" }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: "11px", fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>
+                  <p style={{ fontSize: "14px", fontWeight: 800, color: "#111827", lineHeight: 1.2 }}>
                     Match encontrado
                   </p>
-                  <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
-                    <span className="relative flex" style={{ width: "5px", height: "5px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "3px" }}>
+                    <span className="relative flex" style={{ width: "6px", height: "6px" }}>
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full"
                         style={{ background: "#22c55e", opacity: 0.75 }} />
                       <span className="relative inline-flex rounded-full"
-                        style={{ width: "5px", height: "5px", background: "#22c55e" }} />
+                        style={{ width: "6px", height: "6px", background: "#22c55e" }} />
                     </span>
-                    <p style={{ fontSize: "9px", color: "#6b7280" }}>IA ativa em tempo real</p>
+                    <p style={{ fontSize: "10px", color: "#6b7280" }}>IA ativa em tempo real</p>
                   </div>
                 </div>
                 <span style={{
-                  fontSize: "12px", fontWeight: 900, color: "#6d28d9",
+                  fontSize: "16px", fontWeight: 900, color: "#6d28d9",
                   background: "linear-gradient(135deg,#ede9fe,#f5f3ff)",
-                  padding: "3px 8px", borderRadius: "16px",
-                  border: "1px solid rgba(139,92,246,0.22)",
+                  padding: "4px 10px", borderRadius: "20px",
+                  border: "1px solid rgba(139,92,246,0.30)",
                 }}>93%</span>
               </div>
               {/* Barra de progresso */}
-              <div style={{ marginBottom: "8px" }}>
+              <div style={{ marginBottom: "11px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between",
-                  fontSize: "9px", color: "#9ca3af", marginBottom: "4px" }}>
+                  fontSize: "10px", color: "#9ca3af", marginBottom: "5px" }}>
                   <span>Compatibilidade</span>
                   <span style={{ color: "#6d28d9", fontWeight: 700 }}>93 / 100</span>
                 </div>
-                <div style={{ height: "5px", background: "#f3f4f6", borderRadius: "999px", overflow: "hidden" }}>
+                <div style={{ height: "6px", background: "#f3f4f6", borderRadius: "999px", overflow: "hidden" }}>
                   <div style={{
-                    height: "5px", width: "93%", borderRadius: "999px",
+                    height: "6px", width: "93%", borderRadius: "999px",
                     background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
                   }} />
                 </div>
               </div>
-              {/* Avatars dos corretores */}
+              {/* Avatars */}
               <div style={{
-                display: "flex", alignItems: "center", gap: "6px",
-                background: "#f9fafb", borderRadius: "10px",
-                padding: "6px 8px", border: "1px solid #f3f4f6",
+                display: "flex", alignItems: "center", gap: "8px",
+                background: "#f9fafb", borderRadius: "12px",
+                padding: "8px 10px", border: "1px solid #f3f4f6",
               }}>
                 <div style={{ display: "flex" }}>
                   {[
@@ -369,17 +457,17 @@ function HeroVisual() {
                     { txt: "MC", bg: "linear-gradient(135deg,#8b5cf6,#7c3aed)" },
                   ].map((av, i) => (
                     <div key={i} style={{
-                      width: "22px", height: "22px", borderRadius: "50%",
+                      width: "26px", height: "26px", borderRadius: "50%",
                       border: "2px solid white",
-                      marginLeft: i > 0 ? "-8px" : "0",
+                      marginLeft: i > 0 ? "-9px" : "0",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "8px", fontWeight: 700, color: "white",
+                      fontSize: "9px", fontWeight: 700, color: "white",
                       background: av.bg,
                       boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
                     }}>{av.txt}</div>
                   ))}
                 </div>
-                <p style={{ fontSize: "9px", color: "#6b7280", flex: 1 }}>
+                <p style={{ fontSize: "10px", color: "#6b7280", flex: 1 }}>
                   <span style={{ fontWeight: 600, color: "#374151" }}>2 corretores</span> conectados
                 </p>
               </div>
@@ -471,9 +559,60 @@ function HeroVisual() {
           </div>
         </div>
 
-        {/* ── CARD D: Negócio fechado — direita inferior ── */}
+        {/* ── CARD D: Comissão estimada — direita inferior (NOVO — impacto financeiro) ── */}
         <div className="absolute hv-ed" style={{ bottom: "7%", right: "-34px", zIndex: 20 }}>
           <div className="hv-fd">
+            <div className="hv-money" style={{
+              background: "rgba(255,255,255,0.97)",
+              backdropFilter: "blur(32px)",
+              WebkitBackdropFilter: "blur(32px)",
+              border: "1.5px solid rgba(16,185,129,0.30)",
+              borderRadius: "18px",
+              padding: "14px 18px",
+              minWidth: "200px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "9px" }}>
+                <div style={{
+                  width: "40px", height: "40px", borderRadius: "13px", flexShrink: 0,
+                  background: "linear-gradient(135deg,#059669,#10b981)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  boxShadow: "0 5px 18px rgba(16,185,129,0.54)",
+                }}>
+                  <TrendingUp style={{ width: "18px", height: "18px", color: "white" }} />
+                </div>
+                <div>
+                  <p style={{ fontSize: "10px", color: "#9ca3af", lineHeight: 1.2, marginBottom: "2px" }}>Comissão estimada</p>
+                  <p style={{
+                    fontSize: "24px", fontWeight: 900, lineHeight: 1.05,
+                    background: "linear-gradient(135deg,#059669,#10b981)",
+                    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                  }}>
+                    R$ 14.200
+                  </p>
+                </div>
+              </div>
+              <div style={{
+                display: "flex", alignItems: "center", gap: "6px",
+                background: "rgba(236,253,245,0.9)", borderRadius: "10px",
+                padding: "6px 9px", border: "1px solid rgba(16,185,129,0.18)",
+              }}>
+                <span className="relative flex" style={{ width: "6px", height: "6px" }}>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full"
+                    style={{ background: "#10b981", opacity: 0.75 }} />
+                  <span className="relative inline-flex rounded-full"
+                    style={{ width: "6px", height: "6px", background: "#10b981" }} />
+                </span>
+                <p style={{ fontSize: "9px", color: "#065f46", fontWeight: 600 }}>
+                  sua parte neste match
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── CARD E: Negócio fechado — direita centro ── */}
+        <div className="absolute hv-ee" style={{ top: "50%", right: "-30px", zIndex: 20 }}>
+          <div className="hv-fe">
             <div style={{
               background: "rgba(255,255,255,0.94)",
               backdropFilter: "blur(28px)",
@@ -482,18 +621,18 @@ function HeroVisual() {
               boxShadow:
                 "0 14px 44px rgba(234,88,12,0.18), " +
                 "0 0 0 1px rgba(234,88,12,0.09)",
-              borderRadius: "18px",
-              padding: "13px 17px",
-              minWidth: "170px",
+              borderRadius: "16px",
+              padding: "12px 16px",
+              minWidth: "160px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <div style={{
-                  width: "38px", height: "38px", borderRadius: "12px", flexShrink: 0,
+                  width: "36px", height: "36px", borderRadius: "11px", flexShrink: 0,
                   background: "linear-gradient(135deg,#fff7ed,#fed7aa)",
                   border: "1px solid rgba(234,88,12,0.22)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
-                  <Users style={{ width: "17px", height: "17px", color: "#ea580c" }} />
+                  <Users style={{ width: "16px", height: "16px", color: "#ea580c" }} />
                 </div>
                 <div>
                   <p style={{ fontSize: "12px", fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>
