@@ -5,7 +5,8 @@ import Link from "next/link";
 import {
   Building2, Users, Zap, Shield, TrendingUp, MessageSquare,
   Menu, X, ArrowRight, MapPin, Check, Star, CheckCircle2,
-  HeartHandshake, Trophy, ChevronRight,
+  HeartHandshake, Trophy, ChevronRight, TrendingDown, Flame,
+  ArrowRightLeft,
 } from "lucide-react";
 import { COPY } from "@/config/copy";
 
@@ -14,21 +15,19 @@ import { COPY } from "@/config/copy";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { href: "#como-funciona", label: "Como funciona" },
+  { href: "#como-funciona",  label: "Como funciona"  },
   { href: "#funcionalidades", label: "Funcionalidades" },
-  { href: "/plans",          label: "Planos"          },
-  { href: "/imoveis",        label: "Imóveis"         },
+  { href: "/plans",           label: "Planos"          },
+  { href: "/imoveis",         label: "Imóveis"         },
 ];
 
 const FEATURES = [
   {
     icon: Building2,
     title: "Gestão de Imóveis",
-    desc: "Cadastre, edite e compartilhe seus imóveis com página pública e link direto para WhatsApp.",
+    desc: "Cadastre e compartilhe seus imóveis com página pública e link direto para WhatsApp.",
     gradient: "from-blue-500 to-blue-600",
     glow: "shadow-blue-200",
-    bg: "bg-blue-50",
-    text: "text-blue-600",
   },
   {
     icon: Zap,
@@ -36,8 +35,6 @@ const FEATURES = [
     desc: "Algoritmo que combina automaticamente compradores com imóveis por localização, preço e tipo.",
     gradient: "from-amber-400 to-orange-500",
     glow: "shadow-amber-200",
-    bg: "bg-amber-50",
-    text: "text-amber-600",
   },
   {
     icon: Users,
@@ -45,17 +42,13 @@ const FEATURES = [
     desc: "Conecte-se com outros corretores, divida comissões e feche mais negócios em conjunto.",
     gradient: "from-emerald-500 to-teal-600",
     glow: "shadow-emerald-200",
-    bg: "bg-emerald-50",
-    text: "text-emerald-600",
   },
   {
     icon: MessageSquare,
     title: "Chat Integrado",
-    desc: "Comunicação direta entre corretores para coordenar parcerias e negociações sem sair da plataforma.",
+    desc: "Comunicação direta entre corretores para coordenar parcerias sem sair da plataforma.",
     gradient: "from-violet-500 to-purple-600",
     glow: "shadow-violet-200",
-    bg: "bg-violet-50",
-    text: "text-violet-600",
   },
   {
     icon: TrendingUp,
@@ -63,8 +56,6 @@ const FEATURES = [
     desc: "Encontre imóveis com desconto urgente publicados por corretores parceiros da rede.",
     gradient: "from-rose-500 to-pink-600",
     glow: "shadow-rose-200",
-    bg: "bg-rose-50",
-    text: "text-rose-600",
   },
   {
     icon: Shield,
@@ -72,8 +63,6 @@ const FEATURES = [
     desc: "Autenticação segura, dados criptografados e termos de parceria com hash de verificação.",
     gradient: "from-indigo-500 to-blue-700",
     glow: "shadow-indigo-200",
-    bg: "bg-indigo-50",
-    text: "text-indigo-600",
   },
 ];
 
@@ -85,6 +74,7 @@ const TESTIMONIALS = [
     stars: 5,
     initial: "RO",
     gradient: "from-pink-500 to-rose-600",
+    highlight: "Fechei 3 negócios em 2 meses",
   },
   {
     name: "Marcos Teixeira",
@@ -93,6 +83,7 @@ const TESTIMONIALS = [
     stars: 5,
     initial: "MT",
     gradient: "from-blue-500 to-indigo-600",
+    highlight: "Match com 90%+ de compatibilidade no mesmo dia",
   },
   {
     name: "Cláudia Ferreira",
@@ -101,35 +92,38 @@ const TESTIMONIALS = [
     stars: 5,
     initial: "CF",
     gradient: "from-violet-500 to-purple-600",
+    highlight: "Encontramos oportunidades antes de todo mundo",
   },
 ];
 
 const STEPS = [
   {
     num: "01",
+    icon: Building2,
     title: "Cadastre imóveis e compradores",
     desc: "Em minutos, publique seus imóveis e registre o perfil dos seus compradores com as preferências deles.",
   },
   {
     num: "02",
+    icon: Zap,
     title: "O algoritmo gera os matches",
-    desc: "Automaticamente o sistema cruza imóveis e compradores da rede inteira e aponta os melhores pares.",
+    desc: "O sistema cruza imóveis e compradores da rede inteira e aponta os melhores pares automaticamente.",
   },
   {
     num: "03",
-    title: "Proponha parceria e feche",
+    icon: HeartHandshake,
+    title: "Feche com outros corretores",
     desc: "Entre em contato pelo chat, formalize a parceria com termo digital e divida a comissão de forma justa.",
   },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PRODUCT MOCKUP
+// PRODUCT MOCKUP (Hero)
 // ─────────────────────────────────────────────────────────────────────────────
 
 function ProductMockup() {
   return (
     <div className="relative select-none">
-      {/* Glow layers */}
       <div className="absolute -inset-6 bg-gradient-to-br from-blue-400/20 via-violet-400/15 to-blue-300/10 rounded-3xl blur-3xl pointer-events-none" />
       <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/10 to-violet-500/10 rounded-3xl blur-xl pointer-events-none" />
 
@@ -148,7 +142,7 @@ function ProductMockup() {
           </div>
         </div>
 
-        {/* App top bar */}
+        {/* App bar */}
         <div className="bg-white border-b border-gray-100 px-3.5 py-2 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <div className="w-5 h-5 rounded-md bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center flex-shrink-0">
@@ -173,13 +167,11 @@ function ProductMockup() {
         <div className="bg-white border-b border-gray-100 px-3.5 flex items-center gap-1">
           {[
             { label: "Radar",     active: true  },
-            { label: "Feed",      active: false },
+            { label: "Matches",   active: false },
             { label: "Parcerias", active: false },
-            { label: "Ranking",   active: false },
           ].map((tab) => (
-            <div
-              key={tab.label}
-              className={`px-2.5 py-2 text-[10px] font-semibold border-b-2 -mb-px transition-colors ${
+            <div key={tab.label}
+              className={`px-2.5 py-2 text-[10px] font-semibold border-b-2 -mb-px ${
                 tab.active ? "border-blue-600 text-blue-600" : "border-transparent text-gray-400"
               }`}
             >
@@ -189,107 +181,271 @@ function ProductMockup() {
         </div>
 
         {/* Content */}
-        <div className="bg-gray-50/70 p-3 space-y-2.5">
+        <div className="bg-gray-50/70 p-3 space-y-2">
+          {/* Header */}
           <div className="flex items-center justify-between px-0.5">
             <div>
               <p className="text-[11px] font-bold text-gray-800">Radar de Oportunidades</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">5 imóveis com desconto urgente na rede</p>
+              <p className="text-[10px] text-gray-400 mt-0.5">5 imóveis com desconto urgente</p>
             </div>
-            <div className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-              <Zap className="h-2.5 w-2.5" />
-              3 novos
+            <div className="flex items-center gap-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+              🔥 3 novos
             </div>
           </div>
 
-          {/* Featured card */}
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-            <div className="relative h-[60px] bg-gradient-to-br from-blue-500 via-blue-400 to-violet-500 overflow-hidden">
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px)",
-                  backgroundSize: "16px 16px",
-                }}
+          {/* Opportunity card */}
+          <div className="bg-white rounded-xl border border-orange-100 overflow-hidden shadow-sm">
+            <div className="h-[54px] bg-gradient-to-br from-orange-500 via-red-400 to-pink-500 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10"
+                style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px)", backgroundSize: "16px 16px" }}
               />
               <div className="absolute bottom-0 left-0 right-0 flex items-end px-3 gap-0.5">
-                <div className="w-5  h-7  bg-white/20 rounded-t" />
-                <div className="w-7  h-10 bg-white/25 rounded-t" />
-                <div className="w-4  h-5  bg-white/15 rounded-t" />
-                <div className="w-8  h-9  bg-white/20 rounded-t" />
-                <div className="w-4  h-6  bg-white/15 rounded-t" />
-                <div className="w-6  h-8  bg-white/20 rounded-t" />
-                <div className="w-3  h-4  bg-white/10 rounded-t" />
+                {[7,10,5,9,6,8,4].map((h, i) => (
+                  <div key={i} className="bg-white/20 rounded-t flex-1" style={{ height: `${h * 4}px` }} />
+                ))}
               </div>
               <div className="absolute top-2 left-2 flex gap-1">
-                <span className="bg-amber-400 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">Oportunidade</span>
-                <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">−15%</span>
+                <span className="bg-amber-400 text-amber-950 text-[9px] font-bold px-1.5 py-0.5 rounded-full">Urgente</span>
+                <span className="bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">−15%</span>
               </div>
             </div>
-            <div className="p-3">
-              <div className="flex items-start justify-between gap-2 mb-1">
+            <div className="p-2.5">
+              <div className="flex items-start justify-between gap-2">
                 <div>
-                  <p className="text-xs font-semibold text-gray-900 leading-tight">Casa em Salvador, BA</p>
-                  <p className="text-blue-600 font-bold text-sm leading-tight mt-0.5">R$ 620.000</p>
+                  <p className="text-xs font-semibold text-gray-900">Casa em Salvador, BA</p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <p className="text-[10px] text-gray-400 line-through">R$ 800.000</p>
+                    <p className="text-sm font-bold text-orange-600">R$ 680.000</p>
+                  </div>
                 </div>
-                <span className="text-[10px] text-gray-400 whitespace-nowrap mt-0.5">4q · 180 m²</span>
-              </div>
-              <div className="flex items-center gap-1 text-[10px] text-gray-400 mb-2.5">
-                <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
-                <span>Pituba, Salvador</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded-md">
-                    <Zap className="h-2.5 w-2.5" />3 matches
-                  </span>
-                  <span className="bg-violet-50 text-violet-600 text-[10px] font-semibold px-2 py-0.5 rounded-md">Parceria</span>
-                </div>
-                <span className="inline-flex items-center gap-0.5 text-[10px] text-blue-600 font-semibold">
-                  Ver <ArrowRight className="h-2.5 w-2.5" />
+                <span className="text-[9px] bg-red-50 text-red-700 font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap">
+                  −R$ 120k
                 </span>
               </div>
+              <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-1">
+                <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
+                <span>Pituba, Salvador · 4q · 180 m²</span>
+              </div>
             </div>
           </div>
 
-          {/* Match suggestion */}
-          <div className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm">
+          {/* Match card */}
+          <div className="bg-white rounded-xl border border-violet-100 p-2.5 shadow-sm">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                <span className="text-[9px] font-bold text-white leading-none">CS</span>
+                <span className="text-[9px] font-bold text-white">CS</span>
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1">
-                  <p className="text-[11px] font-semibold text-gray-800 truncate">Carlos Santos</p>
-                  <span className="bg-violet-100 text-violet-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">94% match</span>
+                <div className="flex items-center justify-between">
+                  <p className="text-[11px] font-semibold text-gray-800">Match encontrado</p>
+                  <span className="bg-violet-100 text-violet-700 text-[9px] font-black px-1.5 py-0.5 rounded-full">92%</span>
                 </div>
-                <p className="text-[10px] text-gray-400 truncate mt-0.5">Apto · até R$ 500.000 · 3q · São Paulo</p>
+                <p className="text-[10px] text-gray-400">Comprador quer: Casa · até R$ 700k · Salvador</p>
               </div>
             </div>
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-1.5 flex items-center gap-2">
               <div className="flex-1 bg-gray-100 rounded-full h-1 overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-500 to-violet-500 h-1 rounded-full" style={{ width: "94%" }} />
+                <div className="bg-gradient-to-r from-violet-500 to-purple-500 h-1 rounded-full" style={{ width: "92%" }} />
               </div>
-              <span className="text-[9px] text-gray-400 flex-shrink-0">Compatibilidade</span>
+              <span className="text-[9px] text-violet-600 font-semibold flex-shrink-0">Compatível</span>
             </div>
           </div>
 
-          {/* Mini list */}
+          {/* Activity feed */}
           <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm divide-y divide-gray-50">
             {[
-              { title: "Apto em São Paulo, SP",    price: "R$ 480.000", label: "2 matches", cls: "bg-blue-50 text-blue-600",       dot: "bg-blue-500"    },
-              { title: "Studio no Rio de Janeiro", price: "R$ 320.000", label: "1 match",   cls: "bg-emerald-50 text-emerald-600", dot: "bg-emerald-500" },
+              { dot: "bg-blue-500",    text: "Apto em SP · R$ 480k",    tag: "2 matches",  cls: "bg-blue-50 text-blue-700"    },
+              { dot: "bg-emerald-500", text: "Studio no RJ · R$ 320k",  tag: "Novo",       cls: "bg-emerald-50 text-emerald-700" },
             ].map((item) => (
-              <div key={item.title} className="flex items-center gap-2.5 px-3 py-2">
+              <div key={item.text} className="flex items-center gap-2.5 px-3 py-1.5">
                 <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${item.dot}`} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-medium text-gray-700 truncate">{item.title}</p>
-                  <p className="text-[10px] text-gray-400">{item.price}</p>
-                </div>
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${item.cls}`}>{item.label}</span>
+                <p className="text-[11px] text-gray-700 flex-1 truncate">{item.text}</p>
+                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ${item.cls}`}>{item.tag}</span>
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// OPPORTUNITY IMPACT CARD (Seção de Impacto)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function OpportunityImpactSection() {
+  return (
+    <section className="bg-[#0F1117] py-20 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-500/10 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-600/10 blur-3xl rounded-full" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider">
+            <Flame className="h-3.5 w-3.5" />
+            Oportunidades no radar agora
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+            Imóveis com desconto urgente{" "}
+            <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+              esperando você
+            </span>
+          </h2>
+          <p className="text-gray-400 text-lg max-w-xl mx-auto">
+            Corretores publicam oportunidades urgentes todos os dias. Cadastre-se e acesse antes de qualquer um.
+          </p>
+        </div>
+
+        {/* Cards de oportunidades */}
+        <div className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto mb-12">
+          {[
+            {
+              label: "Salvador, BA",
+              type: "Casa · 4 quartos · 180 m²",
+              from: "R$ 800.000",
+              to: "R$ 680.000",
+              save: "−R$ 120.000",
+              pct: "15%",
+              matches: 3,
+              gradient: "from-orange-500 to-red-500",
+            },
+            {
+              label: "São Paulo, SP",
+              type: "Apartamento · 3q · 90 m²",
+              from: "R$ 550.000",
+              to: "R$ 460.000",
+              save: "−R$ 90.000",
+              pct: "16%",
+              matches: 5,
+              gradient: "from-blue-500 to-violet-600",
+              featured: true,
+            },
+            {
+              label: "Rio de Janeiro, RJ",
+              type: "Studio · 1q · 48 m²",
+              from: "R$ 380.000",
+              to: "R$ 320.000",
+              save: "−R$ 60.000",
+              pct: "16%",
+              matches: 2,
+              gradient: "from-emerald-500 to-teal-600",
+            },
+          ].map((opp) => (
+            <div
+              key={opp.label}
+              className={`relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                opp.featured
+                  ? "border-orange-500/50 bg-white/5 shadow-xl shadow-orange-500/10"
+                  : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"
+              }`}
+            >
+              {opp.featured && (
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500" />
+              )}
+
+              {/* Color bar */}
+              <div className={`h-2 bg-gradient-to-r ${opp.gradient}`} />
+
+              <div className="p-5">
+                {/* Location + type */}
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <p className="font-bold text-white text-sm">{opp.label}</p>
+                    <p className="text-gray-400 text-xs mt-0.5">{opp.type}</p>
+                  </div>
+                  <span className="text-[10px] font-black text-red-400 bg-red-500/15 border border-red-500/20 px-2 py-0.5 rounded-full">
+                    −{opp.pct} OFF
+                  </span>
+                </div>
+
+                {/* Prices */}
+                <div className="bg-white/5 rounded-xl p-3.5 mb-4 border border-white/10">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-gray-500 line-through">{opp.from}</p>
+                      <p className="text-xl font-extrabold text-white mt-0.5">{opp.to}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500">Economia</p>
+                      <p className="text-sm font-bold text-orange-400">{opp.save}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Match indicator */}
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                    <Zap className="h-3 w-3" />
+                    {opp.matches} compradores compatíveis
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <Link
+                  href="/register"
+                  className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition"
+                >
+                  Quero essa oportunidade
+                  <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="text-center">
+          <p className="text-gray-500 text-sm mb-4">
+            Essas são <span className="text-white font-semibold">simulações reais</span> do tipo de oportunidade disponível na plataforma
+          </p>
+          <Link
+            href="/register"
+            className="group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.99] transition-all duration-200"
+          >
+            Acessar oportunidades reais
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LIVE ACTIVITY TICKER
+// ─────────────────────────────────────────────────────────────────────────────
+
+function ActivityTicker() {
+  const items = [
+    { icon: "🤝", text: "Parceria fechada em Salvador, BA" },
+    { icon: "⚡", text: "Match gerado: 94% compatibilidade" },
+    { icon: "🔥", text: "Nova oportunidade: −18% em SP" },
+    { icon: "🤝", text: "Comissão dividida no RJ" },
+    { icon: "⚡", text: "Match gerado: 89% em Fortaleza" },
+    { icon: "🔥", text: "Oportunidade urgente em BH" },
+  ];
+
+  return (
+    <div className="border-y border-gray-100 bg-gray-50/60 overflow-hidden py-3">
+      <div className="flex items-center gap-3 px-6 overflow-x-auto scrollbar-hide">
+        <span className="flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
+          </span>
+          Ativo agora
+        </span>
+        <div className="flex items-center gap-6 flex-nowrap">
+          {items.map((item, i) => (
+            <span key={i} className="flex items-center gap-1.5 text-sm text-gray-500 whitespace-nowrap flex-shrink-0">
+              <span>{item.icon}</span>
+              {item.text}
+            </span>
+          ))}
         </div>
       </div>
     </div>
@@ -306,9 +462,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white antialiased">
 
-      {/* ════════════════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════════════════════════════════
           HEADER
-      ════════════════════════════════════════════════════════════════════ */}
+      ══════════════════════════════════════════════════════════════════ */}
       <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/90 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center flex-shrink-0">
@@ -317,11 +473,7 @@ export default function HomePage() {
 
           <nav className="hidden md:flex items-center gap-7">
             {NAV_LINKS.map(l => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
-              >
+              <Link key={l.href} href={l.href} className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
                 {l.label}
               </Link>
             ))}
@@ -349,32 +501,21 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-sm px-6 py-4 space-y-1 shadow-xl">
             {NAV_LINKS.map(l => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setMenuOpen(false)}
-                className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
-              >
+              <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
+                className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                 {l.label}
               </Link>
             ))}
             <div className="pt-3 mt-3 border-t border-gray-100 flex flex-col gap-2">
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="block text-center py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-600 transition"
-              >
+              <Link href="/login" onClick={() => setMenuOpen(false)}
+                className="block text-center py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-600 transition">
                 Entrar
               </Link>
-              <Link
-                href="/register"
-                onClick={() => setMenuOpen(false)}
-                className="block text-center py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition"
-              >
+              <Link href="/register" onClick={() => setMenuOpen(false)}
+                className="block text-center py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition">
                 Cadastrar grátis
               </Link>
             </div>
@@ -382,11 +523,10 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* ════════════════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════════════════════════════════
           HERO
-      ════════════════════════════════════════════════════════════════════ */}
+      ══════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-white">
-        {/* Background shapes */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-blue-100/70 to-violet-100/50 blur-3xl" />
           <div className="absolute -bottom-20 -left-32 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-blue-50/80 to-indigo-100/60 blur-3xl" />
@@ -396,9 +536,9 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-            {/* Left col */}
+            {/* Left */}
             <div>
-              {/* Pill badge */}
+              {/* Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-700 mb-7 shadow-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
@@ -415,28 +555,39 @@ export default function HomePage() {
                 </span>
               </h1>
 
-              <p className="text-lg text-gray-500 mb-3 leading-relaxed max-w-md">
+              <p className="text-lg text-gray-500 mb-8 leading-relaxed max-w-md">
                 {COPY.heroSubtext}
               </p>
-              <p className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-                Corretores já estão encontrando oportunidades reais na plataforma.
-              </p>
+
+              {/* Micro indicators */}
+              <div className="flex flex-wrap gap-4 mb-8">
+                {[
+                  { dot: "bg-emerald-500", text: "Plataforma em crescimento ativo" },
+                  { dot: "bg-blue-500",    text: "Novos matches sendo gerados" },
+                  { dot: "bg-violet-500",  text: "Corretores ativos na rede" },
+                ].map(({ dot, text }) => (
+                  <span key={text} className="flex items-center gap-1.5 text-sm text-gray-500">
+                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dot}`} />
+                    {text}
+                  </span>
+                ))}
+              </div>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-7">
+              <div className="flex flex-col sm:flex-row gap-3 mb-5">
                 <Link
                   href="/register"
-                  className="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-7 py-3.5 rounded-xl font-semibold text-[15px] shadow-lg shadow-blue-300/40 hover:shadow-xl hover:shadow-blue-300/50 hover:opacity-95 active:scale-[0.98] transition-all duration-200"
+                  className="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-7 py-3.5 rounded-xl font-bold text-[15px] shadow-lg shadow-blue-300/40 hover:shadow-xl hover:shadow-blue-300/50 hover:opacity-95 active:scale-[0.98] transition-all duration-200"
                 >
-                  Começar gratuitamente
+                  Começar a gerar oportunidades
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
                 <Link
-                  href="/plans"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-sm font-medium text-gray-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50 transition-all duration-200"
+                  href="/imoveis"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-sm font-semibold text-gray-700 hover:border-orange-300 hover:text-orange-600 hover:bg-orange-50/50 transition-all duration-200"
                 >
-                  Ver planos
+                  <Flame className="h-4 w-4 text-orange-500" />
+                  Ver oportunidades
                 </Link>
               </div>
 
@@ -457,7 +608,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right col — mockup */}
+            {/* Right — mockup */}
             <div className="w-full max-w-md mx-auto lg:max-w-none lg:mx-0">
               <ProductMockup />
             </div>
@@ -465,20 +616,70 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════════
-          TRUST BAR
-      ════════════════════════════════════════════════════════════════════ */}
-      <div className="border-y border-gray-100 bg-gray-50/60">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex flex-wrap items-center justify-center gap-6 md:gap-10">
-          {COPY.trust.map(t => (
-            <span key={t} className="text-sm text-gray-500 font-medium">{t}</span>
-          ))}
-        </div>
-      </div>
+      {/* ══════════════════════════════════════════════════════════════════
+          ACTIVITY TICKER
+      ══════════════════════════════════════════════════════════════════ */}
+      <ActivityTicker />
 
-      {/* ════════════════════════════════════════════════════════════════════
-          COM vs SEM
-      ════════════════════════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════════════════
+          SEÇÃO DE IMPACTO — OPORTUNIDADES REAIS
+      ══════════════════════════════════════════════════════════════════ */}
+      <OpportunityImpactSection />
+
+      {/* ══════════════════════════════════════════════════════════════════
+          COMO FUNCIONA
+      ══════════════════════════════════════════════════════════════════ */}
+      <section id="como-funciona" className="bg-[#F8FAFC] py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-16">
+            <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Simples assim</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Como funciona</h2>
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">
+              Em 3 passos você já começa a gerar oportunidades e fechar mais negócios.
+            </p>
+          </div>
+
+          <div className="relative grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="hidden md:block absolute top-9 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-gradient-to-r from-blue-300 via-violet-300 to-purple-300 z-0" />
+
+            {STEPS.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.num} className="relative z-10 text-center group">
+                  <div className="relative mx-auto mb-6 w-20 h-20 flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 opacity-10 group-hover:opacity-20 transition-opacity blur-sm" />
+                    <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-200/60 group-hover:scale-105 transition-transform duration-300">
+                      <Icon className="h-7 w-7 text-white" />
+                    </div>
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gray-900 text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                      {i + 1}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-2.5 text-lg leading-tight">{step.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                  {i < STEPS.length - 1 && (
+                    <div className="md:hidden flex justify-center mt-7">
+                      <ChevronRight className="h-5 w-5 text-gray-300 rotate-90" />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-14">
+            <Link href="/register"
+              className="group inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-300/40 hover:shadow-xl hover:opacity-95 active:scale-[0.98] transition-all duration-200">
+              Quero começar agora
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          PROBLEMA vs SOLUÇÃO
+      ══════════════════════════════════════════════════════════════════ */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
@@ -493,12 +694,15 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
             {/* Sem */}
-            <div className="rounded-2xl border border-red-100 bg-red-50/40 p-8 hover:shadow-md hover:shadow-red-50 transition-shadow duration-300">
+            <div className="rounded-2xl border border-red-100 bg-red-50/40 p-8 hover:shadow-md transition-shadow duration-300">
               <div className="flex items-center gap-3 mb-7">
                 <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
-                  <X className="h-4.5 w-4.5 text-red-500" style={{ height: "18px", width: "18px" }} />
+                  <X className="h-[18px] w-[18px] text-red-500" />
                 </div>
-                <h3 className="font-bold text-gray-900 text-base">Sem ImobMatch</h3>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base">Sem ImobMatch</h3>
+                  <p className="text-xs text-red-500 font-medium">Você trabalha sozinho</p>
+                </div>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -507,7 +711,7 @@ export default function HomePage() {
                   "Deixa comissão na mesa por falta de parceiros",
                   "Busca de parceiros manual e demorada",
                   "Sem controle de compradores e preferências",
-                  "Perda de oportunidades com desconto urgente",
+                  "Perde oportunidades com desconto urgente",
                 ].map(t => (
                   <li key={t} className="flex items-start gap-3 text-sm text-gray-600">
                     <span className="mt-0.5 w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
@@ -520,12 +724,15 @@ export default function HomePage() {
             </div>
 
             {/* Com */}
-            <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-8 shadow-md shadow-emerald-100/60 hover:shadow-lg hover:shadow-emerald-100 transition-shadow duration-300">
+            <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-8 shadow-md shadow-emerald-100/60 hover:shadow-lg transition-shadow duration-300">
               <div className="flex items-center gap-3 mb-7">
                 <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
                   <Check className="h-5 w-5 text-emerald-600" />
                 </div>
-                <h3 className="font-bold text-gray-900 text-base">Com ImobMatch</h3>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base">Com ImobMatch</h3>
+                  <p className="text-xs text-emerald-600 font-medium">Você tem uma rede trabalhando por você</p>
+                </div>
               </div>
               <ul className="space-y-3.5">
                 {[
@@ -547,70 +754,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════════
-          COMO FUNCIONA
-      ════════════════════════════════════════════════════════════════════ */}
-      <section id="como-funciona" className="bg-[#F8FAFC] py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Simples assim</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-              Como funciona
-            </h2>
-            <p className="text-lg text-gray-500 max-w-xl mx-auto">
-              Em 3 passos simples você começa a gerar oportunidades e fechar mais negócios.
-            </p>
-          </div>
-
-          <div className="relative grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {/* Connecting line */}
-            <div className="hidden md:block absolute top-10 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-gradient-to-r from-blue-300 via-violet-300 to-purple-300 z-0" />
-
-            {STEPS.map((step, i) => (
-              <div key={step.num} className="relative z-10 text-center group">
-                {/* Number circle */}
-                <div className="relative mx-auto mb-6 w-20 h-20 flex items-center justify-center">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 opacity-10 group-hover:opacity-20 transition-opacity blur-sm" />
-                  <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-200/60 group-hover:scale-105 transition-transform duration-300">
-                    <span className="text-white font-black text-xl tracking-tighter">{step.num}</span>
-                  </div>
-                </div>
-                <h3 className="font-bold text-gray-900 mb-2.5 text-lg leading-tight">{step.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
-                {i < STEPS.length - 1 && (
-                  <div className="md:hidden flex justify-center mt-7">
-                    <ChevronRight className="h-5 w-5 text-gray-300 rotate-90" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-14">
-            <Link
-              href="/register"
-              className="group inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-300/40 hover:shadow-xl hover:opacity-95 active:scale-[0.98] transition-all duration-200"
-            >
-              Quero começar agora
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════════════════════════════════
           FUNCIONALIDADES
-      ════════════════════════════════════════════════════════════════════ */}
-      <section id="funcionalidades" className="bg-white py-24">
+      ══════════════════════════════════════════════════════════════════ */}
+      <section id="funcionalidades" className="bg-[#F8FAFC] py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Plataforma completa</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-              Tudo que você precisa
-            </h2>
-            <p className="text-lg text-gray-500 max-w-xl mx-auto">
-              Uma plataforma completa para gestão e colaboração imobiliária.
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Tudo que você precisa</h2>
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">Uma plataforma completa para gestão e colaboração imobiliária.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -619,7 +771,6 @@ export default function HomePage() {
                 key={feature.title}
                 className="group relative rounded-2xl border border-gray-100 bg-white p-6 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-100/80 hover:-translate-y-1 transition-all duration-300 cursor-default"
               >
-                {/* Icon */}
                 <div className={`mb-5 w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg ${feature.glow} group-hover:scale-110 transition-transform duration-300`}>
                   <feature.icon className="h-6 w-6 text-white" />
                 </div>
@@ -631,17 +782,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════════════════════════════════
           DEPOIMENTOS
-      ════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#F8FAFC] py-24">
+      ══════════════════════════════════════════════════════════════════ */}
+      <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Prova social</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-              O que dizem os corretores
-            </h2>
-            <p className="text-lg text-gray-500">Resultados reais de quem já usa a plataforma.</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Resultados reais</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">O que dizem os corretores</h2>
+            <p className="text-lg text-gray-500">De quem já usa a plataforma para gerar negócios.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -650,14 +799,18 @@ export default function HomePage() {
                 key={t.name}
                 className="group flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-7 hover:shadow-xl hover:shadow-gray-100/80 hover:-translate-y-1 transition-all duration-300"
               >
-                {/* Stars */}
+                {/* Highlight quote */}
+                <div className="bg-gray-50 rounded-xl px-3 py-2 border border-gray-100">
+                  <p className="text-xs font-bold text-gray-700">&ldquo;{t.highlight}&rdquo;</p>
+                </div>
+
                 <div className="flex gap-0.5">
                   {Array.from({ length: t.stars }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
 
-                <p className="text-gray-600 text-sm leading-relaxed flex-1">
+                <p className="text-gray-500 text-sm leading-relaxed flex-1">
                   &ldquo;{t.text}&rdquo;
                 </p>
 
@@ -676,10 +829,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════════
-          PLANOS RESUMO
-      ════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white py-24">
+      {/* ══════════════════════════════════════════════════════════════════
+          PLANOS
+      ══════════════════════════════════════════════════════════════════ */}
+      <section className="bg-[#F8FAFC] py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Preços transparentes</p>
@@ -691,16 +844,16 @@ export default function HomePage() {
 
           <div className="grid sm:grid-cols-3 gap-5 max-w-3xl mx-auto mb-10">
             {[
-              { name: "Free",    price: "Grátis",    desc: "3 imóveis · 3 compradores",          highlight: false },
-              { name: "Starter", price: "R$ 39/mês", desc: "20 imóveis · 30 compradores",        highlight: true  },
-              { name: "Pro",     price: "R$ 79/mês", desc: "Ilimitado · prioridade no algoritmo", highlight: false },
+              { name: "Free",    price: "Grátis",    desc: "3 imóveis · 3 compradores",           highlight: false },
+              { name: "Starter", price: "R$ 39/mês", desc: "20 imóveis · 30 compradores",         highlight: true  },
+              { name: "Pro",     price: "R$ 79/mês", desc: "Ilimitado · prioridade no algoritmo",  highlight: false },
             ].map(p => (
               <div
                 key={p.name}
                 className={`relative rounded-2xl p-6 text-center transition-all duration-200 ${
                   p.highlight
                     ? "bg-white border-2 border-blue-600 shadow-xl shadow-blue-100/60 scale-[1.02]"
-                    : "bg-gray-50 border border-gray-200 hover:border-gray-300 hover:shadow-md"
+                    : "bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md"
                 }`}
               >
                 {p.highlight && (
@@ -708,21 +861,17 @@ export default function HomePage() {
                     Mais popular
                   </span>
                 )}
-                <p className={`font-bold text-base mb-1 ${p.highlight ? "text-gray-900" : "text-gray-700"}`}>
-                  {p.name}
-                </p>
+                <p className={`font-bold text-base mb-1 ${p.highlight ? "text-gray-900" : "text-gray-700"}`}>{p.name}</p>
                 <p className={`text-2xl font-extrabold mb-1 ${p.highlight ? "bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent" : "text-gray-900"}`}>
                   {p.price}
                 </p>
                 <p className={`text-xs mb-5 ${p.highlight ? "text-gray-500" : "text-gray-400"}`}>{p.desc}</p>
-                <Link
-                  href="/register"
+                <Link href="/register"
                   className={`inline-flex items-center justify-center gap-1 w-full py-2.5 rounded-xl text-sm font-semibold transition ${
                     p.highlight
                       ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:opacity-90 shadow-md shadow-blue-200/60"
-                      : "bg-white border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600"
-                  }`}
-                >
+                      : "bg-gray-50 border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600"
+                  }`}>
                   Começar <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -738,12 +887,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════════════════════════════════
           CTA FINAL
-      ════════════════════════════════════════════════════════════════════ */}
+      ══════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-blue-600 to-violet-700" />
-        {/* Decorative blobs */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
@@ -752,29 +900,26 @@ export default function HomePage() {
 
         <div className="relative mx-auto max-w-4xl px-6 py-24 text-center">
           <div className="mx-auto mb-7 w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-xl">
-            <HeartHandshake className="h-8 w-8 text-white" />
+            <ArrowRightLeft className="h-8 w-8 text-white" />
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-5 tracking-tight leading-[1.08]">
             Pronto para fechar mais negócios?
           </h2>
-          <p className="text-lg text-blue-100 mb-10 max-w-lg mx-auto leading-relaxed">
-            Junte-se à rede de corretores que colaboram, compartilham e crescem juntos. Comece gratuitamente hoje.
+          <p className="text-lg text-blue-100 mb-10 max-w-xl mx-auto leading-relaxed">
+            Entre para a rede de corretores que estão gerando oportunidades todos os dias. Comece gratuitamente hoje.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-            <Link
-              href="/register"
-              className="group inline-flex items-center justify-center gap-2 bg-white text-blue-700 px-8 py-4 rounded-xl text-base font-bold hover:bg-blue-50 active:scale-[0.98] transition-all duration-200 shadow-xl shadow-blue-900/30"
-            >
+            <Link href="/register"
+              className="group inline-flex items-center justify-center gap-2 bg-white text-blue-700 px-8 py-4 rounded-xl text-base font-bold hover:bg-blue-50 active:scale-[0.98] transition-all duration-200 shadow-xl shadow-blue-900/30">
               Criar conta grátis
               <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
-            <Link
-              href="/imoveis"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm px-6 py-4 text-base font-medium text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200"
-            >
-              Ver imóveis disponíveis
+            <Link href="/imoveis"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm px-6 py-4 text-base font-medium text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200">
+              <Flame className="h-4 w-4 text-orange-300" />
+              Ver oportunidades
             </Link>
           </div>
 
@@ -782,13 +927,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════════════════════════════════
           FOOTER
-      ════════════════════════════════════════════════════════════════════ */}
+      ══════════════════════════════════════════════════════════════════ */}
       <footer className="bg-gray-950 text-gray-400">
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
-            {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <img src="/logo.png" alt="ImobMatch" className="h-8 w-auto object-contain brightness-0 invert mb-4" />
               <p className="text-sm leading-relaxed text-gray-500 mb-5">
@@ -796,8 +940,6 @@ export default function HomePage() {
               </p>
               <p className="text-xs text-gray-600">© {new Date().getFullYear()} ImobMatch</p>
             </div>
-
-            {/* Produto */}
             <div>
               <p className="text-white font-semibold text-sm mb-5">Produto</p>
               <ul className="space-y-3 text-sm">
@@ -807,8 +949,6 @@ export default function HomePage() {
                 <li><Link href="/#como-funciona"   className="hover:text-white transition-colors">Como funciona</Link></li>
               </ul>
             </div>
-
-            {/* Conta */}
             <div>
               <p className="text-white font-semibold text-sm mb-5">Conta</p>
               <ul className="space-y-3 text-sm">
@@ -816,8 +956,6 @@ export default function HomePage() {
                 <li><Link href="/register" className="hover:text-white transition-colors">Criar conta grátis</Link></li>
               </ul>
             </div>
-
-            {/* Legal */}
             <div>
               <p className="text-white font-semibold text-sm mb-5">Legal</p>
               <ul className="space-y-3 text-sm">
