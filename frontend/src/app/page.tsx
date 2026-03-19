@@ -279,6 +279,8 @@ function HeroVisual() {
             alt="Corretores ImobMatch fechando parceria"
             className="w-full h-auto block relative"
             style={{
+              transform: "scale(1.2)",
+              transformOrigin: "center center",
               filter:
                 "drop-shadow(0 28px 56px rgba(37,99,235,0.38)) " +
                 "drop-shadow(0 10px 24px rgba(99,102,241,0.26)) " +
@@ -303,63 +305,63 @@ function HeroVisual() {
               WebkitBackdropFilter: "blur(28px)",
               border: "1px solid rgba(255,255,255,0.82)",
               boxShadow:
-                "0 22px 65px rgba(37,99,235,0.30), " +
-                "0 8px 26px rgba(99,102,241,0.20), " +
-                "0 0 0 1px rgba(99,102,241,0.13)",
-              borderRadius: "20px",
-              padding: "16px 20px",
-              minWidth: "236px",
+                "0 16px 48px rgba(37,99,235,0.28), " +
+                "0 6px 18px rgba(99,102,241,0.18), " +
+                "0 0 0 1px rgba(99,102,241,0.12)",
+              borderRadius: "16px",
+              padding: "10px 14px",
+              minWidth: "192px",
             }}>
               {/* Topo */}
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-2 mb-2">
                 <div style={{
-                  width: "42px", height: "42px", borderRadius: "13px", flexShrink: 0,
+                  width: "32px", height: "32px", borderRadius: "10px", flexShrink: 0,
                   background: "linear-gradient(135deg,#3b82f6,#7c3aed)",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "0 6px 22px rgba(99,102,241,0.52)",
+                  boxShadow: "0 4px 14px rgba(99,102,241,0.48)",
                 }}>
-                  <Zap style={{ width: "19px", height: "19px", color: "white" }} />
+                  <Zap style={{ width: "15px", height: "15px", color: "white" }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>
+                  <p style={{ fontSize: "11px", fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>
                     Match encontrado
                   </p>
-                  <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "3px" }}>
-                    <span className="relative flex" style={{ width: "6px", height: "6px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
+                    <span className="relative flex" style={{ width: "5px", height: "5px" }}>
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full"
                         style={{ background: "#22c55e", opacity: 0.75 }} />
                       <span className="relative inline-flex rounded-full"
-                        style={{ width: "6px", height: "6px", background: "#22c55e" }} />
+                        style={{ width: "5px", height: "5px", background: "#22c55e" }} />
                     </span>
-                    <p style={{ fontSize: "10px", color: "#6b7280" }}>IA ativa em tempo real</p>
+                    <p style={{ fontSize: "9px", color: "#6b7280" }}>IA ativa em tempo real</p>
                   </div>
                 </div>
                 <span style={{
-                  fontSize: "15px", fontWeight: 900, color: "#6d28d9",
+                  fontSize: "12px", fontWeight: 900, color: "#6d28d9",
                   background: "linear-gradient(135deg,#ede9fe,#f5f3ff)",
-                  padding: "4px 10px", borderRadius: "20px",
+                  padding: "3px 8px", borderRadius: "16px",
                   border: "1px solid rgba(139,92,246,0.22)",
                 }}>93%</span>
               </div>
               {/* Barra de progresso */}
-              <div style={{ marginBottom: "11px" }}>
+              <div style={{ marginBottom: "8px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between",
-                  fontSize: "10px", color: "#9ca3af", marginBottom: "5px" }}>
+                  fontSize: "9px", color: "#9ca3af", marginBottom: "4px" }}>
                   <span>Compatibilidade</span>
                   <span style={{ color: "#6d28d9", fontWeight: 700 }}>93 / 100</span>
                 </div>
-                <div style={{ height: "6px", background: "#f3f4f6", borderRadius: "999px", overflow: "hidden" }}>
+                <div style={{ height: "5px", background: "#f3f4f6", borderRadius: "999px", overflow: "hidden" }}>
                   <div style={{
-                    height: "6px", width: "93%", borderRadius: "999px",
+                    height: "5px", width: "93%", borderRadius: "999px",
                     background: "linear-gradient(90deg, #3b82f6, #8b5cf6)",
                   }} />
                 </div>
               </div>
               {/* Avatars dos corretores */}
               <div style={{
-                display: "flex", alignItems: "center", gap: "8px",
-                background: "#f9fafb", borderRadius: "12px",
-                padding: "8px 10px", border: "1px solid #f3f4f6",
+                display: "flex", alignItems: "center", gap: "6px",
+                background: "#f9fafb", borderRadius: "10px",
+                padding: "6px 8px", border: "1px solid #f3f4f6",
               }}>
                 <div style={{ display: "flex" }}>
                   {[
@@ -367,17 +369,17 @@ function HeroVisual() {
                     { txt: "MC", bg: "linear-gradient(135deg,#8b5cf6,#7c3aed)" },
                   ].map((av, i) => (
                     <div key={i} style={{
-                      width: "26px", height: "26px", borderRadius: "50%",
+                      width: "22px", height: "22px", borderRadius: "50%",
                       border: "2px solid white",
-                      marginLeft: i > 0 ? "-9px" : "0",
+                      marginLeft: i > 0 ? "-8px" : "0",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "9px", fontWeight: 700, color: "white",
+                      fontSize: "8px", fontWeight: 700, color: "white",
                       background: av.bg,
                       boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
                     }}>{av.txt}</div>
                   ))}
                 </div>
-                <p style={{ fontSize: "10px", color: "#6b7280", flex: 1 }}>
+                <p style={{ fontSize: "9px", color: "#6b7280", flex: 1 }}>
                   <span style={{ fontWeight: 600, color: "#374151" }}>2 corretores</span> conectados
                 </p>
               </div>
