@@ -274,16 +274,10 @@ export default function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="mt-8 text-5xl font-black leading-[0.96] tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-[72px]">
-            Pare de perder
-            <br />
-            clientes por{" "}
+          <h1 className="mt-8 text-5xl font-black leading-[1.0] tracking-[-0.03em] text-slate-950 sm:text-6xl lg:text-[64px]">
+            Pare de perder clientes por{" "}
             <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-              não ter o
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-              imóvel certo.
+              não ter o imóvel certo.
             </span>
           </h1>
 
@@ -338,22 +332,31 @@ export default function HeroSection() {
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
         <div className="relative min-h-[700px] lg:min-h-[820px]">
 
-          {/* Photo — maior, centralizada, ocupa toda a altura */}
+          {/* Photo — maior e posicionada do topo ao fundo da section */}
           <div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            className="absolute pointer-events-none z-10"
             style={{
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 0.8s ease 0.15s, transform 0.8s ease 0.15s",
+              transition: "opacity 0.8s ease 0.15s",
+              left: "50%",
+              top: "0px",
+              transform: "translateX(-50%)",
+              height: "100%",
+              width: "auto",
+              display: "flex",
+              alignItems: "flex-start",
             }}
           >
             <img
               src="/corretores.png"
               alt="Corretores fechando parceria"
-              className="relative z-10 h-full w-auto select-none object-contain"
+              className="select-none object-contain object-top"
               style={{
                 filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
-                maxHeight: "820px",
+                height: "115%",
+                width: "auto",
+                maxWidth: "none",
+                marginTop: "-2%",
               }}
               draggable={false}
             />
