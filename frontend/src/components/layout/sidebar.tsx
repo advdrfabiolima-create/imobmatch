@@ -157,11 +157,6 @@ export function Sidebar() {
           )}
         </nav>
 
-        {/* Aviso legal compacto */}
-        <div className="px-4 py-3 border-t border-white/8">
-          <DisclaimerCompact />
-        </div>
-
         {/* Logout */}
         <div className="px-3 py-3 border-t border-white/8">
           <button
