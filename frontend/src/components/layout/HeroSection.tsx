@@ -341,19 +341,19 @@ export default function HeroSection() {
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
-              width: "130%",
-              height: "130%",
+              width: "125%",
+              height: "125%",
               objectFit: "contain",
               objectPosition: "top center",
-              top: "-12%",
-              left: "-15%",
+              top: "0%",
+              left: "-12%",
             }}
             draggable={false}
           />
 
-          {/* Card: Negócio fechado — topo esquerdo sobre a foto */}
+          {/* Card: Negócio fechado — topo esquerdo */}
           <FloatingCard
-            className="absolute left-[2%] top-[8%] z-20 px-4 py-3"
+            className="absolute left-[5%] top-[5%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(12px)",
@@ -371,9 +371,9 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Match encontrado — centro-esquerdo, sobre a foto */}
+          {/* Card: Match encontrado — centro, sobre o aperto de mão */}
           <FloatingCard
-            className="absolute left-[0%] top-[40%] z-20 w-[275px] px-4 py-4"
+            className="absolute left-[5%] top-[38%] z-20 w-[270px] px-4 py-4"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(12px)",
@@ -415,7 +415,7 @@ export default function HeroSection() {
 
           {/* Card: Compatibilidade — topo direito */}
           <FloatingCard
-            className="absolute right-[2%] top-[6%] z-20 px-4 py-3"
+            className="absolute right-[2%] top-[4%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(12px)",
@@ -434,9 +434,9 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Parceria iniciada — inferior centro-esquerdo */}
+          {/* Card: Parceria iniciada — inferior centro */}
           <FloatingCard
-            className="absolute bottom-[20%] left-[20%] z-20 px-4 py-3"
+            className="absolute bottom-[22%] left-[30%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(12px)",
@@ -459,7 +459,7 @@ export default function HeroSection() {
 
           {/* Card: Comissão estimada — inferior direito */}
           <FloatingCard
-            className="absolute bottom-[5%] right-[1%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]"
+            className="absolute bottom-[4%] right-[1%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(12px)",
