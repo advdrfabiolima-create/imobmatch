@@ -41,9 +41,9 @@ export class RegisterDto {
   @IsString()
   creci?: string;
 
-  @ApiPropertyOptional({ example: 'starter', enum: ['free', 'starter', 'pro', 'premium', 'agency', 'professional'] })
+  @ApiPropertyOptional({ example: 'starter', enum: ['free', 'starter', 'pro', 'premium', 'agency'] })
   @IsOptional()
-  @IsIn(['free', 'starter', 'pro', 'premium', 'agency', 'professional'])
+  @IsIn(['free', 'starter', 'pro', 'premium', 'agency'])
   plan?: string;
 }
 
