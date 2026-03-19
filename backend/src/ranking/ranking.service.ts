@@ -19,7 +19,7 @@ export class RankingService {
 
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
-        where: { role: 'AGENT' },
+        where: { role: { in: ['AGENT', 'ADMIN'] } },
         select: {
           id: true,
           name: true,
@@ -35,7 +35,7 @@ export class RankingService {
         skip,
         take: Number(limit),
       }),
-      this.prisma.user.count({ where: { role: 'AGENT' } }),
+      this.prisma.user.count({ where: { role: { in: ['AGENT', 'ADMIN'] } } }),
     ]);
 
     const ranked = users.map((u, index) => ({
