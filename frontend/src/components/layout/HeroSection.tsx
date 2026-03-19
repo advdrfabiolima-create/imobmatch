@@ -342,7 +342,7 @@ export default function HeroSection() {
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
               width: "auto",
-              height: "700px",
+              height: "800px",
               objectFit: "contain",
               objectPosition: "top center",
               top: "10%",
