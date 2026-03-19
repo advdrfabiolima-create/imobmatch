@@ -255,7 +255,8 @@ function HeroVisual() {
 
         {/* ── IMAGEM PRINCIPAL ── */}
         <div className="relative" style={{ zIndex: 1 }}>
-          <div className="rounded-3xl overflow-hidden" style={{
+          {/* Frame: mantém a sombra, sem overflow-hidden — imagem pode sangrar */}
+          <div className="rounded-3xl" style={{
             boxShadow:
               "0 55px 130px -22px rgba(37,99,235,0.45), " +
               "0 28px 65px -12px rgba(99,102,241,0.30), " +
@@ -263,6 +264,11 @@ function HeroVisual() {
               "0 0 0 1px rgba(99,102,241,0.16), " +
               "inset 0 1px 0 rgba(255,255,255,0.52)",
           }}>
+            {/* Imagem + overlays: levemente maior que o frame — efeito "sai da caixa" */}
+            <div className="rounded-3xl overflow-hidden" style={{
+              transform: "scale(1.035) translateY(-8px)",
+              transformOrigin: "center bottom",
+            }}>
             <img
               src="/corretores.png"
               alt="Corretores ImobMatch fechando parceria"
@@ -370,7 +376,8 @@ function HeroVisual() {
               <circle className="hv-d5" cx="183" cy="252" r="2"   fill="#60a5fa" />
               <circle className="hv-d6" cx="378" cy="248" r="2.5" fill="#818cf8" />
             </svg>
-          </div>
+            </div>{/* fim: inner overflow-hidden (bleed) */}
+          </div>{/* fim: frame (shadow) */}
         </div>
 
         {/* ════════════════════════════════════════════════════════
