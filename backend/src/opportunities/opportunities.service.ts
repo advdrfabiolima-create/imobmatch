@@ -39,14 +39,15 @@ export class OpportunitiesService {
       },
     });
 
-    await this.prisma.post.create({
+    // Social post — não-bloqueante (falha silenciosa para não derrubar o create)
+    this.prisma.post.create({
       data: {
         userId:      agentId,
         type:        'opportunity',
         content:     `Nova oportunidade urgente: ${dto.title} em ${dto.city} por R$ ${Number(dto.priceUrgent).toLocaleString('pt-BR')}`,
         referenceId: opportunity.id,
       },
-    });
+    }).catch(() => {/* silencioso */});
 
     return opportunity;
   }
