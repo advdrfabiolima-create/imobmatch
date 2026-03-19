@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,11 @@ import {
   Zap, MapPin, Phone, Plus, X, TrendingDown,
   Building2, Home, Landmark, Warehouse, Trees,
   Eye, MessageCircle, Clock, Flame, RefreshCw,
-  Wallet, Users, ChevronDown,
+  Wallet, Users, MoreVertical, PauseCircle, CheckCircle2, Trash2,
 } from "lucide-react";
 import { STATES } from "@/lib/utils";
 import { CitySelect } from "@/components/ui/city-select";
+import { useAuthStore } from "@/store/auth.store";
 import toast from "react-hot-toast";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -34,7 +35,6 @@ const PROPERTY_TYPE_COLORS: Record<string, string> = {
   RURAL:      "from-teal-500 to-cyan-600",
 };
 
-// Seeded deterministic "random" for social signals
 function seeded(seed: string, min: number, max: number) {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
@@ -43,8 +43,8 @@ function seeded(seed: string, min: number, max: number) {
 
 function timeAgo(iso: string) {
   const diff = (Date.now() - new Date(iso).getTime()) / 1000;
-  if (diff < 60)  return "agora mesmo";
-  if (diff < 3600) return `${Math.floor(diff / 60)} min atrás`;
+  if (diff < 60)    return "agora mesmo";
+  if (diff < 3600)  return `${Math.floor(diff / 60)} min atrás`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h atrás`;
   return `${Math.floor(diff / 86400)}d atrás`;
 }
@@ -57,11 +57,35 @@ const SOCIAL_PROOF_TEXTS = [
   "Negócio com alta chance de fechamento",
 ];
 
-// ─── Filter chips ────────────────────────────────────────────────────────────
-
 type SortChip = "recent" | "discount" | "urgent" | "region";
 
-// ─── New Opportunity Modal ───────────────────────────────────────────────────
+// ─── Confirmation Modal ───────────────────────────────────────────────────────
+
+function ConfirmModal({
+  title, body, confirmLabel, confirmClass, onConfirm, onClose,
+}: {
+  title: string; body: string; confirmLabel: string; confirmClass: string;
+  onConfirm: () => void; onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6">
+        <h3 className="font-bold text-gray-900 text-base mb-2">{title}</h3>
+        <p className="text-sm text-gray-500 mb-5">{body}</p>
+        <div className="flex gap-3 justify-end">
+          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors">
+            Cancelar
+          </button>
+          <button onClick={onConfirm} className={`px-4 py-2 rounded-xl text-sm text-white font-semibold transition-colors ${confirmClass}`}>
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── New Opportunity Modal ────────────────────────────────────────────────────
 
 function NewOpportunityModal({ onClose }: { onClose: () => void }) {
   const queryClient = useQueryClient();
@@ -105,32 +129,25 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
             <label className="text-sm font-medium text-gray-700">Título</label>
-            <input
-              required value={form.title}
+            <input required value={form.title}
               onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
               className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
               placeholder="Ex: Apartamento urgente — dono viajando"
             />
           </div>
-
           <div>
             <label className="text-sm font-medium text-gray-700">Tipo do Imóvel</label>
-            <select
-              value={form.propertyType}
+            <select value={form.propertyType}
               onChange={e => setForm(f => ({ ...f, propertyType: e.target.value }))}
               className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             >
-              {Object.entries(PROPERTY_TYPE_LABELS).map(([v, l]) => (
-                <option key={v} value={v}>{l}</option>
-              ))}
+              {Object.entries(PROPERTY_TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-sm font-medium text-gray-700">Preço Normal (R$)</label>
-              <input
-                required type="number" value={form.priceNormal}
+              <input required type="number" value={form.priceNormal}
                 onChange={e => setForm(f => ({ ...f, priceNormal: e.target.value }))}
                 className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                 placeholder="500000"
@@ -138,20 +155,17 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Preço Urgente (R$)</label>
-              <input
-                required type="number" value={form.priceUrgent}
+              <input required type="number" value={form.priceUrgent}
                 onChange={e => setForm(f => ({ ...f, priceUrgent: e.target.value }))}
                 className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                 placeholder="420000"
               />
             </div>
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-sm font-medium text-gray-700">Estado *</label>
-              <select
-                required value={form.state}
+              <select required value={form.state}
                 onChange={e => setForm(f => ({ ...f, state: e.target.value, city: "" }))}
                 className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
               >
@@ -161,45 +175,36 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700">Cidade *</label>
-              <CitySelect
-                required stateValue={form.state} value={form.city}
+              <CitySelect required stateValue={form.state} value={form.city}
                 onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
                 className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50"
               />
             </div>
           </div>
-
           <div>
             <label className="text-sm font-medium text-gray-700">Bairro</label>
-            <input
-              value={form.neighborhood}
+            <input value={form.neighborhood}
               onChange={e => setForm(f => ({ ...f, neighborhood: e.target.value }))}
               className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
-
           <div>
             <label className="text-sm font-medium text-gray-700">Descrição da urgência</label>
-            <textarea
-              value={form.description}
+            <textarea value={form.description}
               onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               rows={3}
               className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
               placeholder="Descreva o motivo da urgência..."
             />
           </div>
-
           <label className="flex items-center gap-2 text-sm cursor-pointer">
-            <input
-              type="checkbox" checked={form.acceptsOffer}
+            <input type="checkbox" checked={form.acceptsOffer}
               onChange={e => setForm(f => ({ ...f, acceptsOffer: e.target.checked }))}
               className="rounded"
             />
             <span className="text-gray-700">Aceita proposta / contraproposta</span>
           </label>
-
-          <Button
-            type="submit" disabled={mutation.isPending}
+          <Button type="submit" disabled={mutation.isPending}
             className="w-full bg-orange-500 hover:bg-orange-600 h-11 font-semibold"
           >
             {mutation.isPending ? "Publicando..." : "🔥 Publicar no Radar"}
@@ -210,35 +215,96 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ─── Opportunity Card ────────────────────────────────────────────────────────
+// ─── Author Actions Menu ──────────────────────────────────────────────────────
 
-function OpportunityCard({ opp, index }: { opp: any; index: number }) {
-  const [visible, setVisible] = useState(false);
+function AuthorMenu({
+  oppId, onStatusChange,
+}: {
+  oppId: string;
+  onStatusChange: (id: string, status: string, label: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const delay = Math.min(index * 60, 300);
-    const timer = setTimeout(() => setVisible(true), delay);
-    return () => clearTimeout(timer);
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={e => { e.stopPropagation(); setOpen(v => !v); }}
+        className="p-1.5 rounded-lg bg-black/30 hover:bg-black/50 text-white transition-colors"
+        title="Gerenciar oportunidade"
+      >
+        <MoreVertical className="h-4 w-4" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-8 w-52 bg-white rounded-xl shadow-xl border border-gray-100 z-30 overflow-hidden">
+          <button
+            onClick={() => { onStatusChange(oppId, "paused", "Oportunidade pausada"); setOpen(false); }}
+            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <PauseCircle className="h-4 w-4 text-amber-500" />
+            Retirar do radar
+          </button>
+          <button
+            onClick={() => { onStatusChange(oppId, "closed", "Negócio registrado como fechado 🎉"); setOpen(false); }}
+            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            Marcar como fechada
+          </button>
+          <div className="h-px bg-gray-100" />
+          <button
+            onClick={() => { onStatusChange(oppId, "removed", "Oportunidade removida"); setOpen(false); }}
+            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+          >
+            <Trash2 className="h-4 w-4" />
+            Remover permanentemente
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Opportunity Card ─────────────────────────────────────────────────────────
+
+function OpportunityCard({
+  opp, index, currentUserId, onStatusAction,
+}: {
+  opp: any; index: number; currentUserId?: string;
+  onStatusAction: (id: string, status: string, label: string) => void;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), Math.min(index * 60, 300));
+    return () => clearTimeout(t);
   }, [index]);
 
-  const discount = Math.round(
-    ((Number(opp.priceNormal) - Number(opp.priceUrgent)) / Number(opp.priceNormal)) * 100
-  );
-  const savings   = Number(opp.priceNormal) - Number(opp.priceUrgent);
-  const commission = Math.round(Number(opp.priceUrgent) * 0.03);
+  const discount    = Math.round(((Number(opp.priceNormal) - Number(opp.priceUrgent)) / Number(opp.priceNormal)) * 100);
+  const savings     = Number(opp.priceNormal) - Number(opp.priceUrgent);
+  const commission  = Math.round(Number(opp.priceUrgent) * 0.03);
+  const isOwner     = currentUserId === opp.agentId;
+  const isCritical  = discount >= 30;
+  const isNew       = (Date.now() - new Date(opp.createdAt).getTime()) < 2 * 3_600_000;
 
-  // Social signals — deterministic from ID
-  const views     = seeded(opp.id, 4, 47);
-  const proposals = seeded(opp.id + "p", 0, Math.min(views - 1, 8));
-  const socialIdx = seeded(opp.id + "s", 0, SOCIAL_PROOF_TEXTS.length - 1);
-
-  const isNew     = (Date.now() - new Date(opp.createdAt).getTime()) < 2 * 60 * 60 * 1000; // < 2h
-  const isCritical = discount >= 30;
-  const isUrgent   = discount >= 20;
+  const views       = seeded(opp.id, 4, 47);
+  const proposals   = seeded(opp.id + "p", 0, Math.min(views - 1, 8));
+  const socialIdx   = seeded(opp.id + "s", 0, SOCIAL_PROOF_TEXTS.length - 1);
 
   const TypeIcon    = PROPERTY_TYPE_ICONS[opp.propertyType] ?? Building2;
   const gradientBg  = PROPERTY_TYPE_COLORS[opp.propertyType] ?? "from-orange-500 to-amber-600";
+
+  // Resolve photo: photoUrl > property.photos[0] > null (fallback)
+  const photo = opp.photoUrl || opp.property?.photos?.[0] || null;
 
   const whatsappUrl = opp.agent?.phone
     ? `https://wa.me/55${opp.agent.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá ${opp.agent.name}, vi sua oportunidade "${opp.title}" no ImobMatch e tenho um cliente interessado!`)}`
@@ -246,20 +312,33 @@ function OpportunityCard({ opp, index }: { opp: any; index: number }) {
 
   return (
     <div
-      ref={ref}
       style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
+        opacity:    visible ? 1 : 0,
+        transform:  visible ? "translateY(0)" : "translateY(24px)",
         transition: "opacity 0.4s ease, transform 0.4s ease",
       }}
       className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
     >
-      {/* Image / gradient banner */}
-      <div className={`relative h-44 bg-gradient-to-br ${gradientBg} flex items-center justify-center`}>
-        {/* Overlays */}
-        <div className="absolute inset-0 bg-black/10" />
+      {/* ── Image / Fallback ── */}
+      <div className="relative overflow-hidden" style={{ height: 200 }}>
+        {photo ? (
+          <img
+            src={photo}
+            alt={opp.title}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.03]"
+          />
+        ) : (
+          <div className={`w-full h-full bg-gradient-to-br ${gradientBg} flex flex-col items-center justify-center gap-2`}>
+            <TypeIcon className="h-12 w-12 text-white/70" strokeWidth={1.5} />
+            <span className="text-white/60 text-xs font-medium">Imagem não disponível</span>
+          </div>
+        )}
 
-        {/* Top badges */}
+        {/* Dark overlay for text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+
+        {/* Top-left badges */}
         <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
           {isCritical ? (
             <span className="flex items-center gap-1 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg animate-pulse">
@@ -275,45 +354,45 @@ function OpportunityCard({ opp, index }: { opp: any; index: number }) {
               🆕 NOVO
             </span>
           )}
-          {opp.acceptsOffer && (
-            <span className="bg-white/90 text-gray-800 text-xs font-medium px-2 py-1 rounded-full">
-              Aceita proposta
-            </span>
+        </div>
+
+        {/* Top-right: discount badge + author menu */}
+        <div className="absolute top-3 right-3 flex items-start gap-2">
+          <div className={`flex flex-col items-center justify-center w-12 h-12 rounded-full shadow-lg ${isCritical ? "bg-red-600" : "bg-orange-500"} text-white`}>
+            <span className="text-[9px] font-medium leading-none">OFF</span>
+            <span className="text-lg font-extrabold leading-tight">{discount}%</span>
+          </div>
+          {isOwner && (
+            <AuthorMenu oppId={opp.id} onStatusChange={onStatusAction} />
           )}
         </div>
 
-        {/* Discount badge */}
-        <div className="absolute top-3 right-3">
-          <div className={`flex flex-col items-center justify-center w-14 h-14 rounded-full shadow-lg ${isCritical ? "bg-red-600" : "bg-orange-500"} text-white`}>
-            <span className="text-[10px] font-medium leading-none">OFF</span>
-            <span className="text-xl font-extrabold leading-tight">{discount}%</span>
-          </div>
-        </div>
-
-        {/* Type icon center */}
-        <div className="relative z-10 flex flex-col items-center gap-2 opacity-60">
-          <TypeIcon className="h-12 w-12 text-white" strokeWidth={1.5} />
-          <span className="text-white/80 text-xs font-medium">{PROPERTY_TYPE_LABELS[opp.propertyType]}</span>
-        </div>
-
-        {/* Social signals bar */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm px-3 py-2 flex items-center gap-4 text-white text-xs">
-          <span className="flex items-center gap-1">
-            <Eye className="h-3 w-3" /> {views} visualizaram
-          </span>
-          <span className="flex items-center gap-1">
-            <MessageCircle className="h-3 w-3" /> {proposals} propostas
+        {/* Bottom: property type + social signals */}
+        <div className="absolute bottom-0 left-0 right-0 px-3 py-2 flex items-center gap-3 text-white text-xs">
+          <span className="bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full font-medium">
+            {PROPERTY_TYPE_LABELS[opp.propertyType]}
           </span>
           <span className="flex items-center gap-1 ml-auto">
+            <Eye className="h-3 w-3" /> {views}
+          </span>
+          <span className="flex items-center gap-1">
+            <MessageCircle className="h-3 w-3" /> {proposals}
+          </span>
+          <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" /> {timeAgo(opp.createdAt)}
           </span>
         </div>
+
+        {/* Owner indicator */}
+        {isOwner && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <span className="bg-black/40 text-white text-xs px-2 py-0.5 rounded-full">Sua oportunidade</span>
+          </div>
+        )}
       </div>
 
-      {/* Content */}
+      {/* ── Content ── */}
       <div className="p-4">
-
-        {/* Title + location */}
         <h3 className="font-bold text-gray-900 text-[15px] leading-snug mb-1">{opp.title}</h3>
         <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
           <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
@@ -334,9 +413,7 @@ function OpportunityCard({ opp, index }: { opp: any; index: number }) {
                 <TrendingDown className="h-3.5 w-3.5" />
                 {discount}% OFF
               </div>
-              <p className="text-xs text-gray-500 mt-1.5">
-                💰 Economia: <strong>{formatCurrency(savings)}</strong>
-              </p>
+              <p className="text-xs text-gray-500 mt-1.5">💰 Economia: <strong>{formatCurrency(savings)}</strong></p>
             </div>
           </div>
         </div>
@@ -347,11 +424,10 @@ function OpportunityCard({ opp, index }: { opp: any; index: number }) {
           <p className="text-xs text-emerald-800">
             <span className="font-semibold">Comissão estimada para você:</span>{" "}
             <span className="font-bold text-emerald-700 text-sm">{formatCurrency(commission)}</span>
-            <span className="text-emerald-600"> (3% de corretagem)</span>
+            <span className="text-emerald-600"> (3%)</span>
           </p>
         </div>
 
-        {/* Description */}
         {opp.description && (
           <p className="text-xs text-gray-500 mb-3 line-clamp-2">{opp.description}</p>
         )}
@@ -384,31 +460,33 @@ function OpportunityCard({ opp, index }: { opp: any; index: number }) {
             </div>
           </div>
 
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center gap-1.5 text-xs font-bold text-white px-3 py-2 rounded-xl shadow-sm transition-all duration-200 active:scale-95 ${
-              isCritical
-                ? "bg-red-600 hover:bg-red-700 shadow-red-200"
-                : "bg-orange-500 hover:bg-orange-600 shadow-orange-200"
-            } ${!whatsappUrl ? "opacity-50 pointer-events-none" : ""}`}
-          >
-            <Phone className="h-3.5 w-3.5" />
-            💰 Tenho comprador
-          </a>
+          {isOwner ? (
+            <span className="text-xs text-gray-400 italic">Você publicou</span>
+          ) : (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-1.5 text-xs font-bold text-white px-3 py-2 rounded-xl shadow-sm transition-all duration-200 active:scale-95 ${
+                isCritical ? "bg-red-600 hover:bg-red-700" : "bg-orange-500 hover:bg-orange-600"
+              } ${!whatsappUrl ? "opacity-50 pointer-events-none" : ""}`}
+            >
+              <Phone className="h-3.5 w-3.5" />
+              💰 Tenho comprador
+            </a>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Skeleton ────────────────────────────────────────────────────────────────
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function CardSkeleton() {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-      <div className="h-44 bg-gray-200" />
+      <div className="h-48 bg-gray-200" />
       <div className="p-4 space-y-3">
         <div className="h-4 bg-gray-200 rounded w-3/4" />
         <div className="h-3 bg-gray-100 rounded w-1/2" />
@@ -424,7 +502,7 @@ function CardSkeleton() {
   );
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 const CHIPS: { key: SortChip; label: string }[] = [
   { key: "recent",   label: "🆕 Recentes"      },
@@ -433,15 +511,20 @@ const CHIPS: { key: SortChip; label: string }[] = [
   { key: "region",   label: "📍 Região"         },
 ];
 
-export default function OportunidadesPage() {
-  const [showModal, setShowModal]   = useState(false);
-  const [activeChip, setActiveChip] = useState<SortChip>("recent");
-  const [cityFilter, setCityFilter] = useState("");
-  const [showRegion, setShowRegion] = useState(false);
-  const [newBanner, setNewBanner]   = useState(false);
+type PendingAction = { id: string; status: string; label: string } | null;
 
-  const sentinelRef  = useRef<HTMLDivElement>(null);
-  const firstIdRef   = useRef<string | null>(null);
+export default function OportunidadesPage() {
+  const { user } = useAuthStore();
+  const queryClient = useQueryClient();
+  const [showModal, setShowModal]     = useState(false);
+  const [activeChip, setActiveChip]   = useState<SortChip>("recent");
+  const [cityFilter, setCityFilter]   = useState("");
+  const [showRegion, setShowRegion]   = useState(false);
+  const [newBanner, setNewBanner]     = useState(false);
+  const [pendingAction, setPendingAction] = useState<PendingAction>(null);
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const firstIdRef  = useRef<string | null>(null);
 
   const {
     data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch,
@@ -455,24 +538,18 @@ export default function OportunidadesPage() {
     staleTime: 30_000,
   });
 
-  // Flatten pages + sort client-side
-  const allOpps: any[] = (data?.pages ?? []).flatMap((p: any) => p.data ?? []);
-
-  const sorted = [...allOpps].sort((a, b) => {
-    if (activeChip === "discount") {
-      const da = (Number(a.priceNormal) - Number(a.priceUrgent)) / Number(a.priceNormal);
-      const db = (Number(b.priceNormal) - Number(b.priceUrgent)) / Number(b.priceNormal);
-      return db - da;
-    }
-    if (activeChip === "urgent") {
-      const da = (Number(a.priceNormal) - Number(a.priceUrgent)) / Number(a.priceNormal);
-      const db = (Number(b.priceNormal) - Number(b.priceUrgent)) / Number(b.priceNormal);
-      return db - da;
-    }
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      api.patch(`/opportunities/${id}/status`, { status }),
+    onSuccess: (_, { status }) => {
+      const label = CONFIRM_CONFIG[status as keyof typeof CONFIRM_CONFIG]?.successLabel ?? "Oportunidade atualizada";
+      toast.success(label);
+      queryClient.invalidateQueries({ queryKey: ["opportunities-feed"] });
+    },
+    onError: () => toast.error("Erro ao atualizar oportunidade"),
   });
 
-  // Infinite scroll observer
+  // Infinite scroll
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
@@ -484,39 +561,47 @@ export default function OportunidadesPage() {
     return () => obs.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // Poll for new items every 90s
+  // Poll for new items
   useEffect(() => {
     const timer = setInterval(async () => {
       const res = await api.get("/opportunities", { params: { page: 1, limit: 1 } });
       const latestId = res.data?.data?.[0]?.id;
-      if (firstIdRef.current && latestId && latestId !== firstIdRef.current) {
-        setNewBanner(true);
-      }
+      if (firstIdRef.current && latestId && latestId !== firstIdRef.current) setNewBanner(true);
     }, 90_000);
     return () => clearInterval(timer);
   }, []);
 
-  // Store first seen ID
-  useEffect(() => {
-    if (!firstIdRef.current && sorted.length > 0) {
-      firstIdRef.current = sorted[0]?.id ?? null;
-    }
-  }, [sorted]);
+  const allOpps: any[] = (data?.pages ?? []).flatMap((p: any) => p.data ?? []);
 
-  const handleRefresh = () => {
-    firstIdRef.current = null;
-    setNewBanner(false);
-    refetch();
-  };
+  useEffect(() => {
+    if (!firstIdRef.current && allOpps.length > 0) firstIdRef.current = allOpps[0]?.id ?? null;
+  }, [allOpps]);
+
+  const sorted = [...allOpps].sort((a, b) => {
+    if (activeChip === "discount" || activeChip === "urgent") {
+      const da = (Number(a.priceNormal) - Number(a.priceUrgent)) / Number(a.priceNormal);
+      const db = (Number(b.priceNormal) - Number(b.priceUrgent)) / Number(b.priceNormal);
+      return db - da;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  const handleRefresh = () => { firstIdRef.current = null; setNewBanner(false); refetch(); };
 
   const handleChip = (chip: SortChip) => {
-    if (chip === "region") {
-      setShowRegion(v => !v);
-      setActiveChip(chip);
-    } else {
-      setActiveChip(chip);
-      setShowRegion(false);
-    }
+    setActiveChip(chip);
+    if (chip === "region") setShowRegion(v => !v);
+    else setShowRegion(false);
+  };
+
+  const handleStatusAction = (id: string, status: string, label: string) => {
+    setPendingAction({ id, status, label });
+  };
+
+  const confirmAction = () => {
+    if (!pendingAction) return;
+    statusMutation.mutate({ id: pendingAction.id, status: pendingAction.status });
+    setPendingAction(null);
   };
 
   const total = data?.pages?.[0]?.total ?? 0;
@@ -525,13 +610,24 @@ export default function OportunidadesPage() {
     <div>
       <style>{`
         @keyframes slide-down {
-          from { opacity: 0; transform: translateY(-12px); }
-          to   { opacity: 1; transform: translateY(0); }
+          from { opacity:0; transform:translateY(-12px); }
+          to   { opacity:1; transform:translateY(0); }
         }
         .banner-animate { animation: slide-down 0.35s ease forwards; }
       `}</style>
 
       {showModal && <NewOpportunityModal onClose={() => setShowModal(false)} />}
+
+      {pendingAction && (
+        <ConfirmModal
+          title={CONFIRM_CONFIG[pendingAction.status as keyof typeof CONFIRM_CONFIG]?.title ?? "Confirmar ação"}
+          body={CONFIRM_CONFIG[pendingAction.status as keyof typeof CONFIRM_CONFIG]?.body ?? ""}
+          confirmLabel={CONFIRM_CONFIG[pendingAction.status as keyof typeof CONFIRM_CONFIG]?.btn ?? "Confirmar"}
+          confirmClass={CONFIRM_CONFIG[pendingAction.status as keyof typeof CONFIRM_CONFIG]?.cls ?? "bg-gray-600 hover:bg-gray-700"}
+          onConfirm={confirmAction}
+          onClose={() => setPendingAction(null)}
+        />
+      )}
 
       <Header title="Radar de Oportunidades" />
 
@@ -541,38 +637,25 @@ export default function OportunidadesPage() {
         <div className="mb-5">
           <div className="flex items-start justify-between mb-1">
             <div>
-              <h2 className="text-xl font-extrabold text-gray-900 flex items-center gap-2">
-                🔥 Radar de Oportunidades
-              </h2>
-              <p className="text-sm text-gray-500 mt-0.5">
-                Oportunidades urgentes publicadas por corretores da rede
-              </p>
+              <h2 className="text-xl font-extrabold text-gray-900">🔥 Radar de Oportunidades</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Oportunidades urgentes publicadas por corretores da rede</p>
             </div>
-            <Button
-              onClick={() => setShowModal(true)}
-              className="bg-orange-500 hover:bg-orange-600 gap-1.5 text-sm flex-shrink-0"
-            >
-              <Plus className="h-4 w-4" />
-              Publicar
+            <Button onClick={() => setShowModal(true)} className="bg-orange-500 hover:bg-orange-600 gap-1.5 text-sm flex-shrink-0">
+              <Plus className="h-4 w-4" /> Publicar
             </Button>
           </div>
-
           {total > 0 && (
-            <p className="text-xs text-gray-400 mt-2">
-              {total} oportunidade{total !== 1 ? "s" : ""} no radar
-            </p>
+            <p className="text-xs text-gray-400 mt-2">{total} oportunidade{total !== 1 ? "s" : ""} no radar</p>
           )}
         </div>
 
         {/* Filter chips */}
         <div className="flex gap-2 flex-wrap mb-4">
           {CHIPS.map(chip => (
-            <button
-              key={chip.key}
-              onClick={() => handleChip(chip.key)}
+            <button key={chip.key} onClick={() => handleChip(chip.key)}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
                 activeChip === chip.key
-                  ? "bg-orange-500 text-white border-orange-500 shadow-sm shadow-orange-200"
+                  ? "bg-orange-500 text-white border-orange-500 shadow-sm"
                   : "bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-600"
               }`}
             >
@@ -585,10 +668,7 @@ export default function OportunidadesPage() {
         {showRegion && (
           <div className="bg-white border border-gray-200 rounded-xl p-3 mb-4 flex gap-2 items-center">
             <MapPin className="h-4 w-4 text-gray-400 flex-shrink-0" />
-            <input
-              autoFocus
-              value={cityFilter}
-              onChange={e => setCityFilter(e.target.value)}
+            <input autoFocus value={cityFilter} onChange={e => setCityFilter(e.target.value)}
               placeholder="Filtrar por cidade..."
               className="flex-1 text-sm focus:outline-none"
             />
@@ -602,8 +682,7 @@ export default function OportunidadesPage() {
 
         {/* New items banner */}
         {newBanner && (
-          <button
-            onClick={handleRefresh}
+          <button onClick={handleRefresh}
             className="banner-animate w-full flex items-center justify-center gap-2 py-2.5 mb-4 rounded-xl bg-orange-500 text-white text-sm font-semibold shadow-md hover:bg-orange-600 transition-colors"
           >
             <RefreshCw className="h-4 w-4" />
@@ -623,33 +702,27 @@ export default function OportunidadesPage() {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nenhuma oportunidade no radar</h3>
             <p className="text-gray-500 mb-6 text-sm">
-              {cityFilter ? `Sem oportunidades em "${cityFilter}" agora.` : "Seja o primeiro a publicar uma oportunidade urgente."}
+              {cityFilter ? `Sem oportunidades em "${cityFilter}" agora.` : "Seja o primeiro a publicar."}
             </p>
             <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => setShowModal(true)}>
-              <Flame className="h-4 w-4 mr-2" />
-              Publicar Oportunidade
+              <Flame className="h-4 w-4 mr-2" /> Publicar Oportunidade
             </Button>
           </div>
         ) : (
           <>
             <div className="space-y-4">
               {sorted.map((opp, i) => (
-                <OpportunityCard key={opp.id} opp={opp} index={i} />
+                <OpportunityCard
+                  key={opp.id} opp={opp} index={i}
+                  currentUserId={user?.id}
+                  onStatusAction={handleStatusAction}
+                />
               ))}
             </div>
-
-            {/* Sentinel */}
             <div ref={sentinelRef} className="h-8 mt-2" />
-
-            {/* Loading more */}
             {isFetchingNextPage && (
-              <div className="space-y-4 mt-4">
-                <CardSkeleton />
-                <CardSkeleton />
-              </div>
+              <div className="space-y-4 mt-4"><CardSkeleton /><CardSkeleton /></div>
             )}
-
-            {/* End of feed */}
             {!hasNextPage && sorted.length > 0 && (
               <p className="text-center text-xs text-gray-400 py-8">
                 Você viu todas as {sorted.length} oportunidades do radar 🎯
@@ -661,3 +734,29 @@ export default function OportunidadesPage() {
     </div>
   );
 }
+
+// ─── Confirm config ───────────────────────────────────────────────────────────
+
+const CONFIRM_CONFIG = {
+  paused: {
+    title:        "Retirar do radar?",
+    body:         "Ela deixará de aparecer para outros corretores, mas continuará salva no seu histórico.",
+    btn:          "Retirar do radar",
+    cls:          "bg-amber-500 hover:bg-amber-600",
+    successLabel: "Oportunidade retirada do radar",
+  },
+  closed: {
+    title:        "Marcar como fechada?",
+    body:         "Essa oportunidade será removida do radar público e registrada como negócio concluído. Parabéns!",
+    btn:          "Marcar como fechada",
+    cls:          "bg-emerald-600 hover:bg-emerald-700",
+    successLabel: "Negócio registrado como fechado 🎉",
+  },
+  removed: {
+    title:        "Remover oportunidade?",
+    body:         "A oportunidade será removida permanentemente do radar. Essa ação não pode ser desfeita.",
+    btn:          "Remover",
+    cls:          "bg-red-600 hover:bg-red-700",
+    successLabel: "Oportunidade removida",
+  },
+};

@@ -21,6 +21,7 @@ interface Property {
   city: string;
   neighborhood?: string;
   description?: string;
+  photos?: string[];
 }
 
 interface GenerateOpportunityModalProps {
@@ -84,6 +85,8 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
       neighborhood: form.neighborhood,
       description:  form.description,
       acceptsOffer: form.acceptsOffer,
+      propertyId:   property.id,
+      photoUrl:     property.photos?.[0] ?? null,
     });
   };
 

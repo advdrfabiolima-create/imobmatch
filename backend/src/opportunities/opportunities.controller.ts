@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { OpportunitiesService } from './opportunities.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -28,10 +28,22 @@ export class OpportunitiesController {
     return this.opportunitiesService.findOne(id);
   }
 
+  @Patch(':id/status')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Alterar status da oportunidade (autor)' })
+  updateStatus(
+    @Param('id') id: string,
+    @Body('status') status: 'active' | 'paused' | 'closed' | 'removed',
+    @Request() req,
+  ) {
+    return this.opportunitiesService.updateStatus(id, req.user.id, status);
+  }
+
   @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Remover oportunidade' })
+  @ApiOperation({ summary: 'Excluir oportunidade fisicamente' })
   remove(@Param('id') id: string, @Request() req) {
     return this.opportunitiesService.remove(id, req.user.id);
   }
