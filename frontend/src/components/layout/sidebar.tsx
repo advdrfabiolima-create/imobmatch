@@ -38,14 +38,14 @@ export function Sidebar() {
     const active = pathname === href || pathname.startsWith(href + "/");
 
     const activeBg =
-      activeColor === "purple" ? "bg-purple-500/20 text-purple-300 border-l-2 border-purple-400"
-      : activeColor === "amber" ? "bg-amber-500/20 text-amber-300 border-l-2 border-amber-400"
-      : "bg-blue-500/20 text-blue-300 border-l-2 border-blue-400";
+      activeColor === "purple" ? "bg-white/8 text-[#CBD5E1] border-l-2 border-purple-400"
+      : activeColor === "amber" ? "bg-white/8 text-[#CBD5E1] border-l-2 border-amber-400"
+      : "bg-white/8 text-[#CBD5E1] border-l-2 border-blue-400";
 
     const activeIcon =
-      activeColor === "purple" ? "text-purple-300"
-      : activeColor === "amber" ? "text-amber-300"
-      : "text-blue-300";
+      activeColor === "purple" ? "text-purple-400"
+      : activeColor === "amber" ? "text-amber-400"
+      : "text-blue-400";
 
     return (
       <Link
@@ -55,10 +55,10 @@ export function Sidebar() {
           "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
           active
             ? activeBg
-            : "text-slate-400 hover:bg-white/8 hover:text-slate-200"
+            : "text-[#94A3B8] hover:bg-white/5 hover:text-[#CBD5E1]"
         )}
       >
-        <Icon className={cn("h-5 w-5 flex-shrink-0 transition-colors", active ? activeIcon : "text-slate-500")} />
+        <Icon className={cn("h-5 w-5 flex-shrink-0 transition-colors", active ? activeIcon : "text-[#64748B]")} />
         <span className="flex-1">{label}</span>
         {badge != null && badge > 0 && (
           <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
@@ -85,7 +85,7 @@ export function Sidebar() {
       <aside
         className={cn(
           "fixed left-0 top-0 h-full w-64 flex flex-col z-40 transition-transform duration-300",
-          "bg-[#0F172A]",
+          "bg-[#1E293B]",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:translate-x-0"
         )}
@@ -119,8 +119,8 @@ export function Sidebar() {
               )}
             </div>
             <div className="overflow-hidden flex-1 min-w-0">
-              <p className="font-semibold text-sm text-white truncate leading-tight">{user?.name}</p>
-              <p className="text-xs text-slate-400 truncate mt-0.5">{user?.agency || user?.email}</p>
+              <p className="font-semibold text-sm text-[#CBD5E1] truncate leading-tight">{user?.name}</p>
+              <p className="text-xs text-[#94A3B8] truncate mt-0.5">{user?.agency || user?.email}</p>
             </div>
           </div>
         </div>
@@ -159,7 +159,7 @@ export function Sidebar() {
         <div className="px-3 py-4 border-t border-white/8">
           <button
             onClick={() => { close(); logout(); }}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-red-500/15 hover:text-red-400 transition-all duration-200 w-full"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 w-full"
           >
             <LogOut className="h-5 w-5 flex-shrink-0" />
             Sair
