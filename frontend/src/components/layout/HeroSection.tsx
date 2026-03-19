@@ -251,7 +251,7 @@ export default function HeroSection() {
 
       {/* Content grid */}
       <div
-        className="relative mx-auto grid min-h-[860px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-24 pt-14 md:px-10 lg:grid-cols-[1.05fr_1.15fr] lg:gap-8 lg:px-12 lg:pt-20"
+        className="relative mx-auto grid min-h-[860px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-24 pt-14 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-20"
         style={{ zIndex: 1 }}
       >
 
@@ -330,35 +330,26 @@ export default function HeroSection() {
         </div>
 
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
-        <div className="relative min-h-[700px] lg:min-h-[820px]">
+        <div className="relative min-h-[700px] lg:min-h-[820px] overflow-hidden">
 
-          {/* Photo — tamanho ajustado, alinhada à direita */}
-          <div
-            className="absolute pointer-events-none z-10"
+          {/* Photo — contida na coluna direita, alinhada ao topo */}
+          <img
+            src="/corretores.png"
+            alt="Corretores fechando parceria"
+            className="absolute inset-0 z-0 select-none"
             style={{
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
-              right: "-5%",
-              top: "0px",
-              height: "100%",
-              display: "flex",
-              alignItems: "flex-start",
+              filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
+              width: "100%",
+              height: "108%",
+              objectFit: "contain",
+              objectPosition: "top center",
+              top: 0,
+              left: 0,
             }}
-          >
-            <img
-              src="/corretores.png"
-              alt="Corretores fechando parceria"
-              className="select-none object-contain object-top"
-              style={{
-                filter: "drop-shadow(0 24px 50px rgba(37,99,235,0.10))",
-                height: "102%",
-                width: "auto",
-                maxWidth: "none",
-                marginTop: "-1%",
-              }}
-              draggable={false}
-            />
-          </div>
+            draggable={false}
+          />
 
           {/* Card: Negócio fechado — topo esquerdo sobre a foto */}
           <FloatingCard
