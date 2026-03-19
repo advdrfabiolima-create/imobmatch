@@ -1,8 +1,9 @@
 "use client";
 
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { useSidebarStore } from "@/store/sidebar.store";
+import { NotificationBell } from "./notification-bell";
 
 interface HeaderProps {
   title: string;
@@ -27,9 +28,7 @@ export function Header({ title }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-2 md:gap-3">
-        <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
-          <Bell className="h-5 w-5 text-gray-600" />
-        </button>
+        <NotificationBell />
         <div className="w-9 h-9 rounded-full bg-blue-100 overflow-hidden flex items-center justify-center text-blue-600 font-semibold text-sm flex-shrink-0">
           {user?.avatarUrl ? (
             <img src={user.avatarUrl} alt={user?.name} className="w-full h-full object-cover" />

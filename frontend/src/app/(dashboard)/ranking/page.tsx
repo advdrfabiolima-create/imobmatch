@@ -4,21 +4,85 @@ import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/lib/api";
-import { Trophy, Medal, Star, UserCheck, CheckCircle2 } from "lucide-react";
+import { Trophy, Medal, Star, UserCheck, CheckCircle2, Zap, TrendingUp } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 
 type AgentLevel = "Gold" | "Silver" | "Bronze";
 
-const LEVEL_CONFIG: Record<AgentLevel, { label: string; emoji: string; bg: string; text: string; border: string }> = {
-  Gold:   { label: "Gold",   emoji: "🥇", bg: "bg-yellow-50", text: "text-yellow-700", border: "border-yellow-300" },
-  Silver: { label: "Silver", emoji: "🥈", bg: "bg-gray-50",   text: "text-gray-600",   border: "border-gray-300"   },
-  Bronze: { label: "Bronze", emoji: "🥉", bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-300" },
+const LEVEL_CONFIG: Record<AgentLevel, { label: string; emoji: string; bg: string; text: string; border: string; next: number | null; prev: number }> = {
+  Gold:   { label: "Gold",   emoji: "🥇", bg: "bg-yellow-50", text: "text-yellow-700", border: "border-yellow-300", next: null, prev: 200 },
+  Silver: { label: "Silver", emoji: "🥈", bg: "bg-gray-50",   text: "text-gray-600",   border: "border-gray-300",   next: 200,  prev: 80  },
+  Bronze: { label: "Bronze", emoji: "🥉", bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-300", next: 80,   prev: 0   },
 };
 
 function getLevel(score: number): AgentLevel {
   if (score >= 200) return "Gold";
   if (score >= 80)  return "Silver";
   return "Bronze";
+}
+
+function LevelProgress({ score }: { score: number }) {
+  const level = getLevel(score);
+  const cfg = LEVEL_CONFIG[level];
+
+  if (!cfg.next) {
+    return (
+      <div className="mt-1.5">
+        <div className="flex justify-between items-center mb-0.5">
+          <span className="text-[10px] text-yellow-600 font-semibold">Nível máximo atingido!</span>
+        </div>
+        <div className="h-1.5 bg-yellow-100 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  const range = cfg.next - cfg.prev;
+  const progress = Math.min(100, Math.round(((score - cfg.prev) / range) * 100));
+  const nextLabel = cfg.next === 80 ? "🥈 Silver" : "🥇 Gold";
+  const remaining = cfg.next - score;
+
+  const barColor = level === "Bronze"
+    ? "from-orange-400 to-orange-500"
+    : "from-gray-400 to-gray-500";
+
+  return (
+    <div className="mt-1.5">
+      <div className="flex justify-between items-center mb-0.5">
+        <span className="text-[10px] text-gray-500">→ {nextLabel}</span>
+        <span className="text-[10px] text-gray-400">{remaining} pts restantes</span>
+      </div>
+      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          className={`h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-700`}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function AchievementBadges({ agent }: { agent: any }) {
+  const badges = [
+    { key: "match",       earned: (agent.matchesCount ?? 0) > 0,  emoji: "⚡", label: "Primeiro Match"    },
+    { key: "partnership", earned: (agent.partnershipsCount ?? 0) > 0, emoji: "🤝", label: "1ª Parceria"   },
+    { key: "deal",        earned: (agent.dealsClosedCount ?? 0) > 0,  emoji: "💰", label: "Negócio Fechado" },
+  ];
+
+  return (
+    <div className="flex items-center gap-1 mt-1">
+      {badges.map(b => (
+        <span
+          key={b.key}
+          title={b.label}
+          className={`text-sm transition-all ${b.earned ? "opacity-100" : "opacity-20 grayscale"}`}
+        >
+          {b.emoji}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 function ScoreBadge({ score }: { score: number }) {
@@ -50,10 +114,11 @@ export default function RankingPage() {
 
   const agents = data?.data ?? [];
 
-  // Stats summary
   const goldCount   = agents.filter((a: any) => getLevel(a.score) === "Gold").length;
   const silverCount = agents.filter((a: any) => getLevel(a.score) === "Silver").length;
   const bronzeCount = agents.filter((a: any) => getLevel(a.score) === "Bronze").length;
+
+  const myAgent = agents.find((a: any) => a.id === user?.id);
 
   return (
     <div>
@@ -80,18 +145,51 @@ export default function RankingPage() {
               <p className="font-bold text-blue-700">+50 pts</p>
             </div>
           </div>
-          <div className="flex gap-4 mt-4 text-sm justify-center">
+          <div className="flex gap-4 mt-4 text-sm justify-center flex-wrap">
             <span className="flex items-center gap-1.5">🥉 Bronze <span className="text-gray-400">&lt;80</span></span>
             <span className="flex items-center gap-1.5">🥈 Silver <span className="text-gray-400">80–199</span></span>
             <span className="flex items-center gap-1.5">🥇 Gold <span className="text-gray-400">200+</span></span>
           </div>
         </div>
 
+        {/* My position highlight */}
+        {myAgent && (
+          <div className="bg-blue-600 text-white rounded-2xl p-4 mb-6 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden flex-shrink-0">
+              {myAgent.avatarUrl
+                ? <img src={myAgent.avatarUrl} alt={myAgent.name} className="w-full h-full object-cover" />
+                : myAgent.name?.charAt(0).toUpperCase()
+              }
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm">Sua posição: #{myAgent.rank}</p>
+              <div className="mt-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
+                {(() => {
+                  const level = getLevel(myAgent.score);
+                  const cfg = LEVEL_CONFIG[level];
+                  const next = cfg.next ?? myAgent.score;
+                  const range = (cfg.next ?? myAgent.score) - cfg.prev || 1;
+                  const pct = cfg.next ? Math.min(100, Math.round(((myAgent.score - cfg.prev) / range) * 100)) : 100;
+                  return (
+                    <div className="h-full bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
+                  );
+                })()}
+              </div>
+              <p className="text-xs text-blue-100 mt-0.5">
+                {myAgent.score} pts · {LEVEL_CONFIG[getLevel(myAgent.score)].emoji} {getLevel(myAgent.score)}
+                {LEVEL_CONFIG[getLevel(myAgent.score)].next
+                  ? ` · ${LEVEL_CONFIG[getLevel(myAgent.score)].next! - myAgent.score} pts para próximo nível`
+                  : " · Nível máximo!"}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Counters */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { label: "Gold", count: goldCount, emoji: "🥇", color: "text-yellow-600" },
-            { label: "Silver", count: silverCount, emoji: "🥈", color: "text-gray-500" },
+            { label: "Gold",   count: goldCount,   emoji: "🥇", color: "text-yellow-600" },
+            { label: "Silver", count: silverCount, emoji: "🥈", color: "text-gray-500"   },
             { label: "Bronze", count: bronzeCount, emoji: "🥉", color: "text-orange-600" },
           ].map(item => (
             <Card key={item.label}>
@@ -104,11 +202,19 @@ export default function RankingPage() {
           ))}
         </div>
 
+        {/* Achievement legend */}
+        <div className="flex items-center gap-3 mb-4 text-xs text-gray-500 bg-gray-50 rounded-xl px-4 py-2.5">
+          <span className="font-medium text-gray-700">Conquistas:</span>
+          <span>⚡ Primeiro Match</span>
+          <span>🤝 1ª Parceria</span>
+          <span>💰 Negócio Fechado</span>
+        </div>
+
         {/* Leaderboard */}
         {isLoading ? (
           <div className="space-y-3">
             {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : (
@@ -121,9 +227,9 @@ export default function RankingPage() {
                   className={`transition-shadow hover:shadow-sm ${isMe ? "ring-2 ring-blue-400" : ""}`}
                 >
                   <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-start gap-3">
                       {/* Rank */}
-                      <div className="w-8 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 flex items-center justify-center flex-shrink-0 mt-1">
                         <RankMedal rank={agent.rank} />
                       </div>
 
@@ -155,6 +261,8 @@ export default function RankingPage() {
                             {agent.dealsClosedCount} negócios
                           </span>
                         </div>
+                        <AchievementBadges agent={agent} />
+                        <LevelProgress score={agent.score} />
                       </div>
 
                       {/* Score */}

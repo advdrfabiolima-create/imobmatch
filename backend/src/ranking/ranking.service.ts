@@ -30,6 +30,7 @@ export class RankingService {
           score: true,
           partnershipsCount: true,
           dealsClosedCount: true,
+          _count: { select: { properties: true } },
         },
         orderBy: { score: 'desc' },
         skip,
@@ -38,10 +39,25 @@ export class RankingService {
       this.prisma.user.count({ where: { role: { in: ['AGENT', 'ADMIN'] } } }),
     ]);
 
+    // Fetch match counts for all agents via their properties
+    const userIds = users.map(u => u.id);
+    const matchAgg = userIds.length
+      ? await this.prisma.$queryRaw<{ agentId: string; cnt: bigint }[]>`
+          SELECT p."agentId", COUNT(m.id) AS cnt
+          FROM "matches" m
+          JOIN "properties" p ON p.id = m."propertyId"
+          WHERE p."agentId" = ANY(${userIds}::uuid[])
+          GROUP BY p."agentId"
+        `
+      : [];
+    const matchCountMap: Record<string, number> = {};
+    matchAgg.forEach(row => { matchCountMap[row.agentId] = Number(row.cnt); });
+
     const ranked = users.map((u, index) => ({
       ...u,
       rank: skip + index + 1,
       level: getLevel(u.score),
+      matchesCount: matchCountMap[u.id] ?? 0,
     }));
 
     return { data: ranked, total, page: Number(page), totalPages: Math.ceil(total / Number(limit)) };
