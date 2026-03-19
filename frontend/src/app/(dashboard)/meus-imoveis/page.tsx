@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 import { Plus, Search, Home } from "lucide-react";
 import toast from "react-hot-toast";
 import { PropertyFormModal } from "@/components/properties/property-form-modal";
+import { GenerateOpportunityModal } from "@/components/properties/generate-opportunity-modal";
 import { showPointsToast } from "@/lib/points-toast";
 import { STATES } from "@/lib/utils";
 
@@ -32,6 +33,7 @@ const EMPTY_MESSAGES: Record<string, { title: string; desc: string }> = {
 export default function ImoveisPage() {
   const [showForm, setShowForm] = useState(false);
   const [editProperty, setEditProperty] = useState<any>(null);
+  const [opportunityProperty, setOpportunityProperty] = useState<any>(null);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [city, setCity] = useState("");
@@ -171,6 +173,7 @@ export default function ImoveisPage() {
                 onEdit={() => { setEditProperty(p); setShowForm(true); }}
                 onDelete={() => handleDelete(p.id)}
                 onStatusChange={(newStatus) => statusMutation.mutate({ id: p.id, newStatus })}
+                onGenerateOpportunity={() => setOpportunityProperty(p)}
               />
             ))}
           </div>
@@ -186,6 +189,13 @@ export default function ImoveisPage() {
             setEditProperty(null);
             queryClient.invalidateQueries({ queryKey: ["my-properties"] });
           }}
+        />
+      )}
+
+      {opportunityProperty && (
+        <GenerateOpportunityModal
+          property={opportunityProperty}
+          onClose={() => setOpportunityProperty(null)}
         />
       )}
     </div>

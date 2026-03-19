@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Bed, Bath, Maximize2, MapPin, Edit, Trash2, ChevronDown, RotateCcw } from "lucide-react";
+import { Bed, Bath, Maximize2, MapPin, Edit, Trash2, ChevronDown, RotateCcw, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from "@/lib/utils";
@@ -28,6 +28,7 @@ interface PropertyCardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onStatusChange?: (newStatus: string) => void;
+  onGenerateOpportunity?: () => void;
 }
 
 const STATUS_OPTIONS: Record<string, { value: string; label: string; color: string }[]> = {
@@ -45,7 +46,7 @@ const STATUS_BADGE_STYLES: Record<string, string> = {
   INACTIVE:  "bg-gray-100 text-gray-500",
 };
 
-export function PropertyCard({ property, showActions, onEdit, onDelete, onStatusChange }: PropertyCardProps) {
+export function PropertyCard({ property, showActions, onEdit, onDelete, onStatusChange, onGenerateOpportunity }: PropertyCardProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mainPhoto = property.photos?.[0] || "https://via.placeholder.com/400x250?text=Sem+Foto";
@@ -154,7 +155,18 @@ export function PropertyCard({ property, showActions, onEdit, onDelete, onStatus
 
         {/* Status actions */}
         {showActions && onStatusChange && (
-          <div className="border-t pt-3">
+          <div className="border-t pt-3 space-y-2">
+            {/* Gerar Oportunidade — apenas para imóveis disponíveis */}
+            {isAvailable && onGenerateOpportunity && (
+              <button
+                onClick={onGenerateOpportunity}
+                className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg border border-orange-200 bg-orange-50 text-sm font-medium text-orange-700 hover:bg-orange-100 hover:border-orange-300 transition-colors"
+              >
+                <Zap className="h-3.5 w-3.5" />
+                🔥 Gerar oportunidade
+              </button>
+            )}
+
             {isAvailable && (
               <div ref={dropdownRef} className="relative">
                 <button
