@@ -146,73 +146,87 @@ function HeroVisual() {
     <>
       <style>{`
         @keyframes hv-float-a {
-          0%,100% { transform: translateY(0px) rotate(-1.5deg); }
-          50%      { transform: translateY(-9px) rotate(-1.5deg); }
+          0%,100% { transform: translateY(0px) rotate(-1deg); }
+          50%      { transform: translateY(-10px) rotate(-1deg); }
         }
         @keyframes hv-float-b {
-          0%,100% { transform: translateY(0px) rotate(1deg); }
-          50%      { transform: translateY(-7px) rotate(1deg); }
+          0%,100% { transform: translateY(0px) rotate(0.8deg); }
+          50%      { transform: translateY(-8px) rotate(0.8deg); }
         }
         @keyframes hv-float-c {
-          0%,100% { transform: translateY(0px) rotate(1.5deg); }
-          50%      { transform: translateY(-8px) rotate(1.5deg); }
-        }
-        @keyframes hv-float-d {
-          0%,100% { transform: translateY(0px) rotate(-1deg); }
-          50%      { transform: translateY(-6px) rotate(-1deg); }
+          0%,100% { transform: translateY(0px) rotate(1deg); }
+          50%      { transform: translateY(-9px) rotate(1deg); }
         }
         @keyframes hv-glow-pulse {
-          0%,100% { opacity: 0.30; transform: translate(-50%,-50%) scale(1); }
-          50%      { opacity: 0.65; transform: translate(-50%,-50%) scale(1.25); }
+          0%,100% { opacity: 0.45; transform: translate(-50%,-50%) scale(1); }
+          50%      { opacity: 0.80; transform: translate(-50%,-50%) scale(1.30); }
         }
         @keyframes hv-ring-pulse {
-          0%,100% { opacity: 0.15; transform: translate(-50%,-50%) scale(1); }
-          50%      { opacity: 0.35; transform: translate(-50%,-50%) scale(1.4); }
+          0%,100% { opacity: 0.20; transform: translate(-50%,-50%) scale(1); }
+          50%      { opacity: 0.45; transform: translate(-50%,-50%) scale(1.5); }
         }
         @keyframes hv-dot {
-          0%,100% { opacity: 0.15; transform: scale(1); }
-          50%      { opacity: 0.75; transform: scale(1.5); }
+          0%,100% { opacity: 0.10; transform: scale(1); }
+          50%      { opacity: 0.80; transform: scale(1.6); }
         }
         @keyframes hv-line-draw {
-          from { stroke-dashoffset: 300; opacity: 0; }
+          from { stroke-dashoffset: 400; opacity: 0; }
           to   { stroke-dashoffset: 0;   opacity: 1; }
         }
-        .hv-float-a { animation: hv-float-a 4.4s ease-in-out infinite; }
-        .hv-float-b { animation: hv-float-b 5.2s ease-in-out infinite 0.7s; }
-        .hv-float-c { animation: hv-float-c 4.8s ease-in-out infinite 1.2s; }
-        .hv-float-d { animation: hv-float-d 4.0s ease-in-out infinite 0.4s; }
-        .hv-glow    { animation: hv-glow-pulse 3.2s ease-in-out infinite; }
-        .hv-ring    { animation: hv-ring-pulse  4s ease-in-out infinite 0.6s; }
-        .hv-d1 { animation: hv-dot 3.6s ease-in-out infinite 0.0s; }
-        .hv-d2 { animation: hv-dot 4.1s ease-in-out infinite 0.8s; }
-        .hv-d3 { animation: hv-dot 3.3s ease-in-out infinite 1.5s; }
-        .hv-d4 { animation: hv-dot 4.6s ease-in-out infinite 0.3s; }
-        .hv-d5 { animation: hv-dot 3.9s ease-in-out infinite 1.9s; }
-        .hv-d6 { animation: hv-dot 4.3s ease-in-out infinite 1.1s; }
-        .hv-line {
-          stroke-dasharray: 300;
-          animation: hv-line-draw 1.8s ease-out forwards;
+        @keyframes hv-aura {
+          0%,100% { opacity: 0.55; transform: scale(1); }
+          50%      { opacity: 0.85; transform: scale(1.08); }
         }
-        .hv-line-2 { animation-delay: 0.3s; opacity: 0; }
-        .hv-line-3 { animation-delay: 0.6s; opacity: 0; }
+        .hv-float-a { animation: hv-float-a 4.4s ease-in-out infinite; }
+        .hv-float-b { animation: hv-float-b 5.3s ease-in-out infinite 0.8s; }
+        .hv-float-c { animation: hv-float-c 4.7s ease-in-out infinite 1.4s; }
+        .hv-glow    { animation: hv-glow-pulse 3.0s ease-in-out infinite; }
+        .hv-ring    { animation: hv-ring-pulse  4.2s ease-in-out infinite 0.5s; }
+        .hv-aura    { animation: hv-aura 5s ease-in-out infinite; }
+        .hv-d1 { animation: hv-dot 3.6s ease-in-out infinite 0.0s; }
+        .hv-d2 { animation: hv-dot 4.1s ease-in-out infinite 0.9s; }
+        .hv-d3 { animation: hv-dot 3.3s ease-in-out infinite 1.6s; }
+        .hv-d4 { animation: hv-dot 4.6s ease-in-out infinite 0.4s; }
+        .hv-d5 { animation: hv-dot 3.9s ease-in-out infinite 2.1s; }
+        .hv-d6 { animation: hv-dot 4.3s ease-in-out infinite 1.2s; }
+        .hv-line {
+          stroke-dasharray: 400;
+          animation: hv-line-draw 2s ease-out forwards;
+        }
+        .hv-line-2 { animation-delay: 0.4s; opacity: 0; }
+        .hv-line-3 { animation-delay: 0.8s; opacity: 0; }
       `}</style>
 
-      {/* Wrapper com padding para os cards flutuantes não serem cortados */}
-      <div className="relative select-none pt-10 pb-10 px-10">
+      {/* Wrapper — padding mínimo para os cards flutuantes não serem cortados */}
+      <div className="relative select-none" style={{ padding: "48px 28px 48px 0" }}>
 
-        {/* ── Ambient background glows ── */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[380px] rounded-full bg-gradient-to-br from-blue-400/30 via-violet-400/20 to-indigo-300/15 blur-3xl" />
-          <div className="absolute -top-10 -right-10 w-[220px] h-[220px] rounded-full bg-blue-300/20 blur-2xl" />
-          <div className="absolute -bottom-10 -left-10 w-[200px] h-[200px] rounded-full bg-violet-300/20 blur-2xl" />
-        </div>
+        {/* ── Aura atmosférica ATRÁS da imagem — projeta para fora ── */}
+        <div className="hv-aura absolute pointer-events-none" style={{
+          top: "10%", left: "-8%",
+          width: "116%", height: "80%",
+          background: "radial-gradient(ellipse at 55% 58%, rgba(99,102,241,0.30) 0%, rgba(59,130,246,0.22) 35%, rgba(139,92,246,0.10) 60%, transparent 80%)",
+          filter: "blur(40px)",
+          zIndex: 0,
+        }} />
+        {/* Halo superior direito */}
+        <div className="absolute pointer-events-none" style={{
+          top: "-5%", right: "-5%",
+          width: "55%", height: "50%",
+          background: "radial-gradient(ellipse, rgba(59,130,246,0.18) 0%, transparent 70%)",
+          filter: "blur(30px)",
+          zIndex: 0,
+        }} />
 
-        {/* ── Imagem principal ── */}
+        {/* ── Imagem principal — ocupa toda a largura da coluna ── */}
         <div
-          className="relative rounded-2xl overflow-hidden"
+          className="relative rounded-3xl overflow-hidden"
           style={{
+            zIndex: 1,
             boxShadow:
-              "0 32px 80px -15px rgba(37,99,235,0.28), 0 0 0 1px rgba(37,99,235,0.10), inset 0 1px 0 rgba(255,255,255,0.5)",
+              "0 40px 100px -20px rgba(37,99,235,0.38), " +
+              "0 20px 50px -10px rgba(99,102,241,0.22), " +
+              "0 0 0 1px rgba(99,102,241,0.12), " +
+              "inset 0 1px 0 rgba(255,255,255,0.45)",
           }}
         >
           <img
@@ -222,216 +236,186 @@ function HeroVisual() {
             draggable={false}
           />
 
-          {/* Gradient overlay suave */}
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-950/40 via-blue-900/05 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/08 to-violet-600/10 pointer-events-none" />
+          {/* Gradient overlay — integra a imagem ao fundo branco */}
+          <div className="absolute inset-0 bg-gradient-to-t from-indigo-950/50 via-blue-900/08 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/06 to-violet-600/12 pointer-events-none" />
 
-          {/* ── Glow no aperto de mão (centro-baixo da imagem) ── */}
-          <div
-            className="absolute hv-glow pointer-events-none"
-            style={{
-              top: "58%", left: "50%",
-              width: "220px", height: "110px",
-              background: "radial-gradient(ellipse, rgba(99,102,241,0.55) 0%, rgba(59,130,246,0.35) 40%, transparent 70%)",
-              filter: "blur(14px)",
-              transform: "translate(-50%,-50%)",
-            }}
-          />
-          {/* Ring pulsante em volta do handshake */}
-          <div
-            className="absolute hv-ring pointer-events-none"
-            style={{
-              top: "58%", left: "50%",
-              width: "300px", height: "160px",
-              background: "radial-gradient(ellipse, transparent 40%, rgba(139,92,246,0.25) 60%, transparent 75%)",
-              filter: "blur(8px)",
-              transform: "translate(-50%,-50%)",
-            }}
-          />
+          {/* ── Glow principal no aperto de mão ── */}
+          <div className="absolute hv-glow pointer-events-none" style={{
+            top: "60%", left: "50%",
+            width: "280px", height: "130px",
+            background: "radial-gradient(ellipse, rgba(99,102,241,0.70) 0%, rgba(59,130,246,0.45) 38%, transparent 68%)",
+            filter: "blur(16px)",
+            transform: "translate(-50%,-50%)",
+          }} />
 
-          {/* ── SVG: linhas de rede + nós + partículas ── */}
+          {/* Ring de energia expandindo */}
+          <div className="absolute hv-ring pointer-events-none" style={{
+            top: "60%", left: "50%",
+            width: "400px", height: "180px",
+            background: "radial-gradient(ellipse, transparent 38%, rgba(139,92,246,0.32) 55%, transparent 72%)",
+            filter: "blur(10px)",
+            transform: "translate(-50%,-50%)",
+          }} />
+
+          {/* ── SVG: rede de linhas convergindo para o handshake ── */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 500 380"
+            viewBox="0 0 560 420"
             preserveAspectRatio="xMidYMid slice"
           >
             <defs>
               <linearGradient id="hv-lg1" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%"   stopColor="#3b82f6" stopOpacity="0" />
-                <stop offset="50%"  stopColor="#8b5cf6" stopOpacity="0.65" />
+                <stop offset="50%"  stopColor="#8b5cf6" stopOpacity="0.75" />
                 <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="hv-lg2" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%"   stopColor="#6366f1" stopOpacity="0" />
-                <stop offset="50%"  stopColor="#3b82f6" stopOpacity="0.45" />
+                <stop offset="50%"  stopColor="#3b82f6" stopOpacity="0.55" />
                 <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="hv-lg3" x1="1" y1="0" x2="0" y2="1">
                 <stop offset="0%"   stopColor="#a78bfa" stopOpacity="0" />
-                <stop offset="50%"  stopColor="#60a5fa" stopOpacity="0.40" />
+                <stop offset="50%"  stopColor="#60a5fa" stopOpacity="0.50" />
                 <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
               </linearGradient>
             </defs>
 
-            {/* Linha horizontal pelo aperto de mão */}
+            {/* Linha central horizontal — atravessa o aperto de mão */}
             <line className="hv-line"
-              x1="60" y1="220" x2="440" y2="220"
-              stroke="url(#hv-lg1)" strokeWidth="1.2" strokeLinecap="round" />
-            {/* Diagonais */}
+              x1="40" y1="252" x2="520" y2="252"
+              stroke="url(#hv-lg1)" strokeWidth="1.4" strokeLinecap="round" />
+            {/* Diagonal 1 */}
             <line className="hv-line hv-line-2"
-              x1="120" y1="80" x2="380" y2="310"
-              stroke="url(#hv-lg2)" strokeWidth="0.9" strokeLinecap="round" />
+              x1="100" y1="70" x2="460" y2="360"
+              stroke="url(#hv-lg2)" strokeWidth="1.0" strokeLinecap="round" />
+            {/* Diagonal 2 */}
             <line className="hv-line hv-line-3"
-              x1="380" y1="80" x2="120" y2="310"
-              stroke="url(#hv-lg3)" strokeWidth="0.9" strokeLinecap="round" />
+              x1="460" y1="70" x2="100" y2="360"
+              stroke="url(#hv-lg3)" strokeWidth="1.0" strokeLinecap="round" />
 
-            {/* Linhas do nó central para os cantos */}
-            <line x1="250" y1="220" x2="120" y2="80"  stroke="#3b82f6" strokeWidth="0.6" opacity="0.30" />
-            <line x1="250" y1="220" x2="380" y2="80"  stroke="#3b82f6" strokeWidth="0.6" opacity="0.30" />
-            <line x1="250" y1="220" x2="120" y2="310" stroke="#6366f1" strokeWidth="0.6" opacity="0.28" />
-            <line x1="250" y1="220" x2="380" y2="310" stroke="#6366f1" strokeWidth="0.6" opacity="0.28" />
+            {/* Raios convergindo ao nó central */}
+            <line x1="280" y1="252" x2="100" y2="70"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.32" />
+            <line x1="280" y1="252" x2="460" y2="70"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.32" />
+            <line x1="280" y1="252" x2="100" y2="360" stroke="#6366f1" strokeWidth="0.7" opacity="0.28" />
+            <line x1="280" y1="252" x2="460" y2="360" stroke="#6366f1" strokeWidth="0.7" opacity="0.28" />
 
-            {/* Nó central (aperto de mão) */}
-            <circle cx="250" cy="220" r="5"  fill="#8b5cf6" opacity="0.85" />
-            <circle cx="250" cy="220" r="12" fill="#8b5cf6" opacity="0.12" />
-            <circle cx="250" cy="220" r="22" fill="#8b5cf6" opacity="0.06" />
+            {/* Nó central — ponto do match */}
+            <circle cx="280" cy="252" r="6"  fill="#8b5cf6" opacity="0.90" />
+            <circle cx="280" cy="252" r="14" fill="#8b5cf6" opacity="0.14" />
+            <circle cx="280" cy="252" r="26" fill="#8b5cf6" opacity="0.07" />
 
-            {/* Nós nos cantos */}
-            <circle cx="120" cy="80"  r="3" fill="#3b82f6" opacity="0.55" />
-            <circle cx="380" cy="80"  r="3" fill="#3b82f6" opacity="0.55" />
-            <circle cx="120" cy="310" r="3" fill="#6366f1" opacity="0.45" />
-            <circle cx="380" cy="310" r="3" fill="#6366f1" opacity="0.45" />
+            {/* Nós secundários nos cantos */}
+            <circle cx="100" cy="70"  r="3.5" fill="#3b82f6" opacity="0.55" />
+            <circle cx="460" cy="70"  r="3.5" fill="#3b82f6" opacity="0.55" />
+            <circle cx="100" cy="360" r="3.5" fill="#6366f1" opacity="0.45" />
+            <circle cx="460" cy="360" r="3.5" fill="#6366f1" opacity="0.45" />
 
-            {/* Partículas animadas */}
-            <circle className="hv-d1" cx="195" cy="178" r="2"   fill="#a78bfa" opacity="0.7" />
-            <circle className="hv-d2" cx="310" cy="190" r="1.5" fill="#60a5fa" opacity="0.65" />
-            <circle className="hv-d3" cx="205" cy="252" r="2"   fill="#818cf8" opacity="0.6" />
-            <circle className="hv-d4" cx="298" cy="240" r="1.5" fill="#a78bfa" opacity="0.7" />
-            <circle className="hv-d5" cx="172" cy="222" r="1.5" fill="#60a5fa" opacity="0.55" />
-            <circle className="hv-d6" cx="330" cy="218" r="2"   fill="#818cf8" opacity="0.65" />
+            {/* Partículas ao redor do handshake */}
+            <circle className="hv-d1" cx="210" cy="200" r="2.5" fill="#a78bfa" opacity="0.8" />
+            <circle className="hv-d2" cx="355" cy="212" r="2"   fill="#60a5fa" opacity="0.7" />
+            <circle className="hv-d3" cx="220" cy="295" r="2.5" fill="#818cf8" opacity="0.65" />
+            <circle className="hv-d4" cx="345" cy="282" r="2"   fill="#a78bfa" opacity="0.75" />
+            <circle className="hv-d5" cx="188" cy="252" r="2"   fill="#60a5fa" opacity="0.60" />
+            <circle className="hv-d6" cx="374" cy="248" r="2.5" fill="#818cf8" opacity="0.70" />
           </svg>
         </div>
 
-        {/* ══════════════════════════════════════════════
-            CARDS FLUTUANTES — glassmorphism premium
-        ══════════════════════════════════════════════ */}
+        {/* ══════════════════════════════════════════════════
+            CARDS FLUTUANTES — glassmorphism escalado +25%
+        ══════════════════════════════════════════════════ */}
 
-        {/* Card A: Match encontrado — canto superior esquerdo */}
-        <div className="absolute top-0 left-0 hv-float-a" style={{ zIndex: 20 }}>
-          <div
-            className="rounded-2xl px-4 py-3 min-w-[178px]"
-            style={{
-              background: "rgba(255,255,255,0.88)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.7)",
-              boxShadow: "0 12px 40px rgba(37,99,235,0.18), 0 0 0 1px rgba(255,255,255,0.55)",
-            }}
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-400/40">
-                <Zap className="h-4 w-4 text-white" />
+        {/* Card A: Match encontrado — lado esquerdo, meio superior */}
+        <div className="absolute hv-float-a" style={{ top: "12%", left: "-6px", zIndex: 20 }}>
+          <div style={{
+            background: "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid rgba(255,255,255,0.75)",
+            boxShadow: "0 16px 48px rgba(37,99,235,0.22), 0 4px 16px rgba(99,102,241,0.12), 0 0 0 1px rgba(255,255,255,0.6)",
+            borderRadius: "18px",
+            padding: "14px 18px",
+            minWidth: "210px",
+          }}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center flex-shrink-0"
+                style={{ boxShadow: "0 6px 20px rgba(99,102,241,0.45)" }}>
+                <Zap className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-[12px] font-bold text-gray-800 leading-tight">Match encontrado</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">IA em tempo real</p>
+                <p className="text-[13px] font-bold text-gray-800 leading-tight">Match encontrado</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">IA em tempo real</p>
               </div>
             </div>
-            <div className="mt-2.5 space-y-1.5">
-              <div className="flex justify-between text-[10px]">
+            <div className="mt-3 space-y-1.5">
+              <div className="flex justify-between text-[11px]">
                 <span className="text-gray-400">Compatibilidade</span>
                 <span className="font-black text-violet-700">93%</span>
               </div>
-              <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className="h-1.5 rounded-full"
-                  style={{
-                    width: "93%",
-                    background: "linear-gradient(to right, #3b82f6, #8b5cf6)",
-                  }}
-                />
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2 rounded-full" style={{
+                  width: "93%",
+                  background: "linear-gradient(to right, #3b82f6, #8b5cf6)",
+                }} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Card B: Compatibilidade — canto superior direito */}
-        <div className="absolute top-2 right-0 hv-float-b" style={{ zIndex: 20 }}>
-          <div
-            className="rounded-2xl px-4 py-3"
-            style={{
-              background: "rgba(255,255,255,0.88)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.7)",
-              boxShadow: "0 12px 40px rgba(109,40,217,0.16), 0 0 0 1px rgba(255,255,255,0.55)",
-            }}
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-400/40">
-                <span className="text-sm leading-none">🎯</span>
+        {/* Card B: Compatibilidade — lado direito, terço superior */}
+        <div className="absolute hv-float-b" style={{ top: "8%", right: "-6px", zIndex: 20 }}>
+          <div style={{
+            background: "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid rgba(255,255,255,0.75)",
+            boxShadow: "0 16px 48px rgba(109,40,217,0.20), 0 4px 16px rgba(139,92,246,0.12), 0 0 0 1px rgba(255,255,255,0.6)",
+            borderRadius: "18px",
+            padding: "14px 18px",
+          }}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0"
+                style={{ boxShadow: "0 6px 20px rgba(139,92,246,0.45)" }}>
+                <span className="text-[18px] leading-none">🎯</span>
               </div>
               <div>
-                <p className="text-[10px] text-gray-400 leading-tight">Compatibilidade</p>
-                <p className="text-[20px] font-black text-violet-700 leading-none">93%</p>
+                <p className="text-[11px] text-gray-400 leading-tight">Compatibilidade</p>
+                <p className="font-black text-violet-700 leading-none" style={{ fontSize: "22px" }}>93%</p>
               </div>
             </div>
-            <div className="mt-1.5 flex items-center gap-1.5">
-              <span className="relative flex h-1.5 w-1.5">
+            <div className="mt-2 flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-500" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-500" />
               </span>
-              <span className="text-[9px] text-gray-400">calculando agora</span>
+              <span className="text-[10px] text-gray-400">calculando agora</span>
             </div>
           </div>
         </div>
 
-        {/* Card C: Parceria iniciada — canto inferior esquerdo */}
-        <div className="absolute bottom-0 left-2 hv-float-c" style={{ zIndex: 20 }}>
-          <div
-            className="rounded-2xl px-4 py-3 min-w-[186px]"
-            style={{
-              background: "rgba(255,255,255,0.88)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.7)",
-              boxShadow: "0 12px 40px rgba(16,185,129,0.14), 0 0 0 1px rgba(255,255,255,0.55)",
-            }}
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0">
-                <HeartHandshake className="h-4 w-4 text-emerald-600" />
+        {/* Card C: Parceria iniciada — lado esquerdo, terço inferior */}
+        <div className="absolute hv-float-c" style={{ bottom: "14%", left: "-6px", zIndex: 20 }}>
+          <div style={{
+            background: "rgba(255,255,255,0.92)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid rgba(255,255,255,0.75)",
+            boxShadow: "0 16px 48px rgba(16,185,129,0.18), 0 4px 16px rgba(16,185,129,0.10), 0 0 0 1px rgba(255,255,255,0.6)",
+            borderRadius: "18px",
+            padding: "14px 18px",
+            minWidth: "208px",
+          }}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0">
+                <HeartHandshake className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-[12px] font-bold text-gray-800 leading-tight">Parceria iniciada</p>
-                <p className="text-[10px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+                <p className="text-[13px] font-bold text-gray-800 leading-tight">Parceria iniciada</p>
+                <p className="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
                   Comissão acordada
                 </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Card D: Cliente compatível — canto inferior direito */}
-        <div className="absolute bottom-2 right-0 hv-float-d" style={{ zIndex: 20 }}>
-          <div
-            className="rounded-2xl px-4 py-3"
-            style={{
-              background: "rgba(255,255,255,0.88)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.7)",
-              boxShadow: "0 12px 40px rgba(234,88,12,0.10), 0 0 0 1px rgba(255,255,255,0.55)",
-            }}
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center flex-shrink-0">
-                <Users className="h-4 w-4 text-orange-500" />
-              </div>
-              <div>
-                <p className="text-[12px] font-bold text-gray-800 leading-tight">Cliente compatível</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">disponível na rede</p>
               </div>
             </div>
           </div>
@@ -1034,7 +1018,7 @@ export default function HomePage() {
         </div>
 
         <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-[44%_56%] gap-8 lg:gap-10 items-center">
 
             {/* Left */}
             <div>
@@ -1109,7 +1093,7 @@ export default function HomePage() {
             </div>
 
             {/* Right — hero visual */}
-            <div className="w-full max-w-lg mx-auto lg:max-w-none lg:mx-0">
+            <div className="w-full">
               <HeroVisual />
             </div>
           </div>
