@@ -813,27 +813,27 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           HEADER
       ══════════════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-gradient-to-r from-blue-700 via-blue-600 to-violet-700 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center flex-shrink-0">
-            <img src="/logo.png" alt="ImobMatch" className="h-10 w-auto object-contain" />
+            <img src="/logo.png" alt="ImobMatch" className="h-10 w-auto object-contain brightness-0 invert" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-7">
             {NAV_LINKS.map(l => (
-              <Link key={l.href} href={l.href} className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+              <Link key={l.href} href={l.href} className="text-sm font-medium text-white/80 hover:text-white transition-colors">
                 {l.label}
               </Link>
             ))}
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+            <Link href="/login" className="text-sm font-medium text-white/80 hover:text-white transition-colors">
               Entrar
             </Link>
             <Link
               href="/register"
-              className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition shadow-md shadow-blue-200/60 active:scale-[0.98]"
+              className="inline-flex items-center gap-1.5 bg-white text-blue-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-50 transition shadow-lg shadow-blue-900/30 active:scale-[0.98]"
             >
               Cadastrar grátis
               <ArrowRight className="h-3.5 w-3.5" />
@@ -842,7 +842,7 @@ export default function HomePage() {
 
           <button
             onClick={() => setMenuOpen(v => !v)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-white/15 text-white transition-colors"
             aria-label="Abrir menu"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -850,20 +850,20 @@ export default function HomePage() {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-sm px-6 py-4 space-y-1 shadow-xl">
+          <div className="md:hidden border-t border-white/10 bg-blue-800/95 backdrop-blur-sm px-6 py-4 space-y-1 shadow-xl">
             {NAV_LINKS.map(l => (
               <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
-                className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+                className="block py-2.5 text-sm font-medium text-white/80 hover:text-white transition-colors">
                 {l.label}
               </Link>
             ))}
-            <div className="pt-3 mt-3 border-t border-gray-100 flex flex-col gap-2">
+            <div className="pt-3 mt-3 border-t border-white/10 flex flex-col gap-2">
               <Link href="/login" onClick={() => setMenuOpen(false)}
-                className="block text-center py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-blue-300 hover:text-blue-600 transition">
+                className="block text-center py-2.5 rounded-xl border border-white/20 text-sm font-medium text-white hover:bg-white/10 transition">
                 Entrar
               </Link>
               <Link href="/register" onClick={() => setMenuOpen(false)}
-                className="block text-center py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition">
+                className="block text-center py-2.5 rounded-xl bg-white text-blue-700 text-sm font-bold hover:bg-blue-50 transition">
                 Cadastrar grátis
               </Link>
             </div>
@@ -1046,8 +1046,17 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           PROBLEMA vs SOLUÇÃO
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white py-24">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="relative py-24 overflow-hidden">
+        {/* Fundo gradiente azul → roxo */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-800" />
+        {/* Blobs decorativos */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+          <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-blue-400/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-6">
           <div
             ref={fadeProblema.ref}
             className="text-center mb-14"
@@ -1057,18 +1066,25 @@ export default function HomePage() {
               transition: "opacity 0.55s ease, transform 0.55s ease",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Por que mudar?</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+            <p className="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-3">Por que mudar?</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
               O que muda com o ImobMatch
             </h2>
-            <p className="text-lg text-gray-500 max-w-xl mx-auto">
+            <p className="text-lg text-blue-100/80 max-w-xl mx-auto">
               Pare de trabalhar no escuro. Veja a diferença de ter uma rede inteligente do seu lado.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
             {/* Sem */}
-            <div className="rounded-2xl border border-red-100 bg-red-50/40 p-8 hover:shadow-md transition-shadow duration-300">
+            <div
+              style={{
+                opacity: fadeProblema.visible ? 1 : 0,
+                transform: fadeProblema.visible ? "translateY(0)" : "translateY(20px)",
+                transition: "opacity 0.5s ease 100ms, transform 0.5s ease 100ms",
+              }}
+              className="rounded-2xl border border-red-200/60 bg-white p-8 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-900/30 transition-all duration-300 cursor-default"
+            >
               <div className="flex items-center gap-3 mb-7">
                 <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
                   <X className="h-[18px] w-[18px] text-red-500" />
@@ -1098,7 +1114,14 @@ export default function HomePage() {
             </div>
 
             {/* Com */}
-            <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-8 shadow-md shadow-emerald-100/60 hover:shadow-lg transition-shadow duration-300">
+            <div
+              style={{
+                opacity: fadeProblema.visible ? 1 : 0,
+                transform: fadeProblema.visible ? "translateY(0)" : "translateY(20px)",
+                transition: "opacity 0.5s ease 200ms, transform 0.5s ease 200ms",
+              }}
+              className="rounded-2xl border border-emerald-200/80 bg-white p-8 shadow-xl shadow-blue-900/20 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-900/30 transition-all duration-300 cursor-default"
+            >
               <div className="flex items-center gap-3 mb-7">
                 <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
                   <Check className="h-5 w-5 text-emerald-600" />
