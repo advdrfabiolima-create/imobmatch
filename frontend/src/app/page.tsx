@@ -253,131 +253,40 @@ function HeroVisual() {
           zIndex: 0,
         }} />
 
-        {/* ── IMAGEM PRINCIPAL ── */}
+        {/* ── IMAGEM PRINCIPAL — PNG com fundo transparente ── */}
         <div className="relative" style={{ zIndex: 1 }}>
-          {/* Frame: mantém a sombra, sem overflow-hidden — imagem pode sangrar */}
-          <div className="rounded-3xl" style={{
-            boxShadow:
-              "0 55px 130px -22px rgba(37,99,235,0.45), " +
-              "0 28px 65px -12px rgba(99,102,241,0.30), " +
-              "0 10px 28px -4px rgba(139,92,246,0.20), " +
-              "0 0 0 1px rgba(99,102,241,0.16), " +
-              "inset 0 1px 0 rgba(255,255,255,0.52)",
-          }}>
-            {/* Imagem + overlays: levemente maior que o frame — efeito "sai da caixa" */}
-            <div className="rounded-3xl overflow-hidden" style={{
-              transform: "scale(1.035) translateY(-8px)",
-              transformOrigin: "center bottom",
-            }}>
-            <img
-              src="/corretores.png"
-              alt="Corretores ImobMatch fechando parceria"
-              className="w-full h-auto block object-cover"
-              draggable={false}
-            />
+          {/* Glow atmosférico atrás dos corretores */}
+          <div className="hv-glow absolute pointer-events-none" style={{
+            top: "55%", left: "50%",
+            width: "420px", height: "200px",
+            background: "radial-gradient(ellipse, rgba(99,102,241,0.55) 0%, rgba(59,130,246,0.30) 36%, transparent 68%)",
+            filter: "blur(32px)",
+            transform: "translate(-50%,-50%)",
+            zIndex: 0,
+          }} />
+          <div className="hv-ring absolute pointer-events-none" style={{
+            top: "55%", left: "50%",
+            width: "560px", height: "240px",
+            background: "radial-gradient(ellipse, transparent 36%, rgba(139,92,246,0.28) 52%, transparent 70%)",
+            filter: "blur(18px)",
+            transform: "translate(-50%,-50%)",
+            zIndex: 0,
+          }} />
 
-            {/* Gradients sobre a imagem */}
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: "linear-gradient(to top, rgba(30,27,75,0.55) 0%, rgba(30,27,75,0.06) 45%, transparent 70%)" }} />
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(139,92,246,0.14) 100%)" }} />
-
-            {/* ── GLOW no aperto de mão ── */}
-            <div className="absolute hv-glow pointer-events-none" style={{
-              top: "60%", left: "50%",
-              width: "330px", height: "155px",
-              background: "radial-gradient(ellipse, rgba(99,102,241,0.85) 0%, rgba(59,130,246,0.58) 32%, transparent 62%)",
-              filter: "blur(20px)",
-              transform: "translate(-50%,-50%)",
-            }} />
-
-            {/* ── Ring de energia ── */}
-            <div className="absolute hv-ring pointer-events-none" style={{
-              top: "60%", left: "50%",
-              width: "480px", height: "215px",
-              background: "radial-gradient(ellipse, transparent 34%, rgba(139,92,246,0.42) 50%, transparent 66%)",
-              filter: "blur(13px)",
-              transform: "translate(-50%,-50%)",
-            }} />
-
-            {/* ── SVG: rede + fluxo ── */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none"
-              viewBox="0 0 560 420" preserveAspectRatio="xMidYMid slice">
-              <defs>
-                <linearGradient id="hv-lg1" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%"   stopColor="#3b82f6" stopOpacity="0" />
-                  <stop offset="50%"  stopColor="#8b5cf6" stopOpacity="0.82" />
-                  <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-                </linearGradient>
-                <linearGradient id="hv-lg2" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%"   stopColor="#6366f1" stopOpacity="0" />
-                  <stop offset="50%"  stopColor="#3b82f6" stopOpacity="0.62" />
-                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
-                </linearGradient>
-                <linearGradient id="hv-lg3" x1="1" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor="#a78bfa" stopOpacity="0" />
-                  <stop offset="50%"  stopColor="#60a5fa" stopOpacity="0.58" />
-                  <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
-                </linearGradient>
-                <linearGradient id="hv-fg1" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%"   stopColor="#c4b5fd" stopOpacity="0" />
-                  <stop offset="50%"  stopColor="#c4b5fd" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#c4b5fd" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-
-              {/* Linhas estáticas draw-in */}
-              <line className="hv-line"
-                x1="35" y1="252" x2="525" y2="252"
-                stroke="url(#hv-lg1)" strokeWidth="1.5" strokeLinecap="round" />
-              <line className="hv-line hv-line-2"
-                x1="95" y1="62" x2="465" y2="368"
-                stroke="url(#hv-lg2)" strokeWidth="1.1" strokeLinecap="round" />
-              <line className="hv-line hv-line-3"
-                x1="465" y1="62" x2="95" y2="368"
-                stroke="url(#hv-lg3)" strokeWidth="1.1" strokeLinecap="round" />
-
-              {/* Raios convergentes ao nó */}
-              <line x1="280" y1="252" x2="95"  y2="62"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.30" />
-              <line x1="280" y1="252" x2="465" y2="62"  stroke="#3b82f6" strokeWidth="0.7" opacity="0.30" />
-              <line x1="280" y1="252" x2="95"  y2="368" stroke="#6366f1" strokeWidth="0.7" opacity="0.26" />
-              <line x1="280" y1="252" x2="465" y2="368" stroke="#6366f1" strokeWidth="0.7" opacity="0.26" />
-
-              {/* Fluxo contínuo de dados — dashes animados em cima */}
-              <line className="hv-fl1"
-                x1="35" y1="252" x2="525" y2="252"
-                stroke="url(#hv-fg1)" strokeWidth="2"
-                strokeDasharray="22 16" strokeLinecap="round" />
-              <line className="hv-fl2"
-                x1="95" y1="62" x2="465" y2="368"
-                stroke="#a5b4fc" strokeWidth="1.4"
-                strokeDasharray="15 20" strokeLinecap="round" opacity="0.72" />
-              <line className="hv-fl3"
-                x1="465" y1="62" x2="95" y2="368"
-                stroke="#93c5fd" strokeWidth="1.4"
-                strokeDasharray="18 18" strokeLinecap="round" opacity="0.68" />
-
-              {/* Nó central — match point */}
-              <circle cx="280" cy="252" r="7"  fill="#8b5cf6" opacity="0.93" />
-              <circle cx="280" cy="252" r="17" fill="#8b5cf6" opacity="0.15" />
-              <circle cx="280" cy="252" r="32" fill="#8b5cf6" opacity="0.06" />
-
-              {/* Nós secundários */}
-              <circle cx="95"  cy="62"  r="4" fill="#3b82f6" opacity="0.60" />
-              <circle cx="465" cy="62"  r="4" fill="#3b82f6" opacity="0.60" />
-              <circle cx="95"  cy="368" r="4" fill="#6366f1" opacity="0.50" />
-              <circle cx="465" cy="368" r="4" fill="#6366f1" opacity="0.50" />
-
-              {/* Partículas pulsantes */}
-              <circle className="hv-d1" cx="210" cy="196" r="2.5" fill="#a78bfa" />
-              <circle className="hv-d2" cx="356" cy="210" r="2"   fill="#60a5fa" />
-              <circle className="hv-d3" cx="218" cy="300" r="2.5" fill="#818cf8" />
-              <circle className="hv-d4" cx="346" cy="286" r="2"   fill="#a78bfa" />
-              <circle className="hv-d5" cx="183" cy="252" r="2"   fill="#60a5fa" />
-              <circle className="hv-d6" cx="378" cy="248" r="2.5" fill="#818cf8" />
-            </svg>
-            </div>{/* fim: inner overflow-hidden (bleed) */}
-          </div>{/* fim: frame (shadow) */}
+          {/* Imagem: drop-shadow segue o contorno dos corretores */}
+          <img
+            src="/corretores.png"
+            alt="Corretores ImobMatch fechando parceria"
+            className="w-full h-auto block relative"
+            style={{
+              filter:
+                "drop-shadow(0 28px 56px rgba(37,99,235,0.38)) " +
+                "drop-shadow(0 10px 24px rgba(99,102,241,0.26)) " +
+                "drop-shadow(0 2px 8px rgba(139,92,246,0.18))",
+              zIndex: 1,
+            }}
+            draggable={false}
+          />
         </div>
 
         {/* ════════════════════════════════════════════════════════
