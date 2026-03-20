@@ -67,6 +67,15 @@ const FEATURES = [
   },
 ];
 
+const COMPARISON = [
+  { before: "Perde clientes por não ter o imóvel certo",         after: "Match automático: comprador + imóvel ideal na hora"   },
+  { before: "Não sabe quais corretores têm o que precisa",       after: "Acessa a rede inteira de corretores instantaneamente" },
+  { before: "Deixa comissão na mesa por falta de parceiros",     after: "Parcerias formalizadas com divisão de comissão"       },
+  { before: "Busca de parceiros manual e demorada",              after: "Chat direto e novas parcerias em minutos"             },
+  { before: "Sem controle de compradores e preferências",        after: "Perfis organizados com histórico e preferências"      },
+  { before: "Perde oportunidades urgentes com desconto",         after: "Radar de oportunidades em tempo real"                },
+];
+
 const TESTIMONIALS = [
   {
     name: "Renata Oliveira",
@@ -814,87 +823,61 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-            {/* Sem ImobMatch */}
-            <div
-              style={{
-                opacity: fadeProblema.visible ? 1 : 0,
-                transform: fadeProblema.visible ? "translateY(0)" : "translateY(20px)",
-                transition: "opacity 0.5s ease 100ms, transform 0.5s ease 100ms",
-              }}
-              className="relative rounded-2xl border border-red-400/20 bg-white/[0.07] backdrop-blur-xl p-8 hover:scale-[1.02] hover:shadow-2xl hover:shadow-red-900/20 transition-all duration-300 cursor-default overflow-hidden"
-            >
-              {/* top accent */}
-              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500/60 to-transparent" />
-              {/* corner glow */}
-              <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 bg-red-500/10 rounded-full blur-2xl" />
-              <div className="flex items-center gap-3 mb-7">
-                <div className="w-9 h-9 rounded-xl bg-red-500/20 border border-red-400/30 flex items-center justify-center flex-shrink-0">
-                  <X className="h-[18px] w-[18px] text-red-300" />
+          {/* Comparison table */}
+          <div
+            style={{
+              opacity: fadeProblema.visible ? 1 : 0,
+              transform: fadeProblema.visible ? "translateY(0)" : "translateY(24px)",
+              transition: "opacity 0.55s ease 100ms, transform 0.55s ease 100ms",
+            }}
+            className="max-w-4xl mx-auto overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-blue-950/60"
+          >
+            {/* Header */}
+            <div className="grid grid-cols-2">
+              <div className="bg-red-950/70 backdrop-blur-xl px-5 py-4 flex items-center gap-3 border-b border-r border-red-400/15">
+                <div className="w-8 h-8 rounded-lg bg-red-500/25 border border-red-400/30 flex items-center justify-center flex-shrink-0">
+                  <X className="h-4 w-4 text-red-400" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-base">Sem ImobMatch</h3>
-                  <p className="text-xs text-red-300 font-medium">Você trabalha sozinho</p>
+                  <p className="font-bold text-white text-sm leading-tight">Sem ImobMatch</p>
+                  <p className="text-[11px] text-red-300 font-medium">Você trabalha sozinho</p>
                 </div>
               </div>
-              <ul className="space-y-3.5">
-                {[
-                  "Perde clientes por não ter o imóvel certo",
-                  "Não sabe quais corretores têm o que seu cliente precisa",
-                  "Deixa comissão na mesa por falta de parceiros",
-                  "Busca de parceiros manual e demorada",
-                  "Sem controle de compradores e preferências",
-                  "Perde oportunidades com desconto urgente",
-                ].map(t => (
-                  <li key={t} className="flex items-start gap-3 text-sm text-blue-100/70">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-red-500/20 border border-red-400/30 flex items-center justify-center flex-shrink-0">
-                      <X className="h-3 w-3 text-red-300" />
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
+              <div className="bg-emerald-950/70 backdrop-blur-xl px-5 py-4 flex items-center gap-3 border-b border-emerald-400/15">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/25 border border-emerald-400/30 flex items-center justify-center flex-shrink-0">
+                  <Check className="h-4 w-4 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="font-bold text-white text-sm leading-tight">Com ImobMatch</p>
+                  <p className="text-[11px] text-emerald-300 font-medium">Uma rede trabalhando por você</p>
+                </div>
+              </div>
             </div>
 
-            {/* Com ImobMatch */}
-            <div
-              style={{
-                opacity: fadeProblema.visible ? 1 : 0,
-                transform: fadeProblema.visible ? "translateY(0)" : "translateY(20px)",
-                transition: "opacity 0.5s ease 200ms, transform 0.5s ease 200ms",
-                boxShadow: "0 0 0 1px rgba(52,211,153,0.15), 0 20px 60px rgba(16,185,129,0.15)",
-              }}
-              className="relative rounded-2xl border border-emerald-400/25 bg-white/[0.11] backdrop-blur-xl p-8 hover:scale-[1.02] transition-all duration-300 cursor-default overflow-hidden"
-            >
-              {/* top accent */}
-              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400" />
-              {/* glow */}
-              <div className="pointer-events-none absolute -top-10 -right-10 w-48 h-48 bg-emerald-400/12 rounded-full blur-2xl" />
-              <div className="pointer-events-none absolute bottom-0 left-1/4 w-32 h-32 bg-cyan-400/10 rounded-full blur-2xl" />
-              <div className="flex items-center gap-3 mb-7">
-                <div className="w-9 h-9 rounded-xl bg-emerald-400/20 border border-emerald-400/30 flex items-center justify-center flex-shrink-0">
-                  <Check className="h-5 w-5 text-emerald-300" />
+            {/* Rows */}
+            {COMPARISON.map((row, i) => (
+              <div
+                key={i}
+                className={`grid grid-cols-2 ${i % 2 === 0 ? "bg-white/[0.04]" : "bg-white/[0.02]"}`}
+              >
+                <div className="px-5 py-4 flex items-center gap-3 border-r border-white/5">
+                  <span className="w-5 h-5 rounded-full bg-red-500/20 border border-red-400/25 flex items-center justify-center flex-shrink-0">
+                    <X className="h-2.5 w-2.5 text-red-400" />
+                  </span>
+                  <span className="text-sm text-blue-100/55 leading-snug">{row.before}</span>
                 </div>
-                <div>
-                  <h3 className="font-bold text-white text-base">Com ImobMatch</h3>
-                  <p className="text-xs text-emerald-300 font-medium">Você tem uma rede trabalhando por você</p>
+                <div className="px-5 py-4 flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                  <span className="text-sm text-white/90 font-medium leading-snug">{row.after}</span>
                 </div>
               </div>
-              <ul className="space-y-3.5">
-                {[
-                  "Matching automático de compradores com imóveis",
-                  "Acesso a imóveis de toda a rede de corretores",
-                  "Parcerias formalizadas com divisão de comissão",
-                  "Chat direto com corretores parceiros",
-                  "Radar de oportunidades com desconto em tempo real",
-                  "Ranking de reputação para se destacar na rede",
-                ].map(t => (
-                  <li key={t} className="flex items-start gap-3 text-sm text-blue-50/90 font-medium">
-                    <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                    {t}
-                  </li>
-                ))}
-              </ul>
+            ))}
+
+            {/* Footer strip */}
+            <div className="bg-gradient-to-r from-emerald-900/50 to-cyan-900/40 px-6 py-3.5 text-center border-t border-emerald-400/15">
+              <p className="text-emerald-300 text-xs font-semibold tracking-wide uppercase">
+                Mais de 200 corretores já fizeram essa escolha
+              </p>
             </div>
           </div>
         </div>
