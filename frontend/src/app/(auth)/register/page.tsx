@@ -366,7 +366,7 @@ function RegisterForm() {
 function LeftPanel() {
   return (
     <div
-      className="hidden lg:flex lg:w-[45%] xl:w-5/12 relative flex-col items-start justify-center px-14 py-16 overflow-hidden"
+      className="hidden lg:flex lg:w-[45%] xl:w-5/12 relative flex-col items-center justify-center px-14 py-16 overflow-hidden"
       style={{
         background: "linear-gradient(160deg, #0b1849 0%, #18106a 44%, #361178 72%, #461a8e 100%)",
       }}
