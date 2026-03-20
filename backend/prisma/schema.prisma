@@ -56,8 +56,21 @@ model User {
   opportunities     Opportunity[]
   posts             Post[]
   subscription      Subscription?
+  refreshTokens     RefreshToken[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  token     String    @unique   // SHA-256 hash do token real
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@map("refresh_tokens")
 }
 
 enum Role {

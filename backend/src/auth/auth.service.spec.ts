@@ -58,6 +58,13 @@ describe('AuthService', () => {
     earlyAccessLead: {
       updateMany: jest.fn(),
     },
+    refreshToken: {
+      create:     jest.fn(),
+      findUnique: jest.fn(),
+      update:     jest.fn(),
+      updateMany: jest.fn(),
+      deleteMany: jest.fn(),
+    },
   };
 
   const mockJwt   = { sign: jest.fn().mockReturnValue('mock-jwt-token') };
@@ -85,6 +92,8 @@ describe('AuthService', () => {
     (bcrypt.hash    as jest.Mock).mockResolvedValue('hashed_password');
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
     mockPrisma.earlyAccessLead.updateMany.mockResolvedValue({ count: 0 });
+    mockPrisma.refreshToken.create.mockResolvedValue({});
+    mockPrisma.refreshToken.deleteMany.mockResolvedValue({ count: 0 });
   });
 
   // ─── register ──────────────────────────────────────────────────────────────
@@ -97,10 +106,11 @@ describe('AuthService', () => {
       mockPrisma.user.create.mockResolvedValue(makeUser());
     });
 
-    it('deve criar conta e retornar { user, token }', async () => {
+    it('deve criar conta e retornar { user, accessToken, refreshToken }', async () => {
       const result = await service.register(dto as any);
 
-      expect(result).toHaveProperty('token', 'mock-jwt-token');
+      expect(result).toHaveProperty('accessToken', 'mock-jwt-token');
+      expect(result).toHaveProperty('refreshToken');
       expect(result.user.email).toBe(dto.email);
       expect(mockPrisma.user.create).toHaveBeenCalledTimes(1);
     });
@@ -153,18 +163,18 @@ describe('AuthService', () => {
   describe('login', () => {
     const dto = { email: 'joao@test.com', password: 'senha123' };
 
-    it('deve retornar { user, token } com credenciais válidas', async () => {
+    it('deve retornar { user, accessToken, refreshToken } com credenciais válidas', async () => {
       mockPrisma.user.findUnique.mockResolvedValue(makeUser());
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       const result = await service.login(dto);
 
-      expect(result).toHaveProperty('token', 'mock-jwt-token');
-      expect(mockJwt.sign).toHaveBeenCalledWith({
-        sub:   'user-id-1',
-        email: dto.email,
-        role:  'AGENT',
-      });
+      expect(result).toHaveProperty('accessToken', 'mock-jwt-token');
+      expect(result).toHaveProperty('refreshToken');
+      expect(mockJwt.sign).toHaveBeenCalledWith(
+        { sub: 'user-id-1', email: dto.email, role: 'AGENT' },
+        { expiresIn: '15m' },
+      );
     });
 
     it('não deve expor a senha no objeto retornado', async () => {

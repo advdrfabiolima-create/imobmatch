@@ -12,6 +12,9 @@ import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto } from './dt
 import { normalizePlan } from '../common/plans.config';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { createHash } from 'crypto';
+
+const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
 
 @Injectable()
 export class AuthService {
@@ -21,41 +24,79 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async register(dto: RegisterDto) {
-    const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
-    if (existing) throw new ConflictException('E-mail já cadastrado');
+  // ─── Helpers ───────────────────────────────────────────────────────────────
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-    const verificationToken = uuidv4();
-    const verificationExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 horas
+  private hashToken(token: string): string {
+    return createHash('sha256').update(token).digest('hex');
+  }
 
-    const user = await this.prisma.user.create({
-      data: {
-        ...dto,
-        password: hashedPassword,
-        emailVerified: false,
-        emailVerificationToken: verificationToken,
-        emailVerificationExpiry: verificationExpiry,
-      },
-      select: {
-        id: true, name: true, email: true, phone: true,
-        city: true, state: true, agency: true, creci: true,
-        role: true, plan: true, isLifetime: true, isFirstLogin: true, emailVerified: true, createdAt: true,
-      },
+  private async generateTokens(user: { id: string; email: string; role: string }) {
+    const accessToken = this.jwtService.sign(
+      { sub: user.id, email: user.email, role: user.role },
+      { expiresIn: '15m' },
+    );
+
+    const rawRefreshToken = uuidv4();
+    const expiresAt = new Date(Date.now() + REFRESH_TOKEN_TTL_MS);
+
+    // Limpa tokens expirados do usuário (housekeeping silencioso)
+    this.prisma.refreshToken
+      .deleteMany({ where: { userId: user.id, expiresAt: { lt: new Date() } } })
+      .catch(() => {});
+
+    await this.prisma.refreshToken.create({
+      data: { token: this.hashToken(rawRefreshToken), userId: user.id, expiresAt },
     });
 
-    // Send verification email (fire-and-forget; won't block registration)
-    this.mailService.sendVerificationEmail(user.email, user.name, verificationToken);
-
-    // Se o e-mail estava na lista de acesso antecipado, marca como REGISTERED
-    this.prisma.earlyAccessLead.updateMany({
-      where: { email: dto.email, status: { not: 'REGISTERED' } },
-      data: { status: 'REGISTERED' },
-    }).catch(() => {});
-
-    const token = this.jwtService.sign({ sub: user.id, email: user.email, role: user.role });
-    return { user, token };
+    return { accessToken, refreshToken: rawRefreshToken };
   }
+
+  // ─── refresh ───────────────────────────────────────────────────────────────
+
+  async refresh(rawToken: string) {
+    const hashed = this.hashToken(rawToken);
+
+    const stored = await this.prisma.refreshToken.findUnique({
+      where: { token: hashed },
+      include: { user: true },
+    });
+
+    // Token reutilizado após revogação → possível roubo → invalida toda a família
+    if (stored?.revokedAt) {
+      await this.prisma.refreshToken.updateMany({
+        where: { userId: stored.userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+      throw new UnauthorizedException('Sessão inválida. Faça login novamente.');
+    }
+
+    if (!stored || stored.expiresAt < new Date()) {
+      throw new UnauthorizedException('Sessão expirada. Faça login novamente.');
+    }
+
+    // Revoga o token usado (rotação)
+    await this.prisma.refreshToken.update({
+      where: { token: hashed },
+      data: { revokedAt: new Date() },
+    });
+
+    return this.generateTokens({
+      id: stored.user.id,
+      email: stored.user.email,
+      role: stored.user.role,
+    });
+  }
+
+  // ─── revokeRefreshToken ────────────────────────────────────────────────────
+
+  async revokeRefreshToken(rawToken: string) {
+    const hashed = this.hashToken(rawToken);
+    await this.prisma.refreshToken
+      .updateMany({ where: { token: hashed, revokedAt: null }, data: { revokedAt: new Date() } })
+      .catch(() => {});
+  }
+
+  // ─── verifyEmail ───────────────────────────────────────────────────────────
 
   async verifyEmail(token: string) {
     const user = await this.prisma.user.findFirst({
@@ -80,6 +121,44 @@ export class AuthService {
     return { message: 'E-mail verificado com sucesso!' };
   }
 
+  // ─── register ──────────────────────────────────────────────────────────────
+
+  async register(dto: RegisterDto) {
+    const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    if (existing) throw new ConflictException('E-mail já cadastrado');
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const verificationToken = uuidv4();
+    const verificationExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 horas
+
+    const user = await this.prisma.user.create({
+      data: {
+        ...dto,
+        password: hashedPassword,
+        emailVerified: false,
+        emailVerificationToken: verificationToken,
+        emailVerificationExpiry: verificationExpiry,
+      },
+      select: {
+        id: true, name: true, email: true, phone: true,
+        city: true, state: true, agency: true, creci: true,
+        role: true, plan: true, isLifetime: true, isFirstLogin: true, emailVerified: true, createdAt: true,
+      },
+    });
+
+    this.mailService.sendVerificationEmail(user.email, user.name, verificationToken);
+
+    this.prisma.earlyAccessLead.updateMany({
+      where: { email: dto.email, status: { not: 'REGISTERED' } },
+      data: { status: 'REGISTERED' },
+    }).catch(() => {});
+
+    const tokens = await this.generateTokens({ id: user.id, email: user.email, role: user.role });
+    return { user, ...tokens };
+  }
+
+  // ─── login ─────────────────────────────────────────────────────────────────
+
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (!user || !user.isActive) throw new UnauthorizedException('Credenciais inválidas');
@@ -88,9 +167,11 @@ export class AuthService {
     if (!valid) throw new UnauthorizedException('Credenciais inválidas');
 
     const { password, ...userWithoutPassword } = user;
-    const token = this.jwtService.sign({ sub: user.id, email: user.email, role: user.role });
-    return { user: { ...userWithoutPassword, plan: normalizePlan(user.plan) }, token };
+    const tokens = await this.generateTokens({ id: user.id, email: user.email, role: user.role });
+    return { user: { ...userWithoutPassword, plan: normalizePlan(user.plan) }, ...tokens };
   }
+
+  // ─── forgotPassword ────────────────────────────────────────────────────────
 
   async forgotPassword(dto: ForgotPasswordDto) {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
@@ -107,6 +188,8 @@ export class AuthService {
     this.mailService.sendPasswordResetEmail(user.email, user.name, token);
     return { message: 'Se o e-mail existir, você receberá as instruções.' };
   }
+
+  // ─── resetPassword ─────────────────────────────────────────────────────────
 
   async resetPassword(dto: ResetPasswordDto) {
     const user = await this.prisma.user.findFirst({
@@ -126,6 +209,8 @@ export class AuthService {
     return { message: 'Senha redefinida com sucesso' };
   }
 
+  // ─── resendVerification ────────────────────────────────────────────────────
+
   async resendVerification(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('Usuário não encontrado');
@@ -141,6 +226,8 @@ export class AuthService {
     this.mailService.sendVerificationEmail(user.email, user.name, token);
     return { message: 'E-mail de verificação reenviado!' };
   }
+
+  // ─── getMe ─────────────────────────────────────────────────────────────────
 
   async getMe(userId: string) {
     const user = await this.prisma.user.findUnique({
