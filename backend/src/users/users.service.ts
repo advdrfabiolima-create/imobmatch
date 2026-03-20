@@ -26,6 +26,7 @@ export class UsersService {
         select: {
           id: true, name: true, email: true, phone: true, city: true,
           state: true, agency: true, creci: true, bio: true, avatarUrl: true, createdAt: true,
+          score: true,
           _count: { select: { properties: true } },
         },
         orderBy: { createdAt: 'desc' },

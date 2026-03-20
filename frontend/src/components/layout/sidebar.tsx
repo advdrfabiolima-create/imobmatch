@@ -13,12 +13,22 @@ import { useAuthStore } from "@/store/auth.store";
 import { useSidebarStore } from "@/store/sidebar.store";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { AgentAvatar } from "@/components/ui/agent-avatar";
 
 
 export function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
   const { isOpen, close } = useSidebarStore();
+
+  const { data: myRanking } = useQuery({
+    queryKey: ["my-ranking-score"],
+    queryFn: () => api.get("/ranking?limit=200").then((r) =>
+      (r.data.data as any[]).find((a) => a.id === user?.id)?.score ?? null
+    ),
+    staleTime: 60_000,
+    enabled: !!user,
+  });
 
   const { data: partnershipsData } = useQuery({
     queryKey: ["partnerships-badge"],
@@ -113,13 +123,13 @@ export function Sidebar() {
         {/* User info */}
         <div className="px-4 py-4 border-b border-white/8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex-shrink-0 overflow-hidden flex items-center justify-center text-white font-bold text-sm shadow-md">
-              {user?.avatarUrl ? (
-                <img src={user.avatarUrl} alt={user?.name} className="w-full h-full object-cover" />
-              ) : (
-                initials
-              )}
-            </div>
+            <AgentAvatar
+              name={user?.name ?? ""}
+              avatarUrl={user?.avatarUrl}
+              score={myRanking ?? null}
+              size="md"
+              fallbackClassName="bg-gradient-to-br from-blue-500 to-violet-600 text-white"
+            />
             <div className="overflow-hidden flex-1 min-w-0">
               <p className="font-semibold text-sm text-[#CBD5E1] truncate leading-tight">{user?.name}</p>
               <p className="text-xs text-[#94A3B8] truncate mt-0.5">{user?.agency || user?.email}</p>

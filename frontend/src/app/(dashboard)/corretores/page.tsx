@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { Search, MapPin, Building2, MessageSquare, Phone } from "lucide-react";
+import { AgentAvatar } from "@/components/ui/agent-avatar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -64,13 +65,12 @@ export default function CorretoresPage() {
               <Card key={agent.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-5">
                   <div className="flex items-start gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg flex-shrink-0">
-                      {agent.avatarUrl ? (
-                        <img src={agent.avatarUrl} className="w-full h-full rounded-full object-cover" alt={agent.name} />
-                      ) : (
-                        agent.name.charAt(0)
-                      )}
-                    </div>
+                    <AgentAvatar
+                      name={agent.name}
+                      avatarUrl={agent.avatarUrl}
+                      score={agent.score}
+                      size="lg"
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-gray-900">{agent.name}</p>
                       {agent.agency && <p className="text-sm text-blue-600 truncate">{agent.agency}</p>}

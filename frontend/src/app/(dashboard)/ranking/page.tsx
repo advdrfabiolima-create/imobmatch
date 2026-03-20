@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { Trophy, Medal, Star, UserCheck, CheckCircle2, Zap, TrendingUp } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
+import { AgentAvatar } from "@/components/ui/agent-avatar";
 
 type AgentLevel = "Gold" | "Silver" | "Bronze";
 
@@ -155,12 +156,13 @@ export default function RankingPage() {
         {/* My position highlight */}
         {myAgent && (
           <div className="bg-blue-600 text-white rounded-2xl p-4 mb-6 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden flex-shrink-0">
-              {myAgent.avatarUrl
-                ? <img src={myAgent.avatarUrl} alt={myAgent.name} className="w-full h-full object-cover" />
-                : myAgent.name?.charAt(0).toUpperCase()
-              }
-            </div>
+            <AgentAvatar
+              name={myAgent.name}
+              avatarUrl={myAgent.avatarUrl}
+              score={myAgent.score}
+              size="md"
+              fallbackClassName="bg-white/20 text-white"
+            />
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-sm">Sua posição: #{myAgent.rank}</p>
               <div className="mt-1 h-1.5 bg-white/20 rounded-full overflow-hidden">
@@ -234,12 +236,12 @@ export default function RankingPage() {
                       </div>
 
                       {/* Avatar */}
-                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm overflow-hidden flex-shrink-0">
-                        {agent.avatarUrl
-                          ? <img src={agent.avatarUrl} alt={agent.name} className="w-full h-full object-cover" />
-                          : agent.name?.charAt(0).toUpperCase()
-                        }
-                      </div>
+                      <AgentAvatar
+                        name={agent.name}
+                        avatarUrl={agent.avatarUrl}
+                        score={agent.score}
+                        size="md"
+                      />
 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
