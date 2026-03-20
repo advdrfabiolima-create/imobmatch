@@ -66,6 +66,59 @@ export class MailService {
     await this.send(to, name, 'Redefinição de senha — ImobMatch', content);
   }
 
+  // ─── Solicitação de parceria ─────────────────────────────────────────────────
+
+  async sendPartnershipRequestEmail(
+    to: string,
+    receiverName: string,
+    requesterName: string,
+    requesterPhone: string | null,
+    propertyTitle: string,
+    propertyCity: string | null,
+  ): Promise<void> {
+    const dashboardUrl = `${this.frontendUrl}/parcerias`;
+
+    const content = `
+      <h2 style="color:#111827;font-size:20px;margin:0 0 8px;font-weight:700;">Olá, ${receiverName}!</h2>
+      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 20px;">
+        Você recebeu uma <strong>solicitação de parceria</strong> no ImobMatch e ela precisa da sua atenção.
+      </p>
+
+      <div style="background:#f0f9ff;border-left:4px solid #2563eb;border-radius:6px;padding:16px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 6px;color:#1e40af;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Solicitação recebida de</p>
+        <p style="margin:0;color:#111827;font-size:16px;font-weight:700;">${requesterName}</p>
+        ${requesterPhone ? `<p style="margin:4px 0 0;color:#6b7280;font-size:13px;">📞 ${requesterPhone}</p>` : ''}
+      </div>
+
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:16px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 4px;color:#6b7280;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Imóvel em questão</p>
+        <p style="margin:0;color:#111827;font-size:15px;font-weight:600;">${propertyTitle}</p>
+        ${propertyCity ? `<p style="margin:4px 0 0;color:#6b7280;font-size:13px;">📍 ${propertyCity}</p>` : ''}
+      </div>
+
+      <p style="color:#6b7280;font-size:14px;line-height:1.7;margin:0 0 24px;">
+        Acesse sua conta agora para <strong>aceitar ou recusar</strong> esta parceria.
+        Solicitações sem resposta ficam pendentes e podem representar uma oportunidade perdida.
+      </p>
+
+      <a href="${dashboardUrl}"
+         style="display:inline-block;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
+        🤝 Ver solicitação de parceria
+      </a>
+
+      <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
+        Responda o quanto antes — parcerias bem respondidas constroem sua reputação na rede ImobMatch.
+      </p>
+    `;
+
+    await this.send(
+      to,
+      receiverName,
+      `🤝 ${requesterName} quer fazer parceria com você — ImobMatch`,
+      content,
+    );
+  }
+
   // ─── Convite de acesso antecipado ───────────────────────────────────────────
 
   async sendEarlyAccessInvite(to: string, name: string): Promise<void> {

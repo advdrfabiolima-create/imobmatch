@@ -2,12 +2,14 @@ import { Injectable, NotFoundException, ForbiddenException, BadRequestException 
 import { createHash } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { RankingService } from '../ranking/ranking.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class PartnershipsService {
   constructor(
     private prisma: PrismaService,
     private rankingService: RankingService,
+    private mailService: MailService,
   ) {}
 
   private extractIp(req: any): string | null {
@@ -46,14 +48,26 @@ export class PartnershipsService {
           : 'Já existe uma solicitação de parceria pendente para este match',
       );
 
-    return this.prisma.partnership.create({
+    const partnership = await this.prisma.partnership.create({
       data: { ...dto, requesterId, requesterIp: this.extractIp(req) },
       include: {
-        property: { select: { id: true, title: true, price: true } },
+        property: { select: { id: true, title: true, price: true, city: true } },
         requester: { select: { id: true, name: true, phone: true, email: true } },
         receiver:  { select: { id: true, name: true, phone: true, email: true } },
       },
     });
+
+    // fire-and-forget: notifica o corretor receptor por e-mail
+    this.mailService.sendPartnershipRequestEmail(
+      partnership.receiver.email,
+      partnership.receiver.name,
+      partnership.requester.name,
+      partnership.requester.phone ?? null,
+      partnership.property.title,
+      partnership.property.city ?? null,
+    ).catch(() => {});
+
+    return partnership;
   }
 
   async findAll(userId: string, query: any) {
