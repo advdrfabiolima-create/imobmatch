@@ -383,25 +383,26 @@ function OpportunityImpactSection() {
   const currentGroup = OPP_POOL.slice(groupIdx * 3, groupIdx * 3 + 3);
 
   return (
-    <section className="bg-[#0F1117] py-20 relative overflow-hidden">
+    <section className="relative py-20 overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#f3f0ff_60%,#f5f4ff_100%)]">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-500/10 blur-3xl rounded-full" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-600/10 blur-3xl rounded-full" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-400/10 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-violet-400/10 blur-3xl rounded-full" />
+        <div className="absolute top-1/2 left-0 w-64 h-64 bg-blue-300/8 blur-3xl rounded-full" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-600 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider">
             <Flame className="h-3.5 w-3.5" />
             Exemplos de oportunidades na plataforma
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
             Oportunidades como essa{" "}
-            <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
               surgem todos os dias
             </span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto">
+          <p className="text-slate-500 text-lg max-w-xl mx-auto">
             Corretores publicam imóveis com desconto urgente na rede. Quem está cadastrado acessa primeiro.
           </p>
         </div>
@@ -413,10 +414,10 @@ function OpportunityImpactSection() {
           {currentGroup.map((opp) => (
             <div
               key={opp.label}
-              className={`relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+              className={`relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
                 opp.featured
-                  ? "border-orange-500/50 bg-white/5 shadow-xl shadow-orange-500/10"
-                  : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"
+                  ? "border-orange-300/60 bg-white shadow-lg shadow-orange-100/80"
+                  : "border-slate-200 bg-white hover:shadow-slate-200/60"
               }`}
             >
               {opp.featured && (
@@ -426,27 +427,27 @@ function OpportunityImpactSection() {
               <div className="p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <p className="font-bold text-white text-sm">{opp.label}</p>
-                    <p className="text-gray-400 text-xs mt-0.5">{opp.type}</p>
+                    <p className="font-bold text-slate-900 text-sm">{opp.label}</p>
+                    <p className="text-slate-400 text-xs mt-0.5">{opp.type}</p>
                   </div>
-                  <span className="text-[10px] font-black text-red-400 bg-red-500/15 border border-red-500/20 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-black text-red-500 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
                     −{opp.pct} OFF
                   </span>
                 </div>
-                <div className="bg-white/5 rounded-xl p-3.5 mb-4 border border-white/10">
+                <div className="bg-slate-50 rounded-xl p-3.5 mb-4 border border-slate-100">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-gray-500 line-through">{opp.from}</p>
-                      <p className="text-xl font-extrabold text-white mt-0.5">{opp.to}</p>
+                      <p className="text-xs text-slate-400 line-through">{opp.from}</p>
+                      <p className="text-xl font-extrabold text-slate-900 mt-0.5">{opp.to}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-gray-500">Economia</p>
-                      <p className="text-sm font-bold text-orange-400">{opp.save}</p>
+                      <p className="text-xs text-slate-400">Economia</p>
+                      <p className="text-sm font-bold text-orange-500">{opp.save}</p>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                  <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
                     <Zap className="h-3 w-3" />
                     {opp.matches} compradores compatíveis
                   </div>
@@ -470,14 +471,14 @@ function OpportunityImpactSection() {
               onClick={() => rotate(i)}
               aria-label={`Grupo ${i + 1}`}
               className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === groupIdx ? "w-6 bg-orange-400" : "w-1.5 bg-white/25 hover:bg-white/40"
+                i === groupIdx ? "w-6 bg-orange-500" : "w-1.5 bg-slate-300 hover:bg-slate-400"
               }`}
             />
           ))}
         </div>
 
         <div className="text-center">
-          <p className="text-gray-500 text-sm mb-4">
+          <p className="text-slate-400 text-sm mb-4">
             Exemplos do tipo de oportunidade publicada por corretores da plataforma todos os dias
           </p>
           <Link
@@ -821,15 +822,19 @@ export default function HomePage() {
                 transform: fadeProblema.visible ? "translateY(0)" : "translateY(20px)",
                 transition: "opacity 0.5s ease 100ms, transform 0.5s ease 100ms",
               }}
-              className="rounded-2xl border border-red-200/60 bg-white p-8 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-900/30 transition-all duration-300 cursor-default"
+              className="relative rounded-2xl border border-red-400/20 bg-white/[0.07] backdrop-blur-xl p-8 hover:scale-[1.02] hover:shadow-2xl hover:shadow-red-900/20 transition-all duration-300 cursor-default overflow-hidden"
             >
+              {/* top accent */}
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500/60 to-transparent" />
+              {/* corner glow */}
+              <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 bg-red-500/10 rounded-full blur-2xl" />
               <div className="flex items-center gap-3 mb-7">
-                <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
-                  <X className="h-[18px] w-[18px] text-red-500" />
+                <div className="w-9 h-9 rounded-xl bg-red-500/20 border border-red-400/30 flex items-center justify-center flex-shrink-0">
+                  <X className="h-[18px] w-[18px] text-red-300" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 text-base">Sem ImobMatch</h3>
-                  <p className="text-xs text-red-500 font-medium">Você trabalha sozinho</p>
+                  <h3 className="font-bold text-white text-base">Sem ImobMatch</h3>
+                  <p className="text-xs text-red-300 font-medium">Você trabalha sozinho</p>
                 </div>
               </div>
               <ul className="space-y-3.5">
@@ -841,9 +846,9 @@ export default function HomePage() {
                   "Sem controle de compradores e preferências",
                   "Perde oportunidades com desconto urgente",
                 ].map(t => (
-                  <li key={t} className="flex items-start gap-3 text-sm text-gray-600">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                      <X className="h-3 w-3 text-red-500" />
+                  <li key={t} className="flex items-start gap-3 text-sm text-blue-100/70">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-red-500/20 border border-red-400/30 flex items-center justify-center flex-shrink-0">
+                      <X className="h-3 w-3 text-red-300" />
                     </span>
                     {t}
                   </li>
@@ -858,15 +863,21 @@ export default function HomePage() {
                 transform: fadeProblema.visible ? "translateY(0)" : "translateY(20px)",
                 transition: "opacity 0.5s ease 200ms, transform 0.5s ease 200ms",
               }}
-              className="rounded-2xl border border-emerald-200/80 bg-white p-8 shadow-xl shadow-blue-900/20 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-900/30 transition-all duration-300 cursor-default"
+              className="relative rounded-2xl border border-emerald-400/25 bg-white/[0.11] backdrop-blur-xl p-8 hover:scale-[1.02] transition-all duration-300 cursor-default overflow-hidden"
+              style={{ boxShadow: "0 0 0 1px rgba(52,211,153,0.15), 0 20px 60px rgba(16,185,129,0.15)" } as React.CSSProperties}
             >
+              {/* top accent */}
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400" />
+              {/* glow */}
+              <div className="pointer-events-none absolute -top-10 -right-10 w-48 h-48 bg-emerald-400/12 rounded-full blur-2xl" />
+              <div className="pointer-events-none absolute bottom-0 left-1/4 w-32 h-32 bg-cyan-400/10 rounded-full blur-2xl" />
               <div className="flex items-center gap-3 mb-7">
-                <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                  <Check className="h-5 w-5 text-emerald-600" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-400/20 border border-emerald-400/30 flex items-center justify-center flex-shrink-0">
+                  <Check className="h-5 w-5 text-emerald-300" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 text-base">Com ImobMatch</h3>
-                  <p className="text-xs text-emerald-600 font-medium">Você tem uma rede trabalhando por você</p>
+                  <h3 className="font-bold text-white text-base">Com ImobMatch</h3>
+                  <p className="text-xs text-emerald-300 font-medium">Você tem uma rede trabalhando por você</p>
                 </div>
               </div>
               <ul className="space-y-3.5">
@@ -878,8 +889,8 @@ export default function HomePage() {
                   "Radar de oportunidades com desconto em tempo real",
                   "Ranking de reputação para se destacar na rede",
                 ].map(t => (
-                  <li key={t} className="flex items-start gap-3 text-sm text-gray-700 font-medium">
-                    <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <li key={t} className="flex items-start gap-3 text-sm text-blue-50/90 font-medium">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                     {t}
                   </li>
                 ))}
@@ -933,8 +944,13 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           DEPOIMENTOS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white py-24">
-        <div className="mx-auto max-w-7xl px-6">
+      <section className="relative py-24 overflow-hidden bg-[linear-gradient(160deg,#faf8ff_0%,#f3f0ff_45%,#ede9fe_75%,#f8fbff_100%)]">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute top-0 right-1/4 w-[500px] h-[400px] bg-violet-400/12 blur-3xl rounded-full" />
+          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-400/10 blur-3xl rounded-full" />
+          <div className="absolute top-1/2 right-0 w-64 h-64 bg-purple-500/8 blur-3xl rounded-full" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-6">
           <div
             ref={fadeDepoimentos.ref}
             className="text-center mb-14"
@@ -944,9 +960,9 @@ export default function HomePage() {
               transition: "opacity 0.55s ease, transform 0.55s ease",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Resultados reais</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">O que dizem os corretores</h2>
-            <p className="text-lg text-gray-500">De quem já usa a plataforma para gerar negócios.</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-3">Resultados reais</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">O que dizem os corretores</h2>
+            <p className="text-lg text-slate-500">De quem já usa a plataforma para gerar negócios.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -958,26 +974,26 @@ export default function HomePage() {
                   transform: fadeDepoimentos.visible ? "translateY(0)" : "translateY(20px)",
                   transition: `opacity 0.5s ease ${i * 100}ms, transform 0.5s ease ${i * 100}ms`,
                 }}
-                className="group flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-7 hover:shadow-xl hover:shadow-gray-100/80 hover:-translate-y-1 transition-all duration-300"
+                className="group flex flex-col gap-4 rounded-2xl border border-violet-200/60 bg-white/75 backdrop-blur-sm p-7 shadow-lg shadow-violet-100/50 hover:shadow-xl hover:shadow-violet-200/60 hover:border-violet-300/70 hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="bg-gray-50 rounded-xl px-3 py-2 border border-gray-100">
-                  <p className="text-xs font-bold text-gray-700">&ldquo;{t.highlight}&rdquo;</p>
+                <div className="bg-violet-50 rounded-xl px-3 py-2 border border-violet-100">
+                  <p className="text-xs font-bold text-violet-800">&ldquo;{t.highlight}&rdquo;</p>
                 </div>
                 <div className="flex gap-0.5">
                   {Array.from({ length: t.stars }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <p className="text-gray-500 text-sm leading-relaxed flex-1">
+                <p className="text-slate-500 text-sm leading-relaxed flex-1">
                   &ldquo;{t.text}&rdquo;
                 </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center flex-shrink-0 shadow-md`}>
+                <div className="flex items-center gap-3 pt-4 border-t border-violet-100/60">
+                  <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center flex-shrink-0 shadow-md shadow-violet-200/50`}>
                     <span className="text-xs font-bold text-white">{t.initial}</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-gray-900">{t.name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{t.role}</p>
+                    <p className="font-semibold text-sm text-slate-900">{t.name}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{t.role}</p>
                   </div>
                 </div>
               </div>
