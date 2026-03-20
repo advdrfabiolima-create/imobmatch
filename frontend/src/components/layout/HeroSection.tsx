@@ -341,12 +341,13 @@ export default function HeroSection() {
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 28px 55px rgba(37,99,235,0.13))",
-              width: "195%",
-              height: "auto",
+              width: "auto",
+              height: "950px",
               objectFit: "contain",
-              objectPosition: "top center",
-              top: "40px",
-              left: "-5%",
+              objectPosition: "top right",
+              top: "0px",
+              right: "-6%",
+              left: "auto",
             }}
             draggable={false}
           />
@@ -355,7 +356,7 @@ export default function HeroSection() {
 
           {/* Card: Match encontrado — sobre o cotovelo do homem */}
           <FloatingCard
-            className="absolute left-[-10%] top-[33%] z-20 w-[280px] px-4 py-4"
+            className="absolute left-[-14%] top-[33%] z-20 w-[280px] px-4 py-4"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(14px)",
