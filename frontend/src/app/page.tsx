@@ -862,9 +862,9 @@ export default function HomePage() {
                 opacity: fadeProblema.visible ? 1 : 0,
                 transform: fadeProblema.visible ? "translateY(0)" : "translateY(20px)",
                 transition: "opacity 0.5s ease 200ms, transform 0.5s ease 200ms",
+                boxShadow: "0 0 0 1px rgba(52,211,153,0.15), 0 20px 60px rgba(16,185,129,0.15)",
               }}
               className="relative rounded-2xl border border-emerald-400/25 bg-white/[0.11] backdrop-blur-xl p-8 hover:scale-[1.02] transition-all duration-300 cursor-default overflow-hidden"
-              style={{ boxShadow: "0 0 0 1px rgba(52,211,153,0.15), 0 20px 60px rgba(16,185,129,0.15)" } as React.CSSProperties}
             >
               {/* top accent */}
               <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400" />
