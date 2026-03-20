@@ -1,3 +1,5 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -13,4 +15,21 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withSentryConfig(nextConfig, {
+  // Token de autenticação para upload de source maps (CI/CD)
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  org:     process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+
+  // Não polui os logs locais
+  silent: !process.env.CI,
+
+  // Faz upload de source maps maiores (melhores stack traces)
+  widenClientFileUpload: true,
+
+  // Não expõe source maps no bundle enviado ao cliente
+  hideSourceMaps: true,
+
+  // Remove logs internos do SDK do bundle de produção
+  disableLogger: true,
+});

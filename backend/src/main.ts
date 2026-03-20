@@ -1,14 +1,22 @@
-import { NestFactory } from '@nestjs/core';
+// Sentry deve ser inicializado antes de qualquer outro import
+import './instrument';
+
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
+import { SentryExceptionFilter } from './common/sentry-exception.filter';
 import * as path from 'path';
 import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Filtro global de exceções — repassa erros 5xx ao Sentry
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new SentryExceptionFilter(httpAdapter));
 
   // Servir arquivos de upload como estáticos
   app.useStaticAssets(path.join(process.cwd(), 'uploads'), {
