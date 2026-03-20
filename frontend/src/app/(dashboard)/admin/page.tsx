@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import {
   Users, Building2, Zap, UserCheck, Search, ToggleLeft, Trash2,
-  Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard,
+  Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard, MessageSquarePlus,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
@@ -304,12 +304,61 @@ function LeadsTab() {
   );
 }
 
+// ── Aba de Feedbacks ──────────────────────────────────────────────────────────
+function FeedbacksTab() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-feedbacks"],
+    queryFn: () => api.get("/feedback").then((r) => r.data),
+  });
+
+  const feedbacks: any[] = Array.isArray(data) ? data : [];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-gray-500">{feedbacks.length} feedback(s) recebido(s)</p>
+      </div>
+
+      {isLoading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />
+          ))}
+        </div>
+      ) : feedbacks.length === 0 ? (
+        <div className="text-center py-20 text-gray-400">
+          <MessageSquarePlus className="h-10 w-10 mx-auto mb-3" />
+          <p className="text-sm">Nenhum feedback recebido ainda.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {feedbacks.map((fb: any) => (
+            <Card key={fb.id}>
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 mb-1">{fb.userName}</p>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{fb.message}</p>
+                  </div>
+                  <p className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">
+                    {formatDate(fb.createdAt)}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Página principal Admin ────────────────────────────────────────────────────
 export default function AdminPage() {
   const { user } = useAuthStore();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState<"stats" | "users" | "properties" | "leads">("stats");
+  const [tab, setTab] = useState<"stats" | "users" | "properties" | "leads" | "feedbacks">("stats");
   const [search, setSearch] = useState("");
 
   if (user?.role !== "ADMIN") {
@@ -352,10 +401,11 @@ export default function AdminPage() {
   });
 
   const TABS = [
-    { key: "stats",      label: "Estatísticas" },
-    { key: "users",      label: "Usuários"     },
-    { key: "properties", label: "Imóveis"      },
-    { key: "leads",      label: "Lista VIP 🔒"  },
+    { key: "stats",      label: "Estatísticas"   },
+    { key: "users",      label: "Usuários"       },
+    { key: "properties", label: "Imóveis"        },
+    { key: "leads",      label: "Lista VIP 🔒"    },
+    { key: "feedbacks",  label: "Feedbacks 💬"   },
   ] as const;
 
   return (
@@ -486,6 +536,9 @@ export default function AdminPage() {
 
         {/* ── Lista VIP ── */}
         {tab === "leads" && <LeadsTab />}
+
+        {/* ── Feedbacks ── */}
+        {tab === "feedbacks" && <FeedbacksTab />}
 
       </div>
     </div>

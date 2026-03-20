@@ -20,6 +20,7 @@ import { FeedModule } from './feed/feed.module';
 import { RankingModule } from './ranking/ranking.module';
 import { BillingModule } from './billing/billing.module';
 import { EarlyAccessModule } from './early-access/early-access.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { EarlyAccessModule } from './early-access/early-access.module';
     RankingModule,
     BillingModule,
     EarlyAccessModule,
+    FeedbackModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

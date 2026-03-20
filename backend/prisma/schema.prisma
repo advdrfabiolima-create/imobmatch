@@ -311,6 +311,18 @@ enum EarlyAccessStatus {
   REGISTERED
 }
 
+// ==================== FEEDBACKS ====================
+
+model Feedback {
+  id        String   @id @default(uuid())
+  userId    String
+  userName  String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@map("feedbacks")
+}
+
 // ==================== MENSAGENS ====================
 
 model Message {
