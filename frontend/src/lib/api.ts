@@ -31,10 +31,11 @@ api.interceptors.response.use(
     const originalRequest: AxiosRequestConfig & { _retry?: boolean } = error.config;
 
     // 401 → tenta renovar tokens via refresh cookie
+    const noRefreshUrls = ["/auth/refresh", "/auth/login", "/auth/register"];
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== "/auth/refresh" &&
+      !noRefreshUrls.includes(originalRequest.url ?? "") &&
       typeof window !== "undefined"
     ) {
       if (isRefreshing) {
