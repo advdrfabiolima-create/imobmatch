@@ -110,7 +110,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
       <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-2.5">
         Plano
       </p>
-      <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+      <div className="grid grid-cols-5 gap-1.5 pt-3">
         {PLANS.map((plan) => {
           const active = selected === plan.id;
           return (
@@ -119,7 +119,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
               type="button"
               onClick={() => onChange(plan.id)}
               className={[
-                "relative flex-shrink-0 flex flex-col items-center px-3.5 py-2.5 rounded-xl transition-all duration-150 min-w-[68px]",
+                "relative flex flex-col items-center px-2 py-2.5 rounded-xl transition-all duration-150 w-full",
                 active
                   ? "bg-blue-600 shadow-sm shadow-blue-300/30"
                   : plan.popular
@@ -378,7 +378,7 @@ function LeftPanel() {
         style={{ background: "rgba(37,99,235,0.14)", filter: "blur(100px)" }} />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col w-full max-w-[340px] gap-11">
+      <div className="relative z-10 flex flex-col items-center text-center w-full max-w-[340px] gap-11">
 
         {/* Logo */}
         <Link href="/" className="transition-opacity hover:opacity-70">
@@ -398,7 +398,7 @@ function LeftPanel() {
         </div>
 
         {/* Features */}
-        <ul className="space-y-4">
+        <ul className="space-y-4 w-full text-left">
           {FEATURES.map(({ icon: Icon, text }) => (
             <li key={text} className="flex items-start gap-3">
               <Icon className="h-[15px] w-[15px] text-white/30 flex-shrink-0 mt-0.5" />
@@ -409,7 +409,7 @@ function LeftPanel() {
 
         {/* Live indicator */}
         <div
-          className="rounded-xl px-4 py-3.5 border border-white/[0.10]"
+          className="rounded-xl px-4 py-3.5 border border-white/[0.10] w-full text-left"
           style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(10px)" }}
         >
           <div className="flex items-center gap-2 mb-1.5">
