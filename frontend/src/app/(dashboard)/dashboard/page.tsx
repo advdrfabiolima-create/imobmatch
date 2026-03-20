@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/header";
 import { ActivityTicker } from "@/components/layout/activity-ticker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,9 +13,151 @@ import {
   Building2, Users, Zap, UserCheck, ArrowRight,
   Crown, Sparkles, Infinity, Flame, MapPin,
   Lightbulb, TrendingUp, Phone, ChevronRight, AlertCircle,
+  CheckCircle2, Circle, X, PartyPopper,
 } from "lucide-react";
 import Link from "next/link";
 import { normalizePlan } from "@/config/plans";
+
+// ─── Onboarding Checklist ─────────────────────────────────────────────────────
+
+const STORAGE_KEY = "imobmatch_onboarding_dismissed";
+
+function OnboardingChecklist({ user, stats }: { user: any; stats: any }) {
+  const [dismissed, setDismissed]   = useState(true); // inicia true para evitar flash
+  const [allDone,   setAllDone]     = useState(false);
+
+  const steps = [
+    {
+      id:        "account",
+      label:     "Conta criada",
+      done:      true,
+      href:      null,
+    },
+    {
+      id:        "email",
+      label:     "Verificar e-mail",
+      done:      !!user?.emailVerified,
+      href:      "/verificar-email",
+    },
+    {
+      id:        "property",
+      label:     "Cadastrar primeiro imóvel",
+      done:      (stats?.propertiesCount ?? 0) > 0,
+      href:      "/meus-imoveis",
+    },
+    {
+      id:        "buyer",
+      label:     "Adicionar primeiro comprador",
+      done:      (stats?.buyersCount ?? 0) > 0,
+      href:      "/compradores",
+    },
+    {
+      id:        "match",
+      label:     "Gerar seu primeiro match",
+      done:      (stats?.matchesCount ?? 0) > 0,
+      href:      "/matches",
+    },
+  ];
+
+  const completed = steps.filter(s => s.done).length;
+  const total     = steps.length;
+  const pct       = Math.round((completed / total) * 100);
+
+  useEffect(() => {
+    if (localStorage.getItem(STORAGE_KEY) === "true") return;
+    setDismissed(false);
+  }, []);
+
+  // Quando todos os passos são concluídos, mostra celebração por 3s e dismiss
+  useEffect(() => {
+    if (dismissed || completed < total) return;
+    setAllDone(true);
+    const timer = setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY, "true");
+      setDismissed(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [completed, total, dismissed]);
+
+  if (dismissed) return null;
+
+  const handleDismiss = () => {
+    localStorage.setItem(STORAGE_KEY, "true");
+    setDismissed(true);
+  };
+
+  // Tela de conclusão
+  if (allDone) {
+    return (
+      <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-200 shadow-sm">
+        <PartyPopper className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-emerald-800">Primeiros passos concluídos!</p>
+          <p className="text-xs text-emerald-600 mt-0.5">Você está pronto para aproveitar o ImobMatch ao máximo.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-blue-50/60 border-b border-blue-100">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-blue-600" />
+          <span className="text-sm font-semibold text-blue-900">Primeiros passos</span>
+          <span className="text-xs font-medium text-blue-500 bg-white border border-blue-200 px-2 py-0.5 rounded-full">
+            {completed} de {total}
+          </span>
+        </div>
+        <button
+          onClick={handleDismiss}
+          className="text-blue-300 hover:text-blue-500 transition-colors"
+          aria-label="Fechar checklist"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-1 bg-blue-100">
+        <div
+          className="h-full bg-gradient-to-r from-blue-500 to-violet-500 transition-all duration-500"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
+      {/* Steps */}
+      <div className="divide-y divide-gray-50">
+        {steps.map((step) => {
+          const content = (
+            <div className={`flex items-center gap-3 px-4 py-2.5 transition-colors ${
+              !step.done && step.href ? "hover:bg-blue-50/40 cursor-pointer" : ""
+            }`}>
+              {step.done ? (
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+              ) : (
+                <Circle className="h-4 w-4 text-gray-300 flex-shrink-0" />
+              )}
+              <span className={`text-sm flex-1 ${step.done ? "text-gray-400 line-through" : "text-gray-700 font-medium"}`}>
+                {step.label}
+              </span>
+              {!step.done && step.href && (
+                <ArrowRight className="h-3.5 w-3.5 text-blue-400 flex-shrink-0" />
+              )}
+            </div>
+          );
+
+          return step.href && !step.done ? (
+            <Link key={step.id} href={step.href}>{content}</Link>
+          ) : (
+            <div key={step.id}>{content}</div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 // ─── Plan Banner ──────────────────────────────────────────────────────────────
 
@@ -563,6 +706,9 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-500">O que você pode fechar hoje?</p>
           </div>
         </div>
+
+        {/* Checklist de onboarding — some após completar ou dismiss */}
+        <OnboardingChecklist user={user} stats={stats} />
 
         <PlanBanner />
 
