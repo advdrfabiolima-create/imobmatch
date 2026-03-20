@@ -328,7 +328,7 @@ export default function HeroSection() {
           <p className="mt-6 text-sm text-slate-400">Sem cartão de crédito · Cancele quando quiser</p>
 
           {/* Stats */}
-          <div className="mt-12 flex flex-wrap gap-8 border-t border-slate-200/80 pt-8">
+          <div className="mt-6 flex flex-wrap gap-8 border-t border-slate-200/80 pt-6">
             <HeroStat value="100%" label="gratuito para começar" />
             <HeroStat value="+3" label="negócios fechados na rede" />
             <HeroStat value="2" label="estados ativos" />
