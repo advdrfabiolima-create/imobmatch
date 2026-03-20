@@ -50,6 +50,7 @@ export class BuyersService {
     const [buyers, total] = await Promise.all([
       this.prisma.buyer.findMany({
         where, skip, take: Number(limit), orderBy: { createdAt: 'desc' },
+        include: { _count: { select: { matches: true } } },
       }),
       this.prisma.buyer.count({ where }),
     ]);

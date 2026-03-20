@@ -139,6 +139,7 @@ export class PropertiesService {
       this.prisma.property.findMany({
         where, skip, take: Number(limit),
         orderBy: { createdAt: 'desc' },
+        include: { _count: { select: { matches: true } } },
       }),
       this.prisma.property.count({ where }),
     ]);

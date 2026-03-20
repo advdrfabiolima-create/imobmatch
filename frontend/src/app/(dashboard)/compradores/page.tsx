@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { formatCurrency, PROPERTY_TYPE_LABELS } from "@/lib/utils";
-import { Plus, Search, User, Phone, MapPin, DollarSign, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, User, Phone, MapPin, DollarSign, Edit, Trash2, Zap } from "lucide-react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 import { BuyerFormModal } from "@/components/buyers/buyer-form-modal";
 
 export default function CompradoresPage() {
@@ -106,6 +107,18 @@ export default function CompradoresPage() {
                   </div>
                   {buyer.notes && (
                     <p className="mt-3 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg line-clamp-2">{buyer.notes}</p>
+                  )}
+
+                  {(buyer._count?.matches ?? 0) > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <Link
+                        href="/matches"
+                        className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-gradient-to-r from-violet-500 to-blue-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+                      >
+                        <Zap className="h-3.5 w-3.5 fill-white" />
+                        🎯 Deu Match! Ver {buyer._count.matches} oportunidade{buyer._count.matches !== 1 ? "s" : ""}
+                      </Link>
+                    </div>
                   )}
                 </CardContent>
               </Card>

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Bed, Bath, Maximize2, MapPin, Edit, Trash2, ChevronDown, RotateCcw, Zap } from "lucide-react";
+import { Bed, Bath, Maximize2, MapPin, Edit, Trash2, ChevronDown, RotateCcw, Zap, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, PROPERTY_TYPE_LABELS, PROPERTY_STATUS_LABELS } from "@/lib/utils";
@@ -25,6 +25,7 @@ interface PropertyCardProps {
     agent?: { name: string; phone?: string };
   };
   showActions?: boolean;
+  matchCount?: number;
   onEdit?: () => void;
   onDelete?: () => void;
   onStatusChange?: (newStatus: string) => void;
@@ -46,7 +47,7 @@ const STATUS_BADGE_STYLES: Record<string, string> = {
   INACTIVE:  "bg-gray-100 text-gray-500",
 };
 
-export function PropertyCard({ property, showActions, onEdit, onDelete, onStatusChange, onGenerateOpportunity }: PropertyCardProps) {
+export function PropertyCard({ property, showActions, matchCount = 0, onEdit, onDelete, onStatusChange, onGenerateOpportunity }: PropertyCardProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mainPhoto = property.photos?.[0] || "https://via.placeholder.com/400x250?text=Sem+Foto";
@@ -152,6 +153,19 @@ export function PropertyCard({ property, showActions, onEdit, onDelete, onStatus
             Ver detalhes
           </Link>
         </div>
+
+        {/* Deu Match! */}
+        {showActions && matchCount > 0 && (
+          <div className="mb-3">
+            <Link
+              href="/matches"
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-gradient-to-r from-violet-500 to-blue-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              🎯 Deu Match! Ver {matchCount} oportunidade{matchCount !== 1 ? "s" : ""}
+            </Link>
+          </div>
+        )}
 
         {/* Status actions */}
         {showActions && onStatusChange && (
