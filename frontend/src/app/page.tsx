@@ -383,7 +383,7 @@ function OpportunityImpactSection() {
   const currentGroup = OPP_POOL.slice(groupIdx * 3, groupIdx * 3 + 3);
 
   return (
-    <section className="relative py-20 overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#f3f0ff_60%,#f5f4ff_100%)]">
+    <section className="relative py-20 overflow-hidden bg-[linear-gradient(180deg,#ede9fe_0%,#ddd6fe_60%,#e0d9ff_100%)]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-400/10 blur-3xl rounded-full" />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-violet-400/10 blur-3xl rounded-full" />
@@ -944,7 +944,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           DEPOIMENTOS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 overflow-hidden bg-[linear-gradient(160deg,#faf8ff_0%,#f3f0ff_45%,#ede9fe_75%,#f8fbff_100%)]">
+      <section className="relative py-24 overflow-hidden bg-[linear-gradient(160deg,#ede9fe_0%,#ddd6fe_45%,#c4b5fd_75%,#ddd6fe_100%)]">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute top-0 right-1/4 w-[500px] h-[400px] bg-violet-400/12 blur-3xl rounded-full" />
           <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-400/10 blur-3xl rounded-full" />
