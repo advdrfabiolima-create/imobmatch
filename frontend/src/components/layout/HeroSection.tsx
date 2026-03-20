@@ -338,6 +338,23 @@ export default function HeroSection() {
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
         <div className="relative min-h-[600px] lg:min-h-[800px]">
 
+          {/* ── Efeitos de luz atrás da foto ─────────────────────────────── */}
+
+          {/* Glows */}
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 520, height: 520, left: "48%", top: "18%", borderRadius: 9999, filter: "blur(50px)", mixBlendMode: "screen", background: "radial-gradient(circle, rgba(255,255,255,0.55) 0%, rgba(168,85,247,0.20) 35%, transparent 70%)", zIndex: -1 }} />
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 440, height: 440, left: "58%", top: "40%", borderRadius: 9999, filter: "blur(50px)", mixBlendMode: "screen", background: "radial-gradient(circle, rgba(96,165,250,0.28) 0%, transparent 70%)", zIndex: -1 }} />
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 320, height: 320, left: "64%", top: "46%", borderRadius: 9999, filter: "blur(50px)", mixBlendMode: "screen", background: "radial-gradient(circle, rgba(236,72,153,0.18) 0%, transparent 70%)", zIndex: -1 }} />
+
+          {/* Beams */}
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 680, height: 2, left: "42%", top: "32%", borderRadius: 999, opacity: 0.5, filter: "blur(1px)", transformOrigin: "left center", transform: "rotate(-10deg)", background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 10%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.15) 90%, transparent 100%)", boxShadow: "0 0 12px rgba(255,255,255,0.35), 0 0 24px rgba(168,85,247,0.25)", zIndex: -1 }} />
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 760, height: 2, left: "38%", top: "48%", borderRadius: 999, opacity: 0.5, filter: "blur(1px)", transformOrigin: "left center", transform: "rotate(8deg)", background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 10%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.15) 90%, transparent 100%)", boxShadow: "0 0 12px rgba(255,255,255,0.35), 0 0 24px rgba(168,85,247,0.25)", zIndex: -1 }} />
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 620, height: 2, left: "46%", top: "64%", borderRadius: 999, opacity: 0.5, filter: "blur(1px)", transformOrigin: "left center", transform: "rotate(-6deg)", background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 10%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.15) 90%, transparent 100%)", boxShadow: "0 0 12px rgba(255,255,255,0.35), 0 0 24px rgba(168,85,247,0.25)", zIndex: -1 }} />
+
+          {/* Sparks */}
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 8, height: 8, left: "69%", top: "45%", borderRadius: "50%", background: "white", boxShadow: "0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(168,85,247,0.45), 0 0 30px rgba(59,130,246,0.35)", zIndex: -1 }} />
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 5, height: 5, left: "61%", top: "28%", borderRadius: "50%", background: "white", opacity: 0.7, boxShadow: "0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(168,85,247,0.45), 0 0 30px rgba(59,130,246,0.35)", zIndex: -1 }} />
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 6, height: 6, left: "76%", top: "58%", borderRadius: "50%", background: "white", opacity: 0.8, boxShadow: "0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(168,85,247,0.45), 0 0 30px rgba(59,130,246,0.35)", zIndex: -1 }} />
+
           {/* Photo — ocupa a coluna inteira, sem cards sobre os rostos */}
           <img
             src="/corretores.png"
