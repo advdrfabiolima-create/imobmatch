@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { normalizePlan } from '../common/plans.config';
 
@@ -52,6 +52,7 @@ export class AdminService {
 
   async toggleUserStatus(id: string) {
     const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('Usuário não encontrado');
     return this.prisma.user.update({ where: { id }, data: { isActive: !user.isActive } });
   }
 

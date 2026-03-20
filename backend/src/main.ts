@@ -33,7 +33,7 @@ async function bootstrap() {
     'https://useimobmatch.com.br',
     'https://www.useimobmatch.com.br',
     process.env.FRONTEND_URL,
-  ].filter(Boolean);
+  ].filter(Boolean) as string[];
   app.enableCors({ origin: allowedOrigins, credentials: true });
 
   // Prefixo global da API

@@ -26,6 +26,12 @@ export class BillingService {
     this.baseUrl       = sandbox
       ? 'https://sandbox.asaas.com/api/v3'
       : 'https://api.asaas.com/v3';
+
+    if (process.env.NODE_ENV === 'production' && sandbox) {
+      this.logger.error(
+        '⚠️  ASAAS_SANDBOX=true em produção! Pagamentos serão processados no ambiente de TESTE — nenhuma cobrança real será gerada. Altere ASAAS_SANDBOX=false e reinicie o servidor.',
+      );
+    }
   }
 
   // ─── Asaas HTTP helper ──────────────────────────────────────────────────────

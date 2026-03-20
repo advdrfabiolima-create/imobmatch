@@ -106,9 +106,8 @@ export class MailService {
       <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
       <body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
         <div style="max-width:560px;margin:40px auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.07);">
-          <div style="background:linear-gradient(135deg,#1d4ed8 0%,#4f46e5 100%);padding:28px 40px;">
-            <p style="color:#fff;margin:0;font-size:22px;font-weight:700;">ImobMatch</p>
-            <p style="color:#bfdbfe;margin:4px 0 0;font-size:12px;">A rede dos corretores que fecham mais</p>
+          <div style="background:linear-gradient(135deg,#1d4ed8 0%,#4f46e5 100%);padding:24px 40px;text-align:center;">
+            <img src="${this.frontendUrl}/logo.png" alt="ImobMatch" width="160" style="height:auto;display:block;margin:0 auto;" />
           </div>
           <div style="padding:36px 40px;">${content}</div>
           <div style="background:#f9fafb;padding:18px 40px;border-top:1px solid #e5e7eb;">

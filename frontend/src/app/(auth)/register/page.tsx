@@ -45,7 +45,12 @@ const FEATURES = [
 const schema = z.object({
   name:        z.string().min(2, "Nome obrigatório"),
   email:       z.string().email("E-mail inválido"),
-  password:    z.string().min(6, "Mínimo 6 caracteres"),
+  password:    z.string()
+    .min(8, "Mínimo 8 caracteres")
+    .regex(/[A-Z]/, "Deve conter pelo menos 1 letra maiúscula")
+    .regex(/[a-z]/, "Deve conter pelo menos 1 letra minúscula")
+    .regex(/\d/,    "Deve conter pelo menos 1 número")
+    .regex(/[^A-Za-z\d]/, "Deve conter pelo menos 1 caractere especial"),
   phone:       z.string().optional(),
   city:        z.string().optional(),
   state:       z.string().optional(),
@@ -251,7 +256,7 @@ function RegisterForm() {
 
             <Field label="Senha" error={errors.password?.message}>
               <div className="relative">
-                <Input type={showPw ? "text" : "password"} placeholder="Mínimo 6 caracteres"
+                <Input type={showPw ? "text" : "password"} placeholder="Mínimo 8 caracteres"
                   autoComplete="new-password" {...register("password")}
                   className={inputCls(!!errors.password) + " pr-11"} />
                 <button type="button" tabIndex={-1} onClick={() => setShowPw(!showPw)}
@@ -259,6 +264,11 @@ function RegisterForm() {
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {!errors.password && (
+                <p className="text-xs text-slate-400 mt-1.5">
+                  Mínimo 8 caracteres com 1 maiúscula, 1 minúscula, 1 número e 1 caractere especial.
+                </p>
+              )}
             </Field>
 
             <div className="pt-0.5">
