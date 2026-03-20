@@ -116,7 +116,7 @@ const FAQ = [
   },
   {
     title: "Suporte incluso",
-    desc: "Atendimento via WhatsApp e e-mail nos dias úteis.",
+    desc: "Atendimento por e-mail nos dias úteis.",
   },
 ];
 

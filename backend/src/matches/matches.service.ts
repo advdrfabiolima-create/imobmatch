@@ -3,6 +3,17 @@ import { MatchStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RankingService } from '../ranking/ranking.service';
 
+// Bônus adicionado ao score de match de acordo com o plano do corretor do imóvel.
+// O valor é somado após o cálculo 0–100 e armazenado no banco para ordenação.
+// No frontend o score é exibido com Math.min(score, 100) para não ultrapassar 100%.
+const PLAN_BOOST: Record<string, number> = {
+  free:    0,
+  starter: 0,
+  pro:     5,
+  premium: 10,
+  agency:  15,
+};
+
 @Injectable()
 export class MatchesService {
   constructor(
@@ -62,7 +73,19 @@ export class MatchesService {
     return Math.min(score, 100);
   }
 
-  private async upsertMatch(buyerId: string, propertyId: string, score: number) {
+  /** Retorna um mapa agentId → bônus de plano para um conjunto de IDs. */
+  private async getPlanBoosts(agentIds: string[]): Promise<Map<string, number>> {
+    const ids = [...new Set(agentIds.filter(Boolean))];
+    if (!ids.length) return new Map();
+    const agents = await this.prisma.user.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, plan: true },
+    });
+    return new Map(agents.map((a) => [a.id, PLAN_BOOST[a.plan ?? 'free'] ?? 0]));
+  }
+
+  private async upsertMatch(buyerId: string, propertyId: string, score: number, planBonus = 0) {
+    const finalScore = score + planBonus; // pode exceder 100; frontend exibe Math.min(score,100)
     const existing = await this.prisma.match.findUnique({
       where: { buyerId_propertyId: { buyerId, propertyId } },
     });
@@ -70,13 +93,13 @@ export class MatchesService {
     if (existing) {
       await this.prisma.match.update({
         where: { buyerId_propertyId: { buyerId, propertyId } },
-        data: { score },
+        data: { score: finalScore },
       });
       return { match: existing, isNew: false };
     }
 
     const match = await this.prisma.match.create({
-      data: { buyerId, propertyId, score },
+      data: { buyerId, propertyId, score: finalScore },
     });
     return { match, isNew: true };
   }
@@ -91,11 +114,17 @@ export class MatchesService {
       this.prisma.property.findMany({ where: { status: 'AVAILABLE', isPublic: true } }),
     ]);
 
+    // Pré-carrega os bônus de plano de todos os agentes envolvidos
+    const allPropertyAgentIds = allProperties.map((p) => p.agentId);
+    const boostMap = await this.getPlanBoosts([agentId, ...allPropertyAgentIds]);
+    const myBoost = boostMap.get(agentId) ?? 0;
+
     const THRESHOLD = 20;
     const processed = new Set<string>();
     let newMatches = 0;
     let existingMatches = 0;
 
+    // Meus compradores × todos os imóveis: bônus do corretor do imóvel
     for (const buyer of myBuyers) {
       for (const property of allProperties) {
         const key = `${buyer.id}:${property.id}`;
@@ -104,13 +133,15 @@ export class MatchesService {
         const score = this.calculateScore(buyer, property);
         if (score >= THRESHOLD) {
           try {
-            const result = await this.upsertMatch(buyer.id, property.id, score);
+            const boost = boostMap.get(property.agentId) ?? 0;
+            const result = await this.upsertMatch(buyer.id, property.id, score, boost);
             result.isNew ? newMatches++ : existingMatches++;
           } catch {}
         }
       }
     }
 
+    // Todos os compradores × meus imóveis: meu bônus de plano
     for (const buyer of allBuyers) {
       for (const property of myProperties) {
         const key = `${buyer.id}:${property.id}`;
@@ -119,7 +150,7 @@ export class MatchesService {
         const score = this.calculateScore(buyer, property);
         if (score >= THRESHOLD) {
           try {
-            const result = await this.upsertMatch(buyer.id, property.id, score);
+            const result = await this.upsertMatch(buyer.id, property.id, score, myBoost);
             result.isNew ? newMatches++ : existingMatches++;
           } catch {}
         }
@@ -147,10 +178,13 @@ export class MatchesService {
         where: { status: 'AVAILABLE', isPublic: true },
       });
 
+      const boostMap = await this.getPlanBoosts(properties.map((p) => p.agentId));
+
       for (const property of properties) {
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
-          try { await this.upsertMatch(buyer.id, property.id, score); } catch {}
+          const boost = boostMap.get(property.agentId) ?? 0;
+          try { await this.upsertMatch(buyer.id, property.id, score, boost); } catch {}
         }
       }
     } catch { /* fire-and-forget: não bloqueia o cadastro */ }
@@ -161,6 +195,9 @@ export class MatchesService {
       const property = await this.prisma.property.findUnique({ where: { id: propertyId } });
       if (!property || property.status !== 'AVAILABLE' || !property.isPublic) return;
 
+      const boostMap = await this.getPlanBoosts([property.agentId]);
+      const boost = boostMap.get(property.agentId) ?? 0;
+
       const buyers = await this.prisma.buyer.findMany({
         where: { status: 'ACTIVE' },
       });
@@ -168,7 +205,7 @@ export class MatchesService {
       for (const buyer of buyers) {
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
-          try { await this.upsertMatch(buyer.id, property.id, score); } catch {}
+          try { await this.upsertMatch(buyer.id, property.id, score, boost); } catch {}
         }
       }
     } catch { /* fire-and-forget */ }

@@ -27,14 +27,15 @@ const STATUS_MAP = Object.fromEntries(STATUSES.map((s) => [s.value, s]));
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 function ScoreBar({ score }: { score: number }) {
-  const color = score >= 70 ? "bg-green-500" : score >= 50 ? "bg-yellow-500" : "bg-orange-500";
-  const textColor = score >= 70 ? "text-green-600" : score >= 50 ? "text-yellow-600" : "text-orange-600";
+  const display = Math.min(score, 100); // scores de planos premium podem exceder 100 no banco
+  const color = display >= 70 ? "bg-green-500" : display >= 50 ? "bg-yellow-500" : "bg-orange-500";
+  const textColor = display >= 70 ? "text-green-600" : display >= 50 ? "text-yellow-600" : "text-orange-600";
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-        <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${score}%` }} />
+        <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${display}%` }} />
       </div>
-      <span className={`text-xs font-bold tabular-nums ${textColor}`}>{score}%</span>
+      <span className={`text-xs font-bold tabular-nums ${textColor}`}>{display}%</span>
     </div>
   );
 }
@@ -356,7 +357,7 @@ export default function MatchesPage() {
                 <div key={m.id} className="bg-white/10 rounded-xl p-4">
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-sm font-medium">{m.buyer?.buyerName}</span>
-                    <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">{m.score}%</span>
+                    <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">{Math.min(m.score, 100)}%</span>
                   </div>
                   <p className="text-xs text-blue-100 line-clamp-1">{m.property?.title}</p>
                   <div className="flex justify-between text-xs text-blue-200 mt-2">
