@@ -373,7 +373,7 @@ export default function HeroSection() {
           </FloatingCard>
 
           {/* Card: Match encontrado — sobre o cotovelo do homem */}
-          <FloatingCard className="absolute left-[-18%] top-[33%] z-20 w-[245px] px-3 py-2.5" style={fadeUp(0.48)}>
+          <FloatingCard className="absolute left-[-18%] top-[41%] z-20 w-[245px] px-3 py-2.5" style={fadeUp(0.48)}>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-600">
@@ -403,7 +403,7 @@ export default function HeroSection() {
           </FloatingCard>
 
           {/* Card: Parceria iniciada — esquerda inferior */}
-          <FloatingCard className="absolute left-[2%] bottom-[33%] z-20 px-5 py-4" style={fadeUp(0.58)}>
+          <FloatingCard className="absolute left-[2%] bottom-[16%] z-20 px-5 py-4" style={fadeUp(0.58)}>
             <div className="flex items-center gap-3">
               <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-600">
                 <HeartHandshake className="h-5 w-5" />
@@ -416,7 +416,7 @@ export default function HeroSection() {
           </FloatingCard>
 
           {/* Card: Comissão estimada — próximo ao crachá da corretora */}
-          <FloatingCard className="absolute right-[1%] top-[52%] z-20 px-5 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]" style={fadeUp(0.68)}>
+          <FloatingCard className="absolute right-[1%] top-[65%] z-20 px-5 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]" style={fadeUp(0.68)}>
             <div className="flex items-center gap-3">
               <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-500 text-white">
                 <TrendingUp className="h-5 w-5" />
