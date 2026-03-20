@@ -251,19 +251,19 @@ export default function HeroSection() {
     }) as React.CSSProperties;
 
   return (
-    <section className="relative overflow-hidden" style={{ minHeight: "820px" }}>
+    <section className="relative overflow-hidden lg:min-h-[820px]">
       {/* Animated canvas background */}
       <HeroCanvas />
 
       {/* Content grid */}
       <div
-        className="relative mx-auto grid min-h-[820px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-6 pt-8 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-10"
+        className="relative mx-auto grid max-w-[1400px] grid-cols-1 gap-0 px-6 pb-6 pt-8 md:px-10 lg:grid-cols-[1fr_1fr] lg:min-h-[820px] lg:gap-4 lg:px-12 lg:pt-10"
         style={{ zIndex: 1 }}
       >
 
         {/* ── LEFT: copy ─────────────────────────────────────────────────── */}
         <div
-          className="z-10 flex max-w-[620px] flex-col justify-start pt-10"
+          className="z-10 flex flex-col justify-start pt-6 lg:pt-10 lg:max-w-[620px]"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(18px)",
@@ -271,7 +271,7 @@ export default function HeroSection() {
           }}
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/70 px-4 py-2 text-sm font-medium text-blue-600 shadow-sm backdrop-blur w-fit">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/70 px-3 py-1.5 text-xs font-medium text-blue-600 shadow-sm backdrop-blur w-fit sm:px-4 sm:py-2 sm:text-sm">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
@@ -280,56 +280,70 @@ export default function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="mt-8 text-5xl font-black leading-[1.0] tracking-[-0.03em] text-slate-950 sm:text-6xl lg:text-[64px]">
+          <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-[-0.03em] text-slate-950 sm:text-5xl lg:mt-8 lg:text-[64px] lg:leading-[1.0]">
             Pare de perder clientes por{" "}
             <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
               não ter o imóvel certo.
             </span>
           </h1>
 
-          <p className="mt-8 max-w-[560px] text-[22px] leading-relaxed text-slate-600">
+          <p className="mt-5 max-w-[560px] text-lg leading-relaxed text-slate-600 lg:mt-8 lg:text-[22px]">
             Conecte-se com outros corretores e encontre oportunidades reais de negócio.
           </p>
 
           {/* Bullets */}
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-base text-slate-500">
+          <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2.5 text-sm text-slate-500 lg:mt-8 lg:text-base">
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               Novos matches sendo gerados
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
               Corretores entrando na rede
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-orange-400 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-orange-400 animate-pulse" />
               Novas oportunidades todos os dias
             </div>
           </div>
 
           {/* CTAs */}
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:mt-10 lg:gap-4">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-violet-600 px-8 py-5 text-lg font-semibold text-white shadow-[0_18px_40px_rgba(79,70,229,0.28)] transition hover:-translate-y-px hover:shadow-[0_20px_45px_rgba(79,70,229,0.34)]"
+              className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-4 text-base font-semibold text-white shadow-[0_18px_40px_rgba(79,70,229,0.28)] transition hover:-translate-y-px hover:shadow-[0_20px_45px_rgba(79,70,229,0.34)] sm:w-auto sm:px-8 sm:py-5 sm:text-lg"
             >
               Começar a gerar oportunidades
               <ArrowRight className="ml-3 h-5 w-5" />
             </Link>
             <Link
               href="/imoveis"
-              className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-8 py-5 text-lg font-semibold text-slate-700 shadow-sm backdrop-blur transition hover:border-slate-300 hover:bg-white"
+              className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-6 py-4 text-base font-semibold text-slate-700 shadow-sm backdrop-blur transition hover:border-slate-300 hover:bg-white sm:w-auto sm:px-8 sm:py-5 sm:text-lg"
             >
               <Flame className="mr-3 h-5 w-5 text-orange-500" />
               Ver oportunidades
             </Link>
           </div>
 
-          <p className="mt-6 text-sm text-slate-400">Sem cartão de crédito · Cancele quando quiser</p>
+          <p className="mt-4 text-sm text-slate-400 lg:mt-6">Sem cartão de crédito · Cancele quando quiser</p>
+
+          {/* Mobile: imagem simplificada (sem cards) */}
+          <div className="mt-10 flex justify-center lg:hidden">
+            <img
+              src="/corretores.png"
+              alt="Corretores fechando parceria"
+              className="w-full max-w-[340px] object-contain select-none"
+              style={{
+                filter: "drop-shadow(0 16px 40px rgba(37,99,235,0.14))",
+                maxWidth: "none",
+              }}
+              draggable={false}
+            />
+          </div>
         </div>
 
-        {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
-        <div className="relative min-h-[600px] lg:min-h-[800px]">
+        {/* ── RIGHT: photo + floating cards — desktop only ────────────────── */}
+        <div className="hidden lg:block relative lg:min-h-[800px]">
 
           {/* ── Efeitos de luz atrás da foto ─────────────────────────────── */}
 
