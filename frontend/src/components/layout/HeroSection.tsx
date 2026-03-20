@@ -341,12 +341,12 @@ export default function HeroSection() {
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 28px 55px rgba(37,99,235,0.13))",
-              width: "130%",
+              width: "195%",
               height: "auto",
               objectFit: "contain",
               objectPosition: "top center",
               top: "40px",
-              left: "-15%",
+              left: "-5%",
             }}
             draggable={false}
           />
