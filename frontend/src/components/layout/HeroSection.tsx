@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Users, Zap, TrendingUp, ArrowRight, HeartHandshake, Flame,
+  Users, Zap, TrendingUp, ArrowRight, HeartHandshake, Flame, Target,
 } from "lucide-react";
 
 // ─── Floating card wrapper ────────────────────────────────────────────────────
@@ -20,8 +20,7 @@ function FloatingCard({
     <div
       style={style}
       className={[
-        "rounded-3xl border border-white/70 bg-white/85 shadow-[0_20px_60px_rgba(37,99,235,0.12)]",
-        "backdrop-blur-xl",
+        "rounded-3xl border border-white/70 bg-white/82 shadow-[0_18px_50px_rgba(37,99,235,0.12)] backdrop-blur-xl",
         className ?? "",
       ].join(" ")}
     >
@@ -244,6 +243,13 @@ export default function HeroSection() {
     return () => clearTimeout(id);
   }, []);
 
+  const fadeUp = (delay = 0) =>
+    ({
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0px)" : "translateY(16px)",
+      transition: `opacity 0.65s ease ${delay}s, transform 0.65s ease ${delay}s`,
+    }) as React.CSSProperties;
+
   return (
     <section className="relative overflow-hidden" style={{ minHeight: "1060px" }}>
       {/* Animated canvas background */}
@@ -353,61 +359,10 @@ export default function HeroSection() {
             draggable={false}
           />
 
-          {/* ── Cards: todos posicionados abaixo da linha dos ombros (~35%+) ── */}
-
-          {/* Card: Match encontrado — sobre o cotovelo do homem */}
-          <FloatingCard
-            className="absolute left-[-14%] top-[33%] z-20 w-[280px] px-4 py-4"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 0.6s ease 0.45s, transform 0.6s ease 0.45s",
-            } as React.CSSProperties}
-          >
-            <div className="flex items-start gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet-100 text-violet-600 flex-shrink-0">
-                <Zap className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="text-[14px] font-semibold text-slate-800">Match encontrado</div>
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mt-0.5">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  </span>
-                  Ativo em tempo real
-                </div>
-              </div>
-            </div>
-            <div className="mt-3 flex items-center justify-between text-xs font-medium text-slate-400">
-              <span>Compatibilidade</span>
-              <span className="text-violet-700 font-bold">93 / 100</span>
-            </div>
-            <div className="mt-1.5 h-2 rounded-full bg-slate-100">
-              <div className="h-2 w-[93%] rounded-full bg-gradient-to-r from-blue-500 to-violet-500" />
-            </div>
-            <div className="mt-3 flex items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
-              <div className="flex -space-x-2">
-                <div className="grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-blue-500 text-[9px] font-bold text-white">J</div>
-                <div className="grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-violet-500 text-[9px] font-bold text-white">MC</div>
-                <div className="grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-pink-500 text-[9px] font-bold text-white">A</div>
-                <div className="grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-emerald-500 text-[9px] font-bold text-white">R</div>
-              </div>
-              <span className="text-xs text-slate-500">2 corretores conectados</span>
-            </div>
-          </FloatingCard>
-
           {/* Card: Negócio fechado — acima da cabeça da corretora */}
-          <FloatingCard
-            className="absolute right-[3%] top-[5%] z-20 px-4 py-3"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s",
-            } as React.CSSProperties}
-          >
+          <FloatingCard className="absolute right-[3%] top-[5%] z-20 px-4 py-3" style={fadeUp(0.32)}>
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-100 text-orange-500 flex-shrink-0">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-100 text-orange-500">
                 <Users className="h-5 w-5" />
               </div>
               <div>
@@ -417,23 +372,63 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
+          {/* Card: Compatibilidade — direita média */}
+          <FloatingCard className="absolute right-[1%] top-[25%] z-20 px-4 py-3" style={fadeUp(0.4)}>
+            <div className="flex items-start gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet-100 text-violet-600">
+                <Target className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-xs text-slate-400">Compatibilidade</div>
+                <div className="text-2xl font-black text-violet-700">93%</div>
+                <div className="text-xs text-slate-400">calculando agora</div>
+              </div>
+            </div>
+          </FloatingCard>
+
+          {/* Card: Match encontrado — sobre o cotovelo do homem */}
+          <FloatingCard className="absolute left-[-14%] top-[33%] z-20 w-[255px] px-4 py-4" style={fadeUp(0.48)}>
+            <div className="flex items-start gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-violet-100 text-violet-600">
+                <Zap className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-[14px] font-semibold text-slate-800">Match encontrado</div>
+                <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-slate-400">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  </span>
+                  IA ativa em tempo real
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center justify-between text-xs font-medium text-slate-400">
+              <span>Compatibilidade</span>
+              <span className="font-bold text-violet-700">93 / 100</span>
+            </div>
+            <div className="mt-1.5 h-2 rounded-full bg-slate-100">
+              <div className="h-2 w-[93%] rounded-full bg-gradient-to-r from-blue-500 to-violet-500" />
+            </div>
+            <div className="mt-3 flex items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
+              <div className="flex -space-x-2">
+                <div className="grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-blue-500 text-[9px] font-bold text-white">J</div>
+                <div className="grid h-6 w-6 place-items-center rounded-full border-2 border-white bg-violet-500 text-[9px] font-bold text-white">MC</div>
+              </div>
+              <span className="text-xs text-slate-500">2 corretores conectados</span>
+            </div>
+          </FloatingCard>
+
           {/* Card: Parceria iniciada — esquerda inferior */}
-          <FloatingCard
-            className="absolute left-[2%] bottom-[30%] z-20 px-4 py-3"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s",
-            } as React.CSSProperties}
-          >
+          <FloatingCard className="absolute left-[2%] bottom-[30%] z-20 px-4 py-3" style={fadeUp(0.58)}>
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-100 flex-shrink-0">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-100">
                 <HeartHandshake className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
                 <div className="text-[14px] font-semibold text-slate-800">Parceria iniciada</div>
-                <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-500 mt-0.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-emerald-500">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
                   Comissão acordada
                 </div>
               </div>
@@ -441,16 +436,9 @@ export default function HeroSection() {
           </FloatingCard>
 
           {/* Card: Comissão estimada — próximo ao crachá da corretora */}
-          <FloatingCard
-            className="absolute right-[1%] top-[52%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 0.6s ease 0.7s, transform 0.6s ease 0.7s",
-            } as React.CSSProperties}
-          >
+          <FloatingCard className="absolute right-[1%] top-[52%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]" style={fadeUp(0.68)}>
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-500 text-white flex-shrink-0">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-500 text-white">
                 <TrendingUp className="h-5 w-5" />
               </div>
               <div>
@@ -458,7 +446,7 @@ export default function HeroSection() {
                 <div className="text-[20px] font-black text-emerald-600">R$ 14.200</div>
               </div>
             </div>
-            <div className="mt-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-600 text-center">
+            <div className="mt-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-center text-xs font-medium text-emerald-600">
               sua parte neste match
             </div>
           </FloatingCard>
