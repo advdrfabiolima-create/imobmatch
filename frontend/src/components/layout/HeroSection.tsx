@@ -257,13 +257,13 @@ export default function HeroSection() {
 
       {/* Content grid */}
       <div
-        className="relative mx-auto grid min-h-[1060px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-24 pt-14 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-20"
+        className="relative mx-auto grid min-h-[1060px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-24 pt-8 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-10"
         style={{ zIndex: 1 }}
       >
 
         {/* ── LEFT: copy ─────────────────────────────────────────────────── */}
         <div
-          className="z-10 flex max-w-[620px] flex-col justify-center"
+          className="z-10 flex max-w-[620px] flex-col justify-start pt-10"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(18px)",
