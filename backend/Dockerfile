@@ -17,4 +17,4 @@ RUN npm run build && echo "BUILD SUCCESS" && ls -la dist/
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npx prisma migrate resolve --applied 20260319000000_add_opportunity_status_photo_property 2>/dev/null || true; npx prisma migrate deploy && node dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]

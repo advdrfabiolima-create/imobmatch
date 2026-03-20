@@ -27,6 +27,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const verificationToken = uuidv4();
+    const verificationExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 horas
 
     const user = await this.prisma.user.create({
       data: {
@@ -34,6 +35,7 @@ export class AuthService {
         password: hashedPassword,
         emailVerified: false,
         emailVerificationToken: verificationToken,
+        emailVerificationExpiry: verificationExpiry,
       },
       select: {
         id: true, name: true, email: true, phone: true,
@@ -59,11 +61,20 @@ export class AuthService {
     const user = await this.prisma.user.findFirst({
       where: { emailVerificationToken: token },
     });
+
     if (!user) throw new BadRequestException('Token de verificação inválido ou expirado');
+
+    if (user.emailVerificationExpiry && user.emailVerificationExpiry < new Date()) {
+      throw new BadRequestException('Link de verificação expirado. Solicite um novo.');
+    }
 
     await this.prisma.user.update({
       where: { id: user.id },
-      data: { emailVerified: true, emailVerificationToken: null },
+      data: {
+        emailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpiry: null,
+      },
     });
 
     return { message: 'E-mail verificado com sucesso!' };
@@ -121,9 +132,10 @@ export class AuthService {
     if (user.emailVerified) return { message: 'E-mail já verificado.' };
 
     const token = uuidv4();
+    const expiry = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 horas
     await this.prisma.user.update({
       where: { id: userId },
-      data: { emailVerificationToken: token },
+      data: { emailVerificationToken: token, emailVerificationExpiry: expiry },
     });
 
     this.mailService.sendVerificationEmail(user.email, user.name, token);

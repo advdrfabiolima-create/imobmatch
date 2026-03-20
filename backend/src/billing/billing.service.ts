@@ -1,4 +1,4 @@
-import { Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -175,9 +175,13 @@ export class BillingService {
   // ─── Webhook Asaas ──────────────────────────────────────────────────────────
 
   async handleWebhook(secret: string, event: any): Promise<{ received: boolean }> {
-    if (this.webhookSecret && secret !== this.webhookSecret) {
-      this.logger.warn('Webhook recebido com secret inválido');
-      return { received: false };
+    if (!this.webhookSecret) {
+      this.logger.error('ASAAS_WEBHOOK_SECRET não configurado — webhook bloqueado por segurança');
+      throw new UnauthorizedException('Webhook não autorizado');
+    }
+    if (secret !== this.webhookSecret) {
+      this.logger.warn('Webhook recebido com token inválido');
+      throw new UnauthorizedException('Webhook não autorizado');
     }
 
     const eventType = event?.event as string;

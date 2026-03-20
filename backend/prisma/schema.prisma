@@ -32,8 +32,9 @@ model User {
   lastSeen     DateTime?
   resetToken   String?
   resetTokenExpiry DateTime?
-  emailVerified         Boolean  @default(false)
-  emailVerificationToken String?
+  emailVerified              Boolean   @default(false)
+  emailVerificationToken     String?
+  emailVerificationExpiry    DateTime?
   asaasCustomerId       String?
   cpfCnpj               String?
   personType            String   @default("PF")  // PF | PJ
