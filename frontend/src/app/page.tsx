@@ -76,6 +76,15 @@ const COMPARISON = [
   { before: "Perde oportunidades urgentes com desconto",         after: "Radar de oportunidades em tempo real"                },
 ];
 
+const COMPARISON_ICONS = [
+  { before: Building2,  after: Zap           }, // imóvel perdido → match automático
+  { before: X,          after: Users         }, // não encontra → rede inteira
+  { before: TrendingUp, after: HeartHandshake }, // comissão na mesa → parceria formal
+  { before: Shield,     after: MessageSquare  }, // busca manual → chat direto
+  { before: Star,       after: CheckCircle2   }, // sem controle → perfis organizados
+  { before: Flame,      after: Trophy         }, // perde urgências → radar vence
+];
+
 const TESTIMONIALS = [
   {
     name: "Renata Oliveira",
@@ -796,88 +805,143 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           PROBLEMA vs SOLUÇÃO
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-800" />
+      <section className="relative py-28 overflow-hidden bg-slate-950">
+        {/* Ambient glows */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-blue-400/10 rounded-full blur-3xl" />
+          <div className="absolute -top-40 left-1/4 w-[600px] h-[400px] bg-red-600/5 rounded-full blur-3xl" />
+          <div className="absolute -bottom-20 right-1/4 w-[600px] h-[400px] bg-emerald-500/8 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-blue-600/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-6">
+        <div className="relative mx-auto max-w-6xl px-6">
+
+          {/* ── Header ── */}
           <div
             ref={fadeProblema.ref}
-            className="text-center mb-14"
+            className="text-center mb-16"
             style={{
               opacity: fadeProblema.visible ? 1 : 0,
               transform: fadeProblema.visible ? "translateY(0)" : "translateY(16px)",
               transition: "opacity 0.55s ease, transform 0.55s ease",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-3">Por que mudar?</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-              O que muda com o ImobMatch
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-blue-300 bg-blue-500/10 border border-blue-400/20 rounded-full px-4 py-1.5 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+              Por que mudar?
+            </span>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-5 tracking-tight leading-tight">
+              O que muda com o{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400">
+                ImobMatch
+              </span>
             </h2>
-            <p className="text-lg text-blue-100/80 max-w-xl mx-auto">
+            <p className="text-lg text-slate-400 max-w-xl mx-auto leading-relaxed">
               Pare de trabalhar no escuro. Veja a diferença de ter uma rede inteligente do seu lado.
             </p>
           </div>
 
-          {/* Comparison table */}
+          {/* ── Cards ── */}
           <div
             style={{
               opacity: fadeProblema.visible ? 1 : 0,
               transform: fadeProblema.visible ? "translateY(0)" : "translateY(24px)",
-              transition: "opacity 0.55s ease 100ms, transform 0.55s ease 100ms",
+              transition: "opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s",
             }}
-            className="max-w-4xl mx-auto overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-blue-950/60"
           >
-            {/* Header */}
-            <div className="grid grid-cols-2">
-              <div className="bg-red-950/70 backdrop-blur-xl px-5 py-4 flex items-center gap-3 border-b border-r border-red-400/15">
-                <div className="w-8 h-8 rounded-lg bg-red-500/25 border border-red-400/30 flex items-center justify-center flex-shrink-0">
-                  <X className="h-4 w-4 text-red-400" />
-                </div>
-                <div>
-                  <p className="font-bold text-white text-sm leading-tight">Sem ImobMatch</p>
-                  <p className="text-[11px] text-red-300 font-medium">Você trabalha sozinho</p>
+            <div className="relative grid md:grid-cols-2 gap-5">
+
+              {/* Center VS badge */}
+              <div className="absolute left-1/2 top-8 -translate-x-1/2 z-10 hidden md:flex">
+                <div className="w-10 h-10 rounded-xl rotate-12 bg-slate-800 border border-slate-600 shadow-2xl flex items-center justify-center">
+                  <ArrowRightLeft className="w-4 h-4 text-slate-400" />
                 </div>
               </div>
-              <div className="bg-emerald-950/70 backdrop-blur-xl px-5 py-4 flex items-center gap-3 border-b border-emerald-400/15">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/25 border border-emerald-400/30 flex items-center justify-center flex-shrink-0">
-                  <Check className="h-4 w-4 text-emerald-400" />
+
+              {/* ─── Card: Sem ImobMatch ─── */}
+              <div className="relative rounded-2xl border border-slate-700/60 bg-slate-900 overflow-hidden">
+                {/* top accent line */}
+                <div className="h-px bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
+                <div className="p-7">
+                  {/* header */}
+                  <div className="flex items-center gap-3 mb-7">
+                    <div className="w-11 h-11 rounded-xl bg-red-950 border border-red-500/25 flex items-center justify-center flex-shrink-0">
+                      <X className="w-5 h-5 text-red-400" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-white text-[15px]">Sem ImobMatch</p>
+                      <p className="text-xs text-red-400 mt-0.5 font-medium">Trabalhando sozinho, no escuro</p>
+                    </div>
+                  </div>
+                  {/* items */}
+                  <div className="space-y-3">
+                    {COMPARISON.map((row, i) => {
+                      const BeforeIcon = COMPARISON_ICONS[i].before;
+                      return (
+                        <div key={i} className="flex items-start gap-3.5 p-3.5 rounded-xl bg-slate-800/50 border border-slate-700/40">
+                          <div className="w-8 h-8 rounded-lg bg-red-950/80 border border-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <BeforeIcon className="w-3.5 h-3.5 text-red-400" />
+                          </div>
+                          <span className="text-sm text-slate-400 leading-snug pt-0.5">{row.before}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-white text-sm leading-tight">Com ImobMatch</p>
-                  <p className="text-[11px] text-emerald-300 font-medium">Uma rede trabalhando por você</p>
+              </div>
+
+              {/* ─── Card: Com ImobMatch ─── */}
+              <div className="relative rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-slate-900 via-blue-950/40 to-emerald-950/30 overflow-hidden">
+                {/* top accent line */}
+                <div className="h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent" />
+                {/* glow orb */}
+                <div className="pointer-events-none absolute -top-16 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-2xl" />
+                <div className="p-7 relative">
+                  {/* recommended badge */}
+                  <div className="absolute top-5 right-5">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1 rounded-full">
+                      ✦ Recomendado
+                    </span>
+                  </div>
+                  {/* header */}
+                  <div className="flex items-center gap-3 mb-7">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-900/60 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-white text-[15px]">Com ImobMatch</p>
+                      <p className="text-xs text-emerald-400 mt-0.5 font-medium">Uma rede trabalhando por você</p>
+                    </div>
+                  </div>
+                  {/* items */}
+                  <div className="space-y-3">
+                    {COMPARISON.map((row, i) => {
+                      const AfterIcon = COMPARISON_ICONS[i].after;
+                      return (
+                        <div key={i} className="flex items-start gap-3.5 p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/15">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-900/60 border border-emerald-500/25 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <AfterIcon className="w-3.5 h-3.5 text-emerald-400" />
+                          </div>
+                          <span className="text-sm text-white/90 font-medium leading-snug pt-0.5">{row.after}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Rows */}
-            {COMPARISON.map((row, i) => (
-              <div
-                key={i}
-                className={`grid grid-cols-2 ${i % 2 === 0 ? "bg-white/[0.04]" : "bg-white/[0.02]"}`}
-              >
-                <div className="px-5 py-4 flex items-center gap-3 border-r border-white/5">
-                  <span className="w-5 h-5 rounded-full bg-red-500/20 border border-red-400/25 flex items-center justify-center flex-shrink-0">
-                    <X className="h-2.5 w-2.5 text-red-400" />
-                  </span>
-                  <span className="text-sm text-blue-100/55 leading-snug">{row.before}</span>
+            {/* ── Stats strip ── */}
+            <div className="mt-10 grid grid-cols-3 divide-x divide-slate-800 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur overflow-hidden">
+              {[
+                { value: "3×",   label: "mais negócios fechados" },
+                { value: "2min", label: "para o primeiro match"  },
+                { value: "200+", label: "corretores na rede"      },
+              ].map(({ value, label }) => (
+                <div key={label} className="py-6 text-center">
+                  <p className="text-3xl font-extrabold text-white tracking-tight">{value}</p>
+                  <p className="text-xs text-slate-400 mt-1.5 font-medium">{label}</p>
                 </div>
-                <div className="px-5 py-4 flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-                  <span className="text-sm text-white/90 font-medium leading-snug">{row.after}</span>
-                </div>
-              </div>
-            ))}
-
-            {/* Footer strip */}
-            <div className="bg-gradient-to-r from-emerald-900/50 to-cyan-900/40 px-6 py-3.5 text-center border-t border-emerald-400/15">
-              <p className="text-emerald-300 text-xs font-semibold tracking-wide uppercase">
-                Mais de 200 corretores já fizeram essa escolha
-              </p>
+              ))}
             </div>
           </div>
         </div>
