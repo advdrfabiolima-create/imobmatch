@@ -251,13 +251,13 @@ export default function HeroSection() {
     }) as React.CSSProperties;
 
   return (
-    <section className="relative overflow-hidden" style={{ minHeight: "1060px" }}>
+    <section className="relative overflow-hidden" style={{ minHeight: "820px" }}>
       {/* Animated canvas background */}
       <HeroCanvas />
 
       {/* Content grid */}
       <div
-        className="relative mx-auto grid min-h-[1060px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-24 pt-8 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-10"
+        className="relative mx-auto grid min-h-[820px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-12 pt-8 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-10"
         style={{ zIndex: 1 }}
       >
 
@@ -336,7 +336,7 @@ export default function HeroSection() {
         </div>
 
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
-        <div className="relative min-h-[800px] lg:min-h-[1000px]">
+        <div className="relative min-h-[600px] lg:min-h-[800px]">
 
           {/* Photo — ocupa a coluna inteira, sem cards sobre os rostos */}
           <img
