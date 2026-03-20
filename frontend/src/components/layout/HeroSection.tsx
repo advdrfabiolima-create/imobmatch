@@ -257,7 +257,7 @@ export default function HeroSection() {
 
       {/* Content grid */}
       <div
-        className="relative mx-auto grid min-h-[820px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-12 pt-8 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-10"
+        className="relative mx-auto grid min-h-[820px] max-w-[1400px] grid-cols-1 gap-12 px-6 pb-6 pt-8 md:px-10 lg:grid-cols-[1fr_1fr] lg:gap-4 lg:px-12 lg:pt-10"
         style={{ zIndex: 1 }}
       >
 
@@ -326,13 +326,6 @@ export default function HeroSection() {
           </div>
 
           <p className="mt-6 text-sm text-slate-400">Sem cartão de crédito · Cancele quando quiser</p>
-
-          {/* Stats */}
-          <div className="mt-6 flex flex-wrap gap-8 border-t border-slate-200/80 pt-6">
-            <HeroStat value="100%" label="gratuito para começar" />
-            <HeroStat value="+3" label="negócios fechados na rede" />
-            <HeroStat value="2" label="estados ativos" />
-          </div>
         </div>
 
         {/* ── RIGHT: photo + floating cards ──────────────────────────────── */}
