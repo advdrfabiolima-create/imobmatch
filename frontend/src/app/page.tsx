@@ -805,12 +805,15 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           PROBLEMA vs SOLUÇÃO
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-28 overflow-hidden bg-slate-950">
+      <section
+        className="relative py-28 overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #0b1849 0%, #18106a 44%, #361178 72%, #461a8e 100%)" }}
+      >
         {/* Ambient glows */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-40 left-1/4 w-[600px] h-[400px] bg-red-600/5 rounded-full blur-3xl" />
-          <div className="absolute -bottom-20 right-1/4 w-[600px] h-[400px] bg-emerald-500/8 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-blue-600/5 rounded-full blur-3xl" />
+          <div className="absolute -top-40 left-1/4 w-[600px] h-[400px] bg-red-600/8 rounded-full blur-3xl" />
+          <div className="absolute -bottom-20 right-1/4 w-[600px] h-[400px] bg-emerald-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-violet-500/10 rounded-full blur-3xl" />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-6">
