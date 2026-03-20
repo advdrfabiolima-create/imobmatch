@@ -87,10 +87,10 @@ export function Sidebar() {
       <aside
         className={cn(
           "fixed left-0 top-0 h-full w-64 flex flex-col z-40 transition-transform duration-300",
-          "bg-[#1E293B]",
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:translate-x-0"
         )}
+        style={{ background: "linear-gradient(160deg, #0c1a52 0%, #1e1060 45%, #3b1585 80%, #4c1d96 100%)" }}
       >
         {/* Logo */}
         <div className="px-5 py-5 flex items-center justify-between border-b border-white/8">
