@@ -68,7 +68,7 @@ export function AgentAvatar({
         <span
           title={badge.title}
           className={cn(
-            "absolute flex items-center justify-center rounded-full border-2 border-white shadow-sm leading-none",
+            "absolute flex items-center justify-center rounded-full shadow-sm leading-none",
             s.badge,
             badge.bg,
           )}
