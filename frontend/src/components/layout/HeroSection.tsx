@@ -245,7 +245,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden" style={{ minHeight: "860px" }}>
+    <section className="relative overflow-x-hidden" style={{ minHeight: "860px" }}>
       {/* Animated canvas background */}
       <HeroCanvas />
 
@@ -342,10 +342,10 @@ export default function HeroSection() {
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 28px 55px rgba(37,99,235,0.13))",
               width: "auto",
-              height: "1140px",
+              height: "1280px",
               objectFit: "contain",
               objectPosition: "top right",
-              top: "40px",
+              top: "70px",
               right: "-6%",
               left: "auto",
             }}
