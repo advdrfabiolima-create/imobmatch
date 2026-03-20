@@ -2,6 +2,17 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Proxy /api/* → NestJS backend (garante que webhooks externos como Asaas funcionem
+  // mesmo quando o nginx não está interceptando a rota antes do Next.js)
+  async rewrites() {
+    const backendUrl = process.env.BACKEND_INTERNAL_URL || 'http://localhost:3001';
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: 'http',  hostname: 'localhost',             port: '3001', pathname: '/uploads/**' },
