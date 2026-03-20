@@ -108,6 +108,11 @@ export class PropertiesService {
       this.rankingService.addScore(property.agentId, 20, 'dealsClosedCount').catch(() => {});
     }
 
+    // Imóvel fora de disponibilidade: descarta matches PENDING obsoletos
+    if (status && ['SOLD', 'RENTED', 'INACTIVE'].includes(status) && property.status === 'AVAILABLE') {
+      this.prisma.match.deleteMany({ where: { propertyId: id, status: 'PENDING' } }).catch(() => {});
+    }
+
     return updated;
   }
 

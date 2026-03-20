@@ -180,6 +180,17 @@ export class MatchesService {
       }
     }
 
+    // Limpeza catch-all: remove PENDING de imóveis indisponíveis ou compradores inativos
+    await this.prisma.match.deleteMany({
+      where: {
+        status: 'PENDING',
+        OR: [
+          { property: { status: { not: 'AVAILABLE' } } },
+          { buyer:    { status: { not: 'ACTIVE'    } } },
+        ],
+      },
+    });
+
     return {
       message: newMatches > 0
         ? `${newMatches} novo(s) match(es) encontrado(s)`

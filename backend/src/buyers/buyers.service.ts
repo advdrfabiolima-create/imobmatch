@@ -92,10 +92,17 @@ export class BuyersService {
     if (!buyer) throw new NotFoundException('Comprador não encontrado');
     if (buyer.agentId !== agentId) throw new ForbiddenException('Sem permissão');
     const { status, ...rest } = dto;
-    return this.prisma.buyer.update({
+    const updated = await this.prisma.buyer.update({
       where: { id },
       data: { ...rest, ...(status && { status: status as BuyerStatus }) },
     });
+
+    // Comprador inativado: descarta matches PENDING obsoletos
+    if (status === 'INACTIVE') {
+      this.prisma.match.deleteMany({ where: { buyerId: id, status: 'PENDING' } }).catch(() => {});
+    }
+
+    return updated;
   }
 
   async remove(id: string, agentId: string) {
