@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Users, Zap, TrendingUp, ArrowRight, HeartHandshake, Flame, Target,
+  Users, Zap, TrendingUp, ArrowRight, HeartHandshake, Flame,
 } from "lucide-react";
 
 // ─── Floating card wrapper ────────────────────────────────────────────────────
@@ -372,22 +372,8 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Compatibilidade — direita média */}
-          <FloatingCard className="absolute right-[1%] top-[25%] z-20 px-5 py-4" style={fadeUp(0.4)}>
-            <div className="flex items-start gap-3">
-              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-violet-100 text-violet-600">
-                <Target className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="text-sm text-slate-400">Compatibilidade</div>
-                <div className="text-2xl font-bold text-violet-700">93%</div>
-                <div className="mt-1 text-sm text-slate-400">calculando agora</div>
-              </div>
-            </div>
-          </FloatingCard>
-
           {/* Card: Match encontrado — sobre o cotovelo do homem */}
-          <FloatingCard className="absolute left-[-14%] top-[33%] z-20 w-[300px] px-5 py-4" style={fadeUp(0.48)}>
+          <FloatingCard className="absolute left-[-14%] top-[33%] z-20 w-[270px] px-4 py-3" style={fadeUp(0.48)}>
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-violet-100 text-violet-600">
@@ -395,7 +381,7 @@ export default function HeroSection() {
                 </div>
                 <div>
                   <div className="text-[15px] font-semibold text-slate-800">Match encontrado</div>
-                  <div className="text-sm text-slate-400">IA ativa em tempo real</div>
+                  <div className="text-sm text-slate-400">Atualizado em tempo real</div>
                 </div>
               </div>
               <div className="rounded-full bg-violet-100 px-3 py-1 text-sm font-bold text-violet-700">93%</div>
@@ -417,7 +403,7 @@ export default function HeroSection() {
           </FloatingCard>
 
           {/* Card: Parceria iniciada — esquerda inferior */}
-          <FloatingCard className="absolute left-[2%] bottom-[30%] z-20 px-5 py-4" style={fadeUp(0.58)}>
+          <FloatingCard className="absolute left-[2%] bottom-[38%] z-20 px-5 py-4" style={fadeUp(0.58)}>
             <div className="flex items-center gap-3">
               <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-600">
                 <HeartHandshake className="h-5 w-5" />
