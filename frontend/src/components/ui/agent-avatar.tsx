@@ -15,9 +15,9 @@ const BADGE: Record<Level, { emoji: string; bg: string; title: string }> = {
 };
 
 const SIZE = {
-  sm: { avatar: "w-8  h-8",  text: "text-xs",    badge: "w-4  h-4  text-[9px]  -bottom-0.5 -right-0.5" },
-  md: { avatar: "w-10 h-10", text: "text-sm",    badge: "w-5  h-5  text-[11px] -bottom-0.5 -right-0.5" },
-  lg: { avatar: "w-12 h-12", text: "text-base",  badge: "w-6  h-6  text-sm     -bottom-0.5 -right-0.5" },
+  sm: { avatar: "w-8  h-8",  text: "text-xs",   badge: "w-4 h-4 text-[9px]  -bottom-2 -right-2" },
+  md: { avatar: "w-10 h-10", text: "text-sm",   badge: "w-5 h-5 text-[11px] -bottom-2 -right-2" },
+  lg: { avatar: "w-12 h-12", text: "text-base", badge: "w-6 h-6 text-sm     -bottom-2 -right-2" },
 };
 
 interface Props {
