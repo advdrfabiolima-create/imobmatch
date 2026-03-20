@@ -341,21 +341,21 @@ export default function HeroSection() {
               opacity: visible ? 1 : 0,
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 28px 55px rgba(37,99,235,0.13))",
-              width: "108%",
+              width: "130%",
               height: "auto",
               objectFit: "contain",
               objectPosition: "top center",
               top: "40px",
-              left: "-4%",
+              left: "-15%",
             }}
             draggable={false}
           />
 
           {/* ── Cards: todos posicionados abaixo da linha dos ombros (~35%+) ── */}
 
-          {/* Card: Match encontrado — esquerda, região do peito/mãos */}
+          {/* Card: Match encontrado — sobre o cotovelo do homem */}
           <FloatingCard
-            className="absolute left-[-4%] top-[40%] z-20 w-[280px] px-4 py-4"
+            className="absolute left-[-10%] top-[33%] z-20 w-[280px] px-4 py-4"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(14px)",
@@ -395,9 +395,9 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Negócio fechado — direita, mesma altura do Match */}
+          {/* Card: Negócio fechado — acima da cabeça da corretora */}
           <FloatingCard
-            className="absolute right-[0%] top-[38%] z-20 px-4 py-3"
+            className="absolute right-[3%] top-[5%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(14px)",
@@ -417,7 +417,7 @@ export default function HeroSection() {
 
           {/* Card: Parceria iniciada — esquerda inferior */}
           <FloatingCard
-            className="absolute left-[2%] bottom-[22%] z-20 px-4 py-3"
+            className="absolute left-[2%] bottom-[30%] z-20 px-4 py-3"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(14px)",
@@ -438,29 +438,9 @@ export default function HeroSection() {
             </div>
           </FloatingCard>
 
-          {/* Card: Compatibilidade — centro inferior */}
+          {/* Card: Comissão estimada — próximo ao crachá da corretora */}
           <FloatingCard
-            className="absolute left-[28%] bottom-[8%] z-20 px-4 py-3"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(14px)",
-              transition: "opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s",
-            } as React.CSSProperties}
-          >
-            <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 place-items-center rounded-2xl bg-amber-50 border border-amber-100 flex-shrink-0">
-                <span className="text-amber-500 text-base font-bold">✓</span>
-              </div>
-              <div>
-                <div className="text-[13px] font-semibold text-slate-800">Alta compatibilidade</div>
-                <div className="text-xs text-slate-400 mt-0.5">imóvel + comprador</div>
-              </div>
-            </div>
-          </FloatingCard>
-
-          {/* Card: Comissão estimada — direita inferior */}
-          <FloatingCard
-            className="absolute right-[0%] bottom-[18%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]"
+            className="absolute right-[1%] top-[52%] z-20 px-4 py-4 shadow-[0_20px_60px_rgba(16,185,129,0.18)]"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(14px)",
