@@ -11,10 +11,11 @@ import { Button } from "@/components/ui/button";
 import { EmojiPicker } from "@/components/ui/emoji-picker";
 import { api } from "@/lib/api";
 import {
-  MessageSquare, Send, Smile, Home, X, Reply, Check, CheckCheck, ArrowLeft,
+  MessageSquare, Send, Smile, Home, X, Reply, Check, CheckCheck, ArrowLeft, Users,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { formatCurrency, PROPERTY_TYPE_LABELS } from "@/lib/utils";
+import Link from "next/link";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -299,10 +300,18 @@ function MensagensContent() {
           </div>
           <div className="flex-1 overflow-y-auto">
             {!conversations?.length ? (
-              <div className="p-8 text-center text-gray-400">
-                <MessageSquare className="h-8 w-8 mx-auto mb-2" />
-                <p className="text-sm">Nenhuma conversa ainda</p>
-                <p className="text-xs mt-1">Acesse um corretor para iniciar</p>
+              <div className="p-8 text-center">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <MessageSquare className="h-6 w-6 text-blue-300" />
+                </div>
+                <p className="text-sm font-medium text-gray-700 mb-1">Nenhuma conversa ainda</p>
+                <p className="text-xs text-gray-400 mb-4">Encontre um corretor e inicie uma conversa.</p>
+                <Link
+                  href="/corretores"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Users className="h-3.5 w-3.5" /> Buscar Corretores
+                </Link>
               </div>
             ) : conversations.map((conv: any) => (
               <button

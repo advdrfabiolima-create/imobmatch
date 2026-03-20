@@ -39,6 +39,25 @@ export default function CorretoresPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => <div key={i} className="h-40 bg-gray-100 rounded-xl animate-pulse" />)}
           </div>
+        ) : !data?.data?.length ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="h-8 w-8 text-blue-300" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {search || city ? "Nenhum corretor encontrado" : "A rede ainda está vazia"}
+            </h3>
+            <p className="text-gray-500 text-sm mb-5 max-w-xs mx-auto">
+              {search || city
+                ? "Tente buscar por outros termos ou limpe os filtros."
+                : "Em breve outros corretores vão se cadastrar na plataforma."}
+            </p>
+            {(search || city) && (
+              <Button variant="outline" onClick={() => { setSearch(""); setCity(""); }}>
+                Limpar filtros
+              </Button>
+            )}
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {data?.data?.map((agent: any) => (

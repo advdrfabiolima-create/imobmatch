@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { UserCheck, Check, X, Building2, FileText, User, AlertTriangle } from "lucide-react";
+import { UserCheck, Check, X, Building2, FileText, User, AlertTriangle, Zap } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -305,9 +305,18 @@ export default function ParceriasPage() {
 
         {!isLoading && data?.data?.length === 0 && (
           <div className="text-center py-16">
-            <UserCheck className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <UserCheck className="h-8 w-8 text-indigo-300" />
+            </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Nenhuma parceria ainda</h3>
-            <p className="text-gray-500">Navegue pelos imóveis e solicite parcerias com outros corretores</p>
+            <p className="text-gray-500 text-sm mb-5 max-w-xs mx-auto">
+              Explore os matches gerados e solicite parcerias com outros corretores para fechar negócios juntos.
+            </p>
+            <Link href="/matches">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+                <Zap className="h-4 w-4" /> Explorar Matches
+              </Button>
+            </Link>
           </div>
         )}
       </div>
