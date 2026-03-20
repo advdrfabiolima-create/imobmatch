@@ -14,6 +14,10 @@ const PLAN_BOOST: Record<string, number> = {
   agency:  15,
 };
 
+// Planos que habilitam o match automático entre corretores diferentes.
+// Se pelo menos um dos dois agentes envolvidos for Pro+, o match é gerado.
+const PRO_PLANS = new Set(['pro', 'premium', 'agency']);
+
 @Injectable()
 export class MatchesService {
   constructor(
@@ -73,15 +77,34 @@ export class MatchesService {
     return Math.min(score, 100);
   }
 
-  /** Retorna um mapa agentId → bônus de plano para um conjunto de IDs. */
-  private async getPlanBoosts(agentIds: string[]): Promise<Map<string, number>> {
+  /**
+   * Busca dados de plano para um conjunto de agentIds em uma única query.
+   * Retorna:
+   *  - boosts: agentId → bônus de score (para ordenação)
+   *  - proSet: conjunto de agentIds que estão em planos Pro+ (para controle de match automático)
+   */
+  private async getAgentPlanData(
+    agentIds: string[],
+  ): Promise<{ boosts: Map<string, number>; proSet: Set<string> }> {
     const ids = [...new Set(agentIds.filter(Boolean))];
-    if (!ids.length) return new Map();
+    if (!ids.length) return { boosts: new Map(), proSet: new Set() };
     const agents = await this.prisma.user.findMany({
       where: { id: { in: ids } },
       select: { id: true, plan: true },
     });
-    return new Map(agents.map((a) => [a.id, PLAN_BOOST[a.plan ?? 'free'] ?? 0]));
+    const boosts = new Map<string, number>();
+    const proSet = new Set<string>();
+    for (const a of agents) {
+      const plan = a.plan ?? 'free';
+      boosts.set(a.id, PLAN_BOOST[plan] ?? 0);
+      if (PRO_PLANS.has(plan)) proSet.add(a.id);
+    }
+    return { boosts, proSet };
+  }
+
+  /** Atalho retrocompatível — usa apenas o boosts do getAgentPlanData. */
+  private async getPlanBoosts(agentIds: string[]): Promise<Map<string, number>> {
+    return (await this.getAgentPlanData(agentIds)).boosts;
   }
 
   private async upsertMatch(buyerId: string, propertyId: string, score: number, planBonus = 0) {
@@ -169,6 +192,12 @@ export class MatchesService {
 
   // ==================== MATCH AUTOMÁTICO (ao cadastrar comprador/imóvel, score ≥ 70) ====================
 
+  // ── Regra de match automático entre corretores ─────────────────────────────
+  // Match cross-agent só é gerado automaticamente se pelo menos um dos dois
+  // agentes envolvidos (comprador ou imóvel) estiver em plano Pro, Premium ou Agency.
+  // Matches dentro do próprio corretor (mesmo agentId) são sempre gerados.
+  // O botão manual "Verificar Matches" não tem essa restrição.
+
   async generateForBuyer(buyerId: string): Promise<void> {
     try {
       const buyer = await this.prisma.buyer.findUnique({ where: { id: buyerId } });
@@ -178,12 +207,19 @@ export class MatchesService {
         where: { status: 'AVAILABLE', isPublic: true },
       });
 
-      const boostMap = await this.getPlanBoosts(properties.map((p) => p.agentId));
+      const allAgentIds = [buyer.agentId, ...properties.map((p) => p.agentId)];
+      const { boosts, proSet } = await this.getAgentPlanData(allAgentIds);
+      const buyerAgentIsPro = proSet.has(buyer.agentId);
 
       for (const property of properties) {
+        const isSameAgent = property.agentId === buyer.agentId;
+
+        // Cross-agent: exige que pelo menos um dos dois seja Pro+
+        if (!isSameAgent && !buyerAgentIsPro && !proSet.has(property.agentId)) continue;
+
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
-          const boost = boostMap.get(property.agentId) ?? 0;
+          const boost = boosts.get(property.agentId) ?? 0;
           try { await this.upsertMatch(buyer.id, property.id, score, boost); } catch {}
         }
       }
@@ -195,14 +231,21 @@ export class MatchesService {
       const property = await this.prisma.property.findUnique({ where: { id: propertyId } });
       if (!property || property.status !== 'AVAILABLE' || !property.isPublic) return;
 
-      const boostMap = await this.getPlanBoosts([property.agentId]);
-      const boost = boostMap.get(property.agentId) ?? 0;
-
       const buyers = await this.prisma.buyer.findMany({
         where: { status: 'ACTIVE' },
       });
 
+      const allAgentIds = [property.agentId, ...buyers.map((b) => b.agentId)];
+      const { boosts, proSet } = await this.getAgentPlanData(allAgentIds);
+      const propertyAgentIsPro = proSet.has(property.agentId);
+      const boost = boosts.get(property.agentId) ?? 0;
+
       for (const buyer of buyers) {
+        const isSameAgent = buyer.agentId === property.agentId;
+
+        // Cross-agent: exige que pelo menos um dos dois seja Pro+
+        if (!isSameAgent && !propertyAgentIsPro && !proSet.has(buyer.agentId)) continue;
+
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
           try { await this.upsertMatch(buyer.id, property.id, score, boost); } catch {}
