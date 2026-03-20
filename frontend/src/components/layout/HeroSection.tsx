@@ -343,6 +343,7 @@ export default function HeroSection() {
               filter: "drop-shadow(0 28px 55px rgba(37,99,235,0.13))",
               width: "auto",
               height: "1280px",
+              maxWidth: "none",
               objectFit: "contain",
               objectPosition: "top right",
               top: "70px",
