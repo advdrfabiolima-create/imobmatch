@@ -55,7 +55,22 @@ export class BuyersService {
       this.prisma.buyer.count({ where }),
     ]);
 
-    return { data: buyers, total, page: Number(page), totalPages: Math.ceil(total / limit) };
+    // Parcerias aceitas por buyerId — em lote para evitar N+1
+    const buyerIds = buyers.map((b) => b.id);
+    const acceptedRows = await this.prisma.partnership.groupBy({
+      by: ['buyerId'],
+      where: { buyerId: { in: buyerIds }, status: 'ACCEPTED' },
+      _count: { _all: true },
+    });
+    const acceptedMap = new Map(acceptedRows.map((r) => [r.buyerId, r._count._all]));
+
+    const data = buyers.map((b) => {
+      const totalMatches      = b._count?.matches ?? 0;
+      const acceptedPartners  = acceptedMap.get(b.id) ?? 0;
+      return { ...b, openMatchCount: Math.max(0, totalMatches - acceptedPartners) };
+    });
+
+    return { data, total, page: Number(page), totalPages: Math.ceil(total / limit) };
   }
 
   async findOne(id: string, agentId: string) {

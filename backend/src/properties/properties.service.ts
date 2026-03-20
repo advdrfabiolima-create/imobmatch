@@ -144,6 +144,21 @@ export class PropertiesService {
       this.prisma.property.count({ where }),
     ]);
 
-    return { data: properties, total, page: Number(page), totalPages: Math.ceil(total / limit) };
+    // Parcerias aceitas por propertyId — em lote para evitar N+1
+    const propertyIds = properties.map((p) => p.id);
+    const acceptedRows = await this.prisma.partnership.groupBy({
+      by: ['propertyId'],
+      where: { propertyId: { in: propertyIds }, status: 'ACCEPTED' },
+      _count: { _all: true },
+    });
+    const acceptedMap = new Map(acceptedRows.map((r) => [r.propertyId, r._count._all]));
+
+    const data = properties.map((p) => {
+      const totalMatches     = p._count?.matches ?? 0;
+      const acceptedPartners = acceptedMap.get(p.id) ?? 0;
+      return { ...p, openMatchCount: Math.max(0, totalMatches - acceptedPartners) };
+    });
+
+    return { data, total, page: Number(page), totalPages: Math.ceil(total / limit) };
   }
 }

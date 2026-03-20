@@ -170,7 +170,7 @@ export default function ImoveisPage() {
                 key={p.id}
                 property={p}
                 showActions
-                matchCount={p._count?.matches ?? 0}
+                matchCount={p.openMatchCount ?? 0}
                 onEdit={() => { setEditProperty(p); setShowForm(true); }}
                 onDelete={() => handleDelete(p.id)}
                 onStatusChange={(newStatus) => statusMutation.mutate({ id: p.id, newStatus })}
