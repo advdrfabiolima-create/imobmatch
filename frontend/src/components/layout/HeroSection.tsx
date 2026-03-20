@@ -20,7 +20,7 @@ function FloatingCard({
     <div
       style={style}
       className={[
-        "rounded-3xl border border-white/70 bg-white/80 shadow-[0_20px_60px_rgba(37,99,235,0.12)] backdrop-blur-xl",
+        "rounded-2xl border border-white/70 bg-white/80 shadow-[0_20px_60px_rgba(37,99,235,0.12)] backdrop-blur-xl",
         className ?? "",
       ].join(" ")}
     >
@@ -348,7 +348,7 @@ export default function HeroSection() {
               transition: "opacity 0.8s ease 0.15s",
               filter: "drop-shadow(0 28px 55px rgba(37,99,235,0.13))",
               width: "auto",
-              height: "520px",
+              height: "530px",
               maxWidth: "none",
               objectFit: "contain",
               objectPosition: "top right",
@@ -373,7 +373,7 @@ export default function HeroSection() {
           </FloatingCard>
 
           {/* Card: Match encontrado — sobre o cotovelo do homem */}
-          <FloatingCard className="absolute left-[-14%] top-[33%] z-20 w-[245px] px-3 py-2.5" style={fadeUp(0.48)}>
+          <FloatingCard className="absolute left-[-18%] top-[33%] z-20 w-[245px] px-3 py-2.5" style={fadeUp(0.48)}>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-600">
