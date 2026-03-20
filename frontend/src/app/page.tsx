@@ -660,7 +660,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           HEADER
       ══════════════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-gradient-to-r from-blue-700 via-blue-600 to-violet-700 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-md" style={{ background: "linear-gradient(160deg, #0b1849 0%, #18106a 44%, #361178 72%, #461a8e 100%)" }}>
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center flex-shrink-0">
             <img src="/logo.png" alt="ImobMatch" className="h-10 w-auto object-contain brightness-0 invert" />
@@ -1127,7 +1127,7 @@ export default function HomePage() {
           CTA FINAL
       ══════════════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-blue-600 to-violet-700" />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #0b1849 0%, #18106a 44%, #361178 72%, #461a8e 100%)" }} />
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
