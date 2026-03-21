@@ -222,10 +222,16 @@ export class MailService {
         O ImobMatch é uma plataforma para corretores encontrarem imóveis, compradores
         e parcerias com mais facilidade. Clique no botão abaixo para criar sua conta e começar:
       </p>
-      <a href="${registerUrl}"
-         style="display:inline-block;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
-        🚀 Acessar minha conta
-      </a>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            <a href="${registerUrl}"
+               style="display:inline-block;background-color:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;mso-padding-alt:0;line-height:1.4;">
+              Acessar minha conta
+            </a>
+          </td>
+        </tr>
+      </table>
       <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
         Se você não se inscreveu na lista de acesso antecipado, ignore este e-mail.
       </p>
