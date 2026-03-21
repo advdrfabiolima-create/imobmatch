@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Home, Users, Zap, UserCheck,
   MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2, CreditCard, X,
-  Rss, Trophy,
+  Rss, Trophy, Calculator,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -154,7 +154,8 @@ export function Sidebar() {
           <NavLink href="/oportunidades" label="Oportunidades"    icon={Zap}        activeColor="amber" />
           <NavLink href="/feed"          label="Feed da Rede"     icon={Rss} />
           <NavLink href="/ranking"       label="Ranking"          icon={Trophy} />
-          <NavLink href="/analytics"     label="Analytics"        icon={BarChart2} />
+          <NavLink href="/analytics"          label="Analytics"              icon={BarChart2} />
+          <NavLink href="/simulador-financiamento" label="Simulador"         icon={Calculator} />
           <NavLink href="/perfil"        label="Perfil"           icon={Settings} />
           <NavLink href="/meu-plano"     label="Planos"           icon={CreditCard}  activeColor="amber" />
 
