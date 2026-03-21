@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, UseGuards, Request, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Patch, Body, Get, Query, UseGuards, Request, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Request as ExpressRequest, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -83,6 +83,17 @@ export class AuthController {
   @ApiOperation({ summary: 'Verificar e-mail com token' })
   verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
+  }
+
+  @Patch('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Alterar senha do usuário autenticado' })
+  changePassword(
+    @Request() req,
+    @Body() body: { currentPassword: string; newPassword: string },
+  ) {
+    return this.authService.changePassword(req.user.id, body.currentPassword, body.newPassword);
   }
 
   @Post('resend-verification')

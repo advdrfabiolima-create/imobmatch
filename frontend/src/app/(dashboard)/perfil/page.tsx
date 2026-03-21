@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import { STATES } from "@/lib/utils";
-import { Loader2, Building2, MapPin, Mail, User, Camera, AlertTriangle } from "lucide-react";
+import { Loader2, Building2, MapPin, Mail, User, Camera, AlertTriangle, Lock, Eye, EyeOff } from "lucide-react";
 import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import toast from "react-hot-toast";
 import { AvatarCropModal } from "@/components/ui/avatar-crop-modal";
@@ -38,6 +38,11 @@ export default function PerfilPage() {
   const router = useRouter();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
+  const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
+  const [pwLoading, setPwLoading] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -110,6 +115,31 @@ export default function PerfilPage() {
   };
 
   const currentAvatar = avatarPreview || user?.avatarUrl;
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pwForm.next !== pwForm.confirm) {
+      toast.error("As senhas não coincidem");
+      return;
+    }
+    if (pwForm.next.length < 8) {
+      toast.error("A nova senha deve ter pelo menos 8 caracteres");
+      return;
+    }
+    setPwLoading(true);
+    try {
+      await api.patch("/auth/change-password", {
+        currentPassword: pwForm.current,
+        newPassword: pwForm.next,
+      });
+      toast.success("Senha alterada com sucesso!");
+      setPwForm({ current: "", next: "", confirm: "" });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Erro ao alterar senha");
+    } finally {
+      setPwLoading(false);
+    }
+  };
 
   return (
     <>
@@ -348,6 +378,79 @@ export default function PerfilPage() {
                 <span>Conta ativa</span>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Change Password */}
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Lock className="h-4 w-4 text-gray-500" />
+              Alterar Senha
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Senha atual</label>
+                <div className="relative">
+                  <Input
+                    type={showCurrentPw ? "text" : "password"}
+                    placeholder="••••••••"
+                    className="pr-10"
+                    value={pwForm.current}
+                    onChange={(e) => setPwForm((p) => ({ ...p, current: e.target.value }))}
+                    required
+                  />
+                  <button type="button" onClick={() => setShowCurrentPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Nova senha</label>
+                <div className="relative">
+                  <Input
+                    type={showNewPw ? "text" : "password"}
+                    placeholder="Mínimo 8 caracteres"
+                    className="pr-10"
+                    value={pwForm.next}
+                    onChange={(e) => setPwForm((p) => ({ ...p, next: e.target.value }))}
+                    required
+                  />
+                  <button type="button" onClick={() => setShowNewPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Confirmar nova senha</label>
+                <div className="relative">
+                  <Input
+                    type={showConfirmPw ? "text" : "password"}
+                    placeholder="Repita a nova senha"
+                    className="pr-10"
+                    value={pwForm.confirm}
+                    onChange={(e) => setPwForm((p) => ({ ...p, confirm: e.target.value }))}
+                    required
+                  />
+                  <button type="button" onClick={() => setShowConfirmPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showConfirmPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <Button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700"
+                disabled={pwLoading || !pwForm.current || !pwForm.next || !pwForm.confirm}
+              >
+                {pwLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                Alterar senha
+              </Button>
+            </form>
           </CardContent>
         </Card>
 
