@@ -151,7 +151,7 @@ export default function LoginPage() {
 
           {/* Form card */}
           <div
-            className="bg-white rounded-2xl border border-slate-100 px-8 py-9"
+            className="bg-white rounded-2xl border border-slate-100 px-5 py-7 sm:px-8 sm:py-9"
             style={{
               boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06)",
             }}

@@ -41,8 +41,12 @@ function fmtLastSeen(d: string | null) {
 }
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
+const AVATAR_SIZE: Record<number, string> = {
+  8: "w-8 h-8", 9: "w-9 h-9", 10: "w-10 h-10",
+  11: "w-11 h-11", 12: "w-12 h-12", 14: "w-14 h-14",
+};
 function Avatar({ name, avatarUrl, size = 10 }: { name: string; avatarUrl?: string; size?: number }) {
-  const sz = `w-${size} h-${size}`;
+  const sz = AVATAR_SIZE[size] ?? "w-10 h-10";
   return (
     <div className={`${sz} rounded-full bg-blue-100 flex-shrink-0 overflow-hidden flex items-center justify-center text-blue-600 font-semibold text-sm`}>
       {avatarUrl

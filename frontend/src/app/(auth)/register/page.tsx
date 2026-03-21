@@ -115,7 +115,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
       <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-2.5">
         Plano
       </p>
-      <div className="grid grid-cols-5 gap-1.5 pt-3">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 pt-3">
         {PLANS.map((plan) => {
           const active = selected === plan.id;
           return (

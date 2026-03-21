@@ -236,16 +236,16 @@ export default function ParceriasPage() {
               {pending.map((p: any) => (
                 <Card key={p.id} className="border-yellow-200 bg-yellow-50">
                   <CardContent className="p-5">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Building2 className="h-4 w-4 text-gray-500" />
-                          <span className="font-semibold text-gray-900">{p.property?.title}</span>
-                          <span className="text-blue-600 font-medium">{formatCurrency(p.property?.price)}</span>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <Building2 className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                          <span className="font-semibold text-gray-900 truncate">{p.property?.title}</span>
+                          <span className="text-blue-600 font-medium flex-shrink-0">{formatCurrency(p.property?.price)}</span>
                         </div>
                         {p.buyer && (
                           <div className="flex items-center gap-1.5 text-sm text-gray-600 mb-1">
-                            <User className="h-3.5 w-3.5 text-gray-400" />
+                            <User className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
                             <span>Cliente: <strong>{p.buyer?.buyerName}</strong></span>
                           </div>
                         )}
@@ -259,10 +259,10 @@ export default function ParceriasPage() {
                           <p className="text-xs text-gray-500 mt-1">Comissão proposta: {p.commissionSplit}%</p>
                         )}
                       </div>
-                      <div className="flex gap-2 ml-4">
+                      <div className="flex gap-2 sm:ml-4 flex-shrink-0">
                         <Button
                           size="sm"
-                          className="bg-green-600 hover:bg-green-700 gap-1"
+                          className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 gap-1"
                           onClick={() => respondMutation.mutate({ id: p.id, status: "ACCEPTED" })}
                         >
                           <Check className="h-4 w-4" /> Aceitar
@@ -270,7 +270,7 @@ export default function ParceriasPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-red-300 text-red-600 hover:bg-red-50 gap-1"
+                          className="flex-1 sm:flex-none border-red-300 text-red-600 hover:bg-red-50 gap-1"
                           onClick={() => respondMutation.mutate({ id: p.id, status: "REJECTED" })}
                         >
                           <X className="h-4 w-4" /> Recusar
