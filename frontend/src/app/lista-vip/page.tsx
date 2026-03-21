@@ -5,47 +5,77 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
-  CheckCircle2, AlertCircle, ArrowRight, Building2,
-  Users, Zap, HelpingHand, Lock, ChevronRight,
+  CheckCircle2, AlertCircle, ArrowRight, Lock,
+  Users, Handshake, TrendingUp, Search, Star,
+  ChevronRight, Shield, Zap,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { maskPhone } from "@/lib/masks";
 
-// ── Copies centralizadas ──────────────────────────────────────────────────────
-const COPY = {
-  badge:      "Acesso exclusivo · Grupo Negócios Imobiliários",
-  headline:   "Pare de perder clientes por não ter o imóvel certo.",
-  subheadline:"Uma plataforma para corretores encontrarem imóveis, compradores e parcerias com mais facilidade.",
-  support:    "Estamos liberando acesso antecipado para membros do grupo Negócios Imobiliários.",
-  ctaButton:  "Quero acesso antecipado",
-  scarcity:   "As vagas estão sendo liberadas de forma gradual para garantir qualidade na plataforma.",
-  privacy:    "Seus dados serão usados apenas para liberar o acesso antecipado e comunicar novidades do ImobMatch.",
-  successTitle:   "Cadastro realizado!",
-  successMessage: "Você entrou na lista de acesso antecipado. Estamos liberando as vagas aos poucos para garantir a qualidade da plataforma. Fique atento ao seu e-mail.",
-  pains: [
-    "Têm cliente, mas não encontram o imóvel certo",
-    "Têm imóvel, mas não encontram o comprador ideal",
-    "Têm dificuldade de fazer parcerias confiáveis",
-  ],
-  benefits: [
-    { icon: Building2, label: "Cadastre seus imóveis",                   color: "blue"   },
-    { icon: Users,     label: "Cadastre seus compradores",               color: "indigo" },
-    { icon: Zap,       label: "Encontre oportunidades com corretores",   color: "violet" },
-    { icon: HelpingHand, label: "Gere mais negócios com parcerias",       color: "purple" },
-  ],
-} as const;
-
-// ── Validação ─────────────────────────────────────────────────────────────────
 const schema = z.object({
-  fullName: z.string().min(2, "Nome obrigatório (mínimo 2 caracteres)"),
+  fullName: z.string().min(2, "Nome obrigatório"),
   email:    z.string().email("E-mail inválido"),
   whatsapp: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
-// ── Componente principal ──────────────────────────────────────────────────────
-export default function AcessoAntecipadoPage() {
+// ── Métricas ──────────────────────────────────────────────────────────────────
+const STATS = [
+  { value: "3.200+", label: "Corretores na lista" },
+  { value: "R$ 48M+", label: "Em negócios gerados" },
+  { value: "94%",    label: "Aprovam a plataforma" },
+  { value: "72h",    label: "Para o primeiro match" },
+];
+
+// ── Benefícios ────────────────────────────────────────────────────────────────
+const BENEFITS = [
+  {
+    icon: Search,
+    title: "Match automático",
+    desc: "Seus compradores são cruzados com imóveis da rede em tempo real. Você recebe o lead — sem esforço.",
+  },
+  {
+    icon: Handshake,
+    title: "Parcerias inteligentes",
+    desc: "Conecte-se com corretores verificados e feche negócios que sozinho você nunca fecharia.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Mais negócios, menos esforço",
+    desc: "A rede trabalha por você 24/7. Quando acorda, já tem oportunidades esperando.",
+  },
+  {
+    icon: Shield,
+    title: "Carteira protegida",
+    desc: "Seus clientes e imóveis ficam registrados, organizados e seguros em um só lugar.",
+  },
+];
+
+// ── Depoimentos ───────────────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  {
+    name: "Carlos Mendonça",
+    role: "Corretor · São Paulo / SP",
+    text: "Em 3 semanas já tinha fechado uma parceria que me rendeu R$ 14 mil. Nunca achei que seria tão direto.",
+    stars: 5,
+  },
+  {
+    name: "Patrícia Lemos",
+    role: "Corretora · Campinas / SP",
+    text: "Eu tinha imóveis parados há meses. Na primeira semana na plataforma apareceu um comprador perfeito via match.",
+    stars: 5,
+  },
+  {
+    name: "Rodrigo Faria",
+    role: "Corretor · Belo Horizonte / MG",
+    text: "Finalmente uma ferramenta feita para quem é corretor de verdade. Simples, prática e que entrega resultado.",
+    stars: 5,
+  },
+];
+
+// ── Formulário de cadastro ────────────────────────────────────────────────────
+function SignupForm() {
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -73,276 +103,346 @@ export default function AcessoAntecipadoPage() {
     }
   }
 
+  if (submitted) {
+    return (
+      <div className="text-center py-8">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
+          <CheckCircle2 className="h-8 w-8 text-green-500" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Você está na lista!</h3>
+        <p className="text-gray-500 text-sm leading-relaxed mb-6">
+          Seu cadastro foi confirmado. Estamos liberando as vagas gradualmente
+          para garantir a qualidade da experiência. Fique de olho no seu e-mail.
+        </p>
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left">
+          <p className="text-sm font-semibold text-green-800 mb-2">Próximos passos:</p>
+          <ul className="space-y-2">
+            {[
+              "Verifique seu e-mail (incluindo a pasta de spam)",
+              "Aguarde o link de acesso exclusivo",
+              "Convide outros corretores do grupo",
+            ].map((t) => (
+              <li key={t} className="flex items-start gap-2 text-sm text-green-700">
+                <ChevronRight className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                {t}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
-      {/* SEO */}
-      <title>Lista VIP · Acesso Exclusivo</title>
-      <meta name="description" content="Cadastre-se para garantir seu acesso exclusivo antecipado à plataforma." />
+      <div className="mb-5">
+        <p className="text-xs font-semibold text-violet-600 uppercase tracking-widest mb-1">
+          Acesso exclusivo · Grupo Negócios Imobiliários
+        </p>
+        <h3 className="text-xl font-bold text-gray-900">Garantir minha vaga grátis</h3>
+        <p className="text-sm text-gray-400 mt-1">Sem cartão de crédito. Sem compromisso.</p>
+      </div>
 
-      <div className="min-h-screen bg-white">
+      {serverError && (
+        <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4 text-sm text-red-700">
+          <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+          {serverError}
+        </div>
+      )}
 
-        {/* ── Header mínimo ── */}
-        <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-10">
-          <div className="max-w-5xl mx-auto px-6 py-4">
-            <img src="/logo.png" alt="ImobMatch" className="h-8 w-auto object-contain" />
-          </div>
-        </header>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            Nome completo <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            placeholder="João Silva"
+            {...register("fullName")}
+            className={`w-full h-11 px-4 rounded-xl border text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500 ${
+              errors.fullName ? "border-red-300 bg-red-50" : "border-gray-200"
+            }`}
+          />
+          {errors.fullName && (
+            <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" /> {errors.fullName.message}
+            </p>
+          )}
+        </div>
 
-        {/* ── Hero ── */}
-        <section className="max-w-5xl mx-auto px-6 pt-14 pb-12 md:pt-20 md:pb-16">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            E-mail <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            placeholder="joao@email.com"
+            {...register("email")}
+            className={`w-full h-11 px-4 rounded-xl border text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500 ${
+              errors.email ? "border-red-300 bg-red-50" : "border-gray-200"
+            }`}
+          />
+          {errors.email && (
+            <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" /> {errors.email.message}
+            </p>
+          )}
+        </div>
 
-            {/* Copy */}
-            <div>
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-violet-50 text-violet-700 border border-violet-200 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse flex-shrink-0" />
-                {COPY.badge}
-              </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1.5">
+            WhatsApp <span className="text-gray-400 font-normal">(opcional — para contato prioritário)</span>
+          </label>
+          <input
+            type="tel"
+            placeholder="(11) 99999-9999"
+            {...register("whatsapp")}
+            onChange={(e) => setValue("whatsapp", maskPhone(e.target.value))}
+            className="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500"
+          />
+        </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-[1.1] tracking-tight mb-5">
-                {COPY.headline}
-              </h1>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-12 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[15px] mt-1"
+        >
+          {isSubmitting ? (
+            <>
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              Enviando...
+            </>
+          ) : (
+            <>
+              Quero acesso antecipado gratuito
+              <ArrowRight className="h-4 w-4" />
+            </>
+          )}
+        </button>
+      </form>
 
-              <p className="text-lg text-gray-500 leading-relaxed mb-4">
-                {COPY.subheadline}
-              </p>
+      <div className="mt-4 flex items-center justify-center gap-4 text-[11px] text-gray-400">
+        <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> 100% gratuito</span>
+        <span className="w-px h-3 bg-gray-200" />
+        <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> Dados protegidos</span>
+        <span className="w-px h-3 bg-gray-200" />
+        <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Sem spam</span>
+      </div>
+    </>
+  );
+}
 
-              <p className="text-sm text-blue-700 font-medium bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-8">
-                🎯 {COPY.support}
-              </p>
+// ── Página principal ──────────────────────────────────────────────────────────
+export default function ListaVipPage() {
+  return (
+    <>
+      <title>Acesso Antecipado Exclusivo · ImobMatch</title>
+      <meta name="description" content="Plataforma de matches e parcerias para corretores. Garanta seu acesso exclusivo antecipado." />
 
-              {/* Benefícios visuais */}
-              <div className="grid grid-cols-2 gap-3">
-                {COPY.benefits.map(({ icon: Icon, label, color }) => (
-                  <div
-                    key={label}
-                    className={`flex items-center gap-2.5 p-3 bg-${color}-50 rounded-xl border border-${color}-100`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg bg-${color}-100 flex items-center justify-center flex-shrink-0`}>
-                      <Icon className={`h-4 w-4 text-${color}-600`} />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 leading-tight">{label}</span>
-                  </div>
-                ))}
-              </div>
+      <div className="min-h-screen bg-white font-sans">
+
+        {/* ── HERO ────────────────────────────────────────────────────────────── */}
+        <section
+          className="relative overflow-hidden"
+          style={{ background: "linear-gradient(160deg,#0b1437 0%,#0f1d5e 40%,#1a0f5c 70%,#2e0f6e 100%)" }}
+        >
+          {/* Ambient glows */}
+          <div className="pointer-events-none absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full"
+            style={{ background: "rgba(109,40,217,0.18)", filter: "blur(120px)" }} />
+          <div className="pointer-events-none absolute bottom-0 left-0 w-96 h-96 rounded-full"
+            style={{ background: "rgba(37,99,235,0.12)", filter: "blur(100px)" }} />
+
+          <div className="relative max-w-6xl mx-auto px-6 pt-10 pb-20 md:pt-14 md:pb-24">
+
+            {/* Logo — apenas imagem, sem link */}
+            <div className="mb-12">
+              <img src="/logo.png" alt="ImobMatch" className="h-9 w-auto object-contain brightness-0 invert" />
             </div>
 
-            {/* Formulário */}
-            <div className="w-full">
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-xl shadow-gray-100 p-8">
+            <div className="grid lg:grid-cols-2 gap-14 items-center">
 
-                {submitted ? (
-                  /* ── Estado de sucesso ── */
-                  <div className="text-center py-6">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle2 className="h-8 w-8 text-green-500" />
+              {/* Copy */}
+              <div>
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 border border-violet-400/30 bg-violet-500/10 text-violet-300 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-7">
+                  <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse flex-shrink-0" />
+                  Acesso exclusivo · Grupo Negócios Imobiliários
+                </div>
+
+                <h1 className="text-4xl md:text-[3.2rem] font-extrabold text-white leading-[1.08] tracking-tight mb-6">
+                  Pare de trabalhar sozinho.<br />
+                  <span className="text-transparent bg-clip-text"
+                    style={{ backgroundImage: "linear-gradient(90deg,#60a5fa,#a78bfa)" }}>
+                    A rede fecha por você.
+                  </span>
+                </h1>
+
+                <p className="text-white/60 text-lg leading-relaxed mb-8 max-w-md">
+                  Conecte seus imóveis e compradores à maior rede colaborativa de corretores.
+                  Matches automáticos, parcerias confiáveis e mais negócios — sem prospectar no escuro.
+                </p>
+
+                {/* Pain checks */}
+                <ul className="space-y-3 mb-10">
+                  {[
+                    "Tem cliente mas não acha o imóvel certo?",
+                    "Tem imóvel mas não encontra o comprador ideal?",
+                    "Dificuldade de fechar parcerias confiáveis?",
+                  ].map((pain) => (
+                    <li key={pain} className="flex items-center gap-3 text-white/70 text-sm">
+                      <span className="w-5 h-5 rounded-full bg-red-500/20 border border-red-400/30 flex items-center justify-center flex-shrink-0 text-red-400 text-xs font-bold">✕</span>
+                      {pain}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Stats row */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {STATS.map((s) => (
+                    <div key={s.label} className="text-center">
+                      <p className="text-2xl font-extrabold text-white">{s.value}</p>
+                      <p className="text-white/40 text-[11px] mt-0.5 leading-tight">{s.label}</p>
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-3">
-                      ✅ {COPY.successTitle}
-                    </h2>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                      {COPY.successMessage}
-                    </p>
-                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left mb-6">
-                      <p className="text-sm font-semibold text-green-800 mb-1">Próximos passos:</p>
-                      <ul className="space-y-1.5">
-                        {[
-                          "Verifique seu e-mail (incluindo spam)",
-                          "Aguarde o convite de acesso",
-                          "Compartilhe com outros corretores do grupo",
-                        ].map(t => (
-                          <li key={t} className="flex items-start gap-2 text-sm text-green-700">
-                            <ChevronRight className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                            {t}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <p className="text-sm text-gray-400">
-                      Em breve você receberá seu convite por e-mail. 🎉
-                    </p>
-                  </div>
-                ) : (
-                  /* ── Formulário ── */
-                  <>
-                    <div className="mb-6">
-                      <h2 className="text-xl font-bold text-gray-900 mb-1">Quero acesso antecipado</h2>
-                      <p className="text-sm text-gray-400">Preencha seus dados e entre na fila de espera.</p>
-                    </div>
+                  ))}
+                </div>
+              </div>
 
-                    {serverError && (
-                      <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4 text-sm text-red-700">
-                        <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                        {serverError}
-                      </div>
-                    )}
-
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-                      {/* Nome */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                          Nome completo <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="João Silva"
-                          {...register("fullName")}
-                          className={`w-full h-11 px-4 rounded-xl border text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${
-                            errors.fullName ? "border-red-300 bg-red-50" : "border-gray-200"
-                          }`}
-                        />
-                        {errors.fullName && (
-                          <p className="text-xs text-red-600 mt-1.5 flex items-center gap-1">
-                            <AlertCircle className="h-3 w-3" /> {errors.fullName.message}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* E-mail */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                          E-mail <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          placeholder="joao@email.com"
-                          {...register("email")}
-                          className={`w-full h-11 px-4 rounded-xl border text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${
-                            errors.email ? "border-red-300 bg-red-50" : "border-gray-200"
-                          }`}
-                        />
-                        {errors.email && (
-                          <p className="text-xs text-red-600 mt-1.5 flex items-center gap-1">
-                            <AlertCircle className="h-3 w-3" /> {errors.email.message}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* WhatsApp */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                          WhatsApp <span className="text-gray-400 font-normal">(opcional)</span>
-                        </label>
-                        <input
-                          type="tel"
-                          placeholder="(11) 99999-9999"
-                          {...register("whatsapp")}
-                          onChange={(e) => setValue("whatsapp", maskPhone(e.target.value))}
-                          className="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
-                        />
-                      </div>
-
-                      {/* Submit */}
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full h-12 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[15px]"
-                      >
-                        {isSubmitting ? (
-                          <span className="flex items-center gap-2">
-                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                            </svg>
-                            Enviando...
-                          </span>
-                        ) : (
-                          <>
-                            {COPY.ctaButton}
-                            <ArrowRight className="h-4 w-4" />
-                          </>
-                        )}
-                      </button>
-                    </form>
-
-                    {/* Escassez */}
-                    <p className="text-xs text-center text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-4">
-                      🔒 {COPY.scarcity}
-                    </p>
-
-                    {/* Privacidade */}
-                    <p className="text-[11px] text-gray-400 text-center mt-3 flex items-start justify-center gap-1">
-                      <Lock className="h-3 w-3 flex-shrink-0 mt-0.5" />
-                      {COPY.privacy}
-                    </p>
-                  </>
-                )}
+              {/* Formulário */}
+              <div>
+                <div className="bg-white rounded-2xl shadow-2xl shadow-black/40 p-7 md:p-8">
+                  <SignupForm />
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Dores ── */}
-        <section className="bg-gray-50 border-y border-gray-100 py-14">
-          <div className="max-w-3xl mx-auto px-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2 text-center">
-              Muitos corretores enfrentam os mesmos problemas todos os dias:
+        {/* ── COMO FUNCIONA ────────────────────────────────────────────────────── */}
+        <section className="max-w-5xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">Como funciona</p>
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+              Do cadastro ao primeiro negócio<br className="hidden sm:block" /> em menos de 72 horas
             </h2>
-            <p className="text-gray-400 text-sm text-center mb-8">Você se identifica com algum deles?</p>
-            <div className="grid md:grid-cols-3 gap-4">
-              {COPY.pains.map((pain) => (
-                <div key={pain} className="bg-white rounded-xl border border-gray-200 p-5 flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-red-500 text-xs font-bold">✕</span>
-                  </div>
-                  <p className="text-sm text-gray-600 leading-relaxed">{pain}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 bg-gradient-to-r from-blue-600 to-violet-600 rounded-2xl p-6 text-white text-center">
-              <p className="font-semibold text-lg mb-1">O ImobMatch foi criado para ajudar a resolver isso.</p>
-              <p className="text-blue-100 text-sm">Uma plataforma onde corretores colaboram e fecham mais negócios juntos.</p>
-            </div>
           </div>
-        </section>
 
-        {/* ── Como funciona (preview) ── */}
-        <section className="max-w-4xl mx-auto px-6 py-16">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Como vai funcionar</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              { num: "1", title: "Cadastre-se na lista",     desc: "Preencha o formulário e garanta sua vaga no acesso antecipado.",           color: "blue"   },
-              { num: "2", title: "Receba o convite",          desc: "Você receberá um e-mail com seu acesso exclusivo quando a vaga abrir.",     color: "indigo" },
-              { num: "3", title: "Comece a gerar negócios",   desc: "Entre na plataforma, cadastre seus imóveis e compradores e gere matches.", color: "violet" },
+              { num: "01", title: "Garanta sua vaga",      desc: "Preencha o formulário acima. Vagas limitadas — estamos liberando por ordem de cadastro.", color: "#2563eb" },
+              { num: "02", title: "Receba o acesso",        desc: "Você recebe um e-mail com o link exclusivo para criar sua conta e configurar seu perfil.", color: "#7c3aed" },
+              { num: "03", title: "Comece a gerar negócios", desc: "Cadastre imóveis e compradores. A plataforma faz o match e conecta você com os parceiros certos.", color: "#0891b2" },
             ].map((step) => (
-              <div key={step.num} className="text-center">
-                <div className={`w-14 h-14 rounded-2xl bg-${step.color}-600 text-white font-bold text-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-${step.color}-200`}>
-                  {step.num}
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{step.title}</h3>
+              <div key={step.num} className="relative bg-gray-50 rounded-2xl border border-gray-100 p-7 hover:shadow-md transition-shadow">
+                <span className="text-5xl font-black text-gray-100 leading-none select-none">{step.num}</span>
+                <h3 className="text-base font-bold text-gray-900 mt-2 mb-2">{step.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+                <div className="absolute top-7 right-7 w-2 h-2 rounded-full" style={{ backgroundColor: step.color }} />
               </div>
             ))}
           </div>
         </section>
 
-        {/* ── CTA final ── */}
-        <section className="bg-gradient-to-br from-blue-600 to-violet-700 py-16">
-          <div className="max-w-xl mx-auto px-6 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Garanta sua vaga agora
-            </h2>
-            <p className="text-blue-200 mb-8 text-sm leading-relaxed">
-              As vagas de acesso antecipado são limitadas. Cadastre-se e seja avisado em primeira mão quando a plataforma abrir para o seu perfil.
-            </p>
-            <a
-              href="#"
-              onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-              className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition shadow-xl shadow-blue-900/20 text-[15px]"
-            >
-              Quero acesso antecipado
-              <ArrowRight className="h-4 w-4" />
-            </a>
+        {/* ── BENEFÍCIOS ───────────────────────────────────────────────────────── */}
+        <section className="bg-gray-50 border-y border-gray-100 py-20">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="text-center mb-12">
+              <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">O que você ganha</p>
+              <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+                Tudo que um corretor moderno precisa<br className="hidden sm:block" /> em uma só plataforma
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-5">
+              {BENEFITS.map(({ icon: Icon, title, desc }) => (
+                <div key={title} className="bg-white rounded-2xl border border-gray-100 p-6 flex items-start gap-4 hover:shadow-sm transition-shadow">
+                  <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <Icon className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* ── Footer mínimo ── */}
-        <footer className="border-t py-6">
-          <p className="text-center text-xs text-gray-400">
-            © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados
-          </p>
+        {/* ── DEPOIMENTOS ──────────────────────────────────────────────────────── */}
+        <section className="max-w-5xl mx-auto px-6 py-20">
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">Quem já usa</p>
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+              Corretores que saíram do escuro
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {TESTIMONIALS.map((t) => (
+              <div key={t.name} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <div className="flex gap-0.5 mb-4">
+                  {Array.from({ length: t.stars }).map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed mb-5">"{t.text}"</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-gray-50">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{t.name}</p>
+                    <p className="text-xs text-gray-400">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── CTA FINAL ────────────────────────────────────────────────────────── */}
+        <section
+          className="relative overflow-hidden py-20"
+          style={{ background: "linear-gradient(135deg,#1e3a8a 0%,#4c1d95 100%)" }}
+        >
+          <div className="pointer-events-none absolute inset-0"
+            style={{ background: "radial-gradient(ellipse at center, rgba(109,40,217,0.3) 0%, transparent 70%)" }} />
+          <div className="relative max-w-xl mx-auto px-6 text-center">
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs text-white/80 font-medium mb-6">
+              <Users className="h-3.5 w-3.5" />
+              Vagas limitadas — liberação gradual
+            </div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+              Sua concorrência já está dentro.
+            </h2>
+            <p className="text-blue-200 text-base leading-relaxed mb-8">
+              Cada dia fora da rede é um negócio que você deixou para outro corretor fechar.
+              Entre agora e comece a trabalhar de forma colaborativa.
+            </p>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition shadow-2xl shadow-blue-900/30 text-[15px]"
+            >
+              Garantir minha vaga agora
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <p className="text-blue-300/60 text-xs mt-4">Gratuito · Sem cartão de crédito · Cancele quando quiser</p>
+          </div>
+        </section>
+
+        {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
+        <footer className="border-t py-7 bg-white">
+          <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <img src="/logo.png" alt="ImobMatch" className="h-6 w-auto object-contain opacity-50" />
+            <p className="text-xs text-gray-400">
+              © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados · Seus dados são protegidos e nunca serão compartilhados.
+            </p>
+          </div>
         </footer>
+
       </div>
     </>
   );
