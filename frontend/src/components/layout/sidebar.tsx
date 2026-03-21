@@ -73,7 +73,7 @@ export function Sidebar() {
         <Icon className={cn("h-5 w-5 flex-shrink-0 transition-colors", active ? activeIcon : "text-[#64748B]")} />
         <span className="flex-1">{label}</span>
         {bonus && (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 leading-none">
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-400/15 text-purple-300/70 border border-purple-400/20 leading-none">
             Bônus
           </span>
         )}
