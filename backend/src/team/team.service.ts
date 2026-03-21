@@ -25,8 +25,9 @@ export class TeamService {
   async getMembers(agentId: string) {
     const agent = await this.getAgent(agentId);
 
+    // Sempre inclui o próprio usuário + demais membros da mesma agency
     const where: any = agent.agency
-      ? { agency: agent.agency, isActive: true }
+      ? { OR: [{ agency: agent.agency, isActive: true }, { id: agentId }] }
       : { id: agentId };
 
     return this.prisma.user.findMany({
@@ -59,6 +60,16 @@ export class TeamService {
     await this.prisma.teamInvite.deleteMany({ where: { email } });
 
     const agencyName = agent.agency ?? agent.name;
+
+    // Se o inviter ainda não tem agency, atribui agora para que ele apareça
+    // na própria lista de membros (a query filtra por agency)
+    if (!agent.agency) {
+      await this.prisma.user.update({
+        where: { id: agentId },
+        data: { agency: agencyName },
+      });
+    }
+
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 dias
 
     const invite = await this.prisma.teamInvite.create({
