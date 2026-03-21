@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class TeamService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+  ) {}
 
   private async getAgent(agentId: string) {
     const agent = await this.prisma.user.findUnique({ where: { id: agentId } });
@@ -47,9 +51,12 @@ export class TeamService {
       return { message: `${existing.name} adicionado(a) à equipe!` };
     }
 
-    // User doesn't exist — return instructions (real invite email would go here)
+    // User doesn't exist — send invite email
+    const agencyName = agent.agency ?? agent.name;
+    await this.mailService.sendTeamInviteEmail(email, agent.name, agencyName, role);
+
     return {
-      message: `Convite registrado para ${email}. Peça para o usuário criar uma conta com este e-mail na plataforma.`,
+      message: `Convite enviado para ${email}! O usuário receberá um e-mail com instruções para criar a conta.`,
       invited: true,
       email,
     };

@@ -155,6 +155,50 @@ export class MailService {
     await this.send(to, recipientName, `💰 Negócio fechado com ${partnerName} — ImobMatch`, content);
   }
 
+  // ─── Convite de membro de equipe ────────────────────────────────────────────
+
+  async sendTeamInviteEmail(
+    to: string,
+    inviterName: string,
+    agencyName: string,
+    role: 'ADMIN' | 'AGENT',
+  ): Promise<void> {
+    const registerUrl = `${this.frontendUrl}/register?email=${encodeURIComponent(to)}&agency=${encodeURIComponent(agencyName)}&role=${role}`;
+    const roleLabel = role === 'ADMIN' ? 'Administrador' : 'Corretor';
+
+    const content = `
+      <h2 style="color:#111827;font-size:20px;margin:0 0 8px;font-weight:700;">Você foi convidado para uma equipe!</h2>
+      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 20px;">
+        <strong>${inviterName}</strong> convidou você para integrar a equipe
+        <strong>${agencyName}</strong> no ImobMatch como <strong>${roleLabel}</strong>.
+      </p>
+
+      <div style="background:#f0f9ff;border-left:4px solid #2563eb;border-radius:6px;padding:16px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 4px;color:#1e40af;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Equipe</p>
+        <p style="margin:0;color:#111827;font-size:16px;font-weight:700;">${agencyName}</p>
+        <p style="margin:4px 0 0;color:#6b7280;font-size:13px;">Função: ${roleLabel}</p>
+      </div>
+
+      <p style="color:#6b7280;font-size:14px;line-height:1.7;margin:0 0 24px;">
+        Crie sua conta no ImobMatch com este e-mail para aceitar o convite e começar a trabalhar em equipe.
+      </p>
+
+      <a href="${registerUrl}"
+         style="display:inline-block;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
+        🚀 Aceitar convite e criar conta
+      </a>
+
+      <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
+        Se você não esperava este convite, pode ignorar este e-mail com segurança.
+      </p>
+      <p style="color:#d1d5db;font-size:11px;margin:16px 0 0;word-break:break-all;">
+        Link direto: ${registerUrl}
+      </p>
+    `;
+
+    await this.send(to, to, `🏢 ${inviterName} convidou você para a equipe ${agencyName} — ImobMatch`, content);
+  }
+
   // ─── Convite de acesso antecipado ───────────────────────────────────────────
 
   async sendEarlyAccessInvite(to: string, name: string): Promise<void> {
