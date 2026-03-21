@@ -160,43 +160,63 @@ export class PartnershipsService {
     return this.prisma.partnership.update({ where: { id }, data: { status: 'CANCELLED' } });
   }
 
-  async closeDeal(id: string, userId: string, reason: 'not_closed' | 'buyer_quit') {
-  const partnership = await this.prisma.partnership.findUnique({
-    where: { id },
-    include: { buyer: true },
-  });
-  if (!partnership) throw new NotFoundException('Parceria não encontrada');
-  if (partnership.requesterId !== userId && partnership.receiverId !== userId)
-    throw new ForbiddenException('Sem permissão');
-  if (partnership.status !== 'ACCEPTED')
-    throw new BadRequestException('Apenas parcerias ativas podem ser encerradas');
-
-  await this.prisma.partnership.update({
-    where: { id },
-    data: { status: 'CANCELLED' },
-  });
-
-  if (reason === 'buyer_quit' && partnership.buyerId) {
-    await this.prisma.buyer.update({
-      where: { id: partnership.buyerId },
-      data: { status: 'INACTIVE' },
+  async closeDeal(id: string, userId: string, reason: 'deal_closed' | 'not_closed' | 'buyer_quit') {
+    const partnership = await this.prisma.partnership.findUnique({
+      where: { id },
+      include: {
+        buyer:     true,
+        requester: { select: { id: true, name: true, email: true } },
+        receiver:  { select: { id: true, name: true, email: true } },
+        property:  { select: { title: true } },
+      },
     });
-    await this.prisma.match.updateMany({
-      where: { buyerId: partnership.buyerId },
-      data: { status: 'REJECTED' },
-    });
+    if (!partnership) throw new NotFoundException('Parceria não encontrada');
+    if (partnership.requesterId !== userId && partnership.receiverId !== userId)
+      throw new ForbiddenException('Sem permissão');
+    if (partnership.status !== 'ACCEPTED')
+      throw new BadRequestException('Apenas parcerias ativas podem ser encerradas');
+
+    // Negócio fechado → status CLOSED; sem negócio → CANCELLED
+    const newStatus = reason === 'deal_closed' ? 'CLOSED' : 'CANCELLED';
+    await this.prisma.partnership.update({ where: { id }, data: { status: newStatus } });
+
+    if (reason === 'deal_closed') {
+      // +50 pts para ambos + email de parabéns
+      await Promise.all([
+        this.rankingService.addScore(partnership.requesterId, 50, 'dealsClosedCount'),
+        this.rankingService.addScore(partnership.receiverId,  50, 'dealsClosedCount'),
+      ]);
+      const commission = partnership.commissionSplit ? Number(partnership.commissionSplit) : null;
+      this.mailService.sendDealClosedEmail(
+        partnership.requester.email, partnership.requester.name,
+        partnership.receiver.name, partnership.property.title, commission,
+      ).catch(() => {});
+      this.mailService.sendDealClosedEmail(
+        partnership.receiver.email, partnership.receiver.name,
+        partnership.requester.name, partnership.property.title, commission,
+      ).catch(() => {});
+      return { message: 'Negócio fechado! +50 pts para ambos os corretores.' };
+    }
+
+    if (reason === 'buyer_quit' && partnership.buyerId) {
+      await this.prisma.buyer.update({ where: { id: partnership.buyerId }, data: { status: 'INACTIVE' } });
+      await this.prisma.match.updateMany({ where: { buyerId: partnership.buyerId }, data: { status: 'REJECTED' } });
+    }
+
+    return { message: reason === 'buyer_quit' ? 'Parceria encerrada e comprador inativado' : 'Parceria encerrada' };
   }
 
-  // +50 pontos para ambos quando negócio é fechado
-  if (reason !== 'buyer_quit') {
-    await Promise.all([
-      this.rankingService.addScore(partnership.requesterId, 50, 'dealsClosedCount'),
-      this.rankingService.addScore(partnership.receiverId, 50, 'dealsClosedCount'),
-    ]);
+  async remove(id: string, userId: string) {
+    const partnership = await this.prisma.partnership.findUnique({ where: { id } });
+    if (!partnership) throw new NotFoundException('Parceria não encontrada');
+    if (partnership.requesterId !== userId && partnership.receiverId !== userId)
+      throw new ForbiddenException('Sem permissão');
+    const deletable: string[] = ['REJECTED', 'CANCELLED', 'CLOSED'];
+    if (!deletable.includes(partnership.status))
+      throw new BadRequestException('Apenas parcerias encerradas podem ser deletadas');
+    await this.prisma.partnership.delete({ where: { id } });
+    return { message: 'Parceria removida' };
   }
-
-  return { message: reason === 'buyer_quit' ? 'Parceria encerrada e comprador inativado' : 'Parceria encerrada' };
-}
 
   async verify(id: string) {
     const partnership = await this.prisma.partnership.findUnique({

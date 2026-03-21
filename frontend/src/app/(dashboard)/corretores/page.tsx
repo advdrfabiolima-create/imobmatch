@@ -7,20 +7,26 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
-import { Search, MapPin, Building2, MessageSquare, Phone } from "lucide-react";
+import { Search, MapPin, Building2, MessageSquare, ChevronLeft, ChevronRight } from "lucide-react";
 import { AgentAvatar } from "@/components/ui/agent-avatar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const PAGE_SIZE = 12;
+
 export default function CorretoresPage() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
+  const [page, setPage] = useState(1);
   const router = useRouter();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["agents", search, city],
-    queryFn: () => api.get("/users", { params: { search, city } }).then((r) => r.data),
+    queryKey: ["agents", search, city, page],
+    queryFn: () =>
+      api.get("/users", { params: { search, city, page, limit: PAGE_SIZE } }).then((r) => r.data),
   });
+
+  const totalPages = Math.ceil((data?.total ?? 0) / PAGE_SIZE);
 
   return (
     <div>
@@ -29,9 +35,9 @@ export default function CorretoresPage() {
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input placeholder="Buscar por nome ou imobiliária..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+            <Input placeholder="Buscar por nome ou imobiliária..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="pl-9" />
           </div>
-          <Input placeholder="Filtrar por cidade..." value={city} onChange={(e) => setCity(e.target.value)} className="sm:w-48" />
+          <Input placeholder="Filtrar por cidade..." value={city} onChange={(e) => { setCity(e.target.value); setPage(1); }} className="sm:w-48" />
         </div>
 
         <p className="text-sm text-gray-500 mb-4">{data?.total ?? 0} corretor(es) encontrado(s)</p>
@@ -115,6 +121,27 @@ export default function CorretoresPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        )}
+
+        {/* Paginação */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            <button
+              onClick={() => setPage((p) => p - 1)}
+              disabled={page === 1}
+              className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="text-sm text-gray-600">{page} / {totalPages}</span>
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page === totalPages}
+              className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         )}
       </div>

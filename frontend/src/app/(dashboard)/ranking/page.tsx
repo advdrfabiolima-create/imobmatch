@@ -226,7 +226,7 @@ export default function RankingPage() {
               return (
                 <Card
                   key={agent.id}
-                  className={`transition-shadow hover:shadow-sm ${isMe ? "ring-2 ring-blue-400" : ""}`}
+                  className={`transition-shadow hover:shadow-sm ${isMe ? "ring-2 ring-violet-400 bg-violet-50" : ""}`}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">

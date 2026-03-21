@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PartnershipsService } from './partnerships.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -58,9 +58,15 @@ export class PartnershipsController {
   @ApiOperation({ summary: 'Encerrar parceria ativa' })
   closeDeal(
     @Param('id') id: string,
-    @Body('reason') reason: 'not_closed' | 'buyer_quit',
+    @Body('reason') reason: 'deal_closed' | 'not_closed' | 'buyer_quit',
     @Request() req,
   ) {
     return this.partnershipsService.closeDeal(id, req.user.id, reason);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Deletar parceria encerrada (REJECTED/CANCELLED/CLOSED)' })
+  remove(@Param('id') id: string, @Request() req) {
+    return this.partnershipsService.remove(id, req.user.id);
   }
 }

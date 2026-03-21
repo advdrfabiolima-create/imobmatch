@@ -119,6 +119,42 @@ export class MailService {
     );
   }
 
+  // ─── Negócio fechado ────────────────────────────────────────────────────────
+
+  async sendDealClosedEmail(
+    to: string,
+    recipientName: string,
+    partnerName: string,
+    propertyTitle: string,
+    commissionSplit: number | null,
+  ): Promise<void> {
+    const dashboardUrl = `${this.frontendUrl}/parcerias`;
+
+    const content = `
+      <h2 style="color:#111827;font-size:20px;margin:0 0 8px;font-weight:700;">Parabéns, ${recipientName}! 🎉</h2>
+      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 20px;">
+        O negócio em parceria com <strong>${partnerName}</strong> foi <strong>fechado com sucesso</strong> no ImobMatch!
+      </p>
+
+      <div style="background:#f0fdf4;border-left:4px solid #16a34a;border-radius:6px;padding:16px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 4px;color:#15803d;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Imóvel negociado</p>
+        <p style="margin:0;color:#111827;font-size:16px;font-weight:700;">${propertyTitle}</p>
+        ${commissionSplit ? `<p style="margin:6px 0 0;color:#6b7280;font-size:13px;">Divisão de comissão acordada: <strong>${commissionSplit}%</strong></p>` : ''}
+      </div>
+
+      <p style="color:#6b7280;font-size:14px;line-height:1.7;margin:0 0 24px;">
+        Você ganhou <strong>+50 pontos</strong> no ranking ImobMatch. Continue fechando negócios em rede e suba ainda mais!
+      </p>
+
+      <a href="${dashboardUrl}"
+         style="display:inline-block;background:linear-gradient(135deg,#16a34a,#15803d);color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
+        💰 Ver minhas parcerias
+      </a>
+    `;
+
+    await this.send(to, recipientName, `💰 Negócio fechado com ${partnerName} — ImobMatch`, content);
+  }
+
   // ─── Convite de acesso antecipado ───────────────────────────────────────────
 
   async sendEarlyAccessInvite(to: string, name: string): Promise<void> {
