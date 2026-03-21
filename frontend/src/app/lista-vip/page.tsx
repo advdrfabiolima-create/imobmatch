@@ -22,35 +22,12 @@ type FormData = z.infer<typeof schema>;
 
 // ── Métricas ──────────────────────────────────────────────────────────────────
 const STATS = [
-  { value: "3.200+", label: "Corretores na lista" },
-  { value: "R$ 48M+", label: "Em negócios gerados" },
-  { value: "94%",    label: "Aprovam a plataforma" },
-  { value: "72h",    label: "Para o primeiro match" },
+  { value: "Gratuito",  label: "Sem cartão de crédito" },
+  { value: "R$ 48M+",  label: "Potencial previsto nos próximos meses" },
+  { value: "1 semana", label: "Para os primeiros matches" },
+  { value: "100%",     label: "Focado em corretores" },
 ];
 
-// ── Benefícios ────────────────────────────────────────────────────────────────
-const BENEFITS = [
-  {
-    icon: Search,
-    title: "Match automático",
-    desc: "Seus compradores são cruzados com imóveis da rede em tempo real. Você recebe o lead — sem esforço.",
-  },
-  {
-    icon: HelpingHand,
-    title: "Parcerias inteligentes",
-    desc: "Conecte-se com corretores verificados e feche negócios que sozinho você nunca fecharia.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Mais negócios, menos esforço",
-    desc: "A rede trabalha por você 24/7. Quando acorda, já tem oportunidades esperando.",
-  },
-  {
-    icon: Shield,
-    title: "Carteira protegida",
-    desc: "Seus clientes e imóveis ficam registrados, organizados e seguros em um só lugar.",
-  },
-];
 
 // ── Depoimentos ───────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
@@ -249,11 +226,20 @@ export default function ListaVipPage() {
           className="relative overflow-hidden"
           style={{ background: "linear-gradient(160deg,#0b1437 0%,#0f1d5e 40%,#1a0f5c 70%,#2e0f6e 100%)" }}
         >
+          {/* Imagem de fundo hero */}
+          <div className="pointer-events-none absolute inset-0">
+            <img
+              src="/hero_lista_vip.jpg"
+              alt=""
+              className="w-full h-full object-cover object-center opacity-[0.12]"
+            />
+          </div>
+
           {/* Ambient glows */}
           <div className="pointer-events-none absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full"
-            style={{ background: "rgba(109,40,217,0.18)", filter: "blur(120px)" }} />
+            style={{ background: "rgba(109,40,217,0.22)", filter: "blur(120px)" }} />
           <div className="pointer-events-none absolute bottom-0 left-0 w-96 h-96 rounded-full"
-            style={{ background: "rgba(37,99,235,0.12)", filter: "blur(100px)" }} />
+            style={{ background: "rgba(37,99,235,0.15)", filter: "blur(100px)" }} />
 
           <div className="relative max-w-6xl mx-auto px-6 pt-10 pb-20 md:pt-14 md:pb-24">
 
@@ -321,32 +307,51 @@ export default function ListaVipPage() {
         </section>
 
         {/* ── COMO FUNCIONA ────────────────────────────────────────────────────── */}
-        <section className="max-w-5xl mx-auto px-6 py-20">
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">Como funciona</p>
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
-              Do cadastro ao primeiro negócio<br className="hidden sm:block" /> em menos de 72 horas
-            </h2>
-          </div>
+        <section
+          style={{ background: "linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%)" }}
+          className="py-20"
+        >
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="text-center mb-12">
+              <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">Como funciona</p>
+              <h2 className="text-3xl font-bold text-white tracking-tight">
+                Do cadastro ao primeiro negócio<br className="hidden sm:block" /> em poucos dias
+              </h2>
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { num: "01", title: "Garanta sua vaga",      desc: "Preencha o formulário acima. Vagas limitadas — estamos liberando por ordem de cadastro.", color: "#2563eb" },
-              { num: "02", title: "Receba o acesso",        desc: "Você recebe um e-mail com o link exclusivo para criar sua conta e configurar seu perfil.", color: "#7c3aed" },
-              { num: "03", title: "Comece a gerar negócios", desc: "Cadastre imóveis e compradores. A plataforma faz o match e conecta você com os parceiros certos.", color: "#0891b2" },
-            ].map((step) => (
-              <div key={step.num} className="relative bg-gray-50 rounded-2xl border border-gray-100 p-7 hover:shadow-md transition-shadow">
-                <span className="text-5xl font-black text-gray-100 leading-none select-none">{step.num}</span>
-                <h3 className="text-base font-bold text-gray-900 mt-2 mb-2">{step.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
-                <div className="absolute top-7 right-7 w-2 h-2 rounded-full" style={{ backgroundColor: step.color }} />
-              </div>
-            ))}
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { num: "01", title: "Garanta sua vaga",       desc: "Preencha o formulário acima. Vagas limitadas — estamos liberando por ordem de cadastro.", from: "#2563eb", to: "#1d4ed8" },
+                { num: "02", title: "Receba o acesso",         desc: "Você recebe um e-mail com o link exclusivo para criar sua conta e configurar seu perfil.", from: "#7c3aed", to: "#6d28d9" },
+                { num: "03", title: "Comece a gerar negócios", desc: "Cadastre imóveis e compradores. A plataforma faz o match e conecta você com os parceiros certos.", from: "#0891b2", to: "#0e7490" },
+              ].map((step) => (
+                <div
+                  key={step.num}
+                  className="relative rounded-2xl p-7 overflow-hidden"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                >
+                  {/* Número grande decorativo */}
+                  <span
+                    className="text-7xl font-black leading-none select-none block mb-3"
+                    style={{ backgroundImage: `linear-gradient(135deg,${step.from},${step.to})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+                  >
+                    {step.num}
+                  </span>
+                  <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-sm text-white/50 leading-relaxed">{step.desc}</p>
+                  {/* barra colorida no topo */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+                    style={{ backgroundImage: `linear-gradient(90deg,${step.from},${step.to})` }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* ── BENEFÍCIOS ───────────────────────────────────────────────────────── */}
-        <section className="bg-gray-50 border-y border-gray-100 py-20">
+        <section className="py-20 bg-white">
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-12">
               <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">O que você ganha</p>
@@ -356,15 +361,52 @@ export default function ListaVipPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-5">
-              {BENEFITS.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="bg-white rounded-2xl border border-gray-100 p-6 flex items-start gap-4 hover:shadow-sm transition-shadow">
-                  <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                    <Icon className="h-5 w-5 text-blue-600" />
+              {[
+                {
+                  icon: Search,
+                  title: "Match automático",
+                  desc: "Seus compradores são cruzados com imóveis da rede em tempo real. Você recebe o lead — sem esforço.",
+                  from: "#2563eb", to: "#7c3aed", bg: "from-blue-600 to-violet-600",
+                },
+                {
+                  icon: HelpingHand,
+                  title: "Parcerias inteligentes",
+                  desc: "Conecte-se com corretores verificados e feche negócios que sozinho você nunca fecharia.",
+                  from: "#7c3aed", to: "#a855f7", bg: "from-violet-600 to-purple-500",
+                },
+                {
+                  icon: TrendingUp,
+                  title: "Mais negócios, menos esforço",
+                  desc: "A rede trabalha por você 24/7. Quando acorda, já tem oportunidades esperando.",
+                  from: "#0891b2", to: "#2563eb", bg: "from-cyan-600 to-blue-600",
+                },
+                {
+                  icon: Shield,
+                  title: "Carteira protegida",
+                  desc: "Seus clientes e imóveis ficam registrados, organizados e seguros em um só lugar.",
+                  from: "#059669", to: "#0891b2", bg: "from-emerald-600 to-cyan-600",
+                },
+              ].map(({ icon: Icon, title, desc, from, to }) => (
+                <div
+                  key={title}
+                  className="relative rounded-2xl p-6 flex items-start gap-4 overflow-hidden group hover:-translate-y-1 transition-transform duration-200"
+                  style={{ background: "linear-gradient(135deg,#f8faff 0%,#f1f5fe 100%)", border: "1px solid #e2e8f8" }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
+                    style={{ backgroundImage: `linear-gradient(135deg,${from},${to})` }}
+                  >
+                    <Icon className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
+                    <h3 className="font-bold text-gray-900 mb-1">{title}</h3>
                     <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
                   </div>
+                  {/* Glow decorativo no canto */}
+                  <div
+                    className="pointer-events-none absolute -bottom-6 -right-6 w-24 h-24 rounded-full opacity-10"
+                    style={{ backgroundImage: `linear-gradient(135deg,${from},${to})`, filter: "blur(20px)" }}
+                  />
                 </div>
               ))}
             </div>
