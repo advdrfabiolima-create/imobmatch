@@ -275,10 +275,17 @@ export class MailService {
         </tr>
       </table>
 
-      <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
-        Se você não solicitou o encerramento da conta, entre em contato imediatamente:<br>
-        <a href="mailto:contato@useimobmatch.com.br" style="color:#6b7280;">contato@useimobmatch.com.br</a>
-      </p>
+      <div style="background:#f0f9ff;border-left:4px solid #2563eb;border-radius:6px;padding:16px 20px;margin:28px 0 0;">
+        <p style="margin:0 0 8px;color:#1e40af;font-size:14px;font-weight:700;line-height:1.5;">
+          Corretor que trabalha em rede fecha mais negócios.
+        </p>
+        <p style="margin:0;color:#3b5a8a;font-size:13px;line-height:1.7;">
+          Enquanto você trabalha sozinho, outros corretores estão dividindo carteiras,
+          gerando indicações e fechando parcerias todos os dias no ImobMatch.
+          A rede trabalha por você — mesmo quando você não está.<br><br>
+          Se mudar de ideia, sua vaga está sempre aberta.
+        </p>
+      </div>
     `;
 
     await this.send(to, name, 'Sua conta no ImobMatch foi encerrada — ImobMatch', content);
