@@ -227,7 +227,7 @@ export class MailService {
           <td>
             <a href="${registerUrl}"
                style="display:inline-block;background-color:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;mso-padding-alt:0;line-height:1.4;">
-              Acessar minha conta
+              Criar minha conta gratuita
             </a>
           </td>
         </tr>
