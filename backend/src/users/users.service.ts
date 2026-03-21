@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+  ) {}
 
   async findAll(query: { city?: string; state?: string; search?: string; page?: number; limit?: number }) {
     const { city, state, search, page = 1, limit = 20 } = query;
@@ -104,10 +108,20 @@ export class UsersService {
   }
 
   async deleteAccount(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { name: true, email: true },
+    });
+
     await this.prisma.user.update({
       where: { id },
       data: { isActive: false },
     });
+
+    if (user) {
+      this.mailService.sendAccountDeletedEmail(user.email, user.name);
+    }
+
     return { success: true };
   }
 

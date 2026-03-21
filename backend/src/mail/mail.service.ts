@@ -243,6 +243,47 @@ export class MailService {
     await this.send(to, name, '🎉 Sua vaga no ImobMatch foi liberada!', content);
   }
 
+  // ─── Encerramento de conta ──────────────────────────────────────────────────
+
+  async sendAccountDeletedEmail(to: string, name: string): Promise<void> {
+    const registerUrl = `${this.frontendUrl}/register`;
+
+    const content = `
+      <h2 style="color:#111827;font-size:20px;margin:0 0 8px;font-weight:700;">Conta encerrada, ${name}.</h2>
+      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 20px;">
+        Sua conta no <strong>ImobMatch</strong> foi encerrada com sucesso e todos os seus dados foram removidos da plataforma.
+      </p>
+
+      <div style="background:#fef2f2;border-left:4px solid #dc2626;border-radius:6px;padding:16px 20px;margin:0 0 24px;">
+        <p style="margin:0;color:#991b1b;font-size:14px;line-height:1.6;">
+          Todos os seus imóveis, compradores, parcerias e informações pessoais foram excluídos permanentemente.
+        </p>
+      </div>
+
+      <p style="color:#6b7280;font-size:14px;line-height:1.7;margin:0 0 24px;">
+        Se você mudar de ideia no futuro, será necessário realizar um novo cadastro na plataforma.
+      </p>
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            <a href="${registerUrl}"
+               style="display:inline-block;background-color:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;mso-padding-alt:0;line-height:1.4;">
+              Criar nova conta
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
+        Se você não solicitou o encerramento da conta, entre em contato imediatamente:<br>
+        <a href="mailto:contato@useimobmatch.com.br" style="color:#6b7280;">contato@useimobmatch.com.br</a>
+      </p>
+    `;
+
+    await this.send(to, name, 'Sua conta no ImobMatch foi encerrada — ImobMatch', content);
+  }
+
   // ─── Envio via Brevo HTTP API ────────────────────────────────────────────────
 
   private async send(to: string, toName: string, subject: string, content: string): Promise<void> {
