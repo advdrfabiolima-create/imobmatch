@@ -563,6 +563,17 @@ export default function MatchesPage() {
                             Propor Parceria
                           </button>
                         )}
+
+                        {/* Descartar — só em PENDING sem parceria ativa */}
+                        {m.status === "PENDING" && !partnershipExists && (
+                          <button
+                            onClick={() => updateStatusMutation.mutate({ id: m.id, status: "REJECTED" })}
+                            title="Descartar match"
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   </CardContent>
