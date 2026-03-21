@@ -25,6 +25,7 @@ export function AvatarCropModal({ src, onConfirm, onCancel }: AvatarCropModalPro
   const dispW = natural.w * baseScale;
   const dispH = natural.h * baseScale;
 
+  // Clamp offset so no whitespace shows inside the circle
   const clamp = useCallback(
     (ox: number, oy: number, z: number) => ({
       x: Math.max(-(dispW * z - SIZE) / 2, Math.min((dispW * z - SIZE) / 2, ox)),
@@ -98,13 +99,13 @@ export function AvatarCropModal({ src, onConfirm, onCancel }: AvatarCropModalPro
     canvas.height = SIZE;
     const ctx = canvas.getContext("2d")!;
 
-    // Compute visible source rectangle in natural image coordinates
-    const imgLeft = SIZE / 2 - dispW * zoom / 2 + offset.x;
-    const imgTop  = SIZE / 2 - dispH * zoom / 2 + offset.y;
-    const srcX = (0 - imgLeft) / (dispW * zoom) * natural.w;
-    const srcY = (0 - imgTop)  / (dispH * zoom) * natural.h;
-    const srcW = SIZE / (dispW * zoom) * natural.w;
-    const srcH = SIZE / (dispH * zoom) * natural.h;
+    // Effective pixel scale: how many screen pixels per source pixel
+    const s = baseScale * zoom;
+    // Source region that maps to the SIZE×SIZE canvas
+    const srcX = natural.w / 2 - SIZE / (2 * s) - offset.x / s;
+    const srcY = natural.h / 2 - SIZE / (2 * s) - offset.y / s;
+    const srcW = SIZE / s;
+    const srcH = SIZE / s;
 
     ctx.drawImage(imgRef.current, srcX, srcY, srcW, srcH, 0, 0, SIZE, SIZE);
     canvas.toBlob((blob) => { if (blob) onConfirm(blob); }, "image/jpeg", 0.92);
@@ -136,10 +137,14 @@ export function AvatarCropModal({ src, onConfirm, onCancel }: AvatarCropModalPro
             onLoad={onLoad}
             style={{
               position: "absolute",
-              left: SIZE / 2 - dispW * zoom / 2 + offset.x,
-              top:  SIZE / 2 - dispH * zoom / 2 + offset.y,
-              width:  dispW * zoom,
-              height: dispH * zoom,
+              // Fix the image at its natural centered position; zoom/pan via transform only
+              left: SIZE / 2 - dispW / 2,
+              top:  SIZE / 2 - dispH / 2,
+              width:  dispW,
+              height: dispH,
+              // transform is atomic and GPU-accelerated — avoids mid-frame distortion
+              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+              transformOrigin: "center center",
               pointerEvents: "none",
               userSelect: "none",
             }}
