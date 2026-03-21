@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Calculator, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { Calculator, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2, Info, TriangleAlert } from "lucide-react";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -185,6 +185,15 @@ export default function SimuladorPage() {
     <div>
       <Header title="Simulador de Financiamento" />
       <div className="p-4 md:p-6 max-w-5xl space-y-6">
+
+        {/* Disclaimer */}
+        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <TriangleAlert className="h-4 w-4 flex-shrink-0 mt-0.5 text-amber-500" />
+          <p>
+            <span className="font-semibold">Simulação aproximada.</span>{" "}
+            Os valores apresentados são estimativas com base nas taxas médias de mercado de março/2026 e podem variar conforme o banco, perfil de crédito, data da contratação e política interna de cada instituição. Consulte o banco de sua preferência para uma simulação oficial.
+          </p>
+        </div>
 
         {/* Inputs */}
         <Card>

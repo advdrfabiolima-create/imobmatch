@@ -44,8 +44,8 @@ export function Sidebar() {
     (p: any) => p.requesterId === user?.id && p.status === "ACCEPTED"
   ).length ?? 0;
 
-  const NavLink = ({ href, label, icon: Icon, badge, activeColor = "blue" }: {
-    href: string; label: string; icon: React.ElementType; badge?: number; activeColor?: string;
+  const NavLink = ({ href, label, icon: Icon, badge, activeColor = "blue", bonus }: {
+    href: string; label: string; icon: React.ElementType; badge?: number; activeColor?: string; bonus?: boolean;
   }) => {
     const active = pathname === href || pathname.startsWith(href + "/");
 
@@ -72,6 +72,11 @@ export function Sidebar() {
       >
         <Icon className={cn("h-5 w-5 flex-shrink-0 transition-colors", active ? activeIcon : "text-[#64748B]")} />
         <span className="flex-1">{label}</span>
+        {bonus && (
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 leading-none">
+            Bônus
+          </span>
+        )}
         {badge != null && badge > 0 && (
           <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
             {badge}
@@ -155,7 +160,7 @@ export function Sidebar() {
           <NavLink href="/feed"          label="Feed da Rede"     icon={Rss} />
           <NavLink href="/ranking"       label="Ranking"          icon={Trophy} />
           <NavLink href="/analytics"          label="Analytics"              icon={BarChart2} />
-          <NavLink href="/simulador-financiamento" label="Simulador"         icon={Calculator} />
+          <NavLink href="/simulador-financiamento" label="Simulador"         icon={Calculator} bonus />
           <NavLink href="/perfil"        label="Perfil"           icon={Settings} />
           <NavLink href="/meu-plano"     label="Planos"           icon={CreditCard}  activeColor="amber" />
 
