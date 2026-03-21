@@ -231,7 +231,7 @@ export default function ListaVipPage() {
             <img
               src="/hero_lista_vip.jpg"
               alt=""
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover object-center opacity-[0.06]"
             />
           </div>
 
