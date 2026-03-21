@@ -107,11 +107,11 @@ function maskCurrency(raw: string): string {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SimuladorPage() {
-  const [valorImovel,  setValorImovel]  = useState("500.000,00");
-  const [entrada,      setEntrada]      = useState("100.000,00");
+  const [valorImovel,  setValorImovel]  = useState("");
+  const [entrada,      setEntrada]      = useState("");
   const [prazo,        setPrazo]        = useState("360");
-  const [renda,        setRenda]        = useState("8.000,00");
-  const [idade,        setIdade]        = useState("35");
+  const [renda,        setRenda]        = useState("");
+  const [idade,        setIdade]        = useState("");
   const [sistema,      setSistema]      = useState<"price" | "sac">("sac");
   const [selectedBank, setSelectedBank] = useState(0);
   const [showTable,    setShowTable]    = useState(false);
