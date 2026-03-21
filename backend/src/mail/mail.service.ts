@@ -162,8 +162,9 @@ export class MailService {
     inviterName: string,
     agencyName: string,
     role: 'ADMIN' | 'AGENT',
+    token: string,
   ): Promise<void> {
-    const registerUrl = `${this.frontendUrl}/register?email=${encodeURIComponent(to)}&agency=${encodeURIComponent(agencyName)}&role=${role}`;
+    const acceptUrl = `${this.frontendUrl}/aceitar-convite?token=${token}`;
     const roleLabel = role === 'ADMIN' ? 'Administrador' : 'Corretor';
 
     const content = `
@@ -180,23 +181,31 @@ export class MailService {
       </div>
 
       <p style="color:#6b7280;font-size:14px;line-height:1.7;margin:0 0 24px;">
-        Crie sua conta no ImobMatch com este e-mail para aceitar o convite e começar a trabalhar em equipe.
+        Clique no botão abaixo para definir sua senha e acessar a plataforma.<br>
+        Você não precisa criar uma conta separada — já será parte da equipe automaticamente.
       </p>
 
-      <a href="${registerUrl}"
-         style="display:inline-block;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">
-        🚀 Aceitar convite e criar conta
-      </a>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            <a href="${acceptUrl}"
+               style="display:inline-block;background-color:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;mso-padding-alt:0;line-height:1.4;">
+              Aceitar convite e criar senha
+            </a>
+          </td>
+        </tr>
+      </table>
 
       <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
+        Este link expira em <strong>7 dias</strong>.<br>
         Se você não esperava este convite, pode ignorar este e-mail com segurança.
       </p>
       <p style="color:#d1d5db;font-size:11px;margin:16px 0 0;word-break:break-all;">
-        Link direto: ${registerUrl}
+        Link direto: ${acceptUrl}
       </p>
     `;
 
-    await this.send(to, to, `🏢 ${inviterName} convidou você para a equipe ${agencyName} — ImobMatch`, content);
+    await this.send(to, to, `${inviterName} convidou você para a equipe ${agencyName} — ImobMatch`, content);
   }
 
   // ─── Convite de acesso antecipado ───────────────────────────────────────────

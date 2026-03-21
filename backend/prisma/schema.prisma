@@ -57,6 +57,7 @@ model User {
   posts             Post[]
   subscription      Subscription?
   refreshTokens     RefreshToken[]
+  teamInvitesSent   TeamInvite[]
 
   @@map("users")
 }
@@ -289,6 +290,22 @@ enum SubscriptionStatus {
   OVERDUE
   CANCELLED
   INACTIVE
+}
+
+// ==================== CONVITES DE EQUIPE ====================
+
+model TeamInvite {
+  id          String   @id @default(uuid())
+  email       String
+  role        Role     @default(AGENT)
+  agency      String
+  invitedById String
+  invitedBy   User     @relation(fields: [invitedById], references: [id])
+  token       String   @unique @default(uuid())
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@map("team_invites")
 }
 
 // ==================== ACESSO ANTECIPADO ====================
