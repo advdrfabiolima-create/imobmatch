@@ -274,7 +274,7 @@ export class PartnershipsService {
     if (!partnership) throw new NotFoundException('Parceria não encontrada');
     if (partnership.requesterId !== userId && partnership.receiverId !== userId)
       throw new ForbiddenException('Sem permissão');
-    if (partnership.status !== 'ACCEPTED')
+    if (!['ACCEPTED', 'CLOSED'].includes(partnership.status))
       throw new BadRequestException('O termo só está disponível após a parceria ser aceita');
 
     return partnership;

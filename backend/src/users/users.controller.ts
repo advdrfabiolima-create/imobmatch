@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Post, Body, Param, Query, UseGuards, Request, UseInterceptors, UploadedFile, BadRequestException, HttpCode } from '@nestjs/common';
+import { Controller, Get, Patch, Post, Delete, Body, Param, Query, UseGuards, Request, UseInterceptors, UploadedFile, BadRequestException, HttpCode } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiConsumes } from '@nestjs/swagger';
 import { memoryStorage } from 'multer';
@@ -91,5 +91,13 @@ export class UsersController {
   @ApiOperation({ summary: 'Alterar plano do usuário' })
   changePlan(@Request() req, @Body() body: { plan: 'starter' | 'professional' | 'agency' }) {
     return this.usersService.changePlan(req.user.id, body.plan);
+  }
+
+  @Delete('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Encerrar conta do usuário autenticado' })
+  deleteAccount(@Request() req) {
+    return this.usersService.deleteAccount(req.user.id);
   }
 }

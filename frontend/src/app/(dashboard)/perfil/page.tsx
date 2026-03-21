@@ -13,10 +13,11 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import { STATES } from "@/lib/utils";
-import { Loader2, Building2, MapPin, Mail, User, Camera } from "lucide-react";
+import { Loader2, Building2, MapPin, Mail, User, Camera, AlertTriangle } from "lucide-react";
 import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import toast from "react-hot-toast";
 import { AvatarCropModal } from "@/components/ui/avatar-crop-modal";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -33,8 +34,10 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function PerfilPage() {
-  const { user, updateUser } = useAuthStore();
+  const { user, updateUser, logout } = useAuthStore();
+  const router = useRouter();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -63,6 +66,16 @@ export default function PerfilPage() {
       toast.success("Perfil atualizado!");
     },
     onError: () => toast.error("Erro ao atualizar perfil"),
+  });
+
+  const deleteAccountMutation = useMutation({
+    mutationFn: () => api.delete("/users/me"),
+    onSuccess: () => {
+      toast.success("Conta encerrada. Até logo!");
+      logout();
+      router.push("/login");
+    },
+    onError: () => toast.error("Erro ao encerrar conta"),
   });
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,6 +119,49 @@ export default function PerfilPage() {
         onConfirm={handleCropConfirm}
         onCancel={() => setCropSrc(null)}
       />
+    )}
+    {showDeleteModal && (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
+          <div className="flex items-center gap-3 p-5 border-b">
+            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-gray-900">Encerrar minha conta</h2>
+              <p className="text-xs text-gray-500">Esta ação não pode ser desfeita</p>
+            </div>
+          </div>
+          <div className="p-5 space-y-4">
+            <p className="text-sm text-gray-700">
+              Ao encerrar sua conta, você perderá acesso à plataforma e seus dados serão desativados.
+              Seus termos de parceria e histórico permanecerão registrados por questões legais.
+            </p>
+            <p className="text-sm font-medium text-gray-900">
+              Tem certeza que deseja encerrar a conta de <span className="text-red-600">{user?.email}</span>?
+            </p>
+            <div className="flex gap-3 pt-1">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleteAccountMutation.isPending}
+              >
+                Cancelar
+              </Button>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                onClick={() => deleteAccountMutation.mutate()}
+                disabled={deleteAccountMutation.isPending}
+              >
+                {deleteAccountMutation.isPending
+                  ? <Loader2 className="h-4 w-4 animate-spin" />
+                  : "Sim, encerrar conta"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     )}
     <div>
       <Header title="Meu Perfil" />
@@ -291,6 +347,28 @@ export default function PerfilPage() {
                 <User className="h-4 w-4 text-gray-400" />
                 <span>Conta ativa</span>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Danger zone */}
+        <Card className="mt-4 border-red-100">
+          <CardHeader><CardTitle className="text-lg text-red-700">Zona de Perigo</CardTitle></CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-900">Encerrar minha conta</p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Desativa sua conta permanentemente. Você perderá acesso à plataforma.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                className="border-red-300 text-red-600 hover:bg-red-50 flex-shrink-0"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                Encerrar conta
+              </Button>
             </div>
           </CardContent>
         </Card>

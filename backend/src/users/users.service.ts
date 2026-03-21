@@ -103,6 +103,14 @@ export class UsersService {
     });
   }
 
+  async deleteAccount(id: string) {
+    await this.prisma.user.update({
+      where: { id },
+      data: { isActive: false },
+    });
+    return { success: true };
+  }
+
   async getDashboardStats(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
