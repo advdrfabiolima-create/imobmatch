@@ -23,8 +23,8 @@ type FormData = z.infer<typeof schema>;
 // ── Métricas ──────────────────────────────────────────────────────────────────
 const STATS = [
   { value: "Gratuito",  label: "Sem cartão de crédito" },
-  { value: "R$ 48M+",  label: "Potencial previsto nos próximos meses" },
-  { value: "1 semana", label: "Para os primeiros matches" },
+  { value: "R$ 48M+",  label: "Potencial estimado" },
+  { value: "1 semana", label: "Primeiros matches" },
   { value: "100%",     label: "Focado em corretores" },
 ];
 
@@ -201,7 +201,7 @@ function SignupForm() {
         </button>
       </form>
 
-      <div className="mt-4 flex items-center justify-center gap-4 text-[11px] text-gray-400">
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-gray-400">
         <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> 100% gratuito</span>
         <span className="w-px h-3 bg-gray-200" />
         <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> Dados protegidos</span>
@@ -241,24 +241,24 @@ export default function ListaVipPage() {
           <div className="pointer-events-none absolute bottom-0 left-0 w-96 h-96 rounded-full"
             style={{ background: "rgba(37,99,235,0.15)", filter: "blur(100px)" }} />
 
-          <div className="relative max-w-6xl mx-auto px-6 pt-10 pb-20 md:pt-14 md:pb-24">
+          <div className="relative max-w-6xl mx-auto px-5 sm:px-6 pt-8 pb-14 md:pt-14 md:pb-24">
 
             {/* Logo — apenas imagem, sem link */}
-            <div className="mb-12">
-              <img src="/logo.png" alt="ImobMatch" className="h-9 w-auto object-contain brightness-0 invert" />
+            <div className="mb-8 md:mb-12">
+              <img src="/logo.png" alt="ImobMatch" className="h-8 md:h-9 w-auto object-contain brightness-0 invert" />
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-14 items-center">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
 
               {/* Copy */}
               <div>
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 border border-violet-400/30 bg-violet-500/10 text-violet-300 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-7">
+                <div className="inline-flex items-center gap-2 border border-violet-400/30 bg-violet-500/10 text-violet-300 rounded-full px-3 py-1.5 text-[11px] md:text-xs font-semibold uppercase tracking-wider mb-6 max-w-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse flex-shrink-0" />
-                  Acesso exclusivo · Grupo Negócios Imobiliários
+                  <span className="truncate">Acesso exclusivo · Grupo Negócios Imobiliários</span>
                 </div>
 
-                <h1 className="text-4xl md:text-[3.2rem] font-extrabold text-white leading-[1.08] tracking-tight mb-6">
+                <h1 className="text-[2rem] sm:text-4xl md:text-[3.2rem] font-extrabold text-white leading-[1.08] tracking-tight mb-5">
                   Pare de trabalhar sozinho.<br />
                   <span className="text-transparent bg-clip-text"
                     style={{ backgroundImage: "linear-gradient(90deg,#60a5fa,#a78bfa)" }}>
@@ -266,7 +266,7 @@ export default function ListaVipPage() {
                   </span>
                 </h1>
 
-                <p className="text-white/60 text-lg leading-relaxed mb-8 max-w-md">
+                <p className="text-white/60 text-base md:text-lg leading-relaxed mb-7 max-w-md">
                   Conecte seus imóveis e compradores à maior rede colaborativa de corretores.
                   Matches automáticos, parcerias confiáveis e mais negócios — sem prospectar no escuro.
                 </p>
@@ -309,12 +309,12 @@ export default function ListaVipPage() {
         {/* ── COMO FUNCIONA ────────────────────────────────────────────────────── */}
         <section
           style={{ background: "linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%)" }}
-          className="py-20"
+          className="py-14 md:py-20"
         >
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-12">
               <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">Como funciona</p>
-              <h2 className="text-3xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
                 Do cadastro ao primeiro negócio<br className="hidden sm:block" /> em poucos dias
               </h2>
             </div>
@@ -351,11 +351,11 @@ export default function ListaVipPage() {
         </section>
 
         {/* ── BENEFÍCIOS ───────────────────────────────────────────────────────── */}
-        <section className="py-20 bg-white">
+        <section className="py-14 md:py-20 bg-white">
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-12">
               <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">O que você ganha</p>
-              <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
                 Tudo que um corretor moderno precisa<br className="hidden sm:block" /> em uma só plataforma
               </h2>
             </div>
@@ -414,7 +414,7 @@ export default function ListaVipPage() {
         </section>
 
         {/* ── DEPOIMENTOS ──────────────────────────────────────────────────────── */}
-        <section className="max-w-5xl mx-auto px-6 py-20">
+        <section className="max-w-5xl mx-auto px-5 sm:px-6 py-14 md:py-20">
           <div className="text-center mb-12">
             <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">Quem já usa</p>
             <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
@@ -447,7 +447,7 @@ export default function ListaVipPage() {
 
         {/* ── CTA FINAL ────────────────────────────────────────────────────────── */}
         <section
-          className="relative overflow-hidden py-20"
+          className="relative overflow-hidden py-14 md:py-20"
           style={{ background: "linear-gradient(135deg,#1e3a8a 0%,#4c1d95 100%)" }}
         >
           <div className="pointer-events-none absolute inset-0"
@@ -457,7 +457,7 @@ export default function ListaVipPage() {
               <Users className="h-3.5 w-3.5" />
               Vagas limitadas — liberação gradual
             </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+            <h2 className="text-2xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
               Sua concorrência já está dentro.
             </h2>
             <p className="text-blue-200 text-base leading-relaxed mb-8">
