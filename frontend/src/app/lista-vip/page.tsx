@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   CheckCircle2, AlertCircle, ArrowRight, Lock,
-  Users, Handshake, TrendingUp, Search, Star,
+  Users, HelpingHand, TrendingUp, Search, Star,
   ChevronRight, Shield, Zap,
 } from "lucide-react";
 import { api } from "@/lib/api";
@@ -36,7 +36,7 @@ const BENEFITS = [
     desc: "Seus compradores são cruzados com imóveis da rede em tempo real. Você recebe o lead — sem esforço.",
   },
   {
-    icon: Handshake,
+    icon: HelpingHand,
     title: "Parcerias inteligentes",
     desc: "Conecte-se com corretores verificados e feche negócios que sozinho você nunca fecharia.",
   },
