@@ -49,8 +49,6 @@ export default async function PropertyPublicPage({
   if (!property) notFound();
 
   const fromDashboard = searchParams?.from === "dashboard";
-  const backHref = fromDashboard ? "/meus-imoveis" : "/imoveis";
-  const backLabel = fromDashboard ? "← Meus Imóveis" : "← Ver outros imóveis";
 
   const whatsappMsg = encodeURIComponent(
     `Olá! Vi o imóvel "${property.title}" no ImobMatch e gostaria de mais informações.`
@@ -67,9 +65,11 @@ export default async function PropertyPublicPage({
           <Link href="/" className="flex items-center">
             <img src="/logo.png" alt="ImobMatch" className="h-9 w-auto object-contain" />
           </Link>
-          <Link href={backHref} className="text-sm text-gray-600 hover:text-blue-600">
-            {backLabel}
-          </Link>
+          {fromDashboard && (
+            <Link href="/meus-imoveis" className="text-sm text-gray-600 hover:text-blue-600">
+              ← Meus Imóveis
+            </Link>
+          )}
         </div>
       </header>
 
