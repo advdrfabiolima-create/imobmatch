@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Building2, Bed, Bath, Car, Maximize2, MapPin, Phone, MessageCircle } from "lucide-react";
+import { Building2, Bed, BedDouble, Bath, Car, Maximize2, MapPin, Phone, MessageCircle } from "lucide-react";
 import { ShareButton } from "./share-button";
 import { PhotoGallery } from "./photo-gallery";
 import Link from "next/link";
@@ -93,12 +93,19 @@ export default async function PropertyPublicPage({
             </div>
 
             {/* Details Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {property.bedrooms && (
                 <div className="bg-white p-4 rounded-xl text-center border">
                   <Bed className="h-6 w-6 text-blue-600 mx-auto mb-1" />
                   <p className="text-2xl font-bold text-gray-900">{property.bedrooms}</p>
                   <p className="text-xs text-gray-500">Quartos</p>
+                </div>
+              )}
+              {property.suites && (
+                <div className="bg-white p-4 rounded-xl text-center border">
+                  <BedDouble className="h-6 w-6 text-blue-600 mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-gray-900">{property.suites}</p>
+                  <p className="text-xs text-gray-500">Suítes</p>
                 </div>
               )}
               {property.bathrooms && (
