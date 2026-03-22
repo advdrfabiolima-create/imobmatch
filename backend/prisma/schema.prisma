@@ -95,7 +95,7 @@ model Property {
   suites       Int?
   bathrooms    Int?
   parkingSpots Int?
-  areaM2       Decimal?      @db.Decimal(8, 2)
+  areaM2       Decimal?      @db.Decimal(12, 2)
   description  String?       @db.Text
   photos       String[]      @default([])
   listingType  String        @default("SALE")  // SALE | RENT
