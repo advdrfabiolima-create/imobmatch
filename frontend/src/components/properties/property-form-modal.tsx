@@ -72,9 +72,11 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
   const watchedType = watch("type");
   const watchedListingType = watch("listingType");
   const watchedState = watch("state");
-  const areaLabel = (watchedType === "LAND" || watchedType === "RURAL")
-    ? "Área total (m²)"
-    : "Área construída (m²)";
+  const areaLabel = watchedType === "RURAL"
+    ? "Área total (ha)"
+    : watchedType === "LAND"
+      ? "Área total (m²)"
+      : "Área construída (m²)";
 
   // ── Importação por link ──────────────────────────────────────────────────
   const handleImport = async () => {

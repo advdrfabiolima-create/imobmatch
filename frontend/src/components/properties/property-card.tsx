@@ -139,7 +139,7 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
           )}
           {property.areaM2 && (
             <span className="flex items-center gap-1">
-              <Maximize2 className="h-4 w-4" /> {Number(property.areaM2)}m²
+              <Maximize2 className="h-4 w-4" /> {Number(property.areaM2)}{property.type === "RURAL" ? "ha" : "m²"}
             </span>
           )}
         </div>

@@ -126,7 +126,7 @@ export default async function PropertyPublicPage({
                 <div className="bg-white p-4 rounded-xl text-center border">
                   <Maximize2 className="h-6 w-6 text-blue-600 mx-auto mb-1" />
                   <p className="text-2xl font-bold text-gray-900">{Number(property.areaM2)}</p>
-                  <p className="text-xs text-gray-500">m²</p>
+                  <p className="text-xs text-gray-500">{property.type === "RURAL" ? "ha" : "m²"}</p>
                 </div>
               )}
             </div>
