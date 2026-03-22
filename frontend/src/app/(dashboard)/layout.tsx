@@ -78,7 +78,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex-1">{children}</div>
         {/* Rodapé com aviso de isenção de responsabilidade */}
         <footer className="border-t border-gray-200 bg-white px-6 py-3">
-          <div className="flex items-start gap-2 text-[11px] text-gray-400 leading-relaxed max-w-5xl">
+          <div className="flex items-start gap-2 text-[11px] text-gray-400 leading-relaxed w-full">
             <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0 text-amber-400 mt-0.5" />
             <p className="flex-1 min-w-0">
               <span className="font-semibold text-gray-500">Aviso Legal:</span>{" "}

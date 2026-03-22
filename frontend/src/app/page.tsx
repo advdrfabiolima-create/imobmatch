@@ -1206,7 +1206,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-gray-800 pt-7 mb-6">
-            <p className="text-[11px] leading-relaxed text-gray-600 text-center max-w-4xl mx-auto">
+            <p className="text-[11px] leading-relaxed text-gray-600 text-center">
               <span className="text-amber-500 font-semibold">⚠ Aviso Legal:</span>{" "}
               A ImobMatch é uma plataforma de publicidade tecnológica e <strong className="text-gray-500">não se
               responsabiliza</strong> por negociações de compra, venda, locação, permuta ou qualquer outra
