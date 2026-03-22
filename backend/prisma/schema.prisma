@@ -92,6 +92,7 @@ model Property {
   neighborhood String?
   address      String?
   bedrooms     Int?
+  suites       Int?
   bathrooms    Int?
   parkingSpots Int?
   areaM2       Decimal?      @db.Decimal(8, 2)

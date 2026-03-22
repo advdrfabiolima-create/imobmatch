@@ -23,6 +23,7 @@ const schema = z.object({
   state: z.string().min(2, "Estado obrigatório"),
   neighborhood: z.string().optional(),
   bedrooms: z.coerce.number().optional(),
+  suites: z.coerce.number().optional(),
   bathrooms: z.coerce.number().optional(),
   parkingSpots: z.coerce.number().optional(),
   areaM2: z.coerce.number().optional(),
@@ -59,6 +60,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
           state: property.state,
           neighborhood: property.neighborhood || "",
           bedrooms: property.bedrooms || undefined,
+          suites: property.suites || undefined,
           bathrooms: property.bathrooms || undefined,
           parkingSpots: property.parkingSpots || undefined,
           areaM2: property.areaM2 || undefined,
@@ -350,10 +352,14 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-5 gap-3">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Quartos</label>
                   <Input type="number" min="0" {...register("bedrooms")} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Suítes</label>
+                  <Input type="number" min="0" {...register("suites")} />
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">Banheiros</label>

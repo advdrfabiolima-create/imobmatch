@@ -35,6 +35,9 @@ export class CreatePropertyDto {
   @ApiPropertyOptional({ example: 3 })
   @IsOptional() @IsNumber() @Type(() => Number) bedrooms?: number;
 
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional() @IsNumber() @Type(() => Number) suites?: number;
+
   @ApiPropertyOptional({ example: 2 })
   @IsOptional() @IsNumber() @Type(() => Number) bathrooms?: number;
 
@@ -66,6 +69,7 @@ export class UpdatePropertyDto {
   @IsOptional() @IsString() neighborhood?: string;
   @IsOptional() @IsString() address?: string;
   @IsOptional() @IsNumber() @Type(() => Number) bedrooms?: number;
+  @IsOptional() @IsNumber() @Type(() => Number) suites?: number;
   @IsOptional() @IsNumber() @Type(() => Number) bathrooms?: number;
   @IsOptional() @IsNumber() @Type(() => Number) parkingSpots?: number;
   @IsOptional() @IsNumber() @Type(() => Number) areaM2?: number;
