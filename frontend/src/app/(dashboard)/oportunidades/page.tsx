@@ -20,19 +20,20 @@ import toast from "react-hot-toast";
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 const PROPERTY_TYPE_LABELS: Record<string, string> = {
-  HOUSE: "Casa", APARTMENT: "Apartamento", LAND: "Terreno",
-  COMMERCIAL: "Comercial", RURAL: "Rural",
+  HOUSE: "Casa", CONDO_HOUSE: "Casa em Condomínio", APARTMENT: "Apartamento",
+  LAND: "Terreno", COMMERCIAL: "Comercial", RURAL: "Rural",
 };
 const PROPERTY_TYPE_ICONS: Record<string, React.ElementType> = {
-  HOUSE: Home, APARTMENT: Building2, LAND: Landmark,
+  HOUSE: Home, CONDO_HOUSE: Home, APARTMENT: Building2, LAND: Landmark,
   COMMERCIAL: Warehouse, RURAL: Trees,
 };
 const PROPERTY_TYPE_COLORS: Record<string, string> = {
-  HOUSE:      "from-orange-500 to-amber-600",
-  APARTMENT:  "from-blue-500 to-indigo-600",
-  LAND:       "from-green-500 to-emerald-600",
-  COMMERCIAL: "from-purple-500 to-violet-600",
-  RURAL:      "from-teal-500 to-cyan-600",
+  HOUSE:       "from-orange-500 to-amber-600",
+  CONDO_HOUSE: "from-orange-400 to-amber-500",
+  APARTMENT:   "from-blue-500 to-indigo-600",
+  LAND:        "from-green-500 to-emerald-600",
+  COMMERCIAL:  "from-purple-500 to-violet-600",
+  RURAL:       "from-teal-500 to-cyan-600",
 };
 
 function seeded(seed: string, min: number, max: number) {

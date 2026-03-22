@@ -22,7 +22,7 @@ const schema = z.object({
   desiredNeighborhood: z.string().optional(),
   maxPrice: z.string().min(1, "Preço máximo obrigatório"),
   minPrice: z.string().optional(),
-  propertyType: z.enum(["HOUSE", "APARTMENT", "LAND", "COMMERCIAL", "RURAL"]),
+  propertyType: z.enum(["HOUSE", "CONDO_HOUSE", "APARTMENT", "LAND", "COMMERCIAL", "RURAL"]),
   bedrooms: z.coerce.number().optional(),
   notes: z.string().optional(),
 });
@@ -145,6 +145,7 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
               <select {...register("propertyType")} className="h-10 w-full rounded-md border px-3 text-sm">
                 <option value="APARTMENT">Apartamento</option>
                 <option value="HOUSE">Casa</option>
+                <option value="CONDO_HOUSE">Casa em Condomínio</option>
                 <option value="LAND">Terreno</option>
                 <option value="COMMERCIAL">Comercial</option>
                 <option value="RURAL">Rural</option>

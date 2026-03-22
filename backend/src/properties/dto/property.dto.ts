@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 
 export enum PropertyTypeEnum {
   HOUSE = 'HOUSE',
+  CONDO_HOUSE = 'CONDO_HOUSE',
   APARTMENT = 'APARTMENT',
   LAND = 'LAND',
   COMMERCIAL = 'COMMERCIAL',

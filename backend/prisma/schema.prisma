@@ -116,6 +116,7 @@ model Property {
 
 enum PropertyType {
   HOUSE
+  CONDO_HOUSE
   APARTMENT
   LAND
   COMMERCIAL

@@ -51,6 +51,7 @@ export default async function ImoveisPublicPage({ searchParams }: { searchParams
               <option value="">Tipo</option>
               <option value="APARTMENT">Apartamento</option>
               <option value="HOUSE">Casa</option>
+              <option value="CONDO_HOUSE">Casa em Condomínio</option>
               <option value="LAND">Terreno</option>
               <option value="COMMERCIAL">Comercial</option>
             </select>

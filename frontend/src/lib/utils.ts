@@ -36,6 +36,7 @@ export function getWhatsAppLink(phone: string, message?: string): string {
 
 export const PROPERTY_TYPE_LABELS: Record<string, string> = {
   HOUSE: "Casa",
+  CONDO_HOUSE: "Casa em Condomínio",
   APARTMENT: "Apartamento",
   LAND: "Terreno",
   COMMERCIAL: "Comercial",

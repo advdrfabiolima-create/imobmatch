@@ -30,7 +30,8 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  HOUSE: "Casa", APARTMENT: "Apartamento", LAND: "Terreno", COMMERCIAL: "Comercial", RURAL: "Rural",
+  HOUSE: "Casa", CONDO_HOUSE: "Casa em Condomínio", APARTMENT: "Apartamento",
+  LAND: "Terreno", COMMERCIAL: "Comercial", RURAL: "Rural",
 };
 
 function formatCurrency(v: number) {

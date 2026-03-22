@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 
 const schema = z.object({
   title: z.string().min(5, "Título obrigatório"),
-  type: z.enum(["HOUSE", "APARTMENT", "LAND", "COMMERCIAL", "RURAL"]),
+  type: z.enum(["HOUSE", "CONDO_HOUSE", "APARTMENT", "LAND", "COMMERCIAL", "RURAL"]),
   listingType: z.enum(["SALE", "RENT"]).default("SALE"),
   price: z.string().min(1, "Preço obrigatório"),
   city: z.string().min(2, "Cidade obrigatória"),
@@ -278,6 +278,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                   >
                     <option value="APARTMENT">Apartamento</option>
                     <option value="HOUSE">Casa</option>
+                    <option value="CONDO_HOUSE">Casa em Condomínio</option>
                     <option value="LAND">Terreno</option>
                     <option value="COMMERCIAL">Comercial</option>
                     <option value="RURAL">Rural</option>
