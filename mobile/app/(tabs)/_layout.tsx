@@ -11,7 +11,7 @@ const TABS: {
 }[] = [
   {
     name: "index",
-    label: "Dashboard",
+    label: "Início",
     icon: "home-outline",
     iconFocused: "home",
   },
@@ -23,7 +23,7 @@ const TABS: {
   },
   {
     name: "compradores",
-    label: "Compradores",
+    label: "Clientes",
     icon: "people-outline",
     iconFocused: "people",
   },
@@ -41,7 +41,7 @@ const TABS: {
   },
   {
     name: "mensagens",
-    label: "Mensagens",
+    label: "Chat",
     icon: "chatbubbles-outline",
     iconFocused: "chatbubbles",
   },
@@ -64,11 +64,11 @@ export default function TabsLayout() {
           backgroundColor: "#fff",
           borderTopWidth: 1,
           borderTopColor: "#F3F4F6",
-          paddingBottom: 6,
+          paddingBottom: 8,
           paddingTop: 6,
-          height: 62,
+          height: 70,
         },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: "600" },
       }}
     >
       {TABS.map((tab) => (

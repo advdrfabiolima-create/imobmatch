@@ -67,6 +67,16 @@ export default function Matches() {
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<"all" | "best">("all");
 
+  async function handleGenerate() {
+    try {
+      await matchesApi.generate();
+      setLoading(true);
+      load();
+    } catch {
+      // silencia
+    }
+  }
+
   const load = useCallback(async () => {
     try {
       const { data } =
@@ -97,6 +107,10 @@ export default function Matches() {
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>Matches</Text>
+        <TouchableOpacity style={styles.generateBtn} onPress={handleGenerate}>
+          <Ionicons name="flash" size={16} color="#fff" />
+          <Text style={styles.generateBtnText}>Gerar</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Filtros */}
@@ -151,10 +165,23 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F9FAFB" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 12,
   },
+  generateBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#0066FF",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  generateBtnText: { color: "#fff", fontWeight: "700", fontSize: 13 },
   title: { fontSize: 22, fontWeight: "800", color: "#111827" },
   filters: {
     flexDirection: "row",

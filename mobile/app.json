@@ -9,8 +9,8 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#0066FF"
     },
     "ios": {
       "supportsTablet": false,
@@ -21,7 +21,7 @@
       "package": "com.imobmatch.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0066FF"
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"

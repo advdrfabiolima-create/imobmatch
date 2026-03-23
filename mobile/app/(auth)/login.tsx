@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -93,11 +93,9 @@ export default function Login() {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Não tem conta? </Text>
-        <Link href="/(auth)/register" asChild>
-          <TouchableOpacity>
-            <Text style={styles.footerLink}>Criar conta</Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity onPress={() => Alert.alert("Cadastro", "O registro é feito exclusivamente pelo site www.useimobmatch.com.br")}>
+          <Text style={styles.footerLink}>Criar conta</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

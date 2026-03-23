@@ -1,182 +1,50 @@
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  ActivityIndicator,
-  Alert,
-  Image,
-} from "react-native";
-import { Link, router } from "expo-router";
-import { useState } from "react";
-import { authApi } from "@/services/api";
+import { View, Text, TouchableOpacity, StyleSheet, Linking, Image } from "react-native";
+import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  async function handleRegister() {
-    if (!name || !email || !password) {
-      Alert.alert("Atenção", "Preencha nome, e-mail e senha.");
-      return;
-    }
-    if (password.length < 6) {
-      Alert.alert("Atenção", "A senha deve ter pelo menos 6 caracteres.");
-      return;
-    }
-    setLoading(true);
-    try {
-      await authApi.register({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        password,
-        phone: phone.trim() || undefined,
-      });
-      Alert.alert(
-        "Conta criada!",
-        "Verifique seu e-mail para ativar a conta.",
-        [{ text: "OK", onPress: () => router.replace("/(auth)/login") }]
-      );
-    } catch (err: any) {
-      const msg = err?.response?.data?.message ?? "Tente novamente.";
-      Alert.alert("Erro ao criar conta", Array.isArray(msg) ? msg[0] : msg);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView
-        contentContainerStyle={styles.inner}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.logoBox}>
-          <Image
-            source={require("../../assets/logo.png")}
-            style={styles.logoImg}
-            resizeMode="contain"
-          />
-          <Text style={styles.logoSub}>Criar conta de corretor</Text>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.back} onPress={() => router.back()}>
+        <Ionicons name="arrow-back" size={22} color="#0066FF" />
+      </TouchableOpacity>
+      <View style={styles.content}>
+        <Image
+          source={require("../../assets/logo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <View style={styles.iconBox}>
+          <Ionicons name="globe-outline" size={48} color="#0066FF" />
         </View>
-
-        <View style={styles.form}>
-          <Text style={styles.label}>Nome completo</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="João Silva"
-            placeholderTextColor="#9CA3AF"
-            autoCapitalize="words"
-            value={name}
-            onChangeText={setName}
-          />
-
-          <Text style={styles.label}>E-mail</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="seu@email.com.br"
-            placeholderTextColor="#9CA3AF"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
-
-          <Text style={styles.label}>Telefone (opcional)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="(11) 99999-9999"
-            placeholderTextColor="#9CA3AF"
-            keyboardType="phone-pad"
-            value={phone}
-            onChangeText={setPhone}
-          />
-
-          <Text style={styles.label}>Senha</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Mínimo 6 caracteres"
-            placeholderTextColor="#9CA3AF"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-
-          <TouchableOpacity
-            style={[styles.btn, loading && styles.btnDisabled]}
-            onPress={handleRegister}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.btnText}>Criar conta</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Já tem conta? </Text>
-          <Link href="/(auth)/login" asChild>
-            <TouchableOpacity>
-              <Text style={styles.footerLink}>Entrar</Text>
-            </TouchableOpacity>
-          </Link>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        <Text style={styles.title}>Criar conta</Text>
+        <Text style={styles.desc}>
+          O cadastro de novos corretores é feito exclusivamente pelo site oficial.
+        </Text>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => Linking.openURL("https://www.useimobmatch.com.br")}
+        >
+          <Ionicons name="open-outline" size={18} color="#fff" />
+          <Text style={styles.btnText}>Acessar www.useimobmatch.com.br</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={styles.back2}>← Voltar para o login</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F9FAFB" },
-  inner: {
-    flexGrow: 1,
-    justifyContent: "center",
-    paddingHorizontal: 28,
-    paddingVertical: 48,
-    gap: 24,
-  },
-  logoBox: { alignItems: "center", marginBottom: 8 },
-  logoImg: { width: 200, height: 70 },
-  logoSub: { fontSize: 14, color: "#6B7280", marginTop: 6 },
-  form: { gap: 8 },
-  label: { fontSize: 14, fontWeight: "600", color: "#374151", marginTop: 8 },
-  input: {
-    height: 52,
-    borderWidth: 1.5,
-    borderColor: "#E5E7EB",
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    fontSize: 15,
-    color: "#111827",
-    backgroundColor: "#fff",
-  },
-  btn: {
-    height: 52,
-    backgroundColor: "#0066FF",
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 16,
-  },
-  btnDisabled: { opacity: 0.6 },
-  btnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerText: { color: "#6B7280", fontSize: 14 },
-  footerLink: { color: "#0066FF", fontSize: 14, fontWeight: "600" },
+  back: { paddingTop: 60, paddingHorizontal: 20 },
+  content: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 20, marginTop: -60 },
+  logo: { width: 160, height: 56 },
+  iconBox: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#EFF6FF", alignItems: "center", justifyContent: "center" },
+  title: { fontSize: 22, fontWeight: "800", color: "#111827" },
+  desc: { fontSize: 15, color: "#6B7280", textAlign: "center", lineHeight: 22 },
+  btn: { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#0066FF", paddingHorizontal: 20, paddingVertical: 14, borderRadius: 12, width: "100%" as any, justifyContent: "center" },
+  btnText: { color: "#fff", fontSize: 15, fontWeight: "700" },
+  back2: { color: "#0066FF", fontSize: 14, fontWeight: "600" },
 });
