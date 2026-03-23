@@ -39,6 +39,10 @@ desktop.ini
 # ─── Prisma ───────────────────────────────────────────────────────────────────
 backend/prisma/migrations/**/migration_lock.toml
 
+# ─── Expo / React Native ──────────────────────────────────────────────────────
+mobile/.expo/
+mobile/node_modules/
+
 # ─── Misc ─────────────────────────────────────────────────────────────────────
 *.tsbuildinfo
 .turbo/

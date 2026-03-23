@@ -34,7 +34,7 @@ export class AuthController {
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const { user, accessToken, refreshToken } = await this.authService.register(dto);
     this.setAuthCookies(res, accessToken, refreshToken);
-    return { user };
+    return { user, accessToken, refreshToken };
   }
 
   @Post('login')
@@ -42,20 +42,20 @@ export class AuthController {
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const { user, accessToken, refreshToken } = await this.authService.login(dto);
     this.setAuthCookies(res, accessToken, refreshToken);
-    return { user };
+    return { user, accessToken, refreshToken };
   }
 
   @Post('refresh')
   @ApiOperation({ summary: 'Renovar tokens usando refresh token' })
-  async refresh(@Req() req: ExpressRequest, @Res({ passthrough: true }) res: Response) {
-    const rawToken = req.cookies?.[REFRESH_COOKIE];
+  async refresh(@Req() req: ExpressRequest, @Body() body: { refreshToken?: string }, @Res({ passthrough: true }) res: Response) {
+    const rawToken = req.cookies?.[REFRESH_COOKIE] ?? body?.refreshToken;
     if (!rawToken) {
       this.clearAuthCookies(res);
       throw new UnauthorizedException('Refresh token ausente');
     }
     const { accessToken, refreshToken } = await this.authService.refresh(rawToken);
     this.setAuthCookies(res, accessToken, refreshToken);
-    return { message: 'Tokens renovados' };
+    return { accessToken, refreshToken };
   }
 
   @Post('logout')

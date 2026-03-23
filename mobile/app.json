@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "ImobMatch",
+    "slug": "imobmatch",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "imobmatch",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.imobmatch.app"
+    },
+    "android": {
+      "package": "com.imobmatch.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir acesso às fotos para enviar imagens de imóveis."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5416029b-f754-4cea-b132-2bb379f6afdf"
+      }
+    }
+  }
+}

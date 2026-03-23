@@ -20,6 +20,7 @@ const NAV_LINKS = [
   { href: "#funcionalidades", label: "Funcionalidades" },
   { href: "/plans",           label: "Planos"          },
   { href: "/imoveis",         label: "Imóveis"         },
+  { href: "#app",             label: "📱 App"          },
 ];
 
 const FEATURES = [
@@ -1120,6 +1121,140 @@ export default function HomePage() {
               Ver todos os planos →
             </Link>
           </p>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          BAIXE O APP
+      ══════════════════════════════════════════════════════════════════ */}
+      <section id="app" className="bg-white py-24 overflow-hidden">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="relative rounded-3xl overflow-hidden"
+            style={{ background: "linear-gradient(135deg, #0b1849 0%, #18106a 50%, #461a8e 100%)" }}>
+            {/* glows */}
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-20 -right-20 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl" />
+            </div>
+
+            <div className="relative flex flex-col md:flex-row items-center gap-12 px-10 py-16 md:px-16">
+              {/* Texto */}
+              <div className="flex-1 text-center md:text-left">
+                <span className="inline-block mb-4 text-xs font-bold uppercase tracking-widest text-violet-300 bg-violet-500/20 border border-violet-400/30 px-4 py-1.5 rounded-full">
+                  📱 Disponível em breve
+                </span>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight tracking-tight">
+                  ImobMatch no<br />seu bolso
+                </h2>
+                <p className="text-blue-200 text-base leading-relaxed mb-8 max-w-md">
+                  Gerencie seus imóveis, veja matches e converse com corretores parceiros direto pelo celular — em qualquer lugar.
+                </p>
+                <ul className="flex flex-col gap-2.5 mb-10 text-sm text-blue-100">
+                  {[
+                    "Dashboard e resumo em tempo real",
+                    "Matches e notificações instantâneas",
+                    "Chat com corretores parceiros",
+                    "Gestão de imóveis e compradores",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500/30 border border-emerald-400/40 flex items-center justify-center flex-shrink-0">
+                        <Check className="h-3 w-3 text-emerald-300" />
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Badges */}
+                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                  <a
+                    href="#"
+                    aria-label="Baixar na Google Play"
+                    className="flex items-center gap-3 bg-black/40 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:bg-black/60 transition-all duration-200 rounded-xl px-5 py-3 group"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-7 w-7 flex-shrink-0" fill="none">
+                      <path d="M3.18 1.5C2.8 1.72 2.5 2.17 2.5 2.75v18.5c0 .58.3 1.03.68 1.25l.1.06 10.38-10.38v-.24L3.28 1.44l-.1.06Z" fill="#EA4335"/>
+                      <path d="m17.16 15.18-3.45-3.45v-.24l3.46-3.46.08.04 4.1 2.33c1.17.67 1.17 1.76 0 2.43l-4.1 2.33-.09.02Z" fill="#FBBC04"/>
+                      <path d="m17.24 15.16-3.53-3.53-10.53 10.52c.39.41.99.46 1.68.08l12.38-7.07Z" fill="#34A853"/>
+                      <path d="M17.24 8.84 4.86 1.77C4.17 1.39 3.57 1.44 3.18 1.85l10.53 10.52 3.53-3.53Z" fill="#4285F4"/>
+                    </svg>
+                    <div className="text-left">
+                      <p className="text-[10px] text-white/60 leading-none">Disponível em breve</p>
+                      <p className="text-sm font-bold text-white leading-tight">Google Play</p>
+                    </div>
+                  </a>
+
+                  <a
+                    href="#"
+                    aria-label="Baixar na App Store"
+                    className="flex items-center gap-3 bg-black/40 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:bg-black/60 transition-all duration-200 rounded-xl px-5 py-3 group"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-7 w-7 flex-shrink-0 text-white" fill="currentColor">
+                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.18 1.27-2.16 3.8.02 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.37 2.78M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    <div className="text-left">
+                      <p className="text-[10px] text-white/60 leading-none">Disponível em breve</p>
+                      <p className="text-sm font-bold text-white leading-tight">App Store</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+
+              {/* Phone mockup */}
+              <div className="flex-shrink-0 relative hidden md:block">
+                <div className="relative w-52 h-[420px] rounded-[36px] border-[5px] border-white/20 bg-gradient-to-b from-gray-900 to-gray-800 shadow-2xl shadow-black/50 overflow-hidden">
+                  {/* Screen */}
+                  <div className="absolute inset-0 bg-[#F9FAFB] flex flex-col">
+                    {/* Status bar */}
+                    <div className="h-8 bg-white flex items-center justify-between px-4 flex-shrink-0">
+                      <span className="text-[9px] font-bold text-gray-800">9:41</span>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-1.5 border border-gray-600 rounded-sm"><div className="h-full w-2/3 bg-gray-600 rounded-sm" /></div>
+                      </div>
+                    </div>
+                    {/* Header app */}
+                    <div className="bg-white px-3 py-2.5 border-b border-gray-100 flex-shrink-0">
+                      <p className="text-[11px] font-bold text-gray-400">Olá, Corretor 👋</p>
+                      <p className="text-[13px] font-black text-gray-900">Seu painel de hoje</p>
+                    </div>
+                    {/* Cards */}
+                    <div className="flex-1 p-3 space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { label: "Imóveis", val: "12", color: "#0066FF", bg: "#EFF6FF" },
+                          { label: "Matches", val: "7",  color: "#F59E0B", bg: "#FFFBEB" },
+                          { label: "Compradores", val: "5", color: "#10B981", bg: "#ECFDF5" },
+                          { label: "Parcerias", val: "3", color: "#8B5CF6", bg: "#F5F3FF" },
+                        ].map((c) => (
+                          <div key={c.label} className="rounded-xl p-2.5" style={{ backgroundColor: c.bg }}>
+                            <p className="text-[16px] font-black" style={{ color: c.color }}>{c.val}</p>
+                            <p className="text-[9px] text-gray-500 mt-0.5">{c.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="bg-white rounded-xl p-2.5 border border-gray-100">
+                        <p className="text-[10px] font-bold text-gray-700 mb-1.5">Último match</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[9px] text-gray-500">Casa · Salvador, BA</p>
+                          <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">94%</span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Tab bar */}
+                    <div className="h-12 bg-white border-t border-gray-100 flex items-center justify-around flex-shrink-0">
+                      {["🏠","🏢","⚡","💬","👤"].map((ic) => (
+                        <span key={ic} className="text-base">{ic}</span>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Notch */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-5 bg-gray-900 rounded-b-2xl z-10" />
+                </div>
+                {/* Glow under phone */}
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-32 h-8 bg-violet-500/40 blur-2xl rounded-full" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
