@@ -113,7 +113,7 @@ export function Sidebar() {
             <img
               src="/logo_texto_branco.png"
               alt="ImobMatch"
-              className="h-7 w-auto object-contain"
+              className="h-5 w-auto object-contain"
             />
           </Link>
           <button
