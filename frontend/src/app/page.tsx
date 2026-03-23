@@ -1200,6 +1200,11 @@ export default function HomePage() {
               {/* Phone mockup — maior */}
               <div className="flex-shrink-0 hidden md:flex items-end relative">
 
+                {/* Glow atrás do corretor */}
+                <div className="absolute left-1/4 -translate-x-1/2 top-1/2 -translate-y-1/2 w-64 h-80 rounded-full z-0 pointer-events-none"
+                  style={{ background: "radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.10) 50%, transparent 75%)", filter: "blur(32px)" }}
+                />
+
                 {/* Corretor — totalmente visível à esquerda */}
                 <img
                   src="/Corretor_celular.png"
