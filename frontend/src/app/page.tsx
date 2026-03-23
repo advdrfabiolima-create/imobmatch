@@ -1140,8 +1140,8 @@ export default function HomePage() {
             <div className="relative flex flex-col md:flex-row items-center gap-12 px-10 py-16 md:px-16">
               {/* Texto */}
               <div className="flex-1 text-center md:text-left">
-                <span className="inline-block mb-4 text-xs font-bold uppercase tracking-widest text-violet-300 bg-violet-500/20 border border-violet-400/30 px-4 py-1.5 rounded-full">
-                  📱 Disponível em breve
+                <span className="inline-block mb-4 text-xs font-bold uppercase tracking-widest text-emerald-300 bg-emerald-500/20 border border-emerald-400/30 px-4 py-1.5 rounded-full">
+                  📱 Disponível para Android
                 </span>
                 <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight tracking-tight">
                   ImobMatch no<br />seu bolso
@@ -1165,29 +1165,25 @@ export default function HomePage() {
                   ))}
                 </ul>
 
-                {/* Badges */}
+                {/* Botão de download */}
                 <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                   <a
-                    href="#"
-                    aria-label="Baixar na Google Play"
-                    className="flex items-center gap-3 bg-black/40 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:bg-black/60 transition-all duration-200 rounded-xl px-5 py-3 group"
+                    href="/imobmatch.apk"
+                    download
+                    className="inline-flex items-center gap-3 bg-emerald-500 hover:bg-emerald-400 transition-colors duration-200 rounded-xl px-6 py-3.5 shadow-lg shadow-emerald-500/30 group"
                   >
-                    <svg viewBox="0 0 24 24" className="h-7 w-7 flex-shrink-0" fill="none">
-                      <path d="M3.18 1.5C2.8 1.72 2.5 2.17 2.5 2.75v18.5c0 .58.3 1.03.68 1.25l.1.06 10.38-10.38v-.24L3.28 1.44l-.1.06Z" fill="#EA4335"/>
-                      <path d="m17.16 15.18-3.45-3.45v-.24l3.46-3.46.08.04 4.1 2.33c1.17.67 1.17 1.76 0 2.43l-4.1 2.33-.09.02Z" fill="#FBBC04"/>
-                      <path d="m17.24 15.16-3.53-3.53-10.53 10.52c.39.41.99.46 1.68.08l12.38-7.07Z" fill="#34A853"/>
-                      <path d="M17.24 8.84 4.86 1.77C4.17 1.39 3.57 1.44 3.18 1.85l10.53 10.52 3.53-3.53Z" fill="#4285F4"/>
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 flex-shrink-0 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 3v13M7 11l5 5 5-5"/><path d="M5 20h14"/>
                     </svg>
                     <div className="text-left">
-                      <p className="text-[10px] text-white/60 leading-none">Disponível em breve</p>
-                      <p className="text-sm font-bold text-white leading-tight">Google Play</p>
+                      <p className="text-[10px] text-emerald-100 leading-none font-medium">Android APK</p>
+                      <p className="text-sm font-bold text-white leading-tight">Baixe aqui</p>
                     </div>
                   </a>
-
                   <a
                     href="#"
-                    aria-label="Baixar na App Store"
-                    className="flex items-center gap-3 bg-black/40 backdrop-blur-sm border border-white/20 hover:border-white/40 hover:bg-black/60 transition-all duration-200 rounded-xl px-5 py-3 group"
+                    aria-label="App Store em breve"
+                    className="flex items-center gap-3 bg-black/40 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 opacity-50 cursor-not-allowed"
                   >
                     <svg viewBox="0 0 24 24" className="h-7 w-7 flex-shrink-0 text-white" fill="currentColor">
                       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.18 1.27-2.16 3.8.02 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.37 2.78M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
