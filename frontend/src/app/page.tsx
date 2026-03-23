@@ -1165,6 +1165,25 @@ export default function HomePage() {
                   ))}
                 </ul>
 
+                {/* Aviso de instalação fora da loja */}
+                <div className="mb-8 rounded-xl border border-amber-400/30 bg-amber-500/10 px-5 py-4 text-left">
+                  <div className="flex items-start gap-3">
+                    <span className="text-amber-300 text-lg leading-none mt-0.5">⚠️</span>
+                    <div>
+                      <p className="text-amber-200 font-bold text-sm mb-1">Atenção ao instalar</p>
+                      <p className="text-amber-100/80 text-xs leading-relaxed">
+                        Como o ImobMatch ainda está em fase de lançamento e o app não foi publicado oficialmente nas lojas,
+                        o Android pode exibir um aviso de segurança ao instalar o arquivo APK — isso é completamente normal
+                        para aplicativos distribuídos fora da Google Play. O app é seguro e desenvolvido exclusivamente
+                        para corretores da plataforma. Caso apareça a mensagem <span className="text-white font-semibold">"Instalar aplicativo desconhecido"</span> ou{" "}
+                        <span className="text-white font-semibold">"Bloqueado pelo Google Play Protect"</span>, basta tocar em{" "}
+                        <span className="text-white font-semibold">"Instalar assim mesmo"</span> ou habilitar a instalação
+                        de fontes desconhecidas nas configurações do seu dispositivo para prosseguir normalmente.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Botão de download */}
                 <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                   <a
