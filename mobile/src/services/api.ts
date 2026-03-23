@@ -130,3 +130,17 @@ export const messagesApi = {
     api.post("/messages", { receiverId, content }),
   unread: () => api.get("/messages/unread"),
 };
+
+// ── Corretores ─────────────────────────────────────────────────────────────────
+export const corretoresApi = {
+  list: (params?: { search?: string; city?: string; state?: string; page?: number }) =>
+    api.get("/users", { params: { limit: 20, ...params } }),
+  getById: (id: string) => api.get(`/users/${id}`),
+};
+
+// ── Oportunidades ──────────────────────────────────────────────────────────────
+export const oportunidadesApi = {
+  list: (params?: { page?: number }) =>
+    api.get("/opportunities", { params: { limit: 20, ...params } }),
+  getById: (id: string) => api.get(`/opportunities/${id}`),
+};

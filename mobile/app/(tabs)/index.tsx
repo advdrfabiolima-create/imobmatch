@@ -121,7 +121,11 @@ export default function Dashboard() {
             <Ionicons name="person-add" size={22} color="#059669" />
             <Text style={styles.actionText}>Novo Cliente</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn} onPress={() => router.push("/(tabs)/mensagens")}>
+          <TouchableOpacity style={styles.actionBtn} onPress={() => router.push("/(tabs)/parcerias" as any)}>
+            <Ionicons name="git-network" size={22} color="#D97706" />
+            <Text style={styles.actionText}>Parcerias</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionBtn} onPress={() => router.push("/(tabs)/mensagens" as any)}>
             <Ionicons name="chatbubbles" size={22} color="#7C3AED" />
             <Text style={styles.actionText}>Mensagens</Text>
           </TouchableOpacity>
@@ -163,9 +167,10 @@ const styles = StyleSheet.create({
   cardIcon: { width: 44, height: 44, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   cardValue: { fontSize: 28, fontWeight: "800", color: "#0F172A" },
   cardLabel: { fontSize: 12, color: "#64748B", fontWeight: "600" },
-  actionsRow: { flexDirection: "row", gap: 10 },
+  actionsRow: { flexDirection: "row", gap: 10, flexWrap: "wrap" },
   actionBtn: {
-    flex: 1, backgroundColor: "#fff", borderRadius: 14, padding: 14,
+    width: "47%",
+    backgroundColor: "#fff", borderRadius: 14, padding: 14,
     alignItems: "center", gap: 8,
     shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 }, elevation: 2,
