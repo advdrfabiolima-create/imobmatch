@@ -9,6 +9,15 @@ import { propertiesApi } from "@/services/api";
 
 const { width } = Dimensions.get("window");
 
+type PropStatus = "AVAILABLE" | "SOLD" | "RENTED" | "INACTIVE";
+
+const STATUS_OPTS: { value: PropStatus; label: string; color: string; bg: string }[] = [
+  { value: "AVAILABLE", label: "Disponível", color: "#10B981", bg: "#ECFDF5" },
+  { value: "SOLD",      label: "Vendido",    color: "#0066FF", bg: "#EFF6FF" },
+  { value: "RENTED",    label: "Alugado",    color: "#7C3AED", bg: "#F5F3FF" },
+  { value: "INACTIVE",  label: "Inativo",    color: "#9CA3AF", bg: "#F3F4F6" },
+];
+
 interface Property {
   id: string;
   title: string;
@@ -48,6 +57,7 @@ export default function PropertyDetail() {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   useEffect(() => {
     propertiesApi.getById(id).then(({ data }) => {
@@ -57,6 +67,28 @@ export default function PropertyDetail() {
       router.back();
     }).finally(() => setLoading(false));
   }, [id]);
+
+  function handleStatusChange() {
+    const options = STATUS_OPTS.map((opt) => ({
+      text: opt.label + (property?.status === opt.value ? " ✓" : ""),
+      onPress: async () => {
+        if (property?.status === opt.value) return;
+        setUpdatingStatus(true);
+        try {
+          await propertiesApi.update(id, { status: opt.value });
+          setProperty((p) => p ? { ...p, status: opt.value } : p);
+        } catch {
+          Alert.alert("Erro", "Não foi possível atualizar o status.");
+        } finally {
+          setUpdatingStatus(false);
+        }
+      },
+    }));
+    Alert.alert("Alterar Status", "Selecione o novo status do imóvel:", [
+      ...options,
+      { text: "Cancelar", style: "cancel" },
+    ]);
+  }
 
   function confirmDelete() {
     Alert.alert("Remover imóvel", "Tem certeza? Esta ação não pode ser desfeita.", [
@@ -142,6 +174,28 @@ export default function PropertyDetail() {
           </View>
           <Text style={styles.title}>{property.title}</Text>
           <Text style={styles.price}>{formatPrice(property.price)}</Text>
+
+          {/* Status do imóvel */}
+          {(() => {
+            const s = STATUS_OPTS.find((o) => o.value === (property.status ?? "AVAILABLE")) ?? STATUS_OPTS[0];
+            return (
+              <TouchableOpacity
+                style={[styles.statusBtn, { backgroundColor: s.bg, borderColor: s.color + "40" }]}
+                onPress={handleStatusChange}
+                disabled={updatingStatus}
+              >
+                {updatingStatus ? (
+                  <ActivityIndicator size="small" color={s.color} />
+                ) : (
+                  <>
+                    <View style={[styles.statusDot, { backgroundColor: s.color }]} />
+                    <Text style={[styles.statusBtnText, { color: s.color }]}>{s.label}</Text>
+                    <Ionicons name="chevron-down" size={14} color={s.color} />
+                  </>
+                )}
+              </TouchableOpacity>
+            );
+          })()}
 
           {/* Localização */}
           <View style={styles.locationRow}>
@@ -257,6 +311,12 @@ const styles = StyleSheet.create({
   section: { marginTop: 8, gap: 6 },
   sectionTitle: { fontSize: 15, fontWeight: "700", color: "#111827" },
   description: { fontSize: 14, color: "#6B7280", lineHeight: 22 },
+  statusBtn: {
+    flexDirection: "row", alignItems: "center", gap: 6, alignSelf: "flex-start",
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1,
+  },
+  statusDot: { width: 8, height: 8, borderRadius: 4 },
+  statusBtnText: { fontSize: 13, fontWeight: "700" },
   oppBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
     backgroundColor: "#DC2626", borderRadius: 14, paddingVertical: 14,

@@ -112,6 +112,8 @@ export const matchesApi = {
 
 // ── Parcerias ─────────────────────────────────────────────────────────────────
 export const partnershipsApi = {
+  request: (data: { propertyId: string; receiverId: string; commissionSplit?: number; message?: string }) =>
+    api.post("/partnerships", data),
   list: (status?: string) =>
     api.get("/partnerships", { params: status ? { status } : {} }),
   respond: (id: string, status: "ACCEPTED" | "REJECTED", commissionSplit?: number) =>

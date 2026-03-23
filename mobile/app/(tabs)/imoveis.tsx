@@ -14,6 +14,27 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { propertiesApi } from "@/services/api";
 
+type PropertyStatus = "AVAILABLE" | "SOLD" | "RENTED" | "INACTIVE";
+
+const STATUS_LABEL: Record<PropertyStatus, string> = {
+  AVAILABLE: "Disponível",
+  SOLD: "Vendido",
+  RENTED: "Alugado",
+  INACTIVE: "Inativo",
+};
+const STATUS_COLOR: Record<PropertyStatus, string> = {
+  AVAILABLE: "#10B981",
+  SOLD: "#0066FF",
+  RENTED: "#7C3AED",
+  INACTIVE: "#9CA3AF",
+};
+const STATUS_BG: Record<PropertyStatus, string> = {
+  AVAILABLE: "#ECFDF5",
+  SOLD: "#EFF6FF",
+  RENTED: "#F5F3FF",
+  INACTIVE: "#F3F4F6",
+};
+
 interface Property {
   id: string;
   title: string;
@@ -23,6 +44,7 @@ interface Property {
   price: number;
   city: string;
   state: string;
+  status?: PropertyStatus;
   bedrooms?: number;
   areaM2?: number;
   photos?: string[];
@@ -64,8 +86,17 @@ function PropertyCard({
       )}
       <View style={styles.cardBody}>
         <View style={styles.cardTop}>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{badge}</Text>
+          <View style={styles.badgeRow}>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{badge}</Text>
+            </View>
+            {item.status && item.status !== "AVAILABLE" && (
+              <View style={[styles.statusBadge, { backgroundColor: STATUS_BG[item.status] }]}>
+                <Text style={[styles.statusBadgeText, { color: STATUS_COLOR[item.status] }]}>
+                  {STATUS_LABEL[item.status]}
+                </Text>
+              </View>
+            )}
           </View>
           <TouchableOpacity onPress={confirmDelete} hitSlop={8}>
             <Ionicons name="trash-outline" size={18} color="#EF4444" />
@@ -228,6 +259,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  badgeRow: { flexDirection: "row", gap: 6, alignItems: "center" },
   badge: {
     backgroundColor: "#EFF6FF",
     paddingHorizontal: 10,
@@ -235,6 +267,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   badgeText: { color: "#0066FF", fontSize: 11, fontWeight: "700" },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 20,
+  },
+  statusBadgeText: { fontSize: 11, fontWeight: "700" },
   cardTitle: { fontSize: 15, fontWeight: "700", color: "#111827" },
   cardPrice: { fontSize: 17, fontWeight: "800", color: "#0066FF" },
   cardMeta: {
