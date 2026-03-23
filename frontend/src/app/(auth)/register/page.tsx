@@ -393,7 +393,7 @@ function LeftPanel() {
         {/* Logo */}
         <Link href="/" className="transition-opacity hover:opacity-70">
           <Image src="/logo_texto_branco.png" alt="ImobMatch" width={190} height={56}
-            className="h-11 w-auto object-contain" />
+            className="h-7 w-auto object-contain" />
         </Link>
 
         {/* Headline */}
@@ -459,7 +459,7 @@ export default function RegisterPage() {
         <div className="lg:hidden mb-10">
           <Link href="/">
             <Image src="/logo_texto_preto.png" alt="ImobMatch" width={148} height={44}
-              className="h-10 w-auto object-contain" />
+              className="h-7 w-auto object-contain" />
           </Link>
         </div>
 

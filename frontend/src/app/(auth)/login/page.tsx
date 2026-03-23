@@ -66,7 +66,7 @@ function LeftPanel() {
             alt="ImobMatch"
             width={180}
             height={56}
-            className="h-11 w-auto object-contain"
+            className="h-7 w-auto object-contain"
           />
         </Link>
 
@@ -142,7 +142,7 @@ export default function LoginPage() {
               alt="ImobMatch"
               width={150}
               height={44}
-              className="h-10 w-auto object-contain"
+              className="h-7 w-auto object-contain"
             />
           </Link>
         </div>
