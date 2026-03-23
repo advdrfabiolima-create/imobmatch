@@ -7,30 +7,59 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "@/contexts/AuthContext";
-import { usersApi } from "@/services/api";
+import { usersApi, uploadApi } from "@/services/api";
 
 export default function Perfil() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, refreshUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user?.name ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [creci, setCreci] = useState(user?.creci ?? "");
   const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   async function handleSave() {
     setSaving(true);
     try {
       await usersApi.updateProfile({ name, phone, creci });
+      await refreshUser();
       setEditing(false);
       Alert.alert("Sucesso", "Perfil atualizado!");
     } catch {
       Alert.alert("Erro", "Não foi possível salvar as alterações.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleChangeAvatar() {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permissão negada", "Precisamos de acesso à galeria.");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (result.canceled) return;
+    setUploadingAvatar(true);
+    try {
+      const urls = await uploadApi.images([result.assets[0].uri]);
+      await usersApi.updateProfile({ avatarUrl: urls[0] });
+      await refreshUser();
+    } catch {
+      Alert.alert("Erro", "Não foi possível atualizar a foto.");
+    } finally {
+      setUploadingAvatar(false);
     }
   }
 
@@ -45,11 +74,22 @@ export default function Perfil() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Avatar */}
       <View style={styles.avatarBox}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>
-            {user?.name?.charAt(0).toUpperCase() ?? "?"}
-          </Text>
-        </View>
+        <TouchableOpacity onPress={handleChangeAvatar} style={styles.avatarWrapper}>
+          {user?.avatarUrl ? (
+            <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
+          ) : (
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {user?.name?.charAt(0).toUpperCase() ?? "?"}
+              </Text>
+            </View>
+          )}
+          <View style={styles.cameraBtn}>
+            {uploadingAvatar
+              ? <ActivityIndicator size="small" color="#fff" />
+              : <Ionicons name="camera" size={14} color="#fff" />}
+          </View>
+        </TouchableOpacity>
         <Text style={styles.userName}>{user?.name}</Text>
         <Text style={styles.userEmail}>{user?.email}</Text>
         <View style={styles.roleBadge}>
@@ -151,14 +191,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#0F2957",
     gap: 6,
   },
+  avatarWrapper: { position: "relative", marginBottom: 4 },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 4,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.4)",
+  },
+  cameraBtn: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#0066FF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#0F2957",
   },
   avatarText: { fontSize: 32, fontWeight: "800", color: "#0066FF" },
   userName: { fontSize: 20, fontWeight: "800", color: "#fff" },

@@ -23,6 +23,7 @@ interface AuthContextData {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -56,6 +57,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(data.user);
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const { data } = await authApi.me();
+      setUser(data);
+    } catch {}
+  }, []);
+
   const signOut = useCallback(async () => {
     try {
       await authApi.logout();
@@ -69,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signOut, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
