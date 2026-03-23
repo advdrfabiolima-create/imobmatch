@@ -245,7 +245,7 @@ export default function ListaVipPage() {
 
             {/* Logo — apenas imagem, sem link */}
             <div className="mb-8 md:mb-12">
-              <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-8 md:h-9 w-auto object-contain" />
+              <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 md:h-6 w-auto object-contain" />
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
