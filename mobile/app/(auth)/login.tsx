@@ -102,12 +102,13 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
+  container: { flex: 1, backgroundColor: "#EEF2FF" },
   inner: {
     flexGrow: 1,
     justifyContent: "center",
     paddingHorizontal: 28,
-    paddingVertical: 48,
+    paddingTop: 64,
+    paddingBottom: 48,
     gap: 24,
   },
   logoBox: { alignItems: "center", marginBottom: 8 },

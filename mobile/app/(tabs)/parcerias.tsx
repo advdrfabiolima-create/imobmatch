@@ -419,20 +419,21 @@ export default function Parcerias() {
 // ── Estilos ───────────────────────────────────────────────────────────────────
 
 const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { flex: 1, backgroundColor: "#EEF2FF" },
+  center: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#EEF2FF" },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 12,
+    paddingTop: 64,
+    paddingBottom: 20,
+    backgroundColor: "#0F2957",
   },
-  title: { fontSize: 22, fontWeight: "800", color: "#111827" },
+  title: { fontSize: 22, fontWeight: "800", color: "#FFFFFF" },
   count: {
-    backgroundColor: "#F5F3FF",
-    color: "#8B5CF6",
+    backgroundColor: "rgba(255,255,255,0.15)",
+    color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "700",
     paddingHorizontal: 8,

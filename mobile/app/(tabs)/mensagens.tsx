@@ -224,14 +224,15 @@ export default function Mensagens() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
+  container: { flex: 1, backgroundColor: "#EEF2FF" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   headerRow: {
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 12,
+    paddingTop: 64,
+    paddingBottom: 20,
+    backgroundColor: "#0F2957",
   },
-  title: { fontSize: 22, fontWeight: "800", color: "#111827" },
+  title: { fontSize: 22, fontWeight: "800", color: "#FFFFFF" },
   convItem: {
     flexDirection: "row",
     alignItems: "center",

@@ -148,7 +148,7 @@ export default function Imoveis() {
           style={styles.addBtn}
           onPress={() => router.push("/novo-imovel")}
         >
-          <Ionicons name="add" size={22} color="#fff" />
+          <Ionicons name="add" size={22} color="#0066FF" />
         </TouchableOpacity>
       </View>
 
@@ -180,20 +180,21 @@ export default function Imoveis() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { flex: 1, backgroundColor: "#EEF2FF" },
+  center: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#EEF2FF" },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 12,
+    paddingTop: 64,
+    paddingBottom: 20,
+    backgroundColor: "#0F2957",
   },
-  title: { fontSize: 22, fontWeight: "800", color: "#111827" },
+  title: { fontSize: 22, fontWeight: "800", color: "#FFFFFF" },
   count: {
-    backgroundColor: "#EFF6FF",
-    color: "#0066FF",
+    backgroundColor: "rgba(255,255,255,0.15)",
+    color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "700",
     paddingHorizontal: 8,
@@ -201,19 +202,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   addBtn: {
-    width: 38, height: 38, borderRadius: 10,
-    backgroundColor: "#0066FF", alignItems: "center", justifyContent: "center",
+    width: 40, height: 40, borderRadius: 12,
+    backgroundColor: "#FFFFFF", alignItems: "center", justifyContent: "center",
   },
   list: { padding: 20, gap: 12, paddingTop: 4 },
   card: {
     backgroundColor: "#fff",
-    borderRadius: 14,
+    borderRadius: 16,
     overflow: "hidden",
     shadowColor: "#000",
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.07,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    elevation: 3,
   },
   cardPhoto: { width: "100%", height: 160 },
   cardPhotoPlaceholder: {
