@@ -1138,7 +1138,7 @@ export default function HomePage() {
             </div>
 
             {/* ── Linha principal: texto + celular ── */}
-            <div className="relative flex flex-col md:flex-row items-center gap-12 px-10 pt-16 pb-10 md:px-16">
+            <div className="relative flex flex-col md:flex-row items-center gap-12 px-10 pt-16 pb-0 md:px-16">
               {/* Texto */}
               <div className="flex-1 text-center md:text-left">
                 <span className="inline-block mb-4 text-xs font-bold uppercase tracking-widest text-emerald-300 bg-emerald-500/20 border border-emerald-400/30 px-4 py-1.5 rounded-full">
@@ -1209,7 +1209,7 @@ export default function HomePage() {
                 />
 
                 {/* Phone — avança sobre o braço esquerdo do corretor */}
-                <div className="-ml-16 z-10 relative mb-6">
+                <div className="-ml-16 z-10 relative mb-0">
                 <div className="relative w-64 h-[520px] rounded-[40px] border-[5px] border-white/20 bg-gradient-to-b from-gray-900 to-gray-800 shadow-2xl shadow-black/50 overflow-hidden">
                   {/* Screen */}
                   <div className="absolute inset-0 bg-[#F9FAFB] flex flex-col">
