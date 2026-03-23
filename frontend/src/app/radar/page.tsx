@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Flame, MapPin, Tag, Phone, MessageCircle, ArrowRight, Building2 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 const TYPE_LABELS: Record<string, string> = {
@@ -14,7 +16,7 @@ function fmt(v: number) {
 
 async function getOpportunities(params: URLSearchParams) {
   try {
-    const res = await fetch(`${API_URL}/opportunities?${params.toString()}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_URL}/opportunities?${params.toString()}`, { cache: "no-store" });
     return res.json();
   } catch {
     return { data: [], total: 0 };
