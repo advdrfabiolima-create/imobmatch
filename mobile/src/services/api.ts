@@ -140,7 +140,11 @@ export const corretoresApi = {
 
 // ── Oportunidades ──────────────────────────────────────────────────────────────
 export const oportunidadesApi = {
-  list: (params?: { page?: number }) =>
+  list: (params?: { page?: number; city?: string }) =>
     api.get("/opportunities", { params: { limit: 20, ...params } }),
   getById: (id: string) => api.get(`/opportunities/${id}`),
+  create: (data: Record<string, unknown>) => api.post("/opportunities", data),
+  updateStatus: (id: string, status: string) =>
+    api.patch(`/opportunities/${id}/status`, { status }),
+  remove: (id: string) => api.delete(`/opportunities/${id}`),
 };

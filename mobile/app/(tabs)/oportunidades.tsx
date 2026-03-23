@@ -4,6 +4,7 @@ import {
 } from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { oportunidadesApi } from "@/services/api";
 
 interface Oportunidade {
@@ -111,8 +112,16 @@ export default function Oportunidades() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Oportunidades</Text>
-        <Text style={styles.headerSub}>Imóveis com venda urgente</Text>
+        <View>
+          <Text style={styles.headerTitle}>Oportunidades</Text>
+          <Text style={styles.headerSub}>Imóveis com venda urgente</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.addBtn}
+          onPress={() => router.push("/nova-oportunidade" as any)}
+        >
+          <Ionicons name="add" size={22} color="#0066FF" />
+        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -142,9 +151,14 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#0F2957",
     paddingTop: 64, paddingBottom: 20, paddingHorizontal: 20,
+    flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end",
   },
   headerTitle: { fontSize: 22, fontWeight: "800", color: "#fff" },
   headerSub: { fontSize: 13, color: "rgba(255,255,255,0.65)", marginTop: 2 },
+  addBtn: {
+    width: 40, height: 40, borderRadius: 12,
+    backgroundColor: "#fff", alignItems: "center", justifyContent: "center",
+  },
   list: { padding: 16, gap: 12 },
   card: {
     backgroundColor: "#fff", borderRadius: 16, padding: 16, gap: 10,

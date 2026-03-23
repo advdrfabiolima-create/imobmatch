@@ -184,6 +184,26 @@ export default function PropertyDetail() {
               <Text style={styles.description}>{property.description}</Text>
             </View>
           )}
+
+          {/* Publicar como Oportunidade */}
+          <TouchableOpacity
+            style={styles.oppBtn}
+            onPress={() =>
+              router.push({
+                pathname: "/nova-oportunidade",
+                params: {
+                  propertyId: property.id,
+                  title: property.title,
+                  priceNormal: String(property.price),
+                  city: property.city,
+                  propertyType: property.type,
+                },
+              } as any)
+            }
+          >
+            <Ionicons name="pricetag-outline" size={20} color="#fff" />
+            <Text style={styles.oppBtnText}>Publicar como Oportunidade</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -237,4 +257,10 @@ const styles = StyleSheet.create({
   section: { marginTop: 8, gap: 6 },
   sectionTitle: { fontSize: 15, fontWeight: "700", color: "#111827" },
   description: { fontSize: 14, color: "#6B7280", lineHeight: 22 },
+  oppBtn: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
+    backgroundColor: "#DC2626", borderRadius: 14, paddingVertical: 14,
+    marginTop: 8,
+  },
+  oppBtnText: { color: "#fff", fontWeight: "700", fontSize: 15 },
 });

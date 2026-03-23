@@ -10,14 +10,14 @@ import {
 import { useEffect, useState, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { usersApi, matchesApi } from "@/services/api";
+import { usersApi, matchesApi, oportunidadesApi } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface Stats {
   propertiesCount: number;
   buyersCount: number;
   matchesCount: number;
-  partnershipsPending: number;
+  oportunidadesCount: number;
 }
 
 interface StatCardProps {
@@ -54,8 +54,12 @@ export default function Dashboard() {
 
   const load = useCallback(async () => {
     try {
-      const [dashRes] = await Promise.all([usersApi.dashboard()]);
-      setStats(dashRes.data);
+      const [dashRes, oppRes] = await Promise.all([
+        usersApi.dashboard(),
+        oportunidadesApi.list({ page: 1 }),
+      ]);
+      const oportunidadesCount = oppRes.data?.total ?? (oppRes.data?.data ?? oppRes.data)?.length ?? 0;
+      setStats({ ...dashRes.data, oportunidadesCount });
     } catch {
       // silencia erro
     } finally {
@@ -107,7 +111,7 @@ export default function Dashboard() {
         </View>
         <View style={styles.row}>
           <StatCard icon="flash" label="Matches" value={stats?.matchesCount ?? 0} color="#D97706" bg="#FEF3C7" href="/(tabs)/matches" />
-          <StatCard icon="git-merge" label="Parcerias" value={stats?.partnershipsPending ?? 0} color="#7C3AED" bg="#EDE9FE" href="/(tabs)/parcerias" />
+          <StatCard icon="pricetag" label="Oportunidades" value={stats?.oportunidadesCount ?? 0} color="#DC2626" bg="#FEE2E2" href="/(tabs)/oportunidades" />
         </View>
 
         {/* Quick actions */}
