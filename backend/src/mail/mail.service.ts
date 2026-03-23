@@ -214,33 +214,87 @@ export class MailService {
     const registerUrl = `${this.frontendUrl}/register?email=${encodeURIComponent(to)}`;
 
     const content = `
-      <h2 style="color:#111827;font-size:20px;margin:0 0 8px;font-weight:700;">Olá, ${name}! 🎉</h2>
-      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 8px;">
-        Boa notícia! Sua vaga de acesso antecipado ao <strong>ImobMatch</strong> foi liberada.
-      </p>
+      <h2 style="color:#111827;font-size:22px;margin:0 0 6px;font-weight:700;">Olá, ${name}! 🎉</h2>
       <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 24px;">
-        O ImobMatch é uma plataforma para corretores encontrarem imóveis, compradores
-        e parcerias com mais facilidade. Clique no botão abaixo para criar sua conta e começar:
+        Sua vaga de acesso antecipado ao <strong>ImobMatch</strong> foi liberada. Seja bem-vindo(a)!
       </p>
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+
+      <!-- O que é o ImobMatch -->
+      <div style="background:#f0f9ff;border-left:4px solid #2563eb;border-radius:6px;padding:18px 20px;margin:0 0 24px;">
+        <p style="margin:0 0 8px;color:#1e40af;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">O que é o ImobMatch?</p>
+        <p style="margin:0;color:#1e3a5f;font-size:14px;line-height:1.8;">
+          O ImobMatch é uma plataforma inteligente que <strong>conecta automaticamente compradores a imóveis</strong> —
+          tanto dentro da sua própria carteira quanto por meio de <strong>parcerias com outros corretores da rede</strong>.<br><br>
+          Em vez de depender de indicações manuais ou grupos de WhatsApp, o sistema analisa o perfil de cada comprador
+          e identifica os imóveis mais compatíveis, gerando <strong>Matches automáticos</strong> com alta probabilidade de fechamento.
+          Quando o imóvel ideal está na carteira de outro corretor, a plataforma facilita a formalização da parceria —
+          inclusive com a divisão de comissão já acordada.
+        </p>
+      </div>
+
+      <!-- O que fazer ao entrar -->
+      <p style="color:#111827;font-size:15px;font-weight:700;margin:0 0 12px;">Para o sistema funcionar, o primeiro passo é essencial:</p>
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+        <tr>
+          <td style="padding:10px 0;vertical-align:top;width:32px;">
+            <div style="width:28px;height:28px;background:#dbeafe;border-radius:50%;text-align:center;line-height:28px;font-size:13px;font-weight:700;color:#1d4ed8;">1</div>
+          </td>
+          <td style="padding:10px 0 10px 12px;">
+            <p style="margin:0;color:#111827;font-size:14px;font-weight:600;">Cadastre seus imóveis</p>
+            <p style="margin:4px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">
+              Adicione os imóveis da sua carteira com todas as informações: tipo, preço, localização e características.
+              Eles ficarão disponíveis para o sistema cruzar com compradores.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;vertical-align:top;width:32px;">
+            <div style="width:28px;height:28px;background:#dbeafe;border-radius:50%;text-align:center;line-height:28px;font-size:13px;font-weight:700;color:#1d4ed8;">2</div>
+          </td>
+          <td style="padding:10px 0 10px 12px;">
+            <p style="margin:0;color:#111827;font-size:14px;font-weight:600;">Cadastre seus clientes compradores</p>
+            <p style="margin:4px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">
+              Informe o perfil de busca de cada comprador: o que ele procura, faixa de preço, localização preferida e
+              outras preferências. Quanto mais detalhado, melhor a qualidade dos Matches.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;vertical-align:top;width:32px;">
+            <div style="width:28px;height:28px;background:#10b981;border-radius:50%;text-align:center;line-height:28px;font-size:13px;font-weight:700;color:#fff;">✓</div>
+          </td>
+          <td style="padding:10px 0 10px 12px;">
+            <p style="margin:0;color:#111827;font-size:14px;font-weight:600;">O sistema Match entra em ação</p>
+            <p style="margin:4px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">
+              A partir daí, o ImobMatch cruza automaticamente compradores e imóveis — da sua carteira ou da rede —
+              e apresenta os melhores Matches para você agir. Parcerias, oportunidades e negócios surgem de forma natural.
+            </p>
+          </td>
+        </tr>
+      </table>
+
+      <!-- CTA -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
         <tr>
           <td>
             <a href="${registerUrl}"
-               style="display:inline-block;background-color:#2563eb;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;mso-padding-alt:0;line-height:1.4;">
-              Criar minha conta gratuita
+               style="display:inline-block;background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#ffffff;text-decoration:none;padding:15px 36px;border-radius:8px;font-weight:700;font-size:15px;mso-padding-alt:0;line-height:1.4;">
+              🚀 Criar minha conta e começar agora
             </a>
           </td>
         </tr>
       </table>
-      <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
-        Se você não se inscreveu na lista de acesso antecipado, ignore este e-mail.
+
+      <p style="color:#9ca3af;font-size:13px;margin:0 0 8px;line-height:1.6;">
+        Se você não se inscreveu na lista de acesso antecipado, pode ignorar este e-mail com segurança.
       </p>
-      <p style="color:#d1d5db;font-size:11px;margin:16px 0 0;word-break:break-all;">
+      <p style="color:#d1d5db;font-size:11px;margin:0;word-break:break-all;">
         Link direto: ${registerUrl}
       </p>
     `;
 
-    await this.send(to, name, '🎉 Sua vaga no ImobMatch foi liberada!', content);
+    await this.send(to, name, '🎉 Sua vaga no ImobMatch foi liberada — veja como começar!', content);
   }
 
   // ─── Encerramento de conta ──────────────────────────────────────────────────
