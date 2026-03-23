@@ -42,6 +42,7 @@ backend/prisma/migrations/**/migration_lock.toml
 # ─── Expo / React Native ──────────────────────────────────────────────────────
 mobile/.expo/
 mobile/node_modules/
+.expo/
 
 # ─── Misc ─────────────────────────────────────────────────────────────────────
 *.tsbuildinfo

@@ -6,12 +6,23 @@
     "orientation": "portrait",
     "scheme": "imobmatch",
     "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.imobmatch.app"
+      "bundleIdentifier": "com.imobmatch.app",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "package": "com.imobmatch.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ]

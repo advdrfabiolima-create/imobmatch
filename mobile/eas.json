@@ -17,12 +17,12 @@
       },
       "node": "20.18.0",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.imobmatch.com.br"
+        "EXPO_PUBLIC_API_URL": "https://api.useimobmatch.com.br"
       }
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.imobmatch.com.br"
+        "EXPO_PUBLIC_API_URL": "https://api.useimobmatch.com.br"
       }
     }
   },
