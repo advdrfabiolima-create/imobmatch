@@ -153,7 +153,7 @@ export default function VerificarEmailPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
       <div className="mb-8">
         <Link href="/">
-          <Image src="/logo.png" alt="ImobMatch" width={140} height={40} className="h-10 w-auto object-contain" />
+          <Image src="/logo_texto_preto.png" alt="ImobMatch" width={140} height={40} className="h-10 w-auto object-contain" />
         </Link>
       </div>
       <Suspense

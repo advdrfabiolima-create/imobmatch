@@ -42,7 +42,7 @@ export default function VerificarTermoPage() {
         <div className="text-center mb-6">
           <Link href="/" className="inline-block mb-4">
             <Image
-              src="/logo.png"
+              src="/logo_texto_preto.png"
               alt="ImobMatch"
               width={160}
               height={48}

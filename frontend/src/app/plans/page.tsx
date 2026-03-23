@@ -129,7 +129,7 @@ export default function PlansPage() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between max-w-6xl">
           <Link href="/">
-            <img src="/logo.png" alt="ImobMatch" className="h-8 w-auto object-contain" />
+            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-8 w-auto object-contain" />
           </Link>
           <div className="flex items-center gap-5">
             <Link href="/login" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">

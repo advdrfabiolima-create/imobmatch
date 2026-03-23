@@ -99,7 +99,7 @@ function AcceptInviteForm() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center mb-6">
             <img
-              src="/logo.png"
+              src="/logo_texto_preto.png"
               alt="ImobMatch"
               className="h-12 w-auto object-contain"
             />

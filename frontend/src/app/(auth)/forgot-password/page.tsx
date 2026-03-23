@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center mb-6">
-            <img src="/logo.png" alt="ImobMatch" className="h-12 w-auto object-contain" />
+            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-12 w-auto object-contain" />
           </Link>
 
           {sent ? (

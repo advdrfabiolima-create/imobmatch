@@ -245,7 +245,7 @@ export default function ListaVipPage() {
 
             {/* Logo — apenas imagem, sem link */}
             <div className="mb-8 md:mb-12">
-              <img src="/logo.png" alt="ImobMatch" className="h-8 md:h-9 w-auto object-contain brightness-0 invert" />
+              <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-8 md:h-9 w-auto object-contain" />
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
@@ -478,7 +478,7 @@ export default function ListaVipPage() {
         {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
         <footer className="border-t py-7 bg-white">
           <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <img src="/logo.png" alt="ImobMatch" className="h-6 w-auto object-contain opacity-50" />
+            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-6 w-auto object-contain opacity-50" />
             <p className="text-xs text-gray-400">
               © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados · Seus dados são protegidos e nunca serão compartilhados.
             </p>

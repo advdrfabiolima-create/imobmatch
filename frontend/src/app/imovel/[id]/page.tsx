@@ -63,7 +63,7 @@ export default async function PropertyPublicPage({
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center">
-            <img src="/logo.png" alt="ImobMatch" className="h-9 w-auto object-contain" />
+            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-9 w-auto object-contain" />
           </Link>
           {fromDashboard && (
             <Link href="/meus-imoveis" className="text-sm text-gray-600 hover:text-blue-600">

@@ -664,7 +664,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-md" style={{ background: "linear-gradient(160deg, #0b1849 0%, #18106a 44%, #361178 72%, #461a8e 100%)" }}>
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center flex-shrink-0">
-            <img src="/logo.png" alt="ImobMatch" className="h-10 w-auto object-contain brightness-0 invert" />
+            <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-10 w-auto object-contain" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-7">
@@ -1305,7 +1305,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
             <div className="col-span-2 md:col-span-1">
-              <img src="/logo.png" alt="ImobMatch" className="h-8 w-auto object-contain brightness-0 invert mb-4" />
+              <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-8 w-auto object-contain mb-4" />
               <p className="text-sm leading-relaxed text-gray-500 mb-5">
                 A rede colaborativa de corretores que conecta imóveis, compradores e parceiros de forma inteligente.
               </p>

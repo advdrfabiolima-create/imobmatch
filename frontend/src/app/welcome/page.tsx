@@ -391,7 +391,7 @@ export default function WelcomePage() {
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-10">
         <div className="container mx-auto px-6 py-3.5 flex items-center justify-between">
           <Link href="/">
-            <img src="/logo.png" alt="ImobMatch" className="h-9 w-auto object-contain" />
+            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-9 w-auto object-contain" />
           </Link>
 
           {/* Progress dots */}

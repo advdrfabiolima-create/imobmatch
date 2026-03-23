@@ -111,9 +111,9 @@ export function Sidebar() {
         <div className="px-5 py-5 flex items-center justify-between border-b border-white/8">
           <Link href="/dashboard" onClick={close}>
             <img
-              src="/logo.png"
+              src="/logo_texto_branco.png"
               alt="ImobMatch"
-              className="h-9 w-auto object-contain brightness-0 invert"
+              className="h-9 w-auto object-contain"
             />
           </Link>
           <button

@@ -13,7 +13,7 @@ export default function PrivacidadePage() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/">
-            <Image src="/logo.png" alt="ImobMatch" width={140} height={40} className="h-9 w-auto object-contain" />
+            <Image src="/logo_texto_preto.png" alt="ImobMatch" width={140} height={40} className="h-9 w-auto object-contain" />
           </Link>
           <Link href="/login" className="text-sm text-blue-600 hover:underline font-medium">
             Voltar para o login

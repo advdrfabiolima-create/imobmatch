@@ -62,11 +62,11 @@ function LeftPanel() {
         {/* Logo */}
         <Link href="/" className="transition-opacity hover:opacity-70">
           <Image
-            src="/logo.png"
+            src="/logo_texto_branco.png"
             alt="ImobMatch"
             width={180}
             height={56}
-            className="h-11 w-auto object-contain brightness-0 invert"
+            className="h-11 w-auto object-contain"
           />
         </Link>
 
@@ -138,7 +138,7 @@ export default function LoginPage() {
         <div className="lg:hidden mb-12">
           <Link href="/">
             <Image
-              src="/logo.png"
+              src="/logo_texto_preto.png"
               alt="ImobMatch"
               width={150}
               height={44}
