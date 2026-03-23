@@ -1258,7 +1258,7 @@ export default function HomePage() {
                 <span className="text-amber-300 text-xl leading-none mt-0.5 flex-shrink-0">⚠️</span>
                 <div>
                   <p className="text-amber-200 font-bold text-sm mb-1">Atenção ao instalar</p>
-                  <p className="text-amber-100/75 text-xs leading-relaxed max-w-4xl">
+                  <p className="text-amber-100/75 text-xs leading-relaxed">
                     Como o ImobMatch ainda está em fase de lançamento e o app não foi publicado oficialmente nas lojas,
                     o Android pode exibir um aviso de segurança ao instalar o arquivo APK — isso é completamente normal
                     para aplicativos distribuídos fora da Google Play. O app é seguro e desenvolvido exclusivamente
