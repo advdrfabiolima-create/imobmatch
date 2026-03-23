@@ -1198,18 +1198,18 @@ export default function HomePage() {
               </div>
 
               {/* Phone mockup — maior */}
-              <div className="flex-shrink-0 relative hidden md:block" style={{ width: "460px", height: "560px" }}>
+              <div className="flex-shrink-0 hidden md:flex items-end relative">
 
-                {/* Corretor ao fundo, levemente atrás do celular */}
+                {/* Corretor — totalmente visível à esquerda */}
                 <img
                   src="/Corretor_celular.png"
                   alt="Corretor usando ImobMatch"
-                  className="absolute left-0 bottom-0 h-[520px] w-auto object-contain z-0"
+                  className="h-[500px] w-auto object-contain relative z-0 flex-shrink-0"
                   style={{ filter: "drop-shadow(0 20px 50px rgba(0,0,0,0.5))" }}
                 />
 
-                {/* Phone — na frente */}
-                <div className="absolute right-0 top-4 z-10">
+                {/* Phone — avança sobre o braço esquerdo do corretor */}
+                <div className="-ml-16 z-10 relative mb-6">
                 <div className="relative w-64 h-[520px] rounded-[40px] border-[5px] border-white/20 bg-gradient-to-b from-gray-900 to-gray-800 shadow-2xl shadow-black/50 overflow-hidden">
                   {/* Screen */}
                   <div className="absolute inset-0 bg-[#F9FAFB] flex flex-col">
@@ -1261,6 +1261,7 @@ export default function HomePage() {
                 {/* Glow under phone */}
                 <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-32 h-8 bg-violet-500/40 blur-2xl rounded-full" />
                 </div>{/* fim phone wrapper */}
+
               </div>
             </div>
 
