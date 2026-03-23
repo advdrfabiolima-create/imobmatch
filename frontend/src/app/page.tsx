@@ -20,7 +20,7 @@ const NAV_LINKS = [
   { href: "#funcionalidades", label: "Funcionalidades" },
   { href: "/plans",           label: "Planos"          },
   { href: "/imoveis",         label: "Imóveis"         },
-  { href: "/oportunidades",   label: "Oportunidades"   },
+  { href: "/radar",   label: "Oportunidades"   },
   { href: "#app",             label: "📱 App"          },
 ];
 
@@ -520,7 +520,7 @@ function OpportunityImpactSection() {
                   </div>
                 )}
                 <Link
-                  href={isReal ? "/oportunidades" : "/register"}
+                  href={isReal ? "/radar" : "/register"}
                   className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition"
                 >
                   {isReal ? "Ver esta oportunidade" : "Ver oportunidades reais"}
@@ -552,7 +552,7 @@ function OpportunityImpactSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/oportunidades"
+              href="/radar"
               className="group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.99] transition-all duration-200"
             >
               Ver todas as oportunidades
@@ -1421,7 +1421,7 @@ export default function HomePage() {
               Começar a gerar oportunidades
               <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
-            <Link href="/oportunidades"
+            <Link href="/radar"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm px-6 py-4 text-base font-medium text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200">
               <Flame className="h-4 w-4 text-orange-300" />
               Ver oportunidades
@@ -1451,7 +1451,7 @@ export default function HomePage() {
                 <li><Link href="/#funcionalidades" className="hover:text-white transition-colors">Funcionalidades</Link></li>
                 <li><Link href="/plans"            className="hover:text-white transition-colors">Planos e preços</Link></li>
                 <li><Link href="/imoveis"          className="hover:text-white transition-colors">Imóveis</Link></li>
-                <li><Link href="/oportunidades"    className="hover:text-white transition-colors">Oportunidades</Link></li>
+                <li><Link href="/radar"    className="hover:text-white transition-colors">Oportunidades</Link></li>
                 <li><Link href="/#como-funciona"   className="hover:text-white transition-colors">Como funciona</Link></li>
               </ul>
             </div>
