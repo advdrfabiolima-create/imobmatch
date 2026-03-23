@@ -20,6 +20,7 @@ const NAV_LINKS = [
   { href: "#funcionalidades", label: "Funcionalidades" },
   { href: "/plans",           label: "Planos"          },
   { href: "/imoveis",         label: "Imóveis"         },
+  { href: "/oportunidades",   label: "Oportunidades"   },
   { href: "#app",             label: "📱 App"          },
 ];
 
@@ -383,9 +384,54 @@ const OPP_POOL = [
   },
 ];
 
+const TYPE_LABELS: Record<string, string> = {
+  APARTMENT: "Apartamento", HOUSE: "Casa", CONDO_HOUSE: "Casa em Condomínio",
+  LAND: "Terreno", COMMERCIAL: "Comercial", RURAL: "Rural",
+};
+const GRADIENTS = [
+  "from-orange-500 to-red-500",
+  "from-orange-400 to-orange-600",
+  "from-amber-500 to-orange-500",
+];
+const fmt = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v);
+
+function realOppToCard(opp: any, idx: number) {
+  const pct = opp.priceNormal > 0 ? Math.round((1 - opp.priceUrgent / opp.priceNormal) * 100) : 0;
+  const save = opp.priceNormal - opp.priceUrgent;
+  return {
+    id: opp.id,
+    label: opp.city,
+    type: TYPE_LABELS[opp.propertyType] ?? opp.propertyType,
+    from: fmt(opp.priceNormal),
+    to:   fmt(opp.priceUrgent),
+    save: `−${fmt(save)}`,
+    pct:  `${pct}%`,
+    gradient: GRADIENTS[idx % 3],
+    featured: idx === 1,
+    isReal: true,
+  };
+}
+
 function OpportunityImpactSection() {
+  const [pool, setPool] = useState<any[]>(OPP_POOL);
+  const [isReal, setIsReal] = useState(false);
   const [groupIdx, setGroupIdx] = useState(0);
   const [cardOpacity, setCardOpacity] = useState(1);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"}/opportunities?limit=6`)
+      .then(r => r.json())
+      .then(res => {
+        const items = res?.data ?? [];
+        if (items.length >= 3) {
+          setPool(items.map(realOppToCard));
+          setIsReal(true);
+        }
+      })
+      .catch(() => {/* mantém OPP_POOL */});
+  }, []);
+
+  const totalGroups = Math.ceil(pool.length / 3);
 
   const rotate = (next: number) => {
     setCardOpacity(0);
@@ -394,12 +440,12 @@ function OpportunityImpactSection() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      rotate((groupIdx + 1) % 2);
+      rotate((groupIdx + 1) % totalGroups);
     }, 22000);
     return () => clearInterval(timer);
-  }, [groupIdx]);
+  }, [groupIdx, totalGroups]);
 
-  const currentGroup = OPP_POOL.slice(groupIdx * 3, groupIdx * 3 + 3);
+  const currentGroup = pool.slice(groupIdx * 3, groupIdx * 3 + 3);
 
   return (
     <section className="relative py-20 overflow-hidden bg-[linear-gradient(180deg,#ede9fe_0%,#ddd6fe_60%,#e0d9ff_100%)]">
@@ -413,7 +459,7 @@ function OpportunityImpactSection() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-600 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider">
             <Flame className="h-3.5 w-3.5" />
-            Exemplos de oportunidades na plataforma
+            {isReal ? "Oportunidades publicadas agora" : "Exemplos de oportunidades na plataforma"}
           </div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
             Oportunidades como essa{" "}
@@ -430,9 +476,9 @@ function OpportunityImpactSection() {
           className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto mb-8"
           style={{ opacity: cardOpacity, transition: "opacity 0.42s ease" }}
         >
-          {currentGroup.map((opp) => (
+          {currentGroup.map((opp, i) => (
             <div
-              key={opp.label}
+              key={(opp as any).id ?? opp.label}
               className={`relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
                 opp.featured
                   ? "border-orange-300/60 bg-white shadow-lg shadow-orange-100/80"
@@ -465,17 +511,19 @@ function OpportunityImpactSection() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
-                    <Zap className="h-3 w-3" />
-                    {opp.matches} compradores compatíveis
+                {!(opp as any).isReal && (opp as any).matches && (
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                      <Zap className="h-3 w-3" />
+                      {(opp as any).matches} compradores compatíveis
+                    </div>
                   </div>
-                </div>
+                )}
                 <Link
-                  href="/register"
+                  href={isReal ? "/oportunidades" : "/register"}
                   className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition"
                 >
-                  Ver oportunidades reais
+                  {isReal ? "Ver esta oportunidade" : "Ver oportunidades reais"}
                   <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </div>
@@ -484,7 +532,7 @@ function OpportunityImpactSection() {
         </div>
 
         <div className="flex justify-center gap-2 mb-10">
-          {[0, 1].map((i) => (
+          {Array.from({ length: totalGroups }).map((_, i) => (
             <button
               key={i}
               onClick={() => rotate(i)}
@@ -498,15 +546,26 @@ function OpportunityImpactSection() {
 
         <div className="text-center">
           <p className="text-slate-400 text-sm mb-4">
-            Exemplos do tipo de oportunidade publicada por corretores da plataforma todos os dias
+            {isReal
+              ? "Oportunidades reais publicadas por corretores na plataforma"
+              : "Exemplos do tipo de oportunidade publicada por corretores da plataforma todos os dias"}
           </p>
-          <Link
-            href="/register"
-            className="group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.99] transition-all duration-200"
-          >
-            Começar a gerar oportunidades
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/oportunidades"
+              className="group inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 active:scale-[0.99] transition-all duration-200"
+            >
+              Ver todas as oportunidades
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+            <Link
+              href="/register"
+              className="group inline-flex items-center gap-2 border-2 border-orange-400 text-orange-600 px-8 py-3.5 rounded-xl font-bold hover:bg-orange-50 active:scale-[0.99] transition-all duration-200"
+            >
+              Começar a gerar oportunidades
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
@@ -1362,7 +1421,7 @@ export default function HomePage() {
               Começar a gerar oportunidades
               <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
-            <Link href="/imoveis"
+            <Link href="/oportunidades"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm px-6 py-4 text-base font-medium text-white hover:bg-white/20 hover:border-white/50 transition-all duration-200">
               <Flame className="h-4 w-4 text-orange-300" />
               Ver oportunidades
@@ -1392,6 +1451,7 @@ export default function HomePage() {
                 <li><Link href="/#funcionalidades" className="hover:text-white transition-colors">Funcionalidades</Link></li>
                 <li><Link href="/plans"            className="hover:text-white transition-colors">Planos e preços</Link></li>
                 <li><Link href="/imoveis"          className="hover:text-white transition-colors">Imóveis</Link></li>
+                <li><Link href="/oportunidades"    className="hover:text-white transition-colors">Oportunidades</Link></li>
                 <li><Link href="/#como-funciona"   className="hover:text-white transition-colors">Como funciona</Link></li>
               </ul>
             </div>
