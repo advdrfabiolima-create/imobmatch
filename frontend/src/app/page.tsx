@@ -1217,51 +1217,90 @@ export default function HomePage() {
                 <div className="-ml-16 z-10 relative mb-0">
                 <div className="relative w-64 h-[520px] rounded-[40px] border-[5px] border-white/20 bg-gradient-to-b from-gray-900 to-gray-800 shadow-2xl shadow-black/50 overflow-hidden">
                   {/* Screen */}
-                  <div className="absolute inset-0 bg-[#F9FAFB] flex flex-col">
+                  <div className="absolute inset-0 bg-[#EEF2FF] flex flex-col overflow-hidden">
+
                     {/* Status bar */}
-                    <div className="h-8 bg-white flex items-center justify-between px-4 flex-shrink-0">
-                      <span className="text-[9px] font-bold text-gray-800">9:41</span>
+                    <div className="h-6 bg-[#0F2957] flex items-center justify-between px-4 flex-shrink-0">
+                      <span className="text-[8px] font-bold text-white">9:41</span>
                       <div className="flex items-center gap-1">
-                        <div className="w-3 h-1.5 border border-gray-600 rounded-sm"><div className="h-full w-2/3 bg-gray-600 rounded-sm" /></div>
+                        <div className="w-2.5 h-1.5 border border-white/60 rounded-sm"><div className="h-full w-2/3 bg-white/60 rounded-sm" /></div>
                       </div>
                     </div>
-                    {/* Header app */}
-                    <div className="bg-white px-3 py-2.5 border-b border-gray-100 flex-shrink-0">
-                      <p className="text-[11px] font-bold text-gray-400">Olá, Corretor 👋</p>
-                      <p className="text-[13px] font-black text-gray-900">Seu painel de hoje</p>
+
+                    {/* Header azul escuro igual ao app */}
+                    <div className="flex-shrink-0 px-3 pt-3 pb-4 flex items-center justify-between" style={{ backgroundColor: "#0F2957" }}>
+                      <div>
+                        <p className="text-[11px] font-extrabold text-white leading-none">Olá, Corretor 👋</p>
+                        <p className="text-[9px] mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>Seu painel de hoje</p>
+                      </div>
+                      <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg" style={{ backgroundColor: "#0066FF" }}>
+                        <span className="text-[9px]">⚡</span>
+                        <span className="text-[9px] font-bold text-white">Gerar</span>
+                      </div>
                     </div>
-                    {/* Cards */}
-                    <div className="flex-1 p-3 space-y-2">
-                      <div className="grid grid-cols-2 gap-2">
+
+                    {/* Conteúdo */}
+                    <div className="flex-1 p-2.5 flex flex-col gap-2 overflow-hidden">
+
+                      {/* Label Resumo */}
+                      <p className="text-[8px] font-bold uppercase tracking-widest" style={{ color: "#64748B" }}>Resumo</p>
+
+                      {/* Cards 2x2 */}
+                      <div className="grid grid-cols-2 gap-1.5">
                         {[
-                          { label: "Imóveis", val: "12", color: "#0066FF", bg: "#EFF6FF" },
-                          { label: "Matches", val: "7",  color: "#F59E0B", bg: "#FFFBEB" },
-                          { label: "Compradores", val: "5", color: "#10B981", bg: "#ECFDF5" },
-                          { label: "Parcerias", val: "3", color: "#8B5CF6", bg: "#F5F3FF" },
+                          { label: "Imóveis",       val: "12", color: "#0066FF", bg: "#DBEAFE", icon: "🏢" },
+                          { label: "Clientes",       val: "8",  color: "#059669", bg: "#D1FAE5", icon: "👥" },
+                          { label: "Matches",        val: "5",  color: "#D97706", bg: "#FEF3C7", icon: "⚡" },
+                          { label: "Oportunidades",  val: "3",  color: "#DC2626", bg: "#FEE2E2", icon: "🏷" },
                         ].map((c) => (
-                          <div key={c.label} className="rounded-xl p-2.5" style={{ backgroundColor: c.bg }}>
-                            <p className="text-[16px] font-black" style={{ color: c.color }}>{c.val}</p>
-                            <p className="text-[9px] text-gray-500 mt-0.5">{c.label}</p>
+                          <div key={c.label} className="rounded-xl p-2 flex flex-col gap-1.5" style={{ backgroundColor: "#fff", boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
+                            <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px]" style={{ backgroundColor: c.bg }}>
+                              {c.icon}
+                            </div>
+                            <p className="text-[17px] font-black leading-none" style={{ color: "#0F172A" }}>{c.val}</p>
+                            <p className="text-[8px] font-semibold" style={{ color: "#64748B" }}>{c.label}</p>
                           </div>
                         ))}
                       </div>
-                      <div className="bg-white rounded-xl p-2.5 border border-gray-100">
-                        <p className="text-[10px] font-bold text-gray-700 mb-1.5">Último match</p>
-                        <div className="flex items-center justify-between">
-                          <p className="text-[9px] text-gray-500">Casa · Salvador, BA</p>
-                          <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">94%</span>
-                        </div>
+
+                      {/* Label Ações rápidas */}
+                      <p className="text-[8px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "#64748B" }}>Ações rápidas</p>
+
+                      {/* Action buttons 2x2 */}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {[
+                          { label: "Novo Imóvel",  icon: "➕", color: "#0066FF" },
+                          { label: "Novo Cliente", icon: "👤", color: "#059669" },
+                          { label: "Parcerias",    icon: "🤝", color: "#D97706" },
+                          { label: "Mensagens",    icon: "💬", color: "#7C3AED" },
+                        ].map((a) => (
+                          <div key={a.label} className="rounded-xl p-2 flex flex-col items-center gap-1" style={{ backgroundColor: "#fff", boxShadow: "0 2px 6px rgba(0,0,0,0.05)" }}>
+                            <span className="text-[14px]">{a.icon}</span>
+                            <p className="text-[8px] font-semibold text-center" style={{ color: "#374151" }}>{a.label}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
+
                     {/* Tab bar */}
-                    <div className="h-12 bg-white border-t border-gray-100 flex items-center justify-around flex-shrink-0">
-                      {["🏠","🏢","⚡","💬","👤"].map((ic) => (
-                        <span key={ic} className="text-base">{ic}</span>
+                    <div className="h-10 bg-white border-t flex items-center justify-around flex-shrink-0 px-1" style={{ borderColor: "#F3F4F6" }}>
+                      {[
+                        { icon: "🏠", active: true },
+                        { icon: "🏢", active: false },
+                        { icon: "⚡", active: false },
+                        { icon: "🏷", active: false },
+                        { icon: "⚙️", active: false },
+                      ].map((t, i) => (
+                        <div key={i} className="flex flex-col items-center gap-0.5">
+                          <span className="text-[11px]">{t.icon}</span>
+                          {t.active && <div className="w-1 h-1 rounded-full" style={{ backgroundColor: "#0066FF" }} />}
+                        </div>
                       ))}
                     </div>
                   </div>
+
                   {/* Notch */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-5 bg-gray-900 rounded-b-2xl z-10" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-4 bg-gray-900 rounded-b-2xl z-10" />
                 </div>
                 {/* Glow under phone */}
                 <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-32 h-8 bg-violet-500/40 blur-2xl rounded-full" />
