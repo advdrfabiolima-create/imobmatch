@@ -12,24 +12,32 @@ import {
 import { api } from "@/lib/api";
 import { maskPhone } from "@/lib/masks";
 
-// ── Contador real de cadastros ────────────────────────────────────────────────
-function VipCounter() {
+// ── Contador de visitantes únicos (por IP) ────────────────────────────────────
+function VisitCounter() {
   const [count, setCount] = useState<number | null>(null);
   const [displayed, setDisplayed] = useState(0);
 
   useEffect(() => {
-    api.get("/early-access/count").then((res) => {
-      const total = typeof res.data === "number" ? res.data : res.data?.count ?? 0;
+    // Registra a visita e retorna o total de visitantes únicos.
+    // O backend deve verificar o IP e só incrementar se for um IP novo.
+    api.post("/visits/track").then((res) => {
+      const total = typeof res.data === "number" ? res.data : res.data?.uniqueVisitors ?? 0;
       setCount(total);
-    }).catch(() => {});
+    }).catch(() => {
+      // Fallback: tenta apenas buscar o contador sem registrar
+      api.get("/visits/count").then((res) => {
+        const total = typeof res.data === "number" ? res.data : res.data?.uniqueVisitors ?? 0;
+        setCount(total);
+      }).catch(() => {});
+    });
   }, []);
 
-  // animação de contagem
+  // Animação de contagem
   useEffect(() => {
     if (count === null) return;
     let start = 0;
     const duration = 1200;
-    const step = Math.ceil(count / (duration / 16));
+    const step = Math.max(1, Math.ceil(count / (duration / 16)));
     const timer = setInterval(() => {
       start += step;
       if (start >= count) { setDisplayed(count); clearInterval(timer); }
@@ -57,7 +65,7 @@ function VipCounter() {
         ))}
       </span>
       <span className="text-emerald-400 text-xs font-semibold">
-        <span className="font-extrabold text-white">{displayed.toLocaleString("pt-BR")}</span> corretores já garantiram sua vaga
+        <span className="font-extrabold text-white">{displayed.toLocaleString("pt-BR")}</span> pessoas já visitaram esta página
       </span>
       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
     </div>
@@ -172,7 +180,7 @@ function SignupForm() {
 
   return (
     <>
-      <VipCounter />
+      <VisitCounter />
 
       <div className="mb-5">
         <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-1">
