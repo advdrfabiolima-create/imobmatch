@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/header";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
@@ -138,6 +136,19 @@ export default function MeuPlanoPage() {
       <Header title="Meu Plano" />
       <div className="p-4 md:p-6 max-w-6xl">
 
+        {/* Hero */}
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2 tracking-tight">
+            Escolha o plano ideal para você
+          </h2>
+          <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+            Plano atual:{" "}
+            <span className="font-semibold text-blue-400 capitalize">
+              {getPlanById(currentPlan)?.name ?? currentPlan}
+            </span>
+          </p>
+        </div>
+
         {/* Banner usuário fundador */}
         <div className="mb-6 flex items-center gap-3 bg-amber-500/10 border border-amber-500/25 rounded-xl px-4 py-3">
           <Star className="h-5 w-5 text-amber-400 flex-shrink-0" />
@@ -174,72 +185,81 @@ export default function MeuPlanoPage() {
           </div>
         )}
 
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-foreground">Escolha seu plano</h2>
-          <p className="text-muted-foreground text-sm mt-1">
-            Plano atual: <span className="font-semibold text-primary capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</span>
-          </p>
-        </div>
-
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {PLANS.map(plan => {
             const colors    = PLAN_COLORS[plan.id];
             const Icon      = PLAN_ICONS[plan.id] ?? Zap;
             const isCurrent = currentPlan === plan.id;
             const isLoading = loading === plan.id;
+            const isHighlighted = plan.highlighted && !isCurrent;
 
             return (
-              <Card
+              <div
                 key={plan.id}
-                className={`relative overflow-hidden transition-all duration-200 flex flex-col ${
-                  isCurrent ? `ring-2 ${colors.ring}` : plan.highlighted ? "ring-2 ring-indigo-400 shadow-lg" : ""
-                }`}
+                className="relative overflow-hidden rounded-2xl flex flex-col transition-all duration-200"
+                style={
+                  isHighlighted
+                    ? { background: "linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%)", border: "1px solid rgba(99,102,241,0.5)", boxShadow: "0 0 32px rgba(99,102,241,0.25)" }
+                    : isCurrent
+                    ? { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(99,102,241,0.5)" }
+                    : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }
+                }
               >
                 {plan.badge && !isCurrent && (
                   <div className="absolute top-0 right-0">
-                    <div className="bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-bl-xl">
+                    <div className="text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl"
+                      style={{ background: "linear-gradient(135deg,#4f46e5,#7c3aed)" }}>
                       {plan.badge}
                     </div>
                   </div>
                 )}
                 {isCurrent && (
                   <div className="absolute top-0 left-0">
-                    <div className="bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-br-xl">
+                    <div className="bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-br-xl">
                       {COPY.currentPlan}
                     </div>
                   </div>
                 )}
 
-                <CardContent className="p-5 flex flex-col flex-1">
+                <div className="p-5 flex flex-col flex-1">
                   <div className="flex-1">
+                    {/* Icon + name */}
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors.iconBg}`}>
                       <Icon className={`h-5 w-5 ${colors.text}`} />
                     </div>
 
-                    <h3 className="font-bold text-foreground mb-1">{plan.name}</h3>
+                    <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${colors.text}`}>
+                      {plan.name}
+                    </p>
 
+                    {/* Price */}
                     <div className="mb-3">
                       {plan.price === null ? (
-                        <p className="text-2xl font-extrabold text-foreground">Grátis</p>
+                        <p className="text-3xl font-extrabold text-white">Grátis</p>
                       ) : (
                         <>
-                          <p className="text-2xl font-extrabold text-foreground">
+                          <p className="text-3xl font-extrabold text-white">
                             {formatPlanPrice(plan)}
-                            <span className="text-sm font-normal text-muted-foreground">/mês</span>
+                            <span className="text-sm font-normal" style={{ color: "rgba(255,255,255,0.45)" }}>/mês</span>
                           </p>
                           {plan.priceAnnual && (
-                            <p className="text-xs text-muted-foreground">ou R$ {plan.priceAnnual}/ano</p>
+                            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>ou R$ {plan.priceAnnual}/ano</p>
                           )}
                         </>
                       )}
                     </div>
 
-                    <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{plan.description}</p>
+                    <p className="text-xs mb-4 leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{plan.description}</p>
                   </div>
 
-                  <Button
-                    className={`w-full text-white text-xs mb-4 gap-1.5 ${colors.btn}`}
-                    size="sm"
+                  {/* CTA */}
+                  <button
+                    className="w-full py-2 px-4 rounded-xl text-xs font-semibold mb-4 flex items-center justify-center gap-1.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={
+                      isCurrent
+                        ? { background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }
+                        : { background: "linear-gradient(135deg,#2563eb,#7c3aed)", color: "#fff", boxShadow: "0 4px 14px rgba(37,99,235,0.35)" }
+                    }
                     disabled={isCurrent || isLoading}
                     onClick={() => handleSelectPlan(plan.id)}
                   >
@@ -254,32 +274,33 @@ export default function MeuPlanoPage() {
                     ) : (
                       <>Assinar agora <ArrowRight className="h-3.5 w-3.5" /></>
                     )}
-                  </Button>
+                  </button>
 
                   <ul className="space-y-1.5">
                     {plan.features.slice(0, 5).map(feature => (
-                      <li key={feature.text} className={`flex items-start gap-1.5 text-xs ${feature.included ? "text-foreground/80" : "text-muted-foreground/50"}`}>
+                      <li key={feature.text} className={`flex items-start gap-1.5 text-xs ${feature.included ? "" : "opacity-35"}`}
+                        style={{ color: feature.included ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.4)" }}>
                         {feature.included
-                          ? <Check className={`h-3.5 w-3.5 flex-shrink-0 mt-0.5 ${colors.text}`} />
-                          : <X className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-muted-foreground/40" />
+                          ? <Check className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-emerald-400" />
+                          : <X className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" style={{ color: "rgba(255,255,255,0.25)" }} />
                         }
                         {feature.text}
                       </li>
                     ))}
                   </ul>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             );
           })}
         </div>
 
-        <p className="text-xs text-muted-foreground/60 mt-6 text-center">
+        <p className="text-xs mt-6 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>
           Pagamentos processados com segurança via Asaas · Cancele quando quiser
         </p>
 
         {/* Botão cancelar assinatura — só aparece para quem tem plano pago */}
         {hasActivePaidPlan && (
-          <div className="mt-8 pt-6 border-t border-border flex justify-center">
+          <div className="mt-8 pt-6 flex justify-center" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
             <button
               onClick={() => setShowCancelModal(true)}
               className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 hover:underline transition-colors"
@@ -334,25 +355,26 @@ export default function MeuPlanoPage() {
               </div>
 
               <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
+                <button
+                  className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all"
+                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.75)" }}
                   onClick={() => setShowCancelModal(false)}
                   disabled={cancelling}
                 >
                   Manter plano
-                </Button>
-                <Button
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                </button>
+                <button
+                  className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-60"
+                  style={{ background: "linear-gradient(135deg,#dc2626,#991b1b)" }}
                   onClick={handleCancelSubscription}
                   disabled={cancelling}
                 >
                   {cancelling ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
                   ) : (
                     "Confirmar cancelamento"
                   )}
-                </Button>
+                </button>
               </div>
             </div>
           </div>
