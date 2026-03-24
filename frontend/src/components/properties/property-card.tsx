@@ -41,10 +41,10 @@ const STATUS_OPTIONS: Record<string, { value: string; label: string; color: stri
 };
 
 const STATUS_BADGE_STYLES: Record<string, string> = {
-  AVAILABLE: "bg-emerald-500/15 text-emerald-300",
-  SOLD:      "bg-purple-500/15 text-purple-300",
-  RENTED:    "bg-blue-500/15 text-blue-300",
-  INACTIVE:  "bg-white/5 text-muted-foreground",
+  AVAILABLE: "bg-emerald-600/90 text-white shadow-lg shadow-black/40",
+  SOLD:      "bg-purple-600/90 text-white shadow-lg shadow-black/40",
+  RENTED:    "bg-blue-600/90 text-white shadow-lg shadow-black/40",
+  INACTIVE:  "bg-black/60 text-white/70 shadow-lg shadow-black/40",
 };
 
 export function PropertyCard({ property, showActions, matchCount = 0, onEdit, onDelete, onStatusChange, onGenerateOpportunity }: PropertyCardProps) {
@@ -76,18 +76,18 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
-          <Badge className="bg-card/90 text-foreground border-0 shadow-sm text-xs">
+          <Badge className="bg-black/70 text-white border-0 shadow-lg shadow-black/40 text-xs backdrop-blur-sm">
             {PROPERTY_TYPE_LABELS[property.type]}
           </Badge>
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm ${STATUS_BADGE_STYLES[property.status] ?? "bg-white/5 text-muted-foreground"}`}>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold backdrop-blur-sm ${STATUS_BADGE_STYLES[property.status] ?? "bg-black/60 text-white/70 shadow-lg shadow-black/40"}`}>
             {PROPERTY_STATUS_LABELS[property.status]}
           </span>
           {property.listingType === "RENT" ? (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-orange-500/15 text-orange-300">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold backdrop-blur-sm bg-orange-600/90 text-white shadow-lg shadow-black/40">
               Aluguel
             </span>
           ) : (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-blue-500/15 text-blue-300">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold backdrop-blur-sm bg-blue-600/90 text-white shadow-lg shadow-black/40">
               Venda
             </span>
           )}
