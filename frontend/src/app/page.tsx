@@ -1299,6 +1299,28 @@ export default function HomePage() {
 
                 {/* Phone — avança sobre o braço esquerdo do corretor */}
                 <div className="-ml-16 z-10 relative mb-0">
+
+                {/* Balão "Deu Match!" saindo do topo do celular */}
+                <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                  <div
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-2xl shadow-xl whitespace-nowrap"
+                    style={{
+                      background: "linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)",
+                      boxShadow: "0 8px 28px rgba(124,58,237,0.45), 0 2px 8px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    <span className="text-base leading-none">⚡</span>
+                    <span className="text-sm font-extrabold text-white tracking-tight">Deu Match!</span>
+                  </div>
+                  {/* Rabo do balão apontando para baixo */}
+                  <div
+                    className="w-3 h-3 -mt-1"
+                    style={{
+                      background: "#2563eb",
+                      clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+                    }}
+                  />
+                </div>
                 <div className="relative w-64 h-[520px] rounded-[40px] border-[5px] border-white/20 bg-gradient-to-b from-gray-900 to-gray-800 shadow-2xl shadow-black/50 overflow-hidden">
                   {/* Screen */}
                   <div className="absolute inset-0 bg-[#EEF2FF] flex flex-col overflow-hidden">
