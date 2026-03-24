@@ -361,3 +361,15 @@ model Message {
 
   @@map("messages")
 }
+
+// ==================== VISITAS ====================
+
+model PageVisit {
+  id        String   @id @default(cuid())
+  ip        String
+  page      String   @default("lista-vip")
+  createdAt DateTime @default(now())
+
+  @@unique([ip, page])
+  @@map("page_visits")
+}

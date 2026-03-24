@@ -21,6 +21,7 @@ import { RankingModule } from './ranking/ranking.module';
 import { BillingModule } from './billing/billing.module';
 import { EarlyAccessModule } from './early-access/early-access.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { VisitsModule } from './visits/visits.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     BillingModule,
     EarlyAccessModule,
     FeedbackModule,
+    VisitsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
