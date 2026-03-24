@@ -191,7 +191,8 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showDropdown ? "rotate-180" : ""}`} />
                 </button>
                 {showDropdown && (
-                  <div className="absolute bottom-full left-0 right-0 mb-1 bg-popover border border-border rounded-xl shadow-lg z-20 overflow-hidden">
+                  <div className="absolute bottom-full left-0 right-0 mb-1 rounded-xl shadow-2xl z-20 overflow-hidden border"
+                    style={{ background: "rgba(8,14,31,0.97)", borderColor: "rgba(255,255,255,0.12)" }}>
                     {STATUS_OPTIONS.AVAILABLE.map((opt) => (
                       <button
                         key={opt.value}
@@ -199,7 +200,7 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
                           onStatusChange(opt.value);
                           setShowDropdown(false);
                         }}
-                        className={`w-full text-left px-4 py-2.5 text-sm hover:bg-accent transition ${opt.color}`}
+                        className={`w-full text-left px-4 py-2.5 text-sm transition hover:bg-white/[0.07] ${opt.color}`}
                       >
                         {opt.label}
                       </button>

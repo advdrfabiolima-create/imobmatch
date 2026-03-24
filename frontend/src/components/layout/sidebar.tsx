@@ -163,20 +163,10 @@ export function Sidebar() {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-0.5">
-
-          {/* Principal */}
-          <p className="px-3 pt-1 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
-            Principal
-          </p>
           <NavLink href="/dashboard"     label="Dashboard"        icon={LayoutDashboard} />
           <NavLink href="/meus-imoveis"  label="Imóveis"          icon={Home} />
           <NavLink href="/compradores"   label="Compradores"      icon={Users} />
           <NavLink href="/matches"       label="Matches"          icon={Zap} />
-
-          {/* Rede */}
-          <p className="px-3 pt-3 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
-            Rede
-          </p>
           <NavLink
             href="/parcerias"
             label="Parcerias"
@@ -188,11 +178,6 @@ export function Sidebar() {
           <NavLink href="/oportunidades" label="Oportunidades"    icon={Flame}      activeColor="amber" />
           <NavLink href="/feed"          label="Feed da Rede"     icon={Rss} />
           <NavLink href="/ranking"       label="Ranking"          icon={Trophy} />
-
-          {/* Ferramentas */}
-          <p className="px-3 pt-3 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
-            Ferramentas
-          </p>
           <NavLink href="/analytics"               label="Analytics"   icon={BarChart2} />
           <NavLink href="/simulador-financiamento" label="Simulador"   icon={Calculator} bonus />
           <NavLink href="/perfil"                  label="Perfil"      icon={Settings} />
@@ -203,12 +188,7 @@ export function Sidebar() {
           )}
 
           {user?.role === "ADMIN" && (
-            <>
-              <p className="px-3 pt-3 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
-                Sistema
-              </p>
-              <NavLink href="/admin" label="Administração" icon={Shield} activeColor="purple" />
-            </>
+            <NavLink href="/admin" label="Administração" icon={Shield} activeColor="purple" />
           )}
         </nav>
 

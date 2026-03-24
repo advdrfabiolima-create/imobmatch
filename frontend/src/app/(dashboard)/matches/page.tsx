@@ -75,15 +75,16 @@ function StatusBadge({
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 bottom-full mb-1 bg-popover border border-border rounded-xl shadow-2xl z-20 overflow-hidden min-w-[170px]">
-            <p className="px-3 pt-2.5 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="absolute right-0 bottom-full mb-1 rounded-xl shadow-2xl z-20 overflow-hidden min-w-[170px] border"
+            style={{ background: "rgba(8,14,31,0.97)", borderColor: "rgba(255,255,255,0.12)" }}>
+            <p className="px-3 pt-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.35)" }}>
               Atualizar progresso
             </p>
             {STATUSES.map((s) => (
               <button
                 key={s.value}
                 onClick={() => { onUpdate(matchId, s.value); setOpen(false); }}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition ${status === s.value ? "font-semibold text-foreground" : "text-foreground/70"}`}
+                className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition hover:bg-white/[0.07] ${status === s.value ? "font-semibold text-white" : "text-white/60"}`}
               >
                 <span className={`w-2 h-2 rounded-full flex-shrink-0 ${s.dot}`} />
                 {s.label}

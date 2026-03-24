@@ -234,7 +234,7 @@ export default function SimuladorPage() {
                 <select
                   value={prazo}
                   onChange={(e) => setPrazo(e.target.value)}
-                  className="h-10 w-full rounded-md border px-3 text-sm"
+                  className="h-10 w-full rounded-md border px-3 text-sm bg-background text-foreground"
                 >
                   {[60,120,180,240,300,360,420].map(m => (
                     <option key={m} value={m}>{m} meses ({m/12} anos)</option>

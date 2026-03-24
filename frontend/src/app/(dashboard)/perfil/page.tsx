@@ -305,7 +305,7 @@ export default function PerfilPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">Estado</label>
-                  <select {...register("state")} className="h-10 w-full rounded-md border px-3 text-sm">
+                  <select {...register("state")} className="h-10 w-full rounded-md border px-3 text-sm bg-background text-foreground">
                     <option value="">Selecione</option>
                     {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
