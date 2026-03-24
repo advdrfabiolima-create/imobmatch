@@ -357,6 +357,16 @@ export default function HeroSection() {
           <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 760, height: 1, left: "38%", top: "48%", borderRadius: 999, opacity: 0.18, filter: "blur(1px)", transformOrigin: "left center", transform: "rotate(8deg)", background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.10) 10%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.10) 90%, transparent 100%)", boxShadow: "0 0 8px rgba(255,255,255,0.15), 0 0 16px rgba(168,85,247,0.12)", zIndex: -1 }} />
           <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 620, height: 1, left: "46%", top: "64%", borderRadius: 999, opacity: 0.18, filter: "blur(1px)", transformOrigin: "left center", transform: "rotate(-6deg)", background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.10) 10%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.10) 90%, transparent 100%)", boxShadow: "0 0 8px rgba(255,255,255,0.15), 0 0 16px rgba(168,85,247,0.12)", zIndex: -1 }} />
 
+          {/* ── Luz nas mãos (handshake) ─────────────────────────────────── */}
+          {/* Halo externo largo — warm white difuso */}
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 340, height: 260, left: "44%", top: "50%", borderRadius: "50%", filter: "blur(38px)", mixBlendMode: "screen", background: "radial-gradient(ellipse, rgba(255,245,220,0.55) 0%, rgba(255,200,120,0.22) 45%, transparent 75%)", zIndex: 1 }} />
+          {/* Halo médio — mais quente, concentrado */}
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 200, height: 160, left: "49%", top: "53%", borderRadius: "50%", filter: "blur(22px)", mixBlendMode: "screen", background: "radial-gradient(ellipse, rgba(255,255,255,0.75) 0%, rgba(255,220,140,0.45) 40%, transparent 70%)", zIndex: 1 }} />
+          {/* Núcleo brilhante — ponto focal */}
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 90, height: 70, left: "53%", top: "56%", borderRadius: "50%", filter: "blur(10px)", mixBlendMode: "screen", background: "radial-gradient(ellipse, rgba(255,255,255,0.95) 0%, rgba(255,235,180,0.70) 50%, transparent 100%)", zIndex: 1 }} />
+          {/* Reflexo azul-violeta no contorno — dá a sensação de luz de estúdio */}
+          <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 260, height: 200, left: "46%", top: "52%", borderRadius: "50%", filter: "blur(30px)", mixBlendMode: "screen", background: "radial-gradient(ellipse, rgba(140,160,255,0.20) 0%, transparent 70%)", zIndex: 1 }} />
+
           {/* Sparks */}
           <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 8, height: 8, left: "69%", top: "45%", borderRadius: "50%", background: "white", boxShadow: "0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(168,85,247,0.45), 0 0 30px rgba(59,130,246,0.35)", zIndex: -1 }} />
           <div aria-hidden="true" className="pointer-events-none absolute" style={{ width: 5, height: 5, left: "61%", top: "28%", borderRadius: "50%", background: "white", opacity: 0.7, boxShadow: "0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(168,85,247,0.45), 0 0 30px rgba(59,130,246,0.35)", zIndex: -1 }} />
