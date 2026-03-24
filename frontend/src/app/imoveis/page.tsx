@@ -16,38 +16,100 @@ async function getProperties(params: URLSearchParams) {
 
 export default async function ImoveisPublicPage({ searchParams }: { searchParams: any }) {
   const params = new URLSearchParams();
-  if (searchParams.city) params.set("city", searchParams.city);
-  if (searchParams.type) params.set("type", searchParams.type);
+  if (searchParams.city)     params.set("city",     searchParams.city);
+  if (searchParams.type)     params.set("type",     searchParams.type);
   if (searchParams.minPrice) params.set("minPrice", searchParams.minPrice);
   if (searchParams.maxPrice) params.set("maxPrice", searchParams.maxPrice);
   if (searchParams.bedrooms) params.set("bedrooms", searchParams.bedrooms);
-  if (searchParams.search) params.set("search", searchParams.search);
+  if (searchParams.search)   params.set("search",   searchParams.search);
 
   const { data: properties, total } = await getProperties(params);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b">
+    <div
+      className="min-h-screen"
+      style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 50%, #080e1f 100%)" }}
+    >
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none fixed top-0 right-0 w-[500px] h-[500px] rounded-full"
+        style={{ background: "rgba(124,58,237,0.06)", filter: "blur(140px)", zIndex: 0 }}
+      />
+
+      {/* Header */}
+      <header
+        className="sticky top-0 z-40 backdrop-blur-xl border-b"
+        style={{
+          background: "rgba(6,12,26,0.85)",
+          borderColor: "rgba(255,255,255,0.06)",
+        }}
+      >
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-5 w-auto object-contain" />
+          <Link href="/" className="flex items-center transition-opacity hover:opacity-70">
+            <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto object-contain" />
           </Link>
-          <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+          <Link
+            href="/login"
+            className="text-sm font-semibold text-white px-4 py-2 rounded-xl transition-opacity hover:opacity-90"
+            style={{
+              background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+              boxShadow: "0 2px 10px rgba(37,99,235,0.25)",
+            }}
+          >
             Entrar / Cadastrar
           </Link>
         </div>
       </header>
 
-      <div className="bg-blue-600 py-10">
-        <div className="container mx-auto px-6">
-          <h1 className="text-3xl font-bold text-white mb-6">Encontre seu imóvel ideal</h1>
+      {/* Hero / Search bar */}
+      <div
+        className="relative py-10 border-b"
+        style={{
+          background: "linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(124,58,237,0.12) 100%)",
+          borderColor: "rgba(255,255,255,0.06)",
+        }}
+      >
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: "radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.12) 0%, transparent 70%)",
+          }}
+        />
+        <div className="relative z-10 container mx-auto px-6">
+          <h1 className="text-3xl font-bold text-white mb-6 tracking-tight">
+            Encontre seu imóvel ideal
+          </h1>
           <form method="GET" className="flex flex-wrap gap-3">
-            <input name="search" placeholder="Buscar por título ou bairro..." defaultValue={searchParams.search || ""}
-              className="flex-1 min-w-48 h-11 px-4 rounded-xl text-sm border-0 outline-none" />
-            <input name="city" placeholder="Cidade" defaultValue={searchParams.city || ""}
-              className="w-40 h-11 px-4 rounded-xl text-sm border-0 outline-none" />
-            <select name="type" defaultValue={searchParams.type || ""}
-              className="h-11 px-3 rounded-xl text-sm border-0 outline-none">
+            <input
+              name="search"
+              placeholder="Buscar por título ou bairro..."
+              defaultValue={searchParams.search || ""}
+              className="flex-1 min-w-48 h-11 px-4 rounded-xl text-sm text-white placeholder-white/30 border transition-colors focus:outline-none"
+              style={{
+                background: "rgba(255,255,255,0.07)",
+                borderColor: "rgba(255,255,255,0.12)",
+              }}
+            />
+            <input
+              name="city"
+              placeholder="Cidade"
+              defaultValue={searchParams.city || ""}
+              className="w-40 h-11 px-4 rounded-xl text-sm text-white placeholder-white/30 border transition-colors focus:outline-none"
+              style={{
+                background: "rgba(255,255,255,0.07)",
+                borderColor: "rgba(255,255,255,0.12)",
+              }}
+            />
+            <select
+              name="type"
+              defaultValue={searchParams.type || ""}
+              className="h-11 px-3 rounded-xl text-sm border focus:outline-none"
+              style={{
+                background: "rgba(15,20,40,0.95)",
+                borderColor: "rgba(255,255,255,0.12)",
+                color: "rgba(255,255,255,0.70)",
+              }}
+            >
               <option value="">Tipo</option>
               <option value="APARTMENT">Apartamento</option>
               <option value="HOUSE">Casa</option>
@@ -55,21 +117,45 @@ export default async function ImoveisPublicPage({ searchParams }: { searchParams
               <option value="LAND">Terreno</option>
               <option value="COMMERCIAL">Comercial</option>
             </select>
-            <input name="maxPrice" type="number" placeholder="Preço máximo" defaultValue={searchParams.maxPrice || ""}
-              className="w-40 h-11 px-4 rounded-xl text-sm border-0 outline-none" />
-            <button type="submit" className="h-11 px-6 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 flex items-center gap-2">
+            <input
+              name="maxPrice"
+              type="number"
+              placeholder="Preço máximo"
+              defaultValue={searchParams.maxPrice || ""}
+              className="w-40 h-11 px-4 rounded-xl text-sm text-white placeholder-white/30 border focus:outline-none"
+              style={{
+                background: "rgba(255,255,255,0.07)",
+                borderColor: "rgba(255,255,255,0.12)",
+              }}
+            />
+            <button
+              type="submit"
+              className="h-11 px-6 rounded-xl font-semibold text-sm text-white flex items-center gap-2 transition-opacity hover:opacity-90"
+              style={{
+                background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+                boxShadow: "0 2px 12px rgba(37,99,235,0.25)",
+              }}
+            >
               <Search className="h-4 w-4" /> Buscar
             </button>
           </form>
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-8">
-        <p className="text-gray-500 mb-6">{total} imóvel(is) encontrado(s)</p>
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-6 py-8">
+        <p className="text-white/35 text-sm mb-6">{total} imóvel(is) encontrado(s)</p>
+
         {properties?.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <Building2 className="h-12 w-12 mx-auto mb-4" />
-            <p className="text-lg">Nenhum imóvel encontrado</p>
+          <div className="text-center py-20">
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ background: "rgba(37,99,235,0.12)" }}
+            >
+              <Building2 className="h-8 w-8 text-blue-400" />
+            </div>
+            <p className="text-lg text-white/50 font-medium">Nenhum imóvel encontrado</p>
+            <p className="text-sm text-white/25 mt-2">Tente ajustar os filtros de busca.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

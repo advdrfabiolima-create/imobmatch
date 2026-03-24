@@ -69,10 +69,10 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white">
-          <h2 className="text-xl font-semibold">{isEditing ? "Editar Comprador" : "Novo Comprador"}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg"><X className="h-5 w-5" /></button>
+      <div className="bg-card border border-border rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card z-10">
+          <h2 className="text-xl font-semibold text-foreground">{isEditing ? "Editar Comprador" : "Novo Comprador"}</h2>
+          <button onClick={onClose} className="p-2 hover:bg-accent rounded-lg"><X className="h-5 w-5" /></button>
         </div>
 
         <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="p-6 space-y-4">
@@ -105,7 +105,7 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
                   setValue("desiredState", e.target.value, { shouldDirty: true });
                   setValue("desiredCity", "");
                 }}
-                className="h-10 w-full rounded-md border px-3 text-sm"
+                className="h-10 w-full rounded-md border border-border bg-muted/60 text-foreground px-3 text-sm"
               >
                 <option value="">Selecione</option>
                 {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -142,7 +142,7 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">Tipo de Imóvel *</label>
-              <select {...register("propertyType")} className="h-10 w-full rounded-md border px-3 text-sm">
+              <select {...register("propertyType")} className="h-10 w-full rounded-md border border-border bg-muted/60 text-foreground px-3 text-sm">
                 <option value="APARTMENT">Apartamento</option>
                 <option value="HOUSE">Casa</option>
                 <option value="CONDO_HOUSE">Casa em Condomínio</option>
@@ -169,7 +169,7 @@ export function BuyerFormModal({ buyer, onClose, onSuccess }: Props) {
 
           <div className="flex gap-3 pt-2">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">Cancelar</Button>
-            <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={mutation.isPending}>
+            <Button type="submit" className="flex-1" disabled={mutation.isPending}>
               {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               {isEditing ? "Salvar" : "Cadastrar"}
             </Button>

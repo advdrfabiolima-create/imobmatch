@@ -97,72 +97,72 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
 
         {/* ── Header — mesma estrutura do NewOpportunityModal ── */}
-        <div className="flex items-center justify-between p-5 border-b">
-          <h2 className="text-base font-semibold flex items-center gap-2">
-            <Zap className="h-5 w-5 text-orange-500" />
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 className="text-base font-semibold flex items-center gap-2 text-foreground">
+            <Zap className="h-5 w-5 text-orange-400" />
             Gerar Oportunidade Urgente
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-accent rounded-lg transition-colors"
           >
-            <X className="h-5 w-5 text-gray-500" />
+            <X className="h-5 w-5 text-muted-foreground" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
 
           {/* ── Banner de contexto ── */}
-          <div className="flex items-start gap-2.5 bg-orange-50 border border-orange-200 rounded-xl px-4 py-3">
-            <Info className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2.5 bg-orange-500/10 border border-orange-500/30 rounded-xl px-4 py-3">
+            <Info className="h-4 w-4 text-orange-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-orange-800">
+              <p className="text-sm font-semibold text-orange-300">
                 Criando oportunidade a partir de um imóvel já cadastrado
               </p>
-              <p className="text-xs text-orange-700 mt-0.5">
+              <p className="text-xs text-orange-400/80 mt-0.5">
                 Os dados do imóvel foram pré-preenchidos. Defina o preço urgente para publicar no radar.
               </p>
             </div>
           </div>
 
           {/* ── Imóvel de origem (somente leitura) ── */}
-          <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <Building2 className="h-4.5 w-4.5 text-blue-600" style={{ height: "18px", width: "18px" }} />
+          <div className="bg-muted/50 rounded-xl p-3 border border-border flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <Building2 className="h-4.5 w-4.5 text-primary" style={{ height: "18px", width: "18px" }} />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-800 truncate">{property.title}</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm font-semibold text-foreground truncate">{property.title}</p>
+              <p className="text-xs text-muted-foreground">
                 {PROPERTY_TYPE_LABELS[property.type]} · {property.city}/{property.state}
               </p>
             </div>
-            <span className="text-sm font-bold text-blue-600 flex-shrink-0 ml-auto">
+            <span className="text-sm font-bold text-primary flex-shrink-0 ml-auto">
               {formatCurrency(property.price)}
             </span>
           </div>
 
           {/* ── Título (editável, pré-preenchido) ── */}
           <div>
-            <label className="text-sm font-medium text-gray-700">Título</label>
+            <label className="text-sm font-medium text-foreground/80">Título</label>
             <input
               required
               value={form.title}
               onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="mt-1 w-full border border-border bg-muted/60 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
               placeholder="Ex: Apartamento urgente - dono viajando"
             />
           </div>
 
           {/* ── Tipo (editável, pré-preenchido) ── */}
           <div>
-            <label className="text-sm font-medium text-gray-700">Tipo do Imóvel</label>
+            <label className="text-sm font-medium text-foreground/80">Tipo do Imóvel</label>
             <select
               value={form.propertyType}
               onChange={e => setForm(f => ({ ...f, propertyType: e.target.value }))}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="mt-1 w-full border border-border bg-muted/60 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {Object.entries(PROPERTY_TYPE_LABELS).map(([v, l]) => (
                 <option key={v} value={v}>{l}</option>
@@ -173,20 +173,20 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
           {/* ── Preços ── */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-gray-700">Preço Normal (R$)</label>
+              <label className="text-sm font-medium text-foreground/80">Preço Normal (R$)</label>
               <input
                 readOnly
                 value={property.price}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+                className="mt-1 w-full border border-border rounded-lg px-3 py-2 text-sm bg-muted/30 text-muted-foreground cursor-not-allowed"
                 tabIndex={-1}
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-foreground/80">
                 Preço Urgente (R$){" "}
-                <span className="text-orange-500">*</span>
+                <span className="text-orange-400">*</span>
                 {discount !== null && discount > 0 && (
-                  <span className="ml-1 text-xs font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded-md">
+                  <span className="ml-1 text-xs font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded-md">
                     −{discount}%
                   </span>
                 )}
@@ -197,7 +197,7 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
                 autoFocus
                 value={form.priceUrgent}
                 onChange={e => setForm(f => ({ ...f, priceUrgent: e.target.value }))}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="mt-1 w-full border border-border bg-muted/60 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
                 placeholder="Ex: 420000"
               />
             </div>
@@ -206,20 +206,20 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
           {/* ── Localização (somente leitura) ── */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-gray-700">Estado</label>
+              <label className="text-sm font-medium text-foreground/80">Estado</label>
               <input
                 readOnly
                 value={property.state}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+                className="mt-1 w-full border border-border rounded-lg px-3 py-2 text-sm bg-muted/30 text-muted-foreground cursor-not-allowed"
                 tabIndex={-1}
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Cidade</label>
+              <label className="text-sm font-medium text-foreground/80">Cidade</label>
               <input
                 readOnly
                 value={property.city}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+                className="mt-1 w-full border border-border rounded-lg px-3 py-2 text-sm bg-muted/30 text-muted-foreground cursor-not-allowed"
                 tabIndex={-1}
               />
             </div>
@@ -227,22 +227,22 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
 
           {/* ── Bairro (editável) ── */}
           <div>
-            <label className="text-sm font-medium text-gray-700">Bairro</label>
+            <label className="text-sm font-medium text-foreground/80">Bairro</label>
             <input
               value={form.neighborhood}
               onChange={e => setForm(f => ({ ...f, neighborhood: e.target.value }))}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="mt-1 w-full border border-border bg-muted/60 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
             />
           </div>
 
           {/* ── Descrição (editável, pré-preenchida) ── */}
           <div>
-            <label className="text-sm font-medium text-gray-700">Motivo da urgência / Observação</label>
+            <label className="text-sm font-medium text-foreground/80">Motivo da urgência / Observação</label>
             <textarea
               value={form.description}
               onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               rows={3}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+              className="mt-1 w-full border border-border bg-muted/60 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none placeholder:text-muted-foreground"
               placeholder="Descreva o motivo da urgência e detalhes relevantes..."
             />
           </div>
@@ -255,7 +255,7 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
               onChange={e => setForm(f => ({ ...f, acceptsOffer: e.target.checked }))}
               className="rounded"
             />
-            <span className="text-gray-700">Aceita proposta / contraproposta</span>
+            <span className="text-foreground/80">Aceita proposta / contraproposta</span>
           </label>
 
           {/* ── Submit ── */}
@@ -267,7 +267,7 @@ export function GenerateOpportunityModal({ property, onClose }: GenerateOpportun
             {mutation.isPending ? "Publicando..." : "🔥 Publicar no Radar de Oportunidades"}
           </Button>
 
-          <p className="text-center text-xs text-gray-400">
+          <p className="text-center text-xs text-muted-foreground">
             A oportunidade será publicada imediatamente no radar da rede
           </p>
         </form>

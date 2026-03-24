@@ -23,7 +23,7 @@ export const CitySelect = forwardRef<HTMLSelectElement, CitySelectProps>(
         disabled={!stateValue || isLoading || props.disabled}
         className={
           className ??
-          "h-10 w-full rounded-md border px-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          "h-10 w-full rounded-md border border-border bg-muted/60 text-foreground px-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         }
         {...props}
       >

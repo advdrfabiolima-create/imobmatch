@@ -179,20 +179,20 @@ export function NotificationBell() {
   };
 
   const ICON_COLORS: Record<Notif["type"], string> = {
-    partnership_pending:  "text-blue-600 bg-blue-50",
-    partnership_accepted: "text-emerald-600 bg-emerald-50",
-    match:                "text-yellow-600 bg-yellow-50",
-    opportunity:          "text-orange-600 bg-orange-50",
+    partnership_pending:  "text-blue-300 bg-blue-500/15",
+    partnership_accepted: "text-emerald-300 bg-emerald-500/15",
+    match:                "text-amber-300 bg-amber-500/15",
+    opportunity:          "text-orange-300 bg-orange-500/15",
   };
 
   return (
     <div ref={ref} className="relative">
       <button
         onClick={handleOpen}
-        className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        className="relative p-2 rounded-lg hover:bg-accent transition-colors"
         aria-label="Notificações"
       >
-        <Bell className={`h-5 w-5 ${badgeCount > 0 ? "text-blue-600" : "text-gray-600"}`} />
+        <Bell className={`h-5 w-5 ${badgeCount > 0 ? "text-primary" : "text-muted-foreground"}`} />
         {badgeCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
             {badgeCount > 9 ? "9+" : badgeCount}
@@ -201,26 +201,26 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-12 w-80 max-w-[calc(100vw-1rem)] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+        <div className="absolute right-0 top-12 w-80 max-w-[calc(100vw-1rem)] bg-card rounded-2xl shadow-2xl border border-border z-50 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-sm text-gray-900">Notificações</h3>
+              <h3 className="font-semibold text-sm text-foreground">Notificações</h3>
               {badgeCount > 0 && (
-                <span className="text-[10px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold bg-red-500/15 text-red-400 px-1.5 py-0.5 rounded-full">
                   {badgeCount} nova{badgeCount !== 1 ? "s" : ""}
                 </span>
               )}
             </div>
-            <button onClick={() => setOpen(false)} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-              <X className="h-4 w-4 text-gray-400" />
+            <button onClick={() => setOpen(false)} className="p-1 hover:bg-accent rounded-lg transition-colors">
+              <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
 
           {/* List */}
           <div className="max-h-[360px] overflow-y-auto">
             {notifs.length === 0 ? (
-              <div className="py-10 text-center text-gray-400 text-sm">
+              <div className="py-10 text-center text-muted-foreground text-sm">
                 <Bell className="h-8 w-8 mx-auto mb-2 opacity-30" />
                 <p>Nenhuma notificação</p>
               </div>
@@ -234,23 +234,23 @@ export function NotificationBell() {
                     key={n.id}
                     href={n.href}
                     onClick={() => setOpen(false)}
-                    className={`flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0 ${n.urgent ? "bg-blue-50/50" : ""}`}
+                    className={`flex items-start gap-3 px-4 py-3 hover:bg-accent transition-colors border-b border-border/50 last:border-0 ${n.urgent ? "bg-primary/5" : ""}`}
                   >
                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 ${iconCls}`}>
                       <Icon className="h-4 w-4" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-1">
-                        <p className={`text-xs font-semibold text-gray-900 leading-snug ${n.urgent ? "text-blue-700" : ""}`}>
+                        <p className={`text-xs font-semibold leading-snug ${n.urgent ? "text-primary" : "text-foreground"}`}>
                           {n.title}
-                          {n.urgent && <span className="ml-1 text-[9px] bg-blue-600 text-white px-1 py-0.5 rounded uppercase">Ação</span>}
+                          {n.urgent && <span className="ml-1 text-[9px] bg-primary text-white px-1 py-0.5 rounded uppercase">Ação</span>}
                         </p>
-                        <span className="text-[10px] text-gray-400 flex-shrink-0">{timeAgo(n.time)}</span>
+                        <span className="text-[10px] text-muted-foreground flex-shrink-0">{timeAgo(n.time)}</span>
                       </div>
-                      <p className="text-[11px] text-gray-500 mt-0.5 line-clamp-2">{n.desc}</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{n.desc}</p>
                     </div>
                     {isNew && (
-                      <span className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                      <span className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />
                     )}
                   </Link>
                 );
@@ -260,9 +260,9 @@ export function NotificationBell() {
 
           {/* Footer */}
           {notifs.length > 0 && (
-            <div className="px-4 py-2.5 border-t bg-gray-50/80">
+            <div className="px-4 py-2.5 border-t border-border bg-muted/30">
               <Link href="/parcerias" onClick={() => setOpen(false)}
-                className="flex items-center justify-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 font-medium"
+                className="flex items-center justify-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium"
               >
                 Ver todas as parcerias pendentes
                 <ExternalLink className="h-3 w-3" />

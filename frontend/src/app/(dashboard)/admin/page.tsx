@@ -16,11 +16,11 @@ import { formatDate } from "@/lib/utils";
 
 // ── Badge de plano ────────────────────────────────────────────────────────────
 const PLAN_STYLES: Record<string, string> = {
-  free:     "bg-gray-100 text-gray-600 border-gray-200",
-  starter:  "bg-blue-100 text-blue-700 border-blue-200",
-  pro:      "bg-violet-100 text-violet-700 border-violet-200",
-  premium:  "bg-amber-100 text-amber-700 border-amber-200",
-  agency:   "bg-emerald-100 text-emerald-700 border-emerald-200",
+  free:     "bg-white/10 text-slate-300 border-white/20",
+  starter:  "bg-blue-500/15 text-blue-300 border-blue-500/30",
+  pro:      "bg-violet-500/15 text-violet-300 border-violet-500/30",
+  premium:  "bg-amber-500/15 text-amber-300 border-amber-500/30",
+  agency:   "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
 };
 
 function PlanBadge({ plan }: { plan: string }) {
@@ -38,9 +38,9 @@ import { useRouter } from "next/navigation";
 
 // ── Status badge dos leads ─────────────────────────────────────────────────────
 const LEAD_STATUS: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  WAITING:    { label: "Aguardando",  color: "bg-amber-100 text-amber-700 border-amber-200",  icon: Clock        },
-  INVITED:    { label: "Convidado",   color: "bg-blue-100 text-blue-700 border-blue-200",     icon: Mail         },
-  REGISTERED: { label: "Cadastrado",  color: "bg-green-100 text-green-700 border-green-200",  icon: CheckCircle2 },
+  WAITING:    { label: "Aguardando",  color: "bg-amber-500/15 text-amber-300 border-amber-500/30",   icon: Clock        },
+  INVITED:    { label: "Convidado",   color: "bg-blue-500/15 text-blue-300 border-blue-500/30",      icon: Mail         },
+  REGISTERED: { label: "Cadastrado",  color: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30", icon: CheckCircle2 },
 };
 
 function LeadStatusBadge({ status }: { status: string }) {
@@ -134,11 +134,11 @@ function LeadsTab() {
           <Card key={s.label}>
             <CardContent className="p-4 flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-500">{s.label}</p>
-                <p className="text-2xl font-bold text-gray-900">{s.value}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-2xl font-bold text-foreground">{s.value}</p>
               </div>
-              <div className={`p-2.5 bg-${s.color}-50 rounded-xl`}>
-                <s.icon className={`h-5 w-5 text-${s.color}-600`} />
+              <div className="p-2.5 bg-white/5 rounded-xl">
+                <s.icon className="h-5 w-5 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
@@ -148,7 +148,7 @@ function LeadsTab() {
       {/* Filtros + ação em massa */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por nome, e-mail ou WhatsApp..."
             value={search}
@@ -171,7 +171,7 @@ function LeadsTab() {
           <Button
             onClick={() => inviteBulk.mutate(selectedWaiting)}
             disabled={inviteBulk.isPending}
-            className="bg-blue-600 hover:bg-blue-700 gap-2 whitespace-nowrap"
+            className="gap-2 whitespace-nowrap"
           >
             <Send className="h-4 w-4" />
             Convidar {selectedWaiting.length} selecionado(s)
@@ -183,18 +183,18 @@ function LeadsTab() {
       {isLoading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-16 bg-white/5 rounded-xl animate-pulse" />
           ))}
         </div>
       ) : leads.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-muted-foreground">
           <UserPlus className="h-10 w-10 mx-auto mb-3" />
           <p className="text-sm">Nenhum lead encontrado.</p>
         </div>
       ) : (
-        <div className="border rounded-xl overflow-hidden bg-white">
+        <div className="border border-border rounded-xl overflow-hidden bg-card">
           {/* Cabeçalho */}
-          <div className="bg-gray-50 border-b px-4 py-2.5 flex items-center gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+          <div className="bg-muted/50 border-b border-border px-4 py-2.5 flex items-center gap-4 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
             <input
               type="checkbox"
               checked={allWaitingSelected}
@@ -209,12 +209,12 @@ function LeadsTab() {
             <span className="w-28 text-right">Ação</span>
           </div>
 
-          <div className="divide-y">
+          <div className="divide-y divide-border">
             {leads.map((lead: any) => (
               <div
                 key={lead.id}
-                className={`flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-colors ${
-                  selected.has(lead.id) ? "bg-blue-50" : ""
+                className={`flex items-center gap-4 px-4 py-3 hover:bg-accent transition-colors ${
+                  selected.has(lead.id) ? "bg-primary/5" : ""
                 }`}
               >
                 {/* Checkbox — só para WAITING */}
@@ -228,23 +228,23 @@ function LeadsTab() {
 
                 {/* Nome + e-mail */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-gray-900 truncate">{lead.fullName}</p>
-                  <p className="text-xs text-gray-400 truncate">{lead.email}</p>
+                  <p className="font-medium text-sm text-foreground truncate">{lead.fullName}</p>
+                  <p className="text-xs text-muted-foreground/60 truncate">{lead.email}</p>
                 </div>
 
                 {/* WhatsApp */}
-                <div className="hidden md:flex items-center gap-1 w-32 text-xs text-gray-500 truncate">
+                <div className="hidden md:flex items-center gap-1 w-32 text-xs text-muted-foreground truncate">
                   {lead.whatsapp ? (
                     <a
                       href={`https://wa.me/55${lead.whatsapp.replace(/\D/g, "")}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-green-600 hover:underline"
+                      className="flex items-center gap-1 text-emerald-400 hover:underline"
                     >
                       <Phone className="h-3 w-3" /> {lead.whatsapp}
                     </a>
                   ) : (
-                    <span className="text-gray-300">—</span>
+                    <span className="text-muted-foreground/30">—</span>
                   )}
                 </div>
 
@@ -254,7 +254,7 @@ function LeadsTab() {
                 </div>
 
                 {/* Data */}
-                <div className="hidden sm:block w-28 text-xs text-gray-400">
+                <div className="hidden sm:block w-28 text-xs text-muted-foreground/60">
                   {formatDate(lead.createdAt)}
                   {lead.invitedAt && (
                     <p className="text-blue-400">Conv: {formatDate(lead.invitedAt)}</p>
@@ -267,7 +267,7 @@ function LeadsTab() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="gap-1.5 text-blue-600 border-blue-200 hover:bg-blue-50 text-xs"
+                      className="gap-1.5 text-primary border-primary/30 hover:bg-primary/10 text-xs"
                       onClick={() => inviteOne.mutate(lead.id)}
                       disabled={inviteOne.isPending}
                     >
@@ -278,7 +278,7 @@ function LeadsTab() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="gap-1.5 text-gray-500 text-xs"
+                      className="gap-1.5 text-muted-foreground text-xs"
                       onClick={() => inviteOne.mutate(lead.id)}
                       disabled={inviteOne.isPending}
                     >
@@ -286,7 +286,7 @@ function LeadsTab() {
                     </Button>
                   )}
                   {lead.status === "REGISTERED" && (
-                    <span className="text-xs text-green-600 flex items-center gap-1">
+                    <span className="text-xs text-emerald-400 flex items-center gap-1">
                       <CheckCircle2 className="h-3.5 w-3.5" /> Ativo
                     </span>
                   )}
@@ -297,7 +297,7 @@ function LeadsTab() {
         </div>
       )}
 
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-muted-foreground/60">
         {total} lead(s) no total · Selecione leads "Aguardando" para convidar em massa
       </p>
     </div>
@@ -316,17 +316,17 @@ function FeedbacksTab() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{feedbacks.length} feedback(s) recebido(s)</p>
+        <p className="text-sm text-muted-foreground">{feedbacks.length} feedback(s) recebido(s)</p>
       </div>
 
       {isLoading ? (
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />
+            <div key={i} className="h-24 bg-white/5 rounded-xl animate-pulse" />
           ))}
         </div>
       ) : feedbacks.length === 0 ? (
-        <div className="text-center py-20 text-gray-400">
+        <div className="text-center py-20 text-muted-foreground">
           <MessageSquarePlus className="h-10 w-10 mx-auto mb-3" />
           <p className="text-sm">Nenhum feedback recebido ainda.</p>
         </div>
@@ -337,10 +337,10 @@ function FeedbacksTab() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 mb-1">{fb.userName}</p>
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{fb.message}</p>
+                    <p className="text-sm font-semibold text-foreground mb-1">{fb.userName}</p>
+                    <p className="text-sm text-foreground/80 whitespace-pre-wrap">{fb.message}</p>
                   </div>
-                  <p className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">
+                  <p className="text-xs text-muted-foreground/60 whitespace-nowrap flex-shrink-0">
                     {formatDate(fb.createdAt)}
                   </p>
                 </div>
@@ -421,8 +421,8 @@ export default function AdminPage() {
               onClick={() => { setTab(t.key); setSearch(""); }}
               className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition ${
                 tab === t.key
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {t.label}
@@ -443,11 +443,11 @@ export default function AdminPage() {
                 <Card key={s.label}>
                   <CardContent className="p-5 flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-500">{s.label}</p>
-                      <p className="text-3xl font-bold text-gray-900">{s.value}</p>
+                      <p className="text-sm text-muted-foreground">{s.label}</p>
+                      <p className="text-3xl font-bold text-foreground">{s.value}</p>
                     </div>
-                    <div className={`p-3 bg-${s.color}-50 rounded-xl`}>
-                      <s.icon className={`h-6 w-6 text-${s.color}-600`} />
+                    <div className="p-3 bg-white/5 rounded-xl">
+                      <s.icon className="h-6 w-6 text-muted-foreground" />
                     </div>
                   </CardContent>
                 </Card>
@@ -458,13 +458,13 @@ export default function AdminPage() {
               <CardContent>
                 <div className="divide-y">
                   {stats.recentUsers?.map((u: any) => (
-                    <div key={u.id} className="py-3 flex items-center justify-between">
+                    <div key={u.id} className="py-3 flex items-center justify-between border-b border-border last:border-0">
                       <div>
-                        <p className="font-medium text-gray-900">{u.name}</p>
-                        <p className="text-sm text-gray-500">{u.email}</p>
+                        <p className="font-medium text-foreground">{u.name}</p>
+                        <p className="text-sm text-muted-foreground">{u.email}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-gray-400">{formatDate(u.createdAt)}</p>
+                        <p className="text-xs text-muted-foreground/60">{formatDate(u.createdAt)}</p>
                         <Badge variant={u.isActive ? "success" : "destructive"} className="mt-1">
                           {u.isActive ? "Ativo" : "Inativo"}
                         </Badge>
@@ -481,16 +481,16 @@ export default function AdminPage() {
         {tab === "users" && (
           <div>
             <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Buscar usuários..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
             </div>
-            <div className="divide-y border rounded-xl overflow-hidden bg-white">
+            <div className="divide-y divide-border border border-border rounded-xl overflow-hidden bg-card">
               {users?.data?.map((u: any) => (
-                <div key={u.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
+                <div key={u.id} className="p-4 flex items-center justify-between hover:bg-accent">
                   <div>
-                    <p className="font-medium text-gray-900">{u.name}</p>
-                    <p className="text-sm text-gray-500">{u.email} · {u.city}/{u.state}</p>
-                    <p className="text-xs text-gray-400">{u._count.properties} imóveis · {u._count.buyers} compradores</p>
+                    <p className="font-medium text-foreground">{u.name}</p>
+                    <p className="text-sm text-muted-foreground">{u.email} · {u.city}/{u.state}</p>
+                    <p className="text-xs text-muted-foreground/60">{u._count.properties} imóveis · {u._count.buyers} compradores</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <PlanBadge plan={u.plan} />
@@ -511,19 +511,19 @@ export default function AdminPage() {
         {tab === "properties" && (
           <div>
             <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Buscar imóveis..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
             </div>
-            <div className="divide-y border rounded-xl overflow-hidden bg-white">
+            <div className="divide-y divide-border border border-border rounded-xl overflow-hidden bg-card">
               {properties?.data?.map((p: any) => (
-                <div key={p.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
+                <div key={p.id} className="p-4 flex items-center justify-between hover:bg-accent">
                   <div>
-                    <p className="font-medium text-gray-900">{p.title}</p>
-                    <p className="text-sm text-gray-500">{p.city}/{p.state} · Corretor: {p.agent?.name}</p>
+                    <p className="font-medium text-foreground">{p.title}</p>
+                    <p className="text-sm text-muted-foreground">{p.city}/{p.state} · Corretor: {p.agent?.name}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={p.status === "AVAILABLE" ? "success" : "secondary"}>{p.status}</Badge>
-                    <Button size="sm" variant="outline" className="text-red-600 hover:bg-red-50"
+                    <Button size="sm" variant="outline" className="text-red-400 hover:bg-red-500/10 border-red-500/30"
                       onClick={() => confirm("Remover imóvel?") && deleteProperty.mutate(p.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>

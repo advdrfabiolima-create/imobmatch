@@ -34,17 +34,17 @@ interface PropertyCardProps {
 
 const STATUS_OPTIONS: Record<string, { value: string; label: string; color: string }[]> = {
   AVAILABLE: [
-    { value: "SOLD",     label: "Marcar como Vendido",  color: "text-green-700" },
-    { value: "RENTED",   label: "Marcar como Alugado",  color: "text-blue-700" },
-    { value: "INACTIVE", label: "Desativar temporariamente", color: "text-gray-600" },
+    { value: "SOLD",     label: "Marcar como Vendido",  color: "text-emerald-400" },
+    { value: "RENTED",   label: "Marcar como Alugado",  color: "text-blue-400" },
+    { value: "INACTIVE", label: "Desativar temporariamente", color: "text-muted-foreground" },
   ],
 };
 
 const STATUS_BADGE_STYLES: Record<string, string> = {
-  AVAILABLE: "bg-green-100 text-green-700",
-  SOLD:      "bg-purple-100 text-purple-700",
-  RENTED:    "bg-blue-100 text-blue-700",
-  INACTIVE:  "bg-gray-100 text-gray-500",
+  AVAILABLE: "bg-emerald-500/15 text-emerald-300",
+  SOLD:      "bg-purple-500/15 text-purple-300",
+  RENTED:    "bg-blue-500/15 text-blue-300",
+  INACTIVE:  "bg-white/5 text-muted-foreground",
 };
 
 export function PropertyCard({ property, showActions, matchCount = 0, onEdit, onDelete, onStatusChange, onGenerateOpportunity }: PropertyCardProps) {
@@ -69,25 +69,25 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow group">
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
         <img
           src={mainPhoto}
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
-          <Badge className="bg-white/90 text-gray-800 border-0 shadow-sm text-xs">
+          <Badge className="bg-card/90 text-foreground border-0 shadow-sm text-xs">
             {PROPERTY_TYPE_LABELS[property.type]}
           </Badge>
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm ${STATUS_BADGE_STYLES[property.status] ?? "bg-gray-100 text-gray-500"}`}>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm ${STATUS_BADGE_STYLES[property.status] ?? "bg-white/5 text-muted-foreground"}`}>
             {PROPERTY_STATUS_LABELS[property.status]}
           </span>
           {property.listingType === "RENT" ? (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-orange-100 text-orange-700">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-orange-500/15 text-orange-300">
               Aluguel
             </span>
           ) : (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-blue-100 text-blue-700">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shadow-sm bg-blue-500/15 text-blue-300">
               Venda
             </span>
           )}
@@ -96,14 +96,14 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
           <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={onEdit}
-              className="p-1.5 bg-white rounded-lg shadow-sm hover:bg-blue-50 text-blue-600"
+              className="p-1.5 bg-card/80 rounded-lg shadow-sm hover:bg-primary/10 text-primary"
               title="Editar"
             >
               <Edit className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={onDelete}
-              className="p-1.5 bg-white rounded-lg shadow-sm hover:bg-red-50 text-red-600"
+              className="p-1.5 bg-card/80 rounded-lg shadow-sm hover:bg-red-500/10 text-red-400"
               title="Excluir"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -114,11 +114,11 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
 
       <CardContent className="p-4">
         <Link href={`/imovel/${property.id}${showActions ? "?from=dashboard" : ""}`}>
-          <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 mb-1">
+          <h3 className="font-semibold text-foreground hover:text-primary transition-colors line-clamp-2 mb-1">
             {property.title}
           </h3>
         </Link>
-        <div className="flex items-center gap-1 text-gray-500 text-sm mb-3">
+        <div className="flex items-center gap-1 text-muted-foreground text-sm mb-3">
           <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
           <span className="truncate">
             {property.neighborhood ? `${property.neighborhood}, ` : ""}
@@ -126,7 +126,7 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
           </span>
         </div>
 
-        <div className="flex items-center gap-3 text-sm text-gray-500 mb-3">
+        <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
           {property.bedrooms && (
             <span className="flex items-center gap-1">
               <Bed className="h-4 w-4" /> {property.bedrooms} quartos
@@ -145,10 +145,10 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
         </div>
 
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xl font-bold text-blue-600">{formatCurrency(property.price)}</span>
+          <span className="text-xl font-bold text-primary">{formatCurrency(property.price)}</span>
           <Link
             href={`/imovel/${property.id}${showActions ? "?from=dashboard" : ""}`}
-            className="text-sm text-blue-600 hover:underline font-medium"
+            className="text-sm text-primary hover:underline font-medium"
           >
             Ver detalhes
           </Link>
@@ -174,7 +174,7 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
             {isAvailable && onGenerateOpportunity && (
               <button
                 onClick={onGenerateOpportunity}
-                className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg border border-orange-200 bg-orange-50 text-sm font-medium text-orange-700 hover:bg-orange-100 hover:border-orange-300 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg border border-orange-500/30 bg-orange-500/10 text-sm font-medium text-orange-400 hover:bg-orange-500/15 hover:border-orange-500/40 transition-colors"
               >
                 <Zap className="h-3.5 w-3.5" />
                 🔥 Gerar oportunidade
@@ -185,13 +185,13 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
               <div ref={dropdownRef} className="relative">
                 <button
                   onClick={() => setShowDropdown((v) => !v)}
-                  className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition"
+                  className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg border border-border text-sm text-muted-foreground hover:bg-accent transition"
                 >
                   Alterar status
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showDropdown ? "rotate-180" : ""}`} />
                 </button>
                 {showDropdown && (
-                  <div className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
+                  <div className="absolute bottom-full left-0 right-0 mb-1 bg-popover border border-border rounded-xl shadow-lg z-20 overflow-hidden">
                     {STATUS_OPTIONS.AVAILABLE.map((opt) => (
                       <button
                         key={opt.value}
@@ -199,7 +199,7 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
                           onStatusChange(opt.value);
                           setShowDropdown(false);
                         }}
-                        className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition ${opt.color}`}
+                        className={`w-full text-left px-4 py-2.5 text-sm hover:bg-accent transition ${opt.color}`}
                       >
                         {opt.label}
                       </button>
@@ -212,7 +212,7 @@ export function PropertyCard({ property, showActions, matchCount = 0, onEdit, on
             {(isInactive || isClosed) && (
               <button
                 onClick={() => onStatusChange("AVAILABLE")}
-                className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg border border-blue-200 text-sm text-blue-600 hover:bg-blue-50 transition"
+                className="w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg border border-primary/30 text-sm text-primary hover:bg-primary/10 transition"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 {isInactive ? "Reativar imóvel" : "Marcar como disponível"}

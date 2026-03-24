@@ -3,53 +3,128 @@
 @tailwind utilities;
 
 @layer base {
+  /* ── Dark Premium Design System ─────────────────────────────────────── */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    /* Surfaces */
+    --background:         222 62%  6%;    /* #060c19  — deep navy page bg    */
+    --foreground:         214 32% 91%;    /* #d7e4f4  — near-white text       */
+    --card:               220 50% 11%;    /* #0d1830  — dark card surface     */
+    --card-foreground:    214 32% 91%;
+    --popover:            220 50% 13%;    /* #102038  — elevated popover      */
+    --popover-foreground: 214 32% 91%;
+
+    /* Brand */
+    --primary:            239 84% 67%;   /* #6366f1  — indigo-500            */
+    --primary-foreground: 0   0% 100%;
+
+    /* Interactive surfaces */
+    --secondary:          220 40% 17%;   /* #172040  — secondary surface     */
+    --secondary-foreground: 215 22% 65%; /* #8ea3c8  — secondary text        */
+    --muted:              220 38% 13%;   /* #101b30  — muted bg              */
+    --muted-foreground:   215 20% 52%;   /* #6b84a0  — muted text            */
+    --accent:             220 40% 19%;   /* #1a2848  — hover/active bg       */
+    --accent-foreground:  214 32% 91%;
+
+    /* Status */
+    --destructive:        0   72% 51%;   /* #df3030  — red                   */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Structure */
+    --border:             220 33% 20%;   /* #1e2e4f  — subtle border         */
+    --input:              220 38% 13%;   /* same as muted for input bg       */
+    --ring:               239 84% 67%;   /* indigo focus ring                */
+    --radius:             0.5rem;
+
+    /* ── Semantic status tokens ─────────────────────────────── */
+    --status-pending:     220 30% 20%;
+    --status-success:     160 60% 18%;
+    --status-warning:      38 60% 18%;
+    --status-danger:        0 55% 20%;
+    --status-info:        222 60% 20%;
   }
 
+  /* Keep .dark in sync — activates when html has class="dark" */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --background:         222 62%  6%;
+    --foreground:         214 32% 91%;
+    --card:               220 50% 11%;
+    --card-foreground:    214 32% 91%;
+    --popover:            220 50% 13%;
+    --popover-foreground: 214 32% 91%;
+    --primary:            239 84% 67%;
+    --primary-foreground: 0   0% 100%;
+    --secondary:          220 40% 17%;
+    --secondary-foreground: 215 22% 65%;
+    --muted:              220 38% 13%;
+    --muted-foreground:   215 20% 52%;
+    --accent:             220 40% 19%;
+    --accent-foreground:  214 32% 91%;
+    --destructive:        0   72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border:             220 33% 20%;
+    --input:              220 38% 13%;
+    --ring:               239 84% 67%;
   }
 }
 
 @layer base {
   * { @apply border-border; }
   body { @apply bg-background text-foreground; }
+
+  /* Scrollbar — dark premium */
+  ::-webkit-scrollbar        { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.10); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+  /* Selection */
+  ::selection { background: rgba(99,102,241,0.30); color: #fff; }
+}
+
+/* ── Premium utility classes ─────────────────────────────────────────── */
+@layer components {
+  /* Glass card — replaces old bg-white cards */
+  .glass-card {
+    @apply rounded-xl border border-white/[0.07] bg-card backdrop-blur-sm;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  /* Surface panel (slightly elevated) */
+  .surface-panel {
+    @apply rounded-xl border border-white/[0.07] bg-muted;
+  }
+  /* Premium input */
+  .input-dark {
+    @apply bg-muted/60 border-border text-foreground placeholder:text-muted-foreground
+           focus-visible:ring-1 focus-visible:ring-primary/50 focus-visible:border-primary/50;
+  }
+  /* Tab bar */
+  .tab-bar {
+    @apply flex gap-1 bg-muted/50 p-1 rounded-xl flex-wrap;
+  }
+  .tab-item {
+    @apply px-3 py-1.5 rounded-lg text-xs font-medium transition-all;
+  }
+  .tab-item-active {
+    @apply bg-card shadow text-foreground;
+  }
+  .tab-item-inactive {
+    @apply text-muted-foreground hover:text-foreground;
+  }
+  /* Status pills — dark-compatible */
+  .pill-blue    { @apply bg-blue-500/15   text-blue-300   border border-blue-500/20;  }
+  .pill-violet  { @apply bg-violet-500/15 text-violet-300 border border-violet-500/20; }
+  .pill-green   { @apply bg-emerald-500/15 text-emerald-300 border border-emerald-500/20; }
+  .pill-amber   { @apply bg-amber-500/15  text-amber-300  border border-amber-500/20;  }
+  .pill-red     { @apply bg-red-500/15    text-red-300    border border-red-500/20;    }
+  .pill-gray    { @apply bg-white/10      text-slate-400  border border-white/10;      }
+  /* Empty state */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-16 text-center;
+  }
+  .empty-state-icon {
+    @apply w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto;
+    background: rgba(99,102,241,0.1);
+  }
 }
 
 /* ─── Dashboard premium animations ─────────────────────────────── */
@@ -76,6 +151,10 @@
 @keyframes shimmer {
   0%   { background-position: -200% center; }
   100% { background-position:  200% center; }
+}
+@keyframes dash-flow {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
 }
 
 /* ─── Print ─────────────────────────────────────────────────────── */

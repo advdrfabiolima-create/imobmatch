@@ -187,7 +187,7 @@ export default function SimuladorPage() {
       <div className="p-4 md:p-6 max-w-5xl space-y-6">
 
         {/* Disclaimer */}
-        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
           <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5 text-amber-500" />
           <p>
             <span className="font-semibold">Simulação aproximada.</span>{" "}
@@ -199,7 +199,7 @@ export default function SimuladorPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Calculator className="h-5 w-5 text-blue-600" />
+              <Calculator className="h-5 w-5 text-primary" />
               Dados do Financiamento
             </CardTitle>
           </CardHeader>
@@ -225,7 +225,7 @@ export default function SimuladorPage() {
                 <label className="text-sm font-medium mb-1 block">
                   Valor Financiado
                 </label>
-                <div className="h-10 flex items-center px-3 rounded-md border bg-gray-50 text-sm font-semibold text-blue-700">
+                <div className="h-10 flex items-center px-3 rounded-md border border-border bg-muted text-sm font-semibold text-primary">
                   {formatMoney(financia)}
                 </div>
               </div>
@@ -264,21 +264,21 @@ export default function SimuladorPage() {
             {/* Sistema de amortização */}
             <div className="mt-4">
               <label className="text-sm font-medium mb-2 block">Sistema de Amortização</label>
-              <div className="flex rounded-lg border border-gray-200 overflow-hidden w-fit">
+              <div className="flex rounded-lg border border-border overflow-hidden w-fit">
                 {(["sac", "price"] as const).map((s) => (
                   <button
                     key={s}
                     type="button"
                     onClick={() => setSistema(s)}
                     className={`px-5 py-2 text-sm font-medium transition ${
-                      sistema === s ? "bg-blue-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50"
+                      sistema === s ? "bg-primary text-white" : "bg-card text-muted-foreground hover:bg-accent"
                     }`}
                   >
                     {s === "sac" ? "SAC" : "PRICE"}
                   </button>
                 ))}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {sistema === "sac"
                   ? "SAC: parcelas decrescentes — paga mais juros no início, menos no final"
                   : "PRICE: parcelas fixas — mais fácil de planejar o orçamento"}
@@ -296,8 +296,8 @@ export default function SimuladorPage() {
                     onClick={() => setSelectedBank(idx)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
                       selectedBank === idx
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-white text-gray-700 border-gray-200 hover:border-blue-300"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-transparent text-muted-foreground border-border hover:border-primary/50"
                     }`}
                   >
                     {b.name} — {b.rate.toFixed(2)}%
@@ -312,18 +312,18 @@ export default function SimuladorPage() {
           <>
             {/* Resultado principal */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="border-blue-100">
+              <Card className="border-blue-500/25">
                 <CardContent className="pt-5">
-                  <p className="text-xs text-gray-500 mb-1">
+                  <p className="text-xs text-muted-foreground mb-1">
                     {sistema === "sac" ? "1ª Parcela (com seguros)" : "Parcela Fixa (com seguros)"}
                   </p>
-                  <p className="text-3xl font-bold text-blue-700">{formatMoney(results.totalInstallment)}</p>
+                  <p className="text-3xl font-bold text-primary">{formatMoney(results.totalInstallment)}</p>
                   {sistema === "sac" && (
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-muted-foreground/60 mt-1">
                       Última: {formatMoney(results.sacLast + results.insurances)}
                     </p>
                   )}
-                  <div className="mt-2 space-y-0.5 text-xs text-gray-500">
+                  <div className="mt-2 space-y-0.5 text-xs text-muted-foreground">
                     <div className="flex justify-between">
                       <span>Amortização + Juros</span>
                       <span>{formatMoney(results.baseInstallment)}</span>
@@ -338,30 +338,30 @@ export default function SimuladorPage() {
 
               <Card>
                 <CardContent className="pt-5">
-                  <p className="text-xs text-gray-500 mb-1">Total Pago ao Banco</p>
-                  <p className="text-2xl font-bold text-gray-800">{formatMoney(results.totalPaid)}</p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-muted-foreground mb-1">Total Pago ao Banco</p>
+                  <p className="text-2xl font-bold text-foreground">{formatMoney(results.totalPaid)}</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">
                     Juros totais: {formatMoney(results.totalInterest)}
                   </p>
                   <div className="mt-2">
-                    <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
                       <div
-                        className="bg-blue-500 h-1.5 rounded-full"
+                        className="bg-primary h-1.5 rounded-full"
                         style={{ width: `${Math.min((financia / results.totalPaid) * 100, 100)}%` }}
                       />
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-muted-foreground/60 mt-1">
                       {((financia / results.totalPaid) * 100).toFixed(0)}% capital · {((results.totalInterest / results.totalPaid) * 100).toFixed(0)}% juros
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className={comprOk ? "border-green-100" : "border-red-100"}>
+              <Card className={comprOk ? "border-emerald-500/25" : "border-red-500/25"}>
                 <CardContent className="pt-5">
-                  <p className="text-xs text-gray-500 mb-1">Comprometimento de Renda</p>
+                  <p className="text-xs text-muted-foreground mb-1">Comprometimento de Renda</p>
                   <div className="flex items-end gap-2">
-                    <p className={`text-3xl font-bold ${comprOk ? "text-green-600" : "text-red-600"}`}>
+                    <p className={`text-3xl font-bold ${comprOk ? "text-emerald-400" : "text-red-400"}`}>
                       {results.comprometimento.toFixed(1)}%
                     </p>
                     {comprOk
@@ -369,11 +369,11 @@ export default function SimuladorPage() {
                       : <AlertTriangle className="h-5 w-5 text-red-500 mb-1" />
                     }
                   </div>
-                  <p className={`text-xs mt-1 ${comprOk ? "text-green-600" : "text-red-600"}`}>
+                  <p className={`text-xs mt-1 ${comprOk ? "text-emerald-400" : "text-red-400"}`}>
                     {comprOk ? "Dentro do limite de 30% recomendado" : "Acima do limite de 30% — banco pode reprovar"}
                   </p>
                   {results.comprometimento > 30 && (
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Renda mínima necessária: {formatMoney(results.totalInstallment / 0.30)}
                     </p>
                   )}
@@ -383,9 +383,9 @@ export default function SimuladorPage() {
 
             {/* MCMV */}
             {results.subsidy > 0 && (
-              <Card className="border-green-200 bg-green-50/50">
+              <Card className="border-emerald-500/25 bg-emerald-500/5">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base text-green-800 flex items-center gap-2">
+                  <CardTitle className="text-base text-emerald-400 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4" />
                     Minha Casa Minha Vida — Possível subsídio
                   </CardTitle>
@@ -393,13 +393,13 @@ export default function SimuladorPage() {
                 <CardContent>
                   <div className="flex flex-wrap gap-4 text-sm">
                     {MCMV_FAIXAS.filter(f => parseMoney(renda) <= f.maxRenda).map((f) => (
-                      <div key={f.label} className="bg-white rounded-lg border border-green-200 px-4 py-2">
-                        <p className="font-semibold text-green-700">{f.label}</p>
-                        <p className="text-gray-500 text-xs">{f.desc}</p>
-                        <p className="text-green-800 font-bold mt-1">até {formatMoney(f.maxSubsidio)}</p>
+                      <div key={f.label} className="bg-card rounded-lg border border-emerald-500/25 px-4 py-2">
+                        <p className="font-semibold text-emerald-400">{f.label}</p>
+                        <p className="text-muted-foreground text-xs">{f.desc}</p>
+                        <p className="text-emerald-300 font-bold mt-1">até {formatMoney(f.maxSubsidio)}</p>
                       </div>
                     )).slice(0, 1)}
-                    <div className="flex items-center text-xs text-green-700 gap-1">
+                    <div className="flex items-center text-xs text-emerald-400 gap-1">
                       <Info className="h-3.5 w-3.5 flex-shrink-0" />
                       <span>O subsídio reduz o valor financiado. Consulte a Caixa Econômica Federal para confirmar elegibilidade.</span>
                     </div>
@@ -417,7 +417,7 @@ export default function SimuladorPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b bg-gray-50 text-xs text-gray-500">
+                      <tr className="border-b border-border bg-muted/50 text-xs text-muted-foreground">
                         <th className="text-left px-4 py-2.5 font-medium">Banco</th>
                         <th className="text-right px-4 py-2.5 font-medium">Taxa a.a.</th>
                         <th className="text-right px-4 py-2.5 font-medium">
@@ -431,7 +431,7 @@ export default function SimuladorPage() {
                       {bankResults.map((b, idx) => (
                         <tr
                           key={b.name}
-                          className={`border-b last:border-0 transition ${idx === 0 ? "bg-blue-50" : "hover:bg-gray-50"}`}
+                          className={`border-b border-border last:border-0 transition ${idx === 0 ? "bg-primary/5" : "hover:bg-accent"}`}
                         >
                           <td className="px-4 py-3 font-medium flex items-center gap-2">
                             {idx === 0 && <Badge variant="secondary" className="text-[10px] py-0">Melhor</Badge>}
@@ -439,14 +439,14 @@ export default function SimuladorPage() {
                           </td>
                           <td className="px-4 py-3 text-right">{b.rate.toFixed(2)}%</td>
                           <td className="px-4 py-3 text-right font-semibold">{formatMoney(b.installment)}</td>
-                          <td className="px-4 py-3 text-right text-gray-600">{formatMoney(b.totalPaid)}</td>
-                          <td className="px-4 py-3 text-right text-xs text-gray-400 hidden md:table-cell">{b.note}</td>
+                          <td className="px-4 py-3 text-right text-muted-foreground">{formatMoney(b.totalPaid)}</td>
+                          <td className="px-4 py-3 text-right text-xs text-muted-foreground/60 hidden md:table-cell">{b.note}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <p className="text-xs text-gray-400 px-4 py-2">
+                <p className="text-xs text-muted-foreground/60 px-4 py-2">
                   * Taxas de março/2026. Inclui seguros MIP, DFI e taxa de administração de R$ 25/mês. TR não incluída. Consulte o banco para simulação oficial.
                 </p>
               </CardContent>
@@ -460,7 +460,7 @@ export default function SimuladorPage() {
               >
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Tabela de Amortização (prévia)</CardTitle>
-                  {showTable ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                  {showTable ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                 </div>
               </CardHeader>
               {showTable && (
@@ -468,7 +468,7 @@ export default function SimuladorPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b bg-gray-50 text-xs text-gray-500">
+                        <tr className="border-b border-border bg-muted/50 text-xs text-muted-foreground">
                           <th className="text-left px-4 py-2.5 font-medium">Mês</th>
                           <th className="text-right px-4 py-2.5 font-medium">Parcela</th>
                           <th className="text-right px-4 py-2.5 font-medium">Amortização</th>
@@ -483,17 +483,17 @@ export default function SimuladorPage() {
                             <>
                               {isGap && (
                                 <tr key="gap" className="border-b">
-                                  <td colSpan={5} className="px-4 py-2 text-center text-xs text-gray-400">
+                                  <td colSpan={5} className="px-4 py-2 text-center text-xs text-muted-foreground/60">
                                     · · · {meses - 9} meses omitidos · · ·
                                   </td>
                                 </tr>
                               )}
-                              <tr key={row.mes} className="border-b last:border-0 hover:bg-gray-50">
-                                <td className="px-4 py-2.5 text-gray-600">{row.mes}º</td>
-                                <td className="px-4 py-2.5 text-right font-medium">{formatMoney(row.parcela)}</td>
-                                <td className="px-4 py-2.5 text-right text-green-700">{formatMoney(row.amort)}</td>
-                                <td className="px-4 py-2.5 text-right text-red-600">{formatMoney(row.juros)}</td>
-                                <td className="px-4 py-2.5 text-right text-gray-600">{formatMoney(row.saldo)}</td>
+                              <tr key={row.mes} className="border-b border-border last:border-0 hover:bg-accent">
+                                <td className="px-4 py-2.5 text-muted-foreground">{row.mes}º</td>
+                                <td className="px-4 py-2.5 text-right font-medium text-foreground">{formatMoney(row.parcela)}</td>
+                                <td className="px-4 py-2.5 text-right text-emerald-400">{formatMoney(row.amort)}</td>
+                                <td className="px-4 py-2.5 text-right text-red-400">{formatMoney(row.juros)}</td>
+                                <td className="px-4 py-2.5 text-right text-muted-foreground">{formatMoney(row.saldo)}</td>
                               </tr>
                             </>
                           );
@@ -501,7 +501,7 @@ export default function SimuladorPage() {
                       </tbody>
                     </table>
                   </div>
-                  <p className="text-xs text-gray-400 px-4 py-2">
+                  <p className="text-xs text-muted-foreground/60 px-4 py-2">
                     * Parcelas sem seguros. Para o total, adicione {formatMoney(results.insurances)}/mês.
                   </p>
                 </CardContent>
@@ -511,7 +511,7 @@ export default function SimuladorPage() {
         )}
 
         {financia <= 0 && (
-          <div className="text-center py-12 text-gray-400 text-sm">
+          <div className="text-center py-12 text-muted-foreground text-sm">
             Preencha os dados acima para ver a simulação
           </div>
         )}

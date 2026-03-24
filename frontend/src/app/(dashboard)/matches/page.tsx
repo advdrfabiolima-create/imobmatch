@@ -14,25 +14,25 @@ import toast from "react-hot-toast";
 import { showPointsToast } from "@/lib/points-toast";
 import Link from "next/link";
 
-// ─── Status config ────────────────────────────────────────────────────────────
+// ─── Status config — dark premium palette ─────────────────────────────────────
 const STATUSES = [
-  { value: "PENDING",     label: "Pendente",       color: "bg-gray-100 text-gray-600",    dot: "bg-gray-400",    border: "" },
-  { value: "CONTACTED",   label: "Contactado",     color: "bg-blue-100 text-blue-700",    dot: "bg-blue-500",    border: "border-l-blue-400" },
-  { value: "VISITED",     label: "Visitado",       color: "bg-indigo-100 text-indigo-700",dot: "bg-indigo-500",  border: "border-l-indigo-400" },
-  { value: "NEGOTIATING", label: "Em Negociação",  color: "bg-amber-100 text-amber-700",  dot: "bg-amber-500",   border: "border-l-amber-400" },
-  { value: "CLOSED",      label: "Fechado",        color: "bg-green-100 text-green-700",  dot: "bg-green-500",   border: "border-l-green-400" },
-  { value: "REJECTED",    label: "Rejeitado",      color: "bg-red-100 text-red-600",      dot: "bg-red-400",     border: "border-l-red-300" },
+  { value: "PENDING",     label: "Pendente",       color: "bg-white/10 text-slate-400",         dot: "bg-slate-400",    border: "border-l-slate-500/50" },
+  { value: "CONTACTED",   label: "Contactado",     color: "bg-blue-500/15 text-blue-300",        dot: "bg-blue-400",     border: "border-l-blue-400/60" },
+  { value: "VISITED",     label: "Visitado",       color: "bg-indigo-500/15 text-indigo-300",    dot: "bg-indigo-400",   border: "border-l-indigo-400/60" },
+  { value: "NEGOTIATING", label: "Em Negociação",  color: "bg-amber-500/15 text-amber-300",      dot: "bg-amber-400",    border: "border-l-amber-400/60" },
+  { value: "CLOSED",      label: "Fechado",        color: "bg-emerald-500/15 text-emerald-300",  dot: "bg-emerald-400",  border: "border-l-emerald-400/60" },
+  { value: "REJECTED",    label: "Rejeitado",      color: "bg-red-500/15 text-red-300",          dot: "bg-red-400",      border: "border-l-red-400/40" },
 ];
 const STATUS_MAP = Object.fromEntries(STATUSES.map((s) => [s.value, s]));
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Score bar ────────────────────────────────────────────────────────────────
 function ScoreBar({ score }: { score: number }) {
-  const display = Math.min(score, 100); // scores de planos premium podem exceder 100 no banco
-  const color = display >= 70 ? "bg-green-500" : display >= 50 ? "bg-yellow-500" : "bg-orange-500";
-  const textColor = display >= 70 ? "text-green-600" : display >= 50 ? "text-yellow-600" : "text-orange-600";
+  const display = Math.min(score, 100);
+  const color = display >= 70 ? "bg-emerald-400" : display >= 50 ? "bg-amber-400" : "bg-orange-400";
+  const textColor = display >= 70 ? "text-emerald-400" : display >= 50 ? "text-amber-400" : "text-orange-400";
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
         <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${display}%` }} />
       </div>
       <span className={`text-xs font-bold tabular-nums ${textColor}`}>{display}%</span>
@@ -40,27 +40,20 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
+// ─── Status badge ─────────────────────────────────────────────────────────────
 function StatusBadge({
-  status,
-  matchId,
-  onUpdate,
-  editable = true,
+  status, matchId, onUpdate, editable = true,
 }: {
-  status: string;
-  matchId: string;
-  onUpdate: (id: string, status: string) => void;
-  editable?: boolean;
+  status: string; matchId: string;
+  onUpdate: (id: string, status: string) => void; editable?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const cfg = STATUS_MAP[status] ?? STATUS_MAP.PENDING;
 
-  // Não editável: badge estático com cadeado
   if (!editable) {
     return (
-      <span
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.color} opacity-70`}
-        title="Disponível após aceite da parceria"
-      >
+      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.color} opacity-70`}
+        title="Disponível após aceite da parceria">
         <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
         {cfg.label}
         <Lock className="h-3 w-3" />
@@ -82,19 +75,19 @@ function StatusBadge({
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 bottom-full mb-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden min-w-[170px]">
-            <p className="px-3 pt-2.5 pb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+          <div className="absolute right-0 bottom-full mb-1 bg-popover border border-border rounded-xl shadow-2xl z-20 overflow-hidden min-w-[170px]">
+            <p className="px-3 pt-2.5 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
               Atualizar progresso
             </p>
             {STATUSES.map((s) => (
               <button
                 key={s.value}
                 onClick={() => { onUpdate(matchId, s.value); setOpen(false); }}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 transition ${status === s.value ? "font-semibold" : ""}`}
+                className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition ${status === s.value ? "font-semibold text-foreground" : "text-foreground/70"}`}
               >
                 <span className={`w-2 h-2 rounded-full flex-shrink-0 ${s.dot}`} />
                 {s.label}
-                {status === s.value && <span className="ml-auto text-xs text-gray-400">✓</span>}
+                {status === s.value && <span className="ml-auto text-xs text-muted-foreground">✓</span>}
               </button>
             ))}
           </div>
@@ -106,20 +99,11 @@ function StatusBadge({
 
 // ─── Partnership modal ─────────────────────────────────────────────────────────
 type PartnershipTarget = {
-  matchId: string;
-  buyerId: string;
-  propertyId: string;
-  receiverId: string;
-  receiverName: string;
+  matchId: string; buyerId: string; propertyId: string;
+  receiverId: string; receiverName: string;
 };
 
-function PartnershipModal({
-  target,
-  onClose,
-}: {
-  target: PartnershipTarget;
-  onClose: () => void;
-}) {
+function PartnershipModal({ target, onClose }: { target: PartnershipTarget; onClose: () => void }) {
   const queryClient = useQueryClient();
   const [commission, setCommission] = useState("");
   const [message, setMessage] = useState("");
@@ -127,9 +111,7 @@ function PartnershipModal({
   const mutation = useMutation({
     mutationFn: () =>
       api.post("/partnerships", {
-        buyerId: target.buyerId,
-        propertyId: target.propertyId,
-        receiverId: target.receiverId,
+        buyerId: target.buyerId, propertyId: target.propertyId, receiverId: target.receiverId,
         ...(commission ? { commissionSplit: Number(commission) } : {}),
         ...(message ? { message } : {}),
       }),
@@ -145,50 +127,48 @@ function PartnershipModal({
   });
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
-        <div className="flex items-center justify-between p-5 border-b">
+    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+      <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-2xl">
+        <div className="flex items-center justify-between p-5 border-b border-border">
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Propor Parceria</h2>
-            <p className="text-xs text-gray-500 mt-0.5">Para: <strong>{target.receiverName}</strong></p>
+            <h2 className="text-base font-semibold text-foreground">Propor Parceria</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Para: <strong className="text-foreground/80">{target.receiverName}</strong></p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="h-5 w-5 text-gray-500" />
+          <button onClick={onClose} className="p-2 hover:bg-accent rounded-lg transition-colors">
+            <X className="h-5 w-5 text-muted-foreground" />
           </button>
         </div>
         <div className="p-5 space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1.5">
+            <label className="text-sm font-medium text-foreground/80 block mb-1.5">
               Sua % de comissão (opcional)
             </label>
             <div className="relative">
               <input
-                type="number"
-                placeholder="Ex: 50"
-                value={commission}
-                onChange={(e) => setCommission(e.target.value)}
-                min={1}
-                max={99}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-violet-400 text-sm"
+                type="number" placeholder="Ex: 50" value={commission}
+                onChange={(e) => setCommission(e.target.value)} min={1} max={99}
+                className="w-full rounded-lg border border-border bg-muted/60 px-3 py-2 pr-8
+                           text-foreground placeholder:text-muted-foreground
+                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">%</span>
             </div>
             {commission && Number(commission) > 0 && Number(commission) < 100 && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Você: {commission}% · {target.receiverName}: {100 - Number(commission)}%
               </p>
             )}
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1.5">
+            <label className="text-sm font-medium text-foreground/80 block mb-1.5">
               Mensagem (opcional)
             </label>
             <textarea
               placeholder="Apresente-se e explique a proposta..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={3}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-violet-400 text-sm"
+              value={message} onChange={(e) => setMessage(e.target.value)} rows={3}
+              className="w-full rounded-lg border border-border bg-muted/60 px-3 py-2 resize-none
+                         text-foreground placeholder:text-muted-foreground
+                         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm"
             />
           </div>
           <div className="flex gap-3 pt-1">
@@ -198,7 +178,7 @@ function PartnershipModal({
             <Button
               onClick={() => mutation.mutate()}
               disabled={mutation.isPending}
-              className="flex-1 bg-violet-600 hover:bg-violet-700 gap-2"
+              className="flex-1 bg-violet-600 hover:bg-violet-500 gap-2"
             >
               {mutation.isPending ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4" />}
               Enviar proposta
@@ -267,12 +247,8 @@ export default function MatchesPage() {
 
   return (
     <div>
-      {/* Partnership modal — rendered at page root, completely isolated from match cards */}
       {partnershipTarget && (
-        <PartnershipModal
-          target={partnershipTarget}
-          onClose={() => setPartnershipTarget(null)}
-        />
+        <PartnershipModal target={partnershipTarget} onClose={() => setPartnershipTarget(null)} />
       )}
 
       <Header title="Matches" />
@@ -281,43 +257,41 @@ export default function MatchesPage() {
         {/* Top bar */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Pipeline de Matches</h2>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h2 className="text-lg font-semibold text-foreground">Pipeline de Matches</h2>
+            <p className="text-sm text-muted-foreground mt-0.5">
               Acompanhe cada oportunidade do primeiro contato até o fechamento
             </p>
           </div>
           <Button
             onClick={() => generateMutation.mutate()}
             disabled={generateMutation.isPending}
-            className="bg-blue-600 hover:bg-blue-700 gap-2 flex-shrink-0"
+            className="gap-2 flex-shrink-0"
           >
             {generateMutation.isPending ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
             Gerar Matches
           </Button>
         </div>
 
-        {/* Pipeline explanation banner */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-800">
-          <p className="font-medium mb-1">Como funciona o pipeline?</p>
-          <p className="text-blue-700 text-xs leading-relaxed">
+        {/* Pipeline info banner */}
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 text-sm text-blue-300">
+          <p className="font-medium mb-1 text-blue-200">Como funciona o pipeline?</p>
+          <p className="text-blue-300/80 text-xs leading-relaxed">
             Cada match representa uma oportunidade. Avance o status conforme você evolui com o cliente:
-            <span className="font-medium"> Pendente → Contactado → Visitado → Em Negociação → Fechado</span>.
-            Matches com <span className="font-medium text-violet-700">Oportunidade de parceria</span> cruzam seus compradores com imóveis de outros corretores — ou vice-versa.
-            Proponha uma parceria para dividir a comissão e fechar o negócio juntos.
+            <span className="font-medium text-blue-200"> Pendente → Contactado → Visitado → Em Negociação → Fechado</span>.
+            Matches com <span className="font-medium text-violet-300">Oportunidade de parceria</span> cruzam seus compradores
+            com imóveis de outros corretores — ou vice-versa.
           </p>
         </div>
 
         {/* Status filter tabs */}
-        <div className="flex gap-1 bg-gray-100 p-1 rounded-xl flex-wrap">
+        <div className="tab-bar">
           <button
             onClick={() => setFilterStatus("")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
-              filterStatus === "" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={`tab-item ${filterStatus === "" ? "tab-item-active" : "tab-item-inactive"}`}
           >
             Todos
             {totalAll > 0 && (
-              <span className="bg-gray-200 text-gray-600 rounded-full px-1.5 py-0.5 text-[10px]">
+              <span className="ml-1.5 bg-white/10 text-slate-400 rounded-full px-1.5 py-0.5 text-[10px]">
                 {totalAll}
               </span>
             )}
@@ -329,14 +303,14 @@ export default function MatchesPage() {
               <button
                 key={s.value}
                 onClick={() => setFilterStatus(s.value)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
-                  filterStatus === s.value ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`tab-item flex items-center gap-1.5 ${filterStatus === s.value ? "tab-item-active" : "tab-item-inactive"}`}
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
                 {s.label}
                 {count > 0 && (
-                  <span className={`rounded-full px-1.5 py-0.5 text-[10px] ${filterStatus === s.value ? s.color : "bg-gray-200 text-gray-600"}`}>
+                  <span className={`rounded-full px-1.5 py-0.5 text-[10px] ${
+                    filterStatus === s.value ? s.color : "bg-white/10 text-slate-400"
+                  }`}>
                     {count}
                   </span>
                 )}
@@ -347,20 +321,22 @@ export default function MatchesPage() {
 
         {/* Best Matches Highlight */}
         {!filterStatus && bestMatches?.length > 0 && (
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white">
+          <div className="bg-gradient-to-r from-indigo-600/80 to-violet-600/80 border border-white/10 rounded-2xl p-6 text-white">
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="h-5 w-5" />
+              <Zap className="h-5 w-5 text-yellow-300" />
               <h3 className="font-semibold">Melhores Matches (Score ≥ 70%)</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {bestMatches.slice(0, 3).map((m: any) => (
-                <div key={m.id} className="bg-white/10 rounded-xl p-4">
+                <div key={m.id} className="bg-white/10 rounded-xl p-4 border border-white/10">
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-sm font-medium">{m.buyer?.buyerName}</span>
-                    <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">{Math.min(m.score, 100)}%</span>
+                    <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">
+                      {Math.min(m.score, 100)}%
+                    </span>
                   </div>
-                  <p className="text-xs text-blue-100 line-clamp-1">{m.property?.title}</p>
-                  <div className="flex justify-between text-xs text-blue-200 mt-2">
+                  <p className="text-xs text-white/70 line-clamp-1">{m.property?.title}</p>
+                  <div className="flex justify-between text-xs text-white/50 mt-2">
                     <span>Busca: {formatCurrency(m.buyer?.maxPrice)}</span>
                     <span>Imóvel: {formatCurrency(m.property?.price)}</span>
                   </div>
@@ -373,29 +349,33 @@ export default function MatchesPage() {
         {/* Match cards */}
         {isLoading ? (
           <div className="space-y-4">
-            {[...Array(4)].map((_, i) => <div key={i} className="h-36 bg-gray-100 rounded-xl animate-pulse" />)}
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-36 bg-white/5 rounded-xl animate-pulse" />
+            ))}
           </div>
         ) : matches?.data?.length === 0 ? (
-          <div className="text-center py-16">
-            <Zap className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="empty-state">
+            <div className="empty-state-icon">
+              <Zap className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               {filterStatus ? `Nenhum match "${STATUS_MAP[filterStatus]?.label}"` : "Nenhum match ainda"}
             </h3>
             {!filterStatus && (
               <>
-                <p className="text-gray-500 mb-2">
-                  O sistema cruza <strong>seus compradores</strong> com todos os imóveis disponíveis da plataforma.
+                <p className="text-muted-foreground mb-2 max-w-sm">
+                  O sistema cruza <strong className="text-foreground/80">seus compradores</strong> com todos os imóveis disponíveis da plataforma.
                 </p>
-                <p className="text-gray-400 text-sm mb-6">
+                <p className="text-muted-foreground/70 text-sm mb-6">
                   Certifique-se de ter compradores e imóveis cadastrados, depois clique em "Gerar Matches".
                 </p>
-                <Button onClick={() => generateMutation.mutate()} className="bg-blue-600 hover:bg-blue-700 gap-2">
+                <Button onClick={() => generateMutation.mutate()} className="gap-2">
                   <Zap className="h-4 w-4" /> Gerar Matches Agora
                 </Button>
               </>
             )}
             {filterStatus && (
-              <p className="text-gray-400 text-sm">
+              <p className="text-muted-foreground/70 text-sm">
                 Avance o status de outros matches para "{STATUS_MAP[filterStatus]?.label}" e eles aparecerão aqui.
               </p>
             )}
@@ -414,15 +394,13 @@ export default function MatchesPage() {
               const partnershipStatus   = m.partnership?.status ?? null;
               const partnershipExists   = !!m.partnership;
               const partnershipAccepted = partnershipStatus === "ACCEPTED";
-
-              // Backend revela phone quando isMine || partnershipAccepted
-              const buyerPhone = m.buyer?.phone ?? null;
+              const buyerPhone          = m.buyer?.phone ?? null;
 
               return (
                 <Card
                   key={m.id}
-                  className={`transition-shadow border-l-4 ${statusCfg.border || "border-l-gray-200"} ${
-                    isRejected ? "opacity-50" : "hover:shadow-md"
+                  className={`transition-all border-l-4 ${statusCfg.border || "border-l-border"} ${
+                    isRejected ? "opacity-50" : "hover:border-white/[0.12]"
                   }`}
                 >
                   <CardContent className="p-5">
@@ -430,23 +408,22 @@ export default function MatchesPage() {
                     <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
                       <div className="flex items-center gap-2">
                         {isSameAgent ? (
-                          <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">
+                          <span className="inline-flex items-center gap-1 text-xs bg-blue-500/15 text-blue-300 px-2 py-0.5 rounded-full font-medium border border-blue-500/20">
                             <User className="h-3 w-3" /> Seu comprador · Seu imóvel
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-xs bg-violet-50 text-violet-700 px-2 py-0.5 rounded-full font-medium">
+                          <span className="inline-flex items-center gap-1 text-xs bg-violet-500/15 text-violet-300 px-2 py-0.5 rounded-full font-medium border border-violet-500/20">
                             <ArrowRight className="h-3 w-3" /> Oportunidade de parceria
                           </span>
                         )}
                         {isClosed && (
-                          <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-medium">
+                          <span className="text-xs bg-emerald-500/15 text-emerald-300 px-2 py-0.5 rounded-full font-medium border border-emerald-500/20">
                             🎉 Negócio fechado!
                           </span>
                         )}
                       </div>
                       <StatusBadge
-                        status={m.status}
-                        matchId={m.id}
+                        status={m.status} matchId={m.id}
                         onUpdate={(id, status) => updateStatusMutation.mutate({ id, status })}
                         editable={isSameAgent || partnershipAccepted}
                       />
@@ -454,34 +431,32 @@ export default function MatchesPage() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       {/* Comprador */}
-                      <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
-                        <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
-                          <User className="h-5 w-5 text-blue-600" />
+                      <div className="flex items-start gap-3 p-3 bg-blue-500/8 border border-blue-500/15 rounded-xl">
+                        <div className="p-2 bg-blue-500/15 rounded-lg flex-shrink-0">
+                          <User className="h-5 w-5 text-blue-400" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900">{m.buyer?.buyerName}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="font-semibold text-foreground">{m.buyer?.buyerName}</p>
+                          <p className="text-xs text-muted-foreground">
                             {PROPERTY_TYPE_LABELS[m.buyer?.propertyType]} • {m.buyer?.desiredCity}
                           </p>
-                          <p className="text-sm font-medium text-blue-600 mt-1">
+                          <p className="text-sm font-medium text-blue-400 mt-1">
                             Até {formatCurrency(m.buyer?.maxPrice)}
                           </p>
                           {!isSameAgent && m.buyer?.agent && (
-                            <p className="text-xs text-gray-400 mt-1">Corretor: {m.buyer.agent.name}</p>
+                            <p className="text-xs text-muted-foreground/70 mt-1">Corretor: {m.buyer.agent.name}</p>
                           )}
-                          {/* Contato revelado quando parceria aceita */}
                           {!isSameAgent && partnershipAccepted && buyerPhone && (
                             <a
                               href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-xs bg-green-600 text-white px-2 py-0.5 rounded mt-1.5 hover:bg-green-700 transition"
+                              target="_blank" rel="noreferrer"
+                              className="inline-flex items-center gap-1 text-xs bg-emerald-600/90 text-white px-2 py-0.5 rounded mt-1.5 hover:bg-emerald-500 transition"
                             >
                               <Phone className="h-3 w-3" /> {buyerPhone}
                             </a>
                           )}
                           {!isSameAgent && !partnershipAccepted && (
-                            <p className="inline-flex items-center gap-1 text-xs text-gray-400 mt-1.5 bg-white border border-gray-200 px-2 py-0.5 rounded">
+                            <p className="inline-flex items-center gap-1 text-xs text-muted-foreground mt-1.5 bg-white/5 border border-border px-2 py-0.5 rounded">
                               <Lock className="h-3 w-3" /> Contatos visíveis após parceria
                             </p>
                           )}
@@ -489,23 +464,23 @@ export default function MatchesPage() {
                       </div>
 
                       {/* Imóvel */}
-                      <div className="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
-                        <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
-                          <Home className="h-5 w-5 text-green-600" />
+                      <div className="flex items-start gap-3 p-3 bg-emerald-500/8 border border-emerald-500/15 rounded-xl">
+                        <div className="p-2 bg-emerald-500/15 rounded-lg flex-shrink-0">
+                          <Home className="h-5 w-5 text-emerald-400" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <Link
                             href={`/imovel/${m.property?.id}`}
-                            className="font-semibold text-gray-900 hover:text-blue-600 line-clamp-1"
+                            className="font-semibold text-foreground hover:text-primary line-clamp-1"
                           >
                             {m.property?.title}
                           </Link>
-                          <p className="text-xs text-gray-500">{m.property?.city}</p>
-                          <p className="text-sm font-medium text-green-600 mt-1">
+                          <p className="text-xs text-muted-foreground">{m.property?.city}</p>
+                          <p className="text-sm font-medium text-emerald-400 mt-1">
                             {formatCurrency(m.property?.price)}
                           </p>
                           {!isSameAgent && m.property?.agent && (
-                            <p className="text-xs text-gray-400 mt-1">Corretor: {m.property.agent.name}</p>
+                            <p className="text-xs text-muted-foreground/70 mt-1">Corretor: {m.property.agent.name}</p>
                           )}
                         </div>
                       </div>
@@ -514,62 +489,51 @@ export default function MatchesPage() {
                     {/* Footer row */}
                     <div className="mt-4 flex items-center justify-between gap-4">
                       <div className="flex-1">
-                        <p className="text-xs text-gray-400 mb-1">Compatibilidade</p>
+                        <p className="text-xs text-muted-foreground/70 mb-1">Compatibilidade</p>
                         <ScoreBar score={m.score} />
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        {/* Match próprio: WhatsApp */}
                         {isSameAgent && buyerPhone && (
                           <a
                             href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="flex items-center gap-1 text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition"
+                            target="_blank" rel="noreferrer"
+                            className="flex items-center gap-1 text-xs bg-emerald-600/90 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-500 transition"
                           >
                             <Phone className="h-3 w-3" /> WhatsApp
                           </a>
                         )}
 
-                        {/* Match cruzado — parceria já existe */}
                         {!isSameAgent && otherAgentId && partnershipExists && (
-                          <span
-                            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium cursor-default ${
-                              partnershipAccepted
-                                ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-500"
-                            }`}
-                          >
+                          <span className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium cursor-default ${
+                            partnershipAccepted
+                              ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/20"
+                              : "bg-white/10 text-slate-400 border border-white/10"
+                          }`}>
                             <Users className="h-3.5 w-3.5" />
                             {partnershipAccepted ? "Parceria Aceita" : "Proposta Enviada"}
                           </span>
                         )}
 
-                        {/* Match cruzado — sem parceria: abre modal */}
                         {!isSameAgent && otherAgentId && !partnershipExists && (
                           <button
                             onClick={() =>
                               setPartnershipTarget({
-                                matchId: m.id,
-                                buyerId: m.buyer?.id,
-                                propertyId: m.property?.id,
-                                receiverId: otherAgentId,
-                                receiverName: otherAgentName ?? "corretor",
+                                matchId: m.id, buyerId: m.buyer?.id, propertyId: m.property?.id,
+                                receiverId: otherAgentId, receiverName: otherAgentName ?? "corretor",
                               })
                             }
-                            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition font-medium bg-violet-600 text-white hover:bg-violet-700"
+                            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition font-medium bg-violet-600/90 text-white hover:bg-violet-500"
                           >
-                            <Users className="h-3.5 w-3.5" />
-                            Propor Parceria
+                            <Users className="h-3.5 w-3.5" /> Propor Parceria
                           </button>
                         )}
 
-                        {/* Descartar — só em PENDING sem parceria ativa */}
                         {m.status === "PENDING" && !partnershipExists && (
                           <button
                             onClick={() => updateStatusMutation.mutate({ id: m.id, status: "REJECTED" })}
                             title="Descartar match"
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                            className="p-1.5 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition"
                           >
                             <X className="h-4 w-4" />
                           </button>

@@ -132,13 +132,13 @@ export default function LoginPage() {
       <LeftPanel />
 
       {/* ── RIGHT PANEL ─────────────────────────────────────────────────────── */}
-      <div className="w-full lg:w-[55%] xl:w-1/2 flex flex-col items-center justify-center px-6 py-16 sm:px-12 bg-[#f8f9fb] overflow-y-auto">
+      <div className="w-full lg:w-[55%] xl:w-1/2 flex flex-col items-center justify-center px-6 py-16 sm:px-12 bg-background overflow-y-auto">
 
         {/* Mobile logo */}
         <div className="lg:hidden mb-12">
           <Link href="/">
             <Image
-              src="/logo_texto_preto.png"
+              src="/logo_texto_branco.png"
               alt="ImobMatch"
               width={150}
               height={44}
@@ -151,17 +151,17 @@ export default function LoginPage() {
 
           {/* Form card */}
           <div
-            className="bg-white rounded-2xl border border-slate-100 px-5 py-7 sm:px-8 sm:py-9"
+            className="bg-card rounded-2xl border border-border px-5 py-7 sm:px-8 sm:py-9"
             style={{
-              boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06)",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.2), 0 12px 40px rgba(0,0,0,0.3)",
             }}
           >
             {/* Header */}
             <div className="mb-8">
-              <h2 className="text-[1.55rem] font-bold text-slate-900 tracking-[-0.03em] leading-tight">
+              <h2 className="text-[1.55rem] font-bold text-foreground tracking-[-0.03em] leading-tight">
                 Acessar minha conta
               </h2>
-              <p className="text-slate-400 mt-1.5 text-sm">
+              <p className="text-muted-foreground mt-1.5 text-sm">
                 Continue de onde você parou.
               </p>
             </div>
@@ -170,7 +170,7 @@ export default function LoginPage() {
 
               {/* Email */}
               <div className="space-y-1.5">
-                <label className="block text-[13px] font-medium text-slate-500 tracking-wide">
+                <label className="block text-[13px] font-medium text-muted-foreground tracking-wide">
                   E-mail
                 </label>
                 <Input
@@ -180,9 +180,8 @@ export default function LoginPage() {
                   autoComplete="email"
                   {...register("email")}
                   className={[
-                    "h-11 text-sm rounded-xl bg-slate-50 border-slate-200 text-slate-900",
-                    "placeholder:text-slate-300 transition-all duration-150",
-                    "focus:bg-white focus:border-blue-400 focus:ring-4 focus:ring-blue-500/[0.10] focus:outline-none",
+                    "h-11 text-sm rounded-xl",
+                    "transition-all duration-150",
                     errors.email
                       ? "border-red-400 focus:border-red-400 focus:ring-red-500/[0.10]"
                       : "",
@@ -196,12 +195,12 @@ export default function LoginPage() {
               {/* Password */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-[13px] font-medium text-slate-500 tracking-wide">
+                  <label className="text-[13px] font-medium text-muted-foreground tracking-wide">
                     Senha
                   </label>
                   <Link
                     href="/forgot-password"
-                    className="text-[12.5px] text-slate-400 hover:text-blue-600 transition-colors"
+                    className="text-[12.5px] text-muted-foreground hover:text-primary transition-colors"
                   >
                     Esqueceu?
                   </Link>
@@ -213,9 +212,7 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     {...register("password")}
                     className={[
-                      "h-11 text-sm pr-11 rounded-xl bg-slate-50 border-slate-200 text-slate-900",
-                      "placeholder:text-slate-300 transition-all duration-150",
-                      "focus:bg-white focus:border-blue-400 focus:ring-4 focus:ring-blue-500/[0.10] focus:outline-none",
+                      "h-11 text-sm pr-11 rounded-xl transition-all duration-150",
                       errors.password
                         ? "border-red-400 focus:border-red-400 focus:ring-red-500/[0.10]"
                         : "",
@@ -224,7 +221,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
                     tabIndex={-1}
                   >
                     {showPassword
@@ -265,11 +262,11 @@ export default function LoginPage() {
           </div>
 
           {/* Register CTA */}
-          <p className="mt-6 text-center text-[13px] text-slate-400">
+          <p className="mt-6 text-center text-[13px] text-muted-foreground">
             Ainda não tem conta?{" "}
             <Link
               href="/register"
-              className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              className="font-medium text-primary hover:text-primary/80 transition-colors"
             >
               Criar conta grátis
             </Link>

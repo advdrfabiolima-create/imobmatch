@@ -24,6 +24,33 @@ const PROPERTY_TYPE_LABELS: Record<string, string> = {
   RURAL:      "Rural",
 };
 
+// ─── Info block reutilizável ──────────────────────────────────────────────────
+
+function InfoBlock({
+  label,
+  accent,
+  children,
+}: {
+  label: string;
+  accent: { bg: string; border: string; text: string };
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className="rounded-xl p-4 space-y-1 border"
+      style={{ background: accent.bg, borderColor: accent.border }}
+    >
+      <p
+        className="text-xs font-semibold uppercase tracking-wider mb-2"
+        style={{ color: accent.text }}
+      >
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+}
+
 export default function VerificarTermoPage() {
   const { id } = useParams<{ id: string }>();
 
@@ -35,40 +62,63 @@ export default function VerificarTermoPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10 px-4">
-      <div className="w-full max-w-2xl space-y-4">
+    <div
+      className="min-h-screen flex items-center justify-center py-10 px-4"
+      style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 50%, #080e1f 100%)" }}
+    >
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none fixed top-0 right-0 w-[500px] h-[500px] rounded-full"
+        style={{ background: "rgba(124,58,237,0.07)", filter: "blur(140px)" }}
+      />
+
+      <div className="relative z-10 w-full max-w-2xl space-y-4">
 
         {/* Header */}
         <div className="text-center mb-6">
-          <Link href="/" className="inline-block mb-4">
+          <Link href="/" className="inline-block mb-4 transition-opacity hover:opacity-70">
             <Image
-              src="/logo_texto_preto.png"
+              src="/logo_texto_branco.png"
               alt="ImobMatch"
               width={160}
               height={48}
-              className="h-11 w-auto object-contain mx-auto"
+              className="h-5 w-auto object-contain mx-auto"
             />
           </Link>
-          <h1 className="text-xl font-bold text-gray-900">Verificação de Autenticidade</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-xl font-bold text-white">Verificação de Autenticidade</h1>
+          <p className="text-sm text-white/40 mt-1">
             Confirme se o Termo de Parceria é legítimo e não foi adulterado.
           </p>
         </div>
 
         {/* Loading */}
         {isLoading && (
-          <div className="bg-white rounded-2xl shadow p-10 flex flex-col items-center gap-3 text-gray-500">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-            <p>Verificando documento...</p>
+          <div
+            className="rounded-2xl border p-10 flex flex-col items-center gap-3"
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              borderColor: "rgba(255,255,255,0.08)",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+            }}
+          >
+            <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+            <p className="text-white/40 text-sm">Verificando documento...</p>
           </div>
         )}
 
         {/* Error / not found */}
         {(isError || (!isLoading && !data)) && (
-          <div className="bg-white rounded-2xl shadow p-10 flex flex-col items-center gap-3 text-center">
+          <div
+            className="rounded-2xl border p-10 flex flex-col items-center gap-3 text-center"
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              borderColor: "rgba(255,255,255,0.08)",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+            }}
+          >
             <ShieldX className="h-12 w-12 text-red-400" />
-            <p className="font-semibold text-gray-800">Documento não encontrado</p>
-            <p className="text-sm text-gray-500">
+            <p className="font-semibold text-white">Documento não encontrado</p>
+            <p className="text-sm text-white/40">
               O ID informado não corresponde a nenhuma parceria na plataforma.
             </p>
           </div>
@@ -79,107 +129,176 @@ export default function VerificarTermoPage() {
           <>
             {/* Status banner */}
             {data.valid ? (
-              <div className="bg-green-50 border border-green-300 rounded-2xl p-6 flex items-start gap-4 shadow">
-                <ShieldCheck className="h-10 w-10 text-green-600 flex-shrink-0 mt-0.5" />
+              <div
+                className="rounded-2xl border p-6 flex items-start gap-4"
+                style={{
+                  background: "rgba(16,185,129,0.08)",
+                  borderColor: "rgba(16,185,129,0.25)",
+                  boxShadow: "0 0 30px rgba(16,185,129,0.08)",
+                }}
+              >
+                <ShieldCheck className="h-10 w-10 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-lg font-bold text-green-800">Documento Autêntico</p>
-                  <p className="text-sm text-green-700 mt-1">
+                  <p className="text-lg font-bold text-emerald-400">Documento Autêntico</p>
+                  <p className="text-sm text-white/50 mt-1">
                     O hash SHA-256 foi recalculado e corresponde exatamente ao registrado no momento
                     da aceitação. Este documento não foi adulterado.
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="bg-red-50 border border-red-300 rounded-2xl p-6 flex items-start gap-4 shadow">
-                <ShieldX className="h-10 w-10 text-red-600 flex-shrink-0 mt-0.5" />
+              <div
+                className="rounded-2xl border p-6 flex items-start gap-4"
+                style={{
+                  background: "rgba(239,68,68,0.08)",
+                  borderColor: "rgba(239,68,68,0.25)",
+                  boxShadow: "0 0 30px rgba(239,68,68,0.08)",
+                }}
+              >
+                <ShieldX className="h-10 w-10 text-red-400 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-lg font-bold text-red-800">Documento Inválido</p>
-                  <p className="text-sm text-red-700 mt-1">{data.reason}</p>
+                  <p className="text-lg font-bold text-red-400">Documento Inválido</p>
+                  <p className="text-sm text-white/50 mt-1">{data.reason}</p>
                 </div>
               </div>
             )}
 
             {/* Details */}
             {data.valid && (
-              <div className="bg-white rounded-2xl shadow p-6 space-y-5 text-sm text-gray-800">
-
+              <div
+                className="rounded-2xl border p-6 space-y-5 text-sm"
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  borderColor: "rgba(255,255,255,0.08)",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+                }}
+              >
                 {/* Parties */}
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-blue-50 rounded-xl p-4 space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 mb-2">
-                      Corretor Solicitante
+                  <InfoBlock
+                    label="Corretor Solicitante"
+                    accent={{
+                      bg: "rgba(37,99,235,0.08)",
+                      border: "rgba(37,99,235,0.20)",
+                      text: "#60a5fa",
+                    }}
+                  >
+                    <p className="text-white/70">
+                      <span className="text-white/35">Nome: </span>
+                      <strong className="text-white/80">{data.requester.name}</strong>
                     </p>
-                    <p><span className="text-gray-500">Nome:</span> <strong>{data.requester.name}</strong></p>
                     {data.requester.creci && (
-                      <p><span className="text-gray-500">CRECI:</span> {data.requester.creci}</p>
+                      <p className="text-white/70">
+                        <span className="text-white/35">CRECI: </span>{data.requester.creci}
+                      </p>
                     )}
                     {data.requester.agency && (
-                      <p><span className="text-gray-500">Imobiliária:</span> {data.requester.agency}</p>
+                      <p className="text-white/70">
+                        <span className="text-white/35">Imobiliária: </span>{data.requester.agency}
+                      </p>
                     )}
-                  </div>
+                  </InfoBlock>
 
-                  <div className="bg-green-50 rounded-xl p-4 space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-green-700 mb-2">
-                      Corretor Receptor
+                  <InfoBlock
+                    label="Corretor Receptor"
+                    accent={{
+                      bg: "rgba(16,185,129,0.08)",
+                      border: "rgba(16,185,129,0.20)",
+                      text: "#34d399",
+                    }}
+                  >
+                    <p className="text-white/70">
+                      <span className="text-white/35">Nome: </span>
+                      <strong className="text-white/80">{data.receiver.name}</strong>
                     </p>
-                    <p><span className="text-gray-500">Nome:</span> <strong>{data.receiver.name}</strong></p>
                     {data.receiver.creci && (
-                      <p><span className="text-gray-500">CRECI:</span> {data.receiver.creci}</p>
+                      <p className="text-white/70">
+                        <span className="text-white/35">CRECI: </span>{data.receiver.creci}
+                      </p>
                     )}
                     {data.receiver.agency && (
-                      <p><span className="text-gray-500">Imobiliária:</span> {data.receiver.agency}</p>
+                      <p className="text-white/70">
+                        <span className="text-white/35">Imobiliária: </span>{data.receiver.agency}
+                      </p>
                     )}
-                  </div>
+                  </InfoBlock>
                 </div>
 
                 {/* Property */}
-                <div className="bg-gray-50 rounded-xl p-4 space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
-                    Imóvel
+                <InfoBlock
+                  label="Imóvel"
+                  accent={{
+                    bg: "rgba(255,255,255,0.03)",
+                    border: "rgba(255,255,255,0.08)",
+                    text: "rgba(255,255,255,0.35)",
+                  }}
+                >
+                  <p className="text-white/70">
+                    <span className="text-white/35">Título: </span>
+                    <strong className="text-white/80">{data.property.title}</strong>
                   </p>
-                  <p><span className="text-gray-500">Título:</span> <strong>{data.property.title}</strong></p>
-                  <p><span className="text-gray-500">Tipo:</span> {PROPERTY_TYPE_LABELS[data.property.type] ?? data.property.type}</p>
+                  <p className="text-white/70">
+                    <span className="text-white/35">Tipo: </span>
+                    {PROPERTY_TYPE_LABELS[data.property.type] ?? data.property.type}
+                  </p>
                   {data.property.city && (
-                    <p><span className="text-gray-500">Cidade:</span> {data.property.city}</p>
+                    <p className="text-white/70">
+                      <span className="text-white/35">Cidade: </span>{data.property.city}
+                    </p>
                   )}
-                </div>
+                </InfoBlock>
 
                 {/* Commission + date */}
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-amber-700 mb-2">
-                    Acordo
-                  </p>
-                  <p>
-                    <span className="text-gray-500">Comissão acordada:</span>{" "}
+                <InfoBlock
+                  label="Acordo"
+                  accent={{
+                    bg: "rgba(245,158,11,0.08)",
+                    border: "rgba(245,158,11,0.20)",
+                    text: "#fbbf24",
+                  }}
+                >
+                  <p className="text-white/70">
+                    <span className="text-white/35">Comissão acordada: </span>
                     {data.commissionSplit
-                      ? <strong>{data.commissionSplit}% / {100 - data.commissionSplit}%</strong>
-                      : <span className="text-gray-400">A definir entre as partes</span>
+                      ? <strong className="text-white/80">{data.commissionSplit}% / {100 - data.commissionSplit}%</strong>
+                      : <span className="text-white/30">A definir entre as partes</span>
                     }
                   </p>
-                  <p>
-                    <span className="text-gray-500">Data de aceitação:</span>{" "}
-                    <strong>{formatDate(data.acceptedAt)}</strong>
+                  <p className="text-white/70">
+                    <span className="text-white/35">Data de aceitação: </span>
+                    <strong className="text-white/80">{formatDate(data.acceptedAt)}</strong>
                   </p>
-                </div>
+                </InfoBlock>
 
                 {/* Hash */}
-                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
-                    Hash SHA-256 Registrado
-                  </p>
-                  <code className="block break-all text-[11px] font-mono bg-white border rounded p-2 text-gray-700">
+                <InfoBlock
+                  label="Hash SHA-256 Registrado"
+                  accent={{
+                    bg: "rgba(255,255,255,0.03)",
+                    border: "rgba(255,255,255,0.08)",
+                    text: "rgba(255,255,255,0.35)",
+                  }}
+                >
+                  <code
+                    className="block break-all text-[11px] font-mono rounded p-2 border"
+                    style={{
+                      background: "rgba(0,0,0,0.25)",
+                      borderColor: "rgba(255,255,255,0.08)",
+                      color: "rgba(255,255,255,0.55)",
+                    }}
+                  >
                     {data.hash}
                   </code>
-                  <p className="text-xs text-gray-400">
-                    ID da parceria: <code>{data.partnershipId}</code>
+                  <p className="text-xs text-white/25 mt-1">
+                    ID da parceria: <code className="text-white/40">{data.partnershipId}</code>
                   </p>
-                </div>
+                </InfoBlock>
 
                 {/* Link to document */}
                 <div className="pt-1 text-center">
                   <Link
                     href={`/termo/${id}`}
-                    className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline font-medium"
+                    className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium"
                     target="_blank"
                   >
                     <ExternalLink className="h-4 w-4" />
@@ -191,7 +310,7 @@ export default function VerificarTermoPage() {
           </>
         )}
 
-        <p className="text-center text-xs text-gray-400 pt-2">
+        <p className="text-center text-xs text-white/20 pt-2">
           useimobmatch.com.br — Verificação pública de autenticidade de termos de parceria
         </p>
       </div>

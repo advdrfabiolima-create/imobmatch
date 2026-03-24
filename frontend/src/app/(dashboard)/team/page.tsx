@@ -63,17 +63,17 @@ function InviteModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-lg font-semibold text-gray-900">Convidar membro</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="h-5 w-5 text-gray-500" />
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+      <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-xl">
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground">Convidar membro</h2>
+          <button onClick={onClose} className="p-2 hover:bg-accent rounded-lg transition-colors">
+            <X className="h-5 w-5 text-muted-foreground" />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1.5">
+            <label className="text-sm font-medium text-foreground/80 block mb-1.5">
               E-mail do membro
             </label>
             <Input
@@ -85,7 +85,7 @@ function InviteModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-1.5">
+            <label className="text-sm font-medium text-foreground/80 block mb-1.5">
               Função na equipe
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -96,8 +96,8 @@ function InviteModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
                   onClick={() => setRole(r)}
                   className={`flex items-center gap-2 p-3 rounded-xl border-2 text-sm font-medium transition-colors ${
                     role === r
-                      ? "border-blue-600 bg-blue-50 text-blue-700"
-                      : "border-gray-200 text-gray-600 hover:border-gray-300"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:border-border/80"
                   }`}
                 >
                   {r === "ADMIN" ? (
@@ -109,7 +109,7 @@ function InviteModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
                 </button>
               ))}
             </div>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-muted-foreground/60 mt-2">
               {role === "ADMIN"
                 ? "Administradores podem gerenciar imóveis, compradores e membros da equipe."
                 : "Corretores podem gerenciar seus próprios imóveis e compradores."}
@@ -121,7 +121,7 @@ function InviteModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-blue-600 hover:bg-blue-700 gap-2"
+              className="flex-1 gap-2"
               disabled={loading}
             >
               {loading ? (
@@ -150,25 +150,25 @@ export default function TeamPage() {
       <div>
         <Header title="Gestão de Equipe" />
         <div className="p-6 max-w-2xl mx-auto mt-8">
-          <Card className="border-2 border-dashed border-gray-200">
+          <Card className="border-2 border-dashed border-border">
             <CardContent className="p-10 text-center">
-              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4">
-                <UsersRound className="h-8 w-8 text-blue-400" />
+              <div className="empty-state-icon mx-auto mb-4">
+                <UsersRound className="h-6 w-6 text-primary/70" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
+              <h2 className="text-xl font-bold text-foreground mb-2">
                 Recurso exclusivo do plano Agency
               </h2>
-              <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
+              <p className="text-muted-foreground text-sm mb-6 max-w-sm mx-auto">
                 A Gestão de Equipe permite convidar corretores, definir permissões e gerenciar toda
                 a operação da sua imobiliária em um só lugar.
               </p>
               <Link href="/meu-plano">
-                <Button className="bg-blue-600 hover:bg-blue-700 gap-2">
+                <Button className="gap-2">
                   Ver planos
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <p className="text-xs text-gray-400 mt-4">
+              <p className="text-xs text-muted-foreground/60 mt-4">
                 Este recurso está disponível apenas no plano Agency.
               </p>
             </CardContent>
@@ -226,8 +226,8 @@ export default function TeamPage() {
             ].map((stat) => (
               <Card key={stat.label}>
                 <CardContent className="p-4">
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  <p className="text-sm text-gray-500 mt-0.5">{stat.label}</p>
+                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5">{stat.label}</p>
                 </CardContent>
               </Card>
             ))}
@@ -238,7 +238,7 @@ export default function TeamPage() {
             <CardHeader className="flex flex-row items-center justify-between pb-4 gap-3">
               <CardTitle className="text-lg">Membros da Equipe</CardTitle>
               <Button
-                className="bg-blue-600 hover:bg-blue-700 gap-2 flex-shrink-0"
+                className="gap-2 flex-shrink-0"
                 onClick={() => setShowInvite(true)}
                 size="sm"
               >
@@ -250,13 +250,13 @@ export default function TeamPage() {
             <CardContent className="p-0">
               {isLoading ? (
                 <div className="flex justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 </div>
               ) : members.length === 0 ? (
                 <div className="text-center py-14 px-6">
-                  <UsersRound className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-500 font-medium mb-1">Nenhum membro na equipe ainda</p>
-                  <p className="text-sm text-gray-400 mb-4">
+                  <UsersRound className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-muted-foreground font-medium mb-1">Nenhum membro na equipe ainda</p>
+                  <p className="text-sm text-muted-foreground/60 mb-4">
                     Convide corretores para trabalharem junto com você.
                   </p>
                   <Button
@@ -272,21 +272,21 @@ export default function TeamPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b bg-gray-50">
-                        <th className="text-left py-3 px-6 font-medium text-gray-600">Nome</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">E-mail</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Função</th>
-                        <th className="text-left py-3 px-4 font-medium text-gray-600">Status</th>
-                        <th className="text-right py-3 px-6 font-medium text-gray-600">Ações</th>
+                      <tr className="border-b border-border bg-muted/50">
+                        <th className="text-left py-3 px-6 font-medium text-muted-foreground text-xs">Nome</th>
+                        <th className="text-left py-3 px-4 font-medium text-muted-foreground text-xs">E-mail</th>
+                        <th className="text-left py-3 px-4 font-medium text-muted-foreground text-xs">Função</th>
+                        <th className="text-left py-3 px-4 font-medium text-muted-foreground text-xs">Status</th>
+                        <th className="text-right py-3 px-6 font-medium text-muted-foreground text-xs">Ações</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-border">
                       {members.map((member) => (
-                        <tr key={member.id} className="hover:bg-gray-50 transition-colors">
+                        <tr key={member.id} className="hover:bg-accent transition-colors">
                           {/* Name */}
                           <td className="py-3.5 px-6">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-blue-100 flex-shrink-0 overflow-hidden flex items-center justify-center text-blue-600 font-semibold text-xs">
+                              <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0 overflow-hidden flex items-center justify-center text-primary font-semibold text-xs ring-1 ring-primary/20">
                                 {member.avatarUrl ? (
                                   <img
                                     src={member.avatarUrl}
@@ -297,17 +297,17 @@ export default function TeamPage() {
                                   member.name.charAt(0).toUpperCase()
                                 )}
                               </div>
-                              <span className="font-medium text-gray-900">
+                              <span className="font-medium text-foreground">
                                 {member.name}
                                 {member.id === user?.id && (
-                                  <span className="ml-2 text-xs text-gray-400">(você)</span>
+                                  <span className="ml-2 text-xs text-muted-foreground/60">(você)</span>
                                 )}
                               </span>
                             </div>
                           </td>
 
                           {/* Email */}
-                          <td className="py-3.5 px-4 text-gray-600">{member.email}</td>
+                          <td className="py-3.5 px-4 text-muted-foreground">{member.email}</td>
 
                           {/* Role */}
                           <td className="py-3.5 px-4">
@@ -325,7 +325,7 @@ export default function TeamPage() {
                                     role: e.target.value as "ADMIN" | "AGENT",
                                   })
                                 }
-                                className="text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                                className="text-xs border border-border rounded-lg px-2.5 py-1.5 bg-muted text-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
                               >
                                 <option value="AGENT">Corretor</option>
                                 <option value="ADMIN">Administrador</option>
@@ -354,7 +354,7 @@ export default function TeamPage() {
                                   }
                                 }}
                                 disabled={removeMutation.isPending}
-                                className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                className="p-2 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                                 title="Remover membro"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -370,7 +370,7 @@ export default function TeamPage() {
             </CardContent>
           </Card>
 
-          <p className="text-xs text-gray-400 mt-4">
+          <p className="text-xs text-muted-foreground/60 mt-4">
             Membros convidados receberão um e-mail com instruções para criar sua conta.
           </p>
         </div>

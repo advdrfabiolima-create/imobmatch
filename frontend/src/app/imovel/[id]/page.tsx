@@ -58,22 +58,40 @@ export default async function PropertyPublicPage({
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div
+      className="min-h-screen"
+      style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 50%, #080e1f 100%)" }}
+    >
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none fixed top-0 right-0 w-[600px] h-[600px] rounded-full"
+        style={{ background: "rgba(124,58,237,0.06)", filter: "blur(140px)", zIndex: 0 }}
+      />
+
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-40">
+      <header
+        className="sticky top-0 z-40 backdrop-blur-xl border-b"
+        style={{
+          background: "rgba(6,12,26,0.85)",
+          borderColor: "rgba(255,255,255,0.06)",
+        }}
+      >
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-5 w-auto object-contain" />
+          <Link href="/" className="flex items-center transition-opacity hover:opacity-70">
+            <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto object-contain" />
           </Link>
           {fromDashboard && (
-            <Link href="/meus-imoveis" className="text-sm text-gray-600 hover:text-blue-600">
+            <Link
+              href="/meus-imoveis"
+              className="text-sm text-white/40 hover:text-white/70 transition-colors"
+            >
               ← Meus Imóveis
             </Link>
           )}
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-8 max-w-5xl">
+      <div className="relative z-10 container mx-auto px-6 py-8 max-w-5xl">
         {/* Photo Gallery */}
         <PhotoGallery photos={property.photos ?? []} title={property.title} />
 
@@ -81,85 +99,120 @@ export default async function PropertyPublicPage({
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <div className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-2">
-                <span className="bg-blue-100 px-3 py-1 rounded-full">{TYPE_LABELS[property.type]}</span>
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">Disponível</span>
+              <div className="flex items-center gap-2 text-sm font-medium mb-3">
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-semibold border"
+                  style={{
+                    background: "rgba(37,99,235,0.12)",
+                    borderColor: "rgba(37,99,235,0.25)",
+                    color: "#60a5fa",
+                  }}
+                >
+                  {TYPE_LABELS[property.type]}
+                </span>
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-semibold border"
+                  style={{
+                    background: "rgba(16,185,129,0.12)",
+                    borderColor: "rgba(16,185,129,0.25)",
+                    color: "#34d399",
+                  }}
+                >
+                  Disponível
+                </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{property.title}</h1>
-              <div className="flex items-center gap-1 text-gray-500">
-                <MapPin className="h-4 w-4" />
-                <span>{property.neighborhood ? `${property.neighborhood}, ` : ""}{property.city}/{property.state}</span>
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight">
+                {property.title}
+              </h1>
+              <div className="flex items-center gap-1.5 text-white/40 text-sm">
+                <MapPin className="h-4 w-4 flex-shrink-0" />
+                <span>
+                  {property.neighborhood ? `${property.neighborhood}, ` : ""}
+                  {property.city}/{property.state}
+                </span>
               </div>
             </div>
 
             {/* Details Grid */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {property.bedrooms && (
-                <div className="bg-white p-4 rounded-xl text-center border">
-                  <Bed className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-gray-900">{property.bedrooms}</p>
-                  <p className="text-xs text-gray-500">Quartos</p>
+              {[
+                property.bedrooms   && { icon: Bed,      value: property.bedrooms,              label: "Quartos"   },
+                property.suites     && { icon: BedDouble, value: property.suites,                label: "Suítes"    },
+                property.bathrooms  && { icon: Bath,     value: property.bathrooms,             label: "Banheiros" },
+                property.parkingSpots && { icon: Car,    value: property.parkingSpots,          label: "Vagas"     },
+                property.areaM2     && { icon: Maximize2, value: Number(property.areaM2),       label: property.type === "RURAL" ? "ha" : "m²" },
+              ].filter(Boolean).map((item: any) => (
+                <div
+                  key={item.label}
+                  className="p-4 rounded-xl text-center border"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    borderColor: "rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <item.icon className="h-5 w-5 text-blue-400 mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{item.value}</p>
+                  <p className="text-xs text-white/35">{item.label}</p>
                 </div>
-              )}
-              {property.suites && (
-                <div className="bg-white p-4 rounded-xl text-center border">
-                  <BedDouble className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-gray-900">{property.suites}</p>
-                  <p className="text-xs text-gray-500">Suítes</p>
-                </div>
-              )}
-              {property.bathrooms && (
-                <div className="bg-white p-4 rounded-xl text-center border">
-                  <Bath className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-gray-900">{property.bathrooms}</p>
-                  <p className="text-xs text-gray-500">Banheiros</p>
-                </div>
-              )}
-              {property.parkingSpots && (
-                <div className="bg-white p-4 rounded-xl text-center border">
-                  <Car className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-gray-900">{property.parkingSpots}</p>
-                  <p className="text-xs text-gray-500">Vagas</p>
-                </div>
-              )}
-              {property.areaM2 && (
-                <div className="bg-white p-4 rounded-xl text-center border">
-                  <Maximize2 className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-gray-900">{Number(property.areaM2)}</p>
-                  <p className="text-xs text-gray-500">{property.type === "RURAL" ? "ha" : "m²"}</p>
-                </div>
-              )}
+              ))}
             </div>
 
             {/* Description */}
             {property.description && (
-              <div className="bg-white p-6 rounded-2xl border">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Sobre o imóvel</h2>
-                <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">{property.description}</p>
+              <div
+                className="p-6 rounded-2xl border"
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  borderColor: "rgba(255,255,255,0.08)",
+                }}
+              >
+                <h2 className="text-base font-semibold text-white mb-3">Sobre o imóvel</h2>
+                <p className="text-white/50 leading-relaxed whitespace-pre-wrap text-sm">
+                  {property.description}
+                </p>
               </div>
             )}
           </div>
 
           {/* Sidebar - Price & Agent */}
           <div className="space-y-4">
-            {/* Price Card */}
-            <div className="bg-white p-6 rounded-2xl border shadow-sm sticky top-24">
-              <p className="text-3xl font-bold text-blue-600 mb-1">
+            <div
+              className="p-6 rounded-2xl border sticky top-24"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                borderColor: "rgba(255,255,255,0.09)",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.3), 0 12px 40px rgba(0,0,0,0.3)",
+              }}
+            >
+              <p
+                className="text-3xl font-bold mb-1"
+                style={{ color: "#60a5fa" }}
+              >
                 {formatCurrency(property.price)}
               </p>
-              <p className="text-sm text-gray-500 mb-6">Valor de venda</p>
+              <p className="text-sm text-white/35 mb-6">Valor de venda</p>
 
               {/* Agent */}
               {property.agent && (
-                <div className="border-t pt-4 mb-4">
-                  <p className="text-xs text-gray-500 mb-3 font-medium uppercase tracking-wide">Responsável</p>
+                <div
+                  className="border-t pt-4 mb-5"
+                  style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                >
+                  <p className="text-[11px] text-white/30 mb-3 font-semibold uppercase tracking-wider">
+                    Responsável
+                  </p>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-blue-300 font-bold text-sm flex-shrink-0"
+                      style={{ background: "rgba(37,99,235,0.20)" }}
+                    >
                       {property.agent.name?.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{property.agent.name}</p>
-                      {property.agent.agency && <p className="text-sm text-gray-500">{property.agent.agency}</p>}
+                      <p className="font-medium text-white/80 text-sm">{property.agent.name}</p>
+                      {property.agent.agency && (
+                        <p className="text-xs text-white/35">{property.agent.agency}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -168,18 +221,27 @@ export default async function PropertyPublicPage({
               {/* Contact Buttons */}
               <div className="space-y-3">
                 {whatsappUrl && (
-                  <a href={whatsappUrl} target="_blank" rel="noreferrer"
-                    className="flex items-center justify-center gap-2 w-full bg-green-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-green-700 transition"
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-semibold text-sm text-white transition-opacity hover:opacity-90"
+                    style={{ background: "#16a34a" }}
                   >
-                    <MessageCircle className="h-5 w-5" />
+                    <MessageCircle className="h-4 w-4" />
                     Contato via WhatsApp
                   </a>
                 )}
                 {property.agent?.phone && (
-                  <a href={`tel:${property.agent.phone}`}
-                    className="flex items-center justify-center gap-2 w-full border-2 border-blue-600 text-blue-600 py-3 px-4 rounded-xl font-medium hover:bg-blue-50 transition"
+                  <a
+                    href={`tel:${property.agent.phone}`}
+                    className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-semibold text-sm border transition-colors hover:bg-white/[0.06]"
+                    style={{
+                      borderColor: "rgba(37,99,235,0.40)",
+                      color: "#60a5fa",
+                    }}
                   >
-                    <Phone className="h-5 w-5" />
+                    <Phone className="h-4 w-4" />
                     Ligar para o Corretor
                   </a>
                 )}

@@ -91,7 +91,7 @@ export default function ImoveisPage() {
         {/* Toolbar */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar por título, cidade, bairro..."
               value={search}
@@ -115,23 +115,19 @@ export default function ImoveisPage() {
           </select>
           <Button
             onClick={() => { setEditProperty(null); setShowForm(true); }}
-            className="bg-blue-600 hover:bg-blue-700 gap-2"
+            className="gap-2"
           >
             <Plus className="h-4 w-4" /> Novo Imóvel
           </Button>
         </div>
 
         {/* Status tabs */}
-        <div className="flex gap-1 mb-6 bg-gray-100 p-1 rounded-xl w-fit flex-wrap">
+        <div className="tab-bar mb-6 w-fit">
           {STATUS_TABS.map((tab) => (
             <button
               key={tab.value}
               onClick={() => setStatus(tab.value)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                status === tab.value
-                  ? "bg-white shadow text-gray-900"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`tab-item ${status === tab.value ? "tab-item-active" : "tab-item-inactive"}`}
             >
               {tab.label}
             </button>
@@ -139,7 +135,7 @@ export default function ImoveisPage() {
         </div>
 
         {/* Stats */}
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           {data?.total ?? 0} imóvel(is) encontrado(s)
         </p>
 
@@ -147,18 +143,18 @@ export default function ImoveisPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-80 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-80 bg-white/5 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : data?.data?.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Home className="h-8 w-8 text-blue-400" />
+          <div className="empty-state">
+            <div className="empty-state-icon">
+              <Home className="h-6 w-6 text-primary/70" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{emptyMsg.title}</h3>
-            <p className="text-gray-500 mb-4">{emptyMsg.desc}</p>
+            <h3 className="text-lg font-semibold text-foreground mb-2">{emptyMsg.title}</h3>
+            <p className="text-muted-foreground mb-4">{emptyMsg.desc}</p>
             {showRegisterCta && (
-              <Button onClick={() => setShowForm(true)} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={() => setShowForm(true)}>
                 Cadastrar Imóvel
               </Button>
             )}

@@ -24,11 +24,11 @@ const PLAN_ICONS: Record<string, React.ElementType> = {
 };
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  PENDING:  { label: "Aguardando pagamento", color: "text-amber-600 bg-amber-50 border-amber-200" },
-  ACTIVE:   { label: "Ativa",                color: "text-green-600 bg-green-50 border-green-200" },
-  OVERDUE:  { label: "Pagamento vencido",    color: "text-red-600 bg-red-50 border-red-200" },
-  CANCELLED:{ label: "Cancelada",            color: "text-gray-500 bg-gray-50 border-gray-200" },
-  INACTIVE: { label: "Inativa",              color: "text-gray-500 bg-gray-50 border-gray-200" },
+  PENDING:  { label: "Aguardando pagamento", color: "text-amber-300 bg-amber-500/10 border-amber-500/30" },
+  ACTIVE:   { label: "Ativa",                color: "text-emerald-300 bg-emerald-500/10 border-emerald-500/30" },
+  OVERDUE:  { label: "Pagamento vencido",    color: "text-red-300 bg-red-500/10 border-red-500/30" },
+  CANCELLED:{ label: "Cancelada",            color: "text-muted-foreground bg-muted border-border" },
+  INACTIVE: { label: "Inativa",              color: "text-muted-foreground bg-muted border-border" },
 };
 
 function FounderBadge() {
@@ -37,11 +37,11 @@ function FounderBadge() {
       <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-4">
         <Crown className="h-10 w-10 text-white" />
       </div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Acesso Vitalício Ativo</h2>
-      <p className="text-gray-500 mb-4">
+      <h2 className="text-2xl font-bold text-foreground mb-2">Acesso Vitalício Ativo</h2>
+      <p className="text-muted-foreground mb-4">
         Você possui acesso completo a todos os recursos da plataforma, para sempre.
       </p>
-      <Badge className="bg-amber-100 text-amber-700 border border-amber-200 px-4 py-1.5 text-sm font-semibold">
+      <Badge className="bg-amber-500/15 text-amber-300 border border-amber-500/30 px-4 py-1.5 text-sm font-semibold">
         {COPY.founderBadge} · Lifetime
       </Badge>
     </div>
@@ -139,11 +139,11 @@ export default function MeuPlanoPage() {
       <div className="p-4 md:p-6 max-w-6xl">
 
         {/* Banner usuário fundador */}
-        <div className="mb-6 flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-          <Star className="h-5 w-5 text-amber-500 flex-shrink-0" />
+        <div className="mb-6 flex items-center gap-3 bg-amber-500/10 border border-amber-500/25 rounded-xl px-4 py-3">
+          <Star className="h-5 w-5 text-amber-400 flex-shrink-0" />
           <div>
-            <p className="text-sm font-semibold text-amber-900">{COPY.founderMsg}</p>
-            <p className="text-xs text-amber-700">Corretores que entram agora têm vantagem competitiva na rede.</p>
+            <p className="text-sm font-semibold text-amber-300">{COPY.founderMsg}</p>
+            <p className="text-xs text-amber-400/70">Corretores que entram agora têm vantagem competitiva na rede.</p>
           </div>
         </div>
 
@@ -175,9 +175,9 @@ export default function MeuPlanoPage() {
         )}
 
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Escolha seu plano</h2>
-          <p className="text-gray-500 text-sm mt-1">
-            Plano atual: <span className="font-semibold text-blue-600 capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</span>
+          <h2 className="text-xl font-bold text-foreground">Escolha seu plano</h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            Plano atual: <span className="font-semibold text-primary capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</span>
           </p>
         </div>
 
@@ -216,25 +216,25 @@ export default function MeuPlanoPage() {
                       <Icon className={`h-5 w-5 ${colors.text}`} />
                     </div>
 
-                    <h3 className="font-bold text-gray-900 mb-1">{plan.name}</h3>
+                    <h3 className="font-bold text-foreground mb-1">{plan.name}</h3>
 
                     <div className="mb-3">
                       {plan.price === null ? (
-                        <p className="text-2xl font-extrabold text-gray-900">Grátis</p>
+                        <p className="text-2xl font-extrabold text-foreground">Grátis</p>
                       ) : (
                         <>
-                          <p className="text-2xl font-extrabold text-gray-900">
+                          <p className="text-2xl font-extrabold text-foreground">
                             {formatPlanPrice(plan)}
-                            <span className="text-sm font-normal text-gray-400">/mês</span>
+                            <span className="text-sm font-normal text-muted-foreground">/mês</span>
                           </p>
                           {plan.priceAnnual && (
-                            <p className="text-xs text-gray-400">ou R$ {plan.priceAnnual}/ano</p>
+                            <p className="text-xs text-muted-foreground">ou R$ {plan.priceAnnual}/ano</p>
                           )}
                         </>
                       )}
                     </div>
 
-                    <p className="text-xs text-gray-500 mb-4 leading-relaxed">{plan.description}</p>
+                    <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{plan.description}</p>
                   </div>
 
                   <Button
@@ -258,10 +258,10 @@ export default function MeuPlanoPage() {
 
                   <ul className="space-y-1.5">
                     {plan.features.slice(0, 5).map(feature => (
-                      <li key={feature.text} className={`flex items-start gap-1.5 text-xs ${feature.included ? "text-gray-700" : "text-gray-400"}`}>
+                      <li key={feature.text} className={`flex items-start gap-1.5 text-xs ${feature.included ? "text-foreground/80" : "text-muted-foreground/50"}`}>
                         {feature.included
                           ? <Check className={`h-3.5 w-3.5 flex-shrink-0 mt-0.5 ${colors.text}`} />
-                          : <X className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-gray-300" />
+                          : <X className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-muted-foreground/40" />
                         }
                         {feature.text}
                       </li>
@@ -273,16 +273,16 @@ export default function MeuPlanoPage() {
           })}
         </div>
 
-        <p className="text-xs text-gray-400 mt-6 text-center">
+        <p className="text-xs text-muted-foreground/60 mt-6 text-center">
           Pagamentos processados com segurança via Asaas · Cancele quando quiser
         </p>
 
         {/* Botão cancelar assinatura — só aparece para quem tem plano pago */}
         {hasActivePaidPlan && (
-          <div className="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+          <div className="mt-8 pt-6 border-t border-border flex justify-center">
             <button
               onClick={() => setShowCancelModal(true)}
-              className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 hover:underline transition-colors"
+              className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 hover:underline transition-colors"
             >
               <XCircle className="h-4 w-4" />
               Cancelar assinatura
@@ -293,40 +293,40 @@ export default function MeuPlanoPage() {
 
       {/* Modal de confirmação de cancelamento */}
       {showCancelModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-2xl">
             <div className="p-6">
               {/* Ícone */}
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <XCircle className="h-6 w-6 text-red-500" />
+              <div className="w-12 h-12 bg-red-500/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                <XCircle className="h-6 w-6 text-red-400" />
               </div>
 
-              <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+              <h3 className="text-lg font-bold text-foreground text-center mb-2">
                 Cancelar assinatura?
               </h3>
-              <p className="text-sm text-gray-500 text-center mb-4 leading-relaxed">
+              <p className="text-sm text-muted-foreground text-center mb-4 leading-relaxed">
                 Ao cancelar, será feito o downgrade do seu plano para <strong>Free</strong> imediatamente.
                 Você perderá acesso aos recursos pagos do plano{" "}
                 <strong className="capitalize">{getPlanById(currentPlan)?.name ?? currentPlan}</strong>.
               </p>
 
               {/* Dado preservado — tranquiliza o usuário */}
-              <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-3 flex items-start gap-2">
-                <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-green-700 leading-relaxed">
+              <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-3 mb-3 flex items-start gap-2">
+                <Check className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-emerald-300 leading-relaxed">
                   <strong>Seus dados não serão apagados.</strong> Imóveis e compradores já cadastrados continuam salvos. Você apenas não poderá adicionar novos além do limite do plano Free (3 imóveis e 3 compradores).
                 </p>
               </div>
 
               {/* O que será perdido */}
-              <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-6">
-                <p className="text-xs font-semibold text-red-700 mb-2">Recursos que serão desativados:</p>
+              <div className="bg-red-500/10 border border-red-500/25 rounded-xl p-4 mb-6">
+                <p className="text-xs font-semibold text-red-300 mb-2">Recursos que serão desativados:</p>
                 <ul className="space-y-1">
                   {(getPlanById(currentPlan)?.features ?? [])
                     .filter(f => f.included)
                     .slice(0, 4)
                     .map(f => (
-                      <li key={f.text} className="flex items-center gap-2 text-xs text-red-600">
+                      <li key={f.text} className="flex items-center gap-2 text-xs text-red-400">
                         <X className="h-3 w-3 flex-shrink-0" /> {f.text}
                       </li>
                     ))}

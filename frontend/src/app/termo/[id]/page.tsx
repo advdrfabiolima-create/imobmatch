@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
 import { Loader2, Printer, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 function formatDate(iso: string) {
@@ -28,19 +27,35 @@ export default function TermoParceriaPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 50%, #080e1f 100%)" }}
+      >
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+          <p className="text-sm text-white/35">Carregando documento...</p>
+        </div>
       </div>
     );
   }
 
   if (isError || !agreement) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center bg-white rounded-2xl p-10 shadow">
-          <ShieldCheck className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-700 font-medium mb-1">Termo não disponível</p>
-          <p className="text-sm text-gray-400">
+      <div
+        className="min-h-screen flex items-center justify-center p-4"
+        style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 50%, #080e1f 100%)" }}
+      >
+        <div
+          className="text-center rounded-2xl border p-10"
+          style={{
+            background: "rgba(255,255,255,0.02)",
+            borderColor: "rgba(255,255,255,0.08)",
+            maxWidth: "28rem",
+          }}
+        >
+          <ShieldCheck className="h-10 w-10 text-white/15 mx-auto mb-3" />
+          <p className="text-white/70 font-medium mb-1">Termo não disponível</p>
+          <p className="text-sm text-white/35">
             O documento só é gerado após a parceria ser aceita, e somente as partes envolvidas podem acessá-lo.
           </p>
         </div>
@@ -53,19 +68,29 @@ export default function TermoParceriaPage() {
   const receiverShare  = 100 - requesterShare;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
+    <div
+      className="min-h-screen py-8 px-4"
+      style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 50%, #080e1f 100%)" }}
+    >
       {/* Print button */}
       <div className="max-w-3xl mx-auto mb-4 flex justify-end print:hidden">
-        <Button onClick={() => window.print()} className="bg-blue-600 hover:bg-blue-700 gap-2">
+        <button
+          onClick={() => window.print()}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          style={{
+            background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+            boxShadow: "0 2px 12px rgba(37,99,235,0.25)",
+          }}
+        >
           <Printer className="h-4 w-4" />
           Imprimir / Salvar PDF
-        </Button>
+        </button>
       </div>
 
-      {/* Document */}
+      {/* Document — mantém branco pois é um documento para impressão */}
       <div
         id="termo-parceria"
-        className="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden print:shadow-none print:rounded-none"
+        className="max-w-3xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden print:shadow-none print:rounded-none"
       >
         {/* Header */}
         <div className="bg-blue-600 px-8 py-6 text-white text-center">

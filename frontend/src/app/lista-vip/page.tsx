@@ -28,7 +28,6 @@ const STATS = [
   { value: "100%",     label: "Focado em corretores" },
 ];
 
-
 // ── Depoimentos ───────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
   {
@@ -83,23 +82,32 @@ function SignupForm() {
   if (submitted) {
     return (
       <div className="text-center py-8">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
-          <CheckCircle2 className="h-8 w-8 text-green-500" />
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5"
+          style={{ background: "rgba(16,185,129,0.15)" }}
+        >
+          <CheckCircle2 className="h-8 w-8 text-emerald-400" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Você está na lista!</h3>
-        <p className="text-gray-500 text-sm leading-relaxed mb-6">
+        <h3 className="text-xl font-bold text-white mb-2">Você está na lista!</h3>
+        <p className="text-white/45 text-sm leading-relaxed mb-6">
           Seu cadastro foi confirmado. Estamos liberando as vagas gradualmente
           para garantir a qualidade da experiência. Fique de olho no seu e-mail.
         </p>
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-left">
-          <p className="text-sm font-semibold text-green-800 mb-2">Próximos passos:</p>
+        <div
+          className="rounded-xl p-4 text-left border"
+          style={{
+            background: "rgba(16,185,129,0.08)",
+            borderColor: "rgba(16,185,129,0.20)",
+          }}
+        >
+          <p className="text-sm font-semibold text-emerald-400 mb-2">Próximos passos:</p>
           <ul className="space-y-2">
             {[
               "Verifique seu e-mail (incluindo a pasta de spam)",
               "Aguarde o link de acesso exclusivo",
               "Convide outros corretores do grupo",
             ].map((t) => (
-              <li key={t} className="flex items-start gap-2 text-sm text-green-700">
+              <li key={t} className="flex items-start gap-2 text-sm text-emerald-300/70">
                 <ChevronRight className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
                 {t}
               </li>
@@ -113,15 +121,22 @@ function SignupForm() {
   return (
     <>
       <div className="mb-5">
-        <p className="text-xs font-semibold text-violet-600 uppercase tracking-widest mb-1">
+        <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-1">
           Acesso exclusivo · Grupo Negócios Imobiliários
         </p>
-        <h3 className="text-xl font-bold text-gray-900">Garantir minha vaga grátis</h3>
-        <p className="text-sm text-gray-400 mt-1">Sem cartão de crédito. Sem compromisso.</p>
+        <h3 className="text-xl font-bold text-white">Garantir minha vaga grátis</h3>
+        <p className="text-sm text-white/35 mt-1">Sem cartão de crédito. Sem compromisso.</p>
       </div>
 
       {serverError && (
-        <div className="flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4 text-sm text-red-700">
+        <div
+          className="flex items-start gap-2.5 rounded-xl px-4 py-3 mb-4 text-sm border"
+          style={{
+            background: "rgba(239,68,68,0.08)",
+            borderColor: "rgba(239,68,68,0.25)",
+            color: "#f87171",
+          }}
+        >
           <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
           {serverError}
         </div>
@@ -129,60 +144,73 @@ function SignupForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
-            Nome completo <span className="text-red-500">*</span>
+          <label className="block text-xs font-medium text-white/45 mb-1.5">
+            Nome completo <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             placeholder="João Silva"
             {...register("fullName")}
-            className={`w-full h-11 px-4 rounded-xl border text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500 ${
-              errors.fullName ? "border-red-300 bg-red-50" : "border-gray-200"
-            }`}
+            className="w-full h-11 px-4 rounded-xl text-sm text-white placeholder-white/25 border transition-colors focus:outline-none"
+            style={{
+              background: errors.fullName ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.07)",
+              borderColor: errors.fullName ? "rgba(239,68,68,0.40)" : "rgba(255,255,255,0.12)",
+            }}
           />
           {errors.fullName && (
-            <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+            <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
               <AlertCircle className="h-3 w-3" /> {errors.fullName.message}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
-            E-mail <span className="text-red-500">*</span>
+          <label className="block text-xs font-medium text-white/45 mb-1.5">
+            E-mail <span className="text-red-400">*</span>
           </label>
           <input
             type="email"
             placeholder="joao@email.com"
             {...register("email")}
-            className={`w-full h-11 px-4 rounded-xl border text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500 ${
-              errors.email ? "border-red-300 bg-red-50" : "border-gray-200"
-            }`}
+            className="w-full h-11 px-4 rounded-xl text-sm text-white placeholder-white/25 border transition-colors focus:outline-none"
+            style={{
+              background: errors.email ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.07)",
+              borderColor: errors.email ? "rgba(239,68,68,0.40)" : "rgba(255,255,255,0.12)",
+            }}
           />
           {errors.email && (
-            <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+            <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
               <AlertCircle className="h-3 w-3" /> {errors.email.message}
             </p>
           )}
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1.5">
-            WhatsApp <span className="text-gray-400 font-normal">(opcional — para contato prioritário)</span>
+          <label className="block text-xs font-medium text-white/45 mb-1.5">
+            WhatsApp{" "}
+            <span className="text-white/25 font-normal">(opcional — para contato prioritário)</span>
           </label>
           <input
             type="tel"
             placeholder="(11) 99999-9999"
             {...register("whatsapp")}
             onChange={(e) => setValue("whatsapp", maskPhone(e.target.value))}
-            className="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500"
+            className="w-full h-11 px-4 rounded-xl text-sm text-white placeholder-white/25 border transition-colors focus:outline-none"
+            style={{
+              background: "rgba(255,255,255,0.07)",
+              borderColor: "rgba(255,255,255,0.12)",
+            }}
           />
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-12 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-200 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[15px] mt-1"
+          className="w-full h-12 text-white font-semibold rounded-xl transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[15px] mt-1"
+          style={{
+            background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+            boxShadow: isSubmitting ? "none" : "0 4px 20px rgba(37,99,235,0.30)",
+          }}
         >
           {isSubmitting ? (
             <>
@@ -201,11 +229,11 @@ function SignupForm() {
         </button>
       </form>
 
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-gray-400">
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-white/25">
         <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> 100% gratuito</span>
-        <span className="w-px h-3 bg-gray-200" />
+        <span className="w-px h-3 bg-white/10" />
         <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> Dados protegidos</span>
-        <span className="w-px h-3 bg-gray-200" />
+        <span className="w-px h-3 bg-white/10" />
         <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Sem spam</span>
       </div>
     </>
@@ -219,9 +247,12 @@ export default function ListaVipPage() {
       <title>Acesso Antecipado Exclusivo · ImobMatch</title>
       <meta name="description" content="Plataforma de matches e parcerias para corretores. Garanta seu acesso exclusivo antecipado." />
 
-      <div className="min-h-screen bg-white font-sans">
+      <div
+        className="min-h-screen font-sans"
+        style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 60%, #080e1f 100%)" }}
+      >
 
-        {/* ── HERO ────────────────────────────────────────────────────────────── */}
+        {/* ── HERO ──────────────────────────────────────────────────────────── */}
         <section
           className="relative overflow-hidden"
           style={{ background: "linear-gradient(160deg,#0b1437 0%,#0f1d5e 40%,#1a0f5c 70%,#2e0f6e 100%)" }}
@@ -243,7 +274,7 @@ export default function ListaVipPage() {
 
           <div className="relative max-w-6xl mx-auto px-5 sm:px-6 pt-8 pb-14 md:pt-14 md:pb-24">
 
-            {/* Logo — apenas imagem, sem link */}
+            {/* Logo */}
             <div className="mb-8 md:mb-12">
               <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 md:h-6 w-auto object-contain" />
             </div>
@@ -252,7 +283,6 @@ export default function ListaVipPage() {
 
               {/* Copy */}
               <div>
-                {/* Badge */}
                 <div className="inline-flex items-center gap-2 border border-violet-400/30 bg-violet-500/10 text-violet-300 rounded-full px-3 py-1.5 text-[11px] md:text-xs font-semibold uppercase tracking-wider mb-6 max-w-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse flex-shrink-0" />
                   <span className="truncate">Acesso exclusivo · Grupo Negócios Imobiliários</span>
@@ -271,7 +301,6 @@ export default function ListaVipPage() {
                   Matches automáticos, parcerias confiáveis e mais negócios — sem prospectar no escuro.
                 </p>
 
-                {/* Pain checks */}
                 <ul className="space-y-3 mb-10">
                   {[
                     "Tem cliente mas não acha o imóvel certo?",
@@ -285,7 +314,6 @@ export default function ListaVipPage() {
                   ))}
                 </ul>
 
-                {/* Stats row */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {STATS.map((s) => (
                     <div key={s.label} className="text-center">
@@ -298,7 +326,15 @@ export default function ListaVipPage() {
 
               {/* Formulário */}
               <div>
-                <div className="bg-white rounded-2xl shadow-2xl shadow-black/40 p-7 md:p-8">
+                <div
+                  className="rounded-2xl p-7 md:p-8 border"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    borderColor: "rgba(255,255,255,0.10)",
+                    boxShadow: "0 4px 40px rgba(0,0,0,0.50)",
+                    backdropFilter: "blur(12px)",
+                  }}
+                >
                   <SignupForm />
                 </div>
               </div>
@@ -306,10 +342,13 @@ export default function ListaVipPage() {
           </div>
         </section>
 
-        {/* ── COMO FUNCIONA ────────────────────────────────────────────────────── */}
+        {/* ── COMO FUNCIONA ──────────────────────────────────────────────────── */}
         <section
-          style={{ background: "linear-gradient(160deg,#0f172a 0%,#1e1b4b 100%)" }}
-          className="py-14 md:py-20"
+          className="py-14 md:py-20 border-y"
+          style={{
+            background: "rgba(255,255,255,0.01)",
+            borderColor: "rgba(255,255,255,0.06)",
+          }}
         >
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-12">
@@ -327,10 +366,9 @@ export default function ListaVipPage() {
               ].map((step) => (
                 <div
                   key={step.num}
-                  className="relative rounded-2xl p-7 overflow-hidden"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                  className="relative rounded-2xl p-7 overflow-hidden border"
+                  style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)" }}
                 >
-                  {/* Número grande decorativo */}
                   <span
                     className="text-7xl font-black leading-none select-none block mb-3"
                     style={{ backgroundImage: `linear-gradient(135deg,${step.from},${step.to})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
@@ -338,8 +376,7 @@ export default function ListaVipPage() {
                     {step.num}
                   </span>
                   <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
-                  <p className="text-sm text-white/50 leading-relaxed">{step.desc}</p>
-                  {/* barra colorida no topo */}
+                  <p className="text-sm text-white/45 leading-relaxed">{step.desc}</p>
                   <div
                     className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
                     style={{ backgroundImage: `linear-gradient(90deg,${step.from},${step.to})` }}
@@ -350,12 +387,12 @@ export default function ListaVipPage() {
           </div>
         </section>
 
-        {/* ── BENEFÍCIOS ───────────────────────────────────────────────────────── */}
-        <section className="py-14 md:py-20 bg-white">
+        {/* ── BENEFÍCIOS ─────────────────────────────────────────────────────── */}
+        <section className="py-14 md:py-20">
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-12">
-              <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">O que você ganha</p>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+              <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">O que você ganha</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
                 Tudo que um corretor moderno precisa<br className="hidden sm:block" /> em uma só plataforma
               </h2>
             </div>
@@ -366,31 +403,34 @@ export default function ListaVipPage() {
                   icon: Search,
                   title: "Match automático",
                   desc: "Seus compradores são cruzados com imóveis da rede em tempo real. Você recebe o lead — sem esforço.",
-                  from: "#2563eb", to: "#7c3aed", bg: "from-blue-600 to-violet-600",
+                  from: "#2563eb", to: "#7c3aed",
                 },
                 {
                   icon: HelpingHand,
                   title: "Parcerias inteligentes",
                   desc: "Conecte-se com corretores verificados e feche negócios que sozinho você nunca fecharia.",
-                  from: "#7c3aed", to: "#a855f7", bg: "from-violet-600 to-purple-500",
+                  from: "#7c3aed", to: "#a855f7",
                 },
                 {
                   icon: TrendingUp,
                   title: "Mais negócios, menos esforço",
                   desc: "A rede trabalha por você 24/7. Quando acorda, já tem oportunidades esperando.",
-                  from: "#0891b2", to: "#2563eb", bg: "from-cyan-600 to-blue-600",
+                  from: "#0891b2", to: "#2563eb",
                 },
                 {
                   icon: Shield,
                   title: "Carteira protegida",
                   desc: "Seus clientes e imóveis ficam registrados, organizados e seguros em um só lugar.",
-                  from: "#059669", to: "#0891b2", bg: "from-emerald-600 to-cyan-600",
+                  from: "#059669", to: "#0891b2",
                 },
               ].map(({ icon: Icon, title, desc, from, to }) => (
                 <div
                   key={title}
-                  className="relative rounded-2xl p-6 flex items-start gap-4 overflow-hidden group hover:-translate-y-1 transition-transform duration-200"
-                  style={{ background: "linear-gradient(135deg,#f8faff 0%,#f1f5fe 100%)", border: "1px solid #e2e8f8" }}
+                  className="relative rounded-2xl p-6 flex items-start gap-4 overflow-hidden border hover:-translate-y-0.5 transition-transform duration-200"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    borderColor: "rgba(255,255,255,0.08)",
+                  }}
                 >
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
@@ -399,45 +439,57 @@ export default function ListaVipPage() {
                     <Icon className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">{title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                    <h3 className="font-bold text-white mb-1">{title}</h3>
+                    <p className="text-sm text-white/45 leading-relaxed">{desc}</p>
                   </div>
-                  {/* Glow decorativo no canto */}
-                  <div
-                    className="pointer-events-none absolute -bottom-6 -right-6 w-24 h-24 rounded-full opacity-10"
-                    style={{ backgroundImage: `linear-gradient(135deg,${from},${to})`, filter: "blur(20px)" }}
-                  />
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── DEPOIMENTOS ──────────────────────────────────────────────────────── */}
-        <section className="max-w-5xl mx-auto px-5 sm:px-6 py-14 md:py-20">
+        {/* ── DEPOIMENTOS ────────────────────────────────────────────────────── */}
+        <section
+          className="max-w-5xl mx-auto px-5 sm:px-6 py-14 md:py-20 border-t"
+          style={{ borderColor: "rgba(255,255,255,0.06)" }}
+        >
           <div className="text-center mb-12">
-            <p className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-2">Quem já usa</p>
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">Quem já usa</p>
+            <h2 className="text-3xl font-bold text-white tracking-tight">
               Corretores que saíram do escuro
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <div
+                key={t.name}
+                className="rounded-2xl border p-6"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  borderColor: "rgba(255,255,255,0.08)",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+                }}
+              >
                 <div className="flex gap-0.5 mb-4">
                   {Array.from({ length: t.stars }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed mb-5">"{t.text}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-50">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                <p className="text-sm text-white/50 leading-relaxed mb-5">"{t.text}"</p>
+                <div
+                  className="flex items-center gap-3 pt-4 border-t"
+                  style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                    style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)" }}
+                  >
                     {t.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">{t.name}</p>
-                    <p className="text-xs text-gray-400">{t.role}</p>
+                    <p className="text-sm font-semibold text-white/80">{t.name}</p>
+                    <p className="text-xs text-white/35">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -445,7 +497,7 @@ export default function ListaVipPage() {
           </div>
         </section>
 
-        {/* ── CTA FINAL ────────────────────────────────────────────────────────── */}
+        {/* ── CTA FINAL ──────────────────────────────────────────────────────── */}
         <section
           className="relative overflow-hidden py-14 md:py-20"
           style={{ background: "linear-gradient(135deg,#1e3a8a 0%,#4c1d95 100%)" }}
@@ -460,7 +512,7 @@ export default function ListaVipPage() {
             <h2 className="text-2xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
               Sua concorrência já está dentro.
             </h2>
-            <p className="text-blue-200 text-base leading-relaxed mb-8">
+            <p className="text-blue-200/70 text-base leading-relaxed mb-8">
               Cada dia fora da rede é um negócio que você deixou para outro corretor fechar.
               Entre agora e comece a trabalhar de forma colaborativa.
             </p>
@@ -475,11 +527,17 @@ export default function ListaVipPage() {
           </div>
         </section>
 
-        {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-        <footer className="border-t py-7 bg-white">
+        {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
+        <footer
+          className="border-t py-7"
+          style={{
+            background: "rgba(255,255,255,0.01)",
+            borderColor: "rgba(255,255,255,0.06)",
+          }}
+        >
           <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-6 w-auto object-contain opacity-50" />
-            <p className="text-xs text-gray-400">
+            <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto object-contain opacity-30" />
+            <p className="text-xs text-white/20">
               © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados · Seus dados são protegidos e nunca serão compartilhados.
             </p>
           </div>

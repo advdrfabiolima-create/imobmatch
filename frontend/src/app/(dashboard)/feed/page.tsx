@@ -15,10 +15,10 @@ import { useAuthStore } from "@/store/auth.store";
 import toast from "react-hot-toast";
 
 const POST_TYPE_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  property:    { label: "Imóvel",      color: "bg-blue-100 text-blue-700",   icon: Home },
-  client:      { label: "Comprador",   color: "bg-green-100 text-green-700", icon: User },
-  partnership: { label: "Parceria",    color: "bg-purple-100 text-purple-700", icon: UserCheck },
-  opportunity: { label: "Oportunidade", color: "bg-orange-100 text-orange-700", icon: Zap },
+  property:    { label: "Imóvel",      color: "bg-blue-500/15 text-blue-300",   icon: Home },
+  client:      { label: "Comprador",   color: "bg-emerald-500/15 text-emerald-300", icon: User },
+  partnership: { label: "Parceria",    color: "bg-violet-500/15 text-violet-300", icon: UserCheck },
+  opportunity: { label: "Oportunidade", color: "bg-orange-500/15 text-orange-300", icon: Zap },
 };
 
 const QUICK_ACTIONS = [
@@ -53,13 +53,13 @@ function CreatePostCard() {
     <Card className="mb-6">
       <CardContent className="p-5">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm overflow-hidden flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm overflow-hidden flex-shrink-0 ring-1 ring-primary/20">
             {user?.avatarUrl
               ? <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
               : user?.name?.charAt(0).toUpperCase()
             }
           </div>
-          <p className="text-sm text-gray-500">O que você quer compartilhar?</p>
+          <p className="text-sm text-muted-foreground">O que você quer compartilhar?</p>
         </div>
 
         {/* Quick actions */}
@@ -73,8 +73,8 @@ function CreatePostCard() {
                 onClick={() => setType(action.type)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                   type === action.type
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "border-gray-200 text-gray-600 hover:border-blue-400"
+                    ? "bg-primary text-white border-primary"
+                    : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -89,11 +89,11 @@ function CreatePostCard() {
             value={content}
             onChange={e => setContent(e.target.value)}
             rows={3}
-            className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+            className="w-full border border-border bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none placeholder:text-muted-foreground"
             placeholder={QUICK_ACTIONS.find(a => a.type === type)?.placeholder || "Digite sua mensagem..."}
           />
           <div className="flex items-center justify-between mt-3">
-            <p className="text-xs text-gray-400">{content.length}/500 caracteres</p>
+            <p className="text-xs text-muted-foreground/60">{content.length}/500 caracteres</p>
             <Button
               type="submit"
               size="sm"
@@ -119,7 +119,7 @@ function PostCard({ post, currentUserId }: { post: any; currentUserId?: string }
     <Card className="hover:shadow-sm transition-shadow">
       <CardContent className="p-5">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm overflow-hidden flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm overflow-hidden flex-shrink-0 ring-1 ring-primary/20">
             {post.user?.avatarUrl
               ? <img src={post.user.avatarUrl} alt={post.user.name} className="w-full h-full object-cover" />
               : post.user?.name?.charAt(0).toUpperCase()
@@ -128,24 +128,24 @@ function PostCard({ post, currentUserId }: { post: any; currentUserId?: string }
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <p className="font-medium text-sm text-gray-900">{post.user?.name}</p>
+              <p className="font-medium text-sm text-foreground">{post.user?.name}</p>
               {post.user?.agency && (
-                <span className="text-xs text-gray-500">· {post.user.agency}</span>
+                <span className="text-xs text-muted-foreground">· {post.user.agency}</span>
               )}
               {post.user?.city && (
-                <span className="text-xs text-gray-400">· {post.user.city}</span>
+                <span className="text-xs text-muted-foreground/70">· {post.user.city}</span>
               )}
             </div>
 
             <div className="flex items-center gap-2 mb-3">
-              <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${config.color}`}>
+              <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border ${config.color} border-current/20`}>
                 <Icon className="h-3 w-3" />
                 {config.label}
               </span>
-              <span className="text-xs text-gray-400">{formatDate(post.createdAt)}</span>
+              <span className="text-xs text-muted-foreground/60">{formatDate(post.createdAt)}</span>
             </div>
 
-            <p className="text-sm text-gray-700 whitespace-pre-wrap">{post.content}</p>
+            <p className="text-sm text-foreground/80 whitespace-pre-wrap">{post.content}</p>
 
             {/* Contact button */}
             {!isOwnPost && post.user?.phone && (
@@ -165,11 +165,11 @@ function PostCard({ post, currentUserId }: { post: any; currentUserId?: string }
             {/* Score badge */}
             {post.user?.score != null && (
               <div className="mt-3 flex items-center gap-1.5">
-                <span className="text-xs text-gray-400">Reputação:</span>
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                  post.user.score >= 200 ? "bg-yellow-100 text-yellow-700" :
-                  post.user.score >= 80  ? "bg-gray-100 text-gray-600"    :
-                                           "bg-orange-100 text-orange-700"
+                <span className="text-xs text-muted-foreground/60">Reputação:</span>
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${
+                  post.user.score >= 200 ? "bg-amber-500/15 text-amber-300 border-amber-500/30" :
+                  post.user.score >= 80  ? "bg-slate-400/10 text-slate-300 border-slate-400/30" :
+                                           "bg-orange-500/15 text-orange-300 border-orange-500/30"
                 }`}>
                   {post.user.score >= 200 ? "🥇 Gold" :
                    post.user.score >= 80  ? "🥈 Silver" : "🥉 Bronze"} · {post.user.score} pts
@@ -219,8 +219,8 @@ export default function FeedPage() {
               onClick={() => setTypeFilter(f.value)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                 typeFilter === f.value
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "border-gray-200 text-gray-600 hover:border-blue-400"
+                  ? "bg-primary text-white border-primary"
+                  : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
               }`}
             >
               {f.label}
@@ -232,14 +232,16 @@ export default function FeedPage() {
         {isLoading ? (
           <div className="space-y-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-32 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-32 bg-white/5 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : data?.data?.length === 0 ? (
-          <div className="text-center py-20">
-            <Rss className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Feed vazio</h3>
-            <p className="text-gray-500">Seja o primeiro a compartilhar algo com a rede</p>
+          <div className="empty-state">
+            <div className="empty-state-icon">
+              <Rss className="h-6 w-6 text-primary/70" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Feed vazio</h3>
+            <p className="text-muted-foreground">Seja o primeiro a compartilhar algo com a rede</p>
           </div>
         ) : (
           <div className="space-y-4">

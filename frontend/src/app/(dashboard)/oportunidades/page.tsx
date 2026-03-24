@@ -70,11 +70,11 @@ function ConfirmModal({
 }) {
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6">
-        <h3 className="font-bold text-gray-900 text-base mb-2">{title}</h3>
-        <p className="text-sm text-gray-500 mb-5">{body}</p>
+      <div className="bg-card border border-border rounded-2xl w-full max-w-sm shadow-2xl p-6">
+        <h3 className="font-bold text-foreground text-base mb-2">{title}</h3>
+        <p className="text-sm text-muted-foreground mb-5">{body}</p>
         <div className="flex gap-3 justify-end">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm text-gray-600 hover:bg-gray-100 transition-colors">
+          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm text-muted-foreground hover:bg-accent transition-colors">
             Cancelar
           </button>
           <button onClick={onConfirm} className={`px-4 py-2 rounded-xl text-sm text-white font-semibold transition-colors ${confirmClass}`}>
@@ -137,94 +137,94 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-5 border-b">
-          <h2 className="text-base font-semibold flex items-center gap-2">
+      <div className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 className="text-base font-semibold text-foreground flex items-center gap-2">
             <Flame className="h-5 w-5 text-orange-500" />
             Nova Oportunidade Urgente
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="h-5 w-5 text-gray-500" />
+          <button onClick={onClose} className="p-2 hover:bg-accent rounded-lg transition-colors">
+            <X className="h-5 w-5 text-muted-foreground" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">Título</label>
+            <label className="text-sm font-medium text-foreground/80">Título</label>
             <input required value={form.title}
               onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-muted-foreground"
               placeholder="Ex: Apartamento urgente — dono viajando"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">Tipo do Imóvel</label>
+            <label className="text-sm font-medium text-foreground/80">Tipo do Imóvel</label>
             <select value={form.propertyType}
               onChange={e => setForm(f => ({ ...f, propertyType: e.target.value }))}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
             >
               {Object.entries(PROPERTY_TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-gray-700">Preço Normal (R$)</label>
+              <label className="text-sm font-medium text-foreground/80">Preço Normal (R$)</label>
               <input required type="number" value={form.priceNormal}
                 onChange={e => setForm(f => ({ ...f, priceNormal: e.target.value }))}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-muted-foreground"
                 placeholder="500000"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Preço Urgente (R$)</label>
+              <label className="text-sm font-medium text-foreground/80">Preço Urgente (R$)</label>
               <input required type="number" value={form.priceUrgent}
                 onChange={e => setForm(f => ({ ...f, priceUrgent: e.target.value }))}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-muted-foreground"
                 placeholder="420000"
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-gray-700">Estado *</label>
+              <label className="text-sm font-medium text-foreground/80">Estado *</label>
               <select required value={form.state}
                 onChange={e => setForm(f => ({ ...f, state: e.target.value, city: "" }))}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
               >
                 <option value="">Selecione</option>
                 {STATES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Cidade *</label>
+              <label className="text-sm font-medium text-foreground/80">Cidade *</label>
               <CitySelect required stateValue={form.state} value={form.city}
                 onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50"
+                className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50"
               />
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">Bairro</label>
+            <label className="text-sm font-medium text-foreground/80">Bairro</label>
             <input value={form.neighborhood}
               onChange={e => setForm(f => ({ ...f, neighborhood: e.target.value }))}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-muted-foreground"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">Descrição da urgência</label>
+            <label className="text-sm font-medium text-foreground/80">Descrição da urgência</label>
             <textarea value={form.description}
               onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               rows={3}
-              className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+              className="mt-1 w-full border border-border bg-muted/60 rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none placeholder:text-muted-foreground"
               placeholder="Descreva o motivo da urgência..."
             />
           </div>
           {/* Foto do imóvel */}
           <div>
-            <label className="text-sm font-medium text-gray-700">Foto do Imóvel</label>
+            <label className="text-sm font-medium text-foreground/80">Foto do Imóvel</label>
             <div className="mt-1">
               {photoUrl ? (
-                <div className="relative rounded-xl overflow-hidden border border-gray-200" style={{ height: 140 }}>
+                <div className="relative rounded-xl overflow-hidden border border-border" style={{ height: 140 }}>
                   <img src={photoUrl} alt="preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -235,15 +235,15 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
                   </button>
                 </div>
               ) : (
-                <label className={`flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-200 rounded-xl py-6 cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition-colors ${uploading ? "opacity-60 pointer-events-none" : ""}`}>
+                <label className={`flex flex-col items-center justify-center w-full border-2 border-dashed border-border rounded-xl py-6 cursor-pointer hover:border-orange-400 hover:bg-orange-500/5 transition-colors ${uploading ? "opacity-60 pointer-events-none" : ""}`}>
                   <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                   {uploading ? (
                     <span className="text-xs text-orange-500 font-medium">Enviando foto...</span>
                   ) : (
                     <>
                       <span className="text-2xl mb-1">📷</span>
-                      <span className="text-xs text-gray-500">Clique para adicionar foto</span>
-                      <span className="text-[11px] text-gray-400">JPG, PNG até 10MB</span>
+                      <span className="text-xs text-muted-foreground">Clique para adicionar foto</span>
+                      <span className="text-[11px] text-muted-foreground/60">JPG, PNG até 10MB</span>
                     </>
                   )}
                 </label>
@@ -256,7 +256,7 @@ function NewOpportunityModal({ onClose }: { onClose: () => void }) {
               onChange={e => setForm(f => ({ ...f, acceptsOffer: e.target.checked }))}
               className="rounded"
             />
-            <span className="text-gray-700">Aceita proposta / contraproposta</span>
+            <span className="text-foreground/80">Aceita proposta / contraproposta</span>
           </label>
           <Button type="submit" disabled={mutation.isPending || uploading}
             className="w-full bg-orange-500 hover:bg-orange-600 h-11 font-semibold"
@@ -299,25 +299,25 @@ function AuthorMenu({
         <MoreVertical className="h-4 w-4" />
       </button>
       {open && (
-        <div className="absolute right-0 top-8 w-52 bg-white rounded-xl shadow-xl border border-gray-100 z-30 overflow-hidden">
+        <div className="absolute right-0 top-8 w-52 bg-popover rounded-xl shadow-xl border border-border z-30 overflow-hidden">
           <button
             onClick={() => { onStatusChange(oppId, "paused", "Oportunidade pausada"); setOpen(false); }}
-            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-foreground hover:bg-accent transition-colors"
           >
             <PauseCircle className="h-4 w-4 text-amber-500" />
             Retirar do radar
           </button>
           <button
             onClick={() => { onStatusChange(oppId, "closed", "Negócio registrado como fechado 🎉"); setOpen(false); }}
-            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-foreground hover:bg-accent transition-colors"
           >
             <CheckCircle2 className="h-4 w-4 text-emerald-500" />
             Marcar como fechada
           </button>
-          <div className="h-px bg-gray-100" />
+          <div className="h-px bg-border" />
           <button
             onClick={() => { onStatusChange(oppId, "removed", "Oportunidade removida"); setOpen(false); }}
-            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
           >
             <Trash2 className="h-4 w-4" />
             Remover permanentemente
@@ -371,7 +371,7 @@ function OpportunityCard({
         transform:  visible ? "translateY(0)" : "translateY(24px)",
         transition: "opacity 0.4s ease, transform 0.4s ease",
       }}
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+      className="bg-card rounded-2xl shadow-sm border border-white/[0.07] overflow-hidden hover:border-white/[0.12] hover:-translate-y-0.5 transition-all duration-200"
     >
       {/* ── Image / Fallback ── */}
       <div className="relative overflow-hidden" style={{ height: 200 }}>
@@ -447,43 +447,43 @@ function OpportunityCard({
 
       {/* ── Content ── */}
       <div className="p-4">
-        <h3 className="font-bold text-gray-900 text-[15px] leading-snug mb-1">{opp.title}</h3>
-        <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
+        <h3 className="font-bold text-foreground text-[15px] leading-snug mb-1">{opp.title}</h3>
+        <div className="flex items-center gap-1 text-muted-foreground text-xs mb-3">
           <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
           <span>{opp.neighborhood ? `${opp.neighborhood}, ` : ""}{opp.city}</span>
         </div>
 
         {/* Price block */}
-        <div className={`rounded-xl p-3 mb-3 ${isCritical ? "bg-red-50 border border-red-100" : "bg-orange-50 border border-orange-100"}`}>
+        <div className={`rounded-xl p-3 mb-3 ${isCritical ? "bg-red-500/10 border border-red-500/20" : "bg-orange-500/10 border border-orange-500/20"}`}>
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-xs text-gray-400 line-through">{formatCurrency(opp.priceNormal)}</p>
-              <p className={`text-2xl font-extrabold leading-tight ${isCritical ? "text-red-600" : "text-orange-600"}`}>
+              <p className="text-xs text-muted-foreground/60 line-through">{formatCurrency(opp.priceNormal)}</p>
+              <p className={`text-2xl font-extrabold leading-tight ${isCritical ? "text-red-400" : "text-orange-400"}`}>
                 {formatCurrency(opp.priceUrgent)}
               </p>
             </div>
             <div className="text-right">
-              <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg ${isCritical ? "bg-red-100 text-red-700" : "bg-orange-100 text-orange-700"}`}>
+              <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg ${isCritical ? "bg-red-500/15 text-red-300" : "bg-orange-500/15 text-orange-300"}`}>
                 <TrendingDown className="h-3.5 w-3.5" />
                 {discount}% OFF
               </div>
-              <p className="text-xs text-gray-500 mt-1.5">💰 Economia: <strong>{formatCurrency(savings)}</strong></p>
+              <p className="text-xs text-muted-foreground mt-1.5">💰 Economia: <strong className="text-foreground">{formatCurrency(savings)}</strong></p>
             </div>
           </div>
         </div>
 
         {/* Commission */}
-        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2 mb-3">
-          <Wallet className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-          <p className="text-xs text-emerald-800">
+        <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2 mb-3">
+          <Wallet className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+          <p className="text-xs text-emerald-300">
             <span className="font-semibold">Comissão estimada para você:</span>{" "}
-            <span className="font-bold text-emerald-700 text-sm">{formatCurrency(commission)}</span>
-            <span className="text-emerald-600"> (3%)</span>
+            <span className="font-bold text-emerald-200 text-sm">{formatCurrency(commission)}</span>
+            <span className="text-emerald-400"> (3%)</span>
           </p>
         </div>
 
         {opp.description && (
-          <p className="text-xs text-gray-500 mb-3 line-clamp-2">{opp.description}</p>
+          <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{opp.description}</p>
         )}
 
         {/* Social proof */}
@@ -493,14 +493,14 @@ function OpportunityCard({
               <div key={i} className={`w-5 h-5 rounded-full border-2 border-white bg-gradient-to-br ${["from-blue-400 to-indigo-500","from-orange-400 to-red-500","from-emerald-400 to-teal-500"][i]}`} />
             ))}
           </div>
-          <p className="text-xs text-gray-500 flex items-center gap-1">
+          <p className="text-xs text-muted-foreground flex items-center gap-1">
             <Users className="h-3 w-3" />
             {SOCIAL_PROOF_TEXTS[socialIdx]}
           </p>
         </div>
 
         {/* Agent + CTA */}
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-3 border-t border-border/50">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex-shrink-0 overflow-hidden flex items-center justify-center text-white font-bold text-xs">
               {opp.agent?.avatarUrl
@@ -509,13 +509,13 @@ function OpportunityCard({
               }
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold text-gray-900 truncate">{opp.agent?.name}</p>
-              <p className="text-[11px] text-gray-400 truncate">{opp.agent?.agency || "Corretor"}</p>
+              <p className="text-xs font-semibold text-foreground truncate">{opp.agent?.name}</p>
+              <p className="text-[11px] text-muted-foreground/60 truncate">{opp.agent?.agency || "Corretor"}</p>
             </div>
           </div>
 
           {isOwner ? (
-            <span className="text-xs text-gray-400 italic">Você publicou</span>
+            <span className="text-xs text-muted-foreground/60 italic">Você publicou</span>
           ) : (
             <a
               href={whatsappUrl}
@@ -539,17 +539,17 @@ function OpportunityCard({
 
 function CardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-      <div className="h-48 bg-gray-200" />
+    <div className="bg-card rounded-2xl shadow-sm border border-white/[0.07] overflow-hidden animate-pulse">
+      <div className="h-48 bg-white/5" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-100 rounded w-1/2" />
-        <div className="h-16 bg-gray-100 rounded-xl" />
-        <div className="h-10 bg-gray-100 rounded-xl" />
-        <div className="h-px bg-gray-100" />
+        <div className="h-4 bg-white/8 rounded w-3/4" />
+        <div className="h-3 bg-white/5 rounded w-1/2" />
+        <div className="h-16 bg-white/5 rounded-xl" />
+        <div className="h-10 bg-white/5 rounded-xl" />
+        <div className="h-px bg-border" />
         <div className="flex justify-between">
-          <div className="h-8 w-24 bg-gray-100 rounded-lg" />
-          <div className="h-8 w-28 bg-gray-200 rounded-xl" />
+          <div className="h-8 w-24 bg-white/5 rounded-lg" />
+          <div className="h-8 w-28 bg-white/8 rounded-xl" />
         </div>
       </div>
     </div>
@@ -691,15 +691,15 @@ export default function OportunidadesPage() {
         <div className="mb-5">
           <div className="flex items-start justify-between mb-1">
             <div>
-              <h2 className="text-xl font-extrabold text-gray-900">🔥 Radar de Oportunidades</h2>
-              <p className="text-sm text-gray-500 mt-0.5">Oportunidades urgentes publicadas por corretores da rede</p>
+              <h2 className="text-xl font-extrabold text-foreground">🔥 Radar de Oportunidades</h2>
+              <p className="text-sm text-muted-foreground mt-0.5">Oportunidades urgentes publicadas por corretores da rede</p>
             </div>
             <Button onClick={() => setShowModal(true)} className="bg-orange-500 hover:bg-orange-600 gap-1.5 text-sm flex-shrink-0">
               <Plus className="h-4 w-4" /> Publicar
             </Button>
           </div>
           {total > 0 && (
-            <p className="text-xs text-gray-400 mt-2">{total} oportunidade{total !== 1 ? "s" : ""} no radar</p>
+            <p className="text-xs text-muted-foreground/60 mt-2">{total} oportunidade{total !== 1 ? "s" : ""} no radar</p>
           )}
         </div>
 
@@ -710,7 +710,7 @@ export default function OportunidadesPage() {
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
                 activeChip === chip.key
                   ? "bg-orange-500 text-white border-orange-500 shadow-sm"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-orange-300 hover:text-orange-600"
+                  : "bg-transparent text-muted-foreground border-border hover:border-orange-500/50 hover:text-orange-300"
               }`}
             >
               {chip.label}
@@ -720,14 +720,14 @@ export default function OportunidadesPage() {
 
         {/* Region filter */}
         {showRegion && (
-          <div className="bg-white border border-gray-200 rounded-xl p-3 mb-4 flex gap-2 items-center">
-            <MapPin className="h-4 w-4 text-gray-400 flex-shrink-0" />
+          <div className="bg-card border border-border rounded-xl p-3 mb-4 flex gap-2 items-center">
+            <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <input autoFocus value={cityFilter} onChange={e => setCityFilter(e.target.value)}
               placeholder="Filtrar por cidade..."
-              className="flex-1 text-sm focus:outline-none"
+              className="flex-1 text-sm bg-transparent text-foreground focus:outline-none placeholder:text-muted-foreground"
             />
             {cityFilter && (
-              <button onClick={() => setCityFilter("")} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setCityFilter("")} className="text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -750,12 +750,12 @@ export default function OportunidadesPage() {
             {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
           </div>
         ) : sorted.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Zap className="h-8 w-8 text-orange-300" />
+          <div className="empty-state">
+            <div className="empty-state-icon" style={{ background: "rgba(249,115,22,0.1)" }}>
+              <Zap className="h-6 w-6 text-orange-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Nenhuma oportunidade no radar</h3>
-            <p className="text-gray-500 mb-6 text-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-2">Nenhuma oportunidade no radar</h3>
+            <p className="text-muted-foreground mb-6 text-sm">
               {cityFilter ? `Sem oportunidades em "${cityFilter}" agora.` : "Seja o primeiro a publicar."}
             </p>
             <Button className="bg-orange-500 hover:bg-orange-600" onClick={() => setShowModal(true)}>

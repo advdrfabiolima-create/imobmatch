@@ -824,13 +824,13 @@ export default function DashboardPage() {
               {/* Footer info */}
               <div className="px-5 py-3 border-t border-white/[0.05] flex items-center justify-between gap-3">
                 <p className="text-[11px] leading-relaxed">
-                  {stats?.matchesCount > 0 ? (
+                  {(stats?.matchesCount > 0 || (stats?.myOpportunities?.length ?? 0) > 0) ? (
                     <span className="text-emerald-400 font-medium">
-                      {stats.matchesCount} oportunidade{stats.matchesCount > 1 ? "s" : ""} com potencial de negócio
+                      Detectando conexões e oportunidades na sua rede
                     </span>
                   ) : (stats?.propertiesCount > 0 || stats?.buyersCount > 0) ? (
                     <span className="text-indigo-400/70">
-                      {(stats?.propertiesCount ?? 0) + (stats?.buyersCount ?? 0)} elemento{((stats?.propertiesCount ?? 0) + (stats?.buyersCount ?? 0)) > 1 ? "s" : ""} em análise na sua rede
+                      Analisando sua rede — aguarde os primeiros matches
                     </span>
                   ) : (
                     <span className="text-slate-600">Cadastre imóveis e compradores para ativar o radar</span>

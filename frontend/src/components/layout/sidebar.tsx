@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, Home, Users, Zap, UserCheck,
+  LayoutDashboard, Home, Users, Zap, Flame, UserCheck,
   MessageSquare, Search, Settings, LogOut, Shield, UsersRound, BarChart2, CreditCard, X,
   Rss, Trophy, Calculator,
 } from "lucide-react";
@@ -49,40 +49,55 @@ export function Sidebar() {
   }) => {
     const active = pathname === href || pathname.startsWith(href + "/");
 
-    const activeBg =
-      activeColor === "purple" ? "bg-white/8 text-[#CBD5E1] border-l-2 border-purple-400"
-      : activeColor === "amber" ? "bg-white/8 text-[#CBD5E1] border-l-2 border-amber-400"
-      : "bg-white/8 text-[#CBD5E1] border-l-2 border-blue-400";
+    const glowColor =
+      activeColor === "purple" ? "rgba(192,132,252,0.18)"
+      : activeColor === "amber" ? "rgba(251,191,36,0.18)"
+      : "rgba(96,165,250,0.18)";
+
+    const borderColor =
+      activeColor === "purple" ? "#c084fc"
+      : activeColor === "amber" ? "#fbbf24"
+      : "#60a5fa";
 
     const activeIcon =
-      activeColor === "purple" ? "text-purple-400"
-      : activeColor === "amber" ? "text-amber-400"
-      : "text-blue-400";
+      activeColor === "purple" ? "text-purple-300"
+      : activeColor === "amber" ? "text-amber-300"
+      : "text-blue-300";
 
     return (
-      <Link
-        href={href}
-        onClick={close}
-        className={cn(
-          "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-          active
-            ? activeBg
-            : "text-[#94A3B8] hover:bg-white/5 hover:text-[#CBD5E1]"
+      <div className="relative">
+        {active && (
+          <div className="absolute inset-0 rounded-lg pointer-events-none"
+            style={{
+              background: glowColor,
+              boxShadow: `inset 0 0 12px ${glowColor}, 0 0 8px ${glowColor}`,
+              borderLeft: `2px solid ${borderColor}`,
+            }} />
         )}
-      >
-        <Icon className={cn("h-5 w-5 flex-shrink-0 transition-colors", active ? activeIcon : "text-[#64748B]")} />
-        <span className="flex-1">{label}</span>
-        {bonus && (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-400/15 text-purple-300/70 border border-purple-400/20 leading-none">
-            Bônus
-          </span>
-        )}
-        {badge != null && badge > 0 && (
-          <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
-            {badge}
-          </span>
-        )}
-      </Link>
+        <Link
+          href={href}
+          onClick={close}
+          className={cn(
+            "relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
+            active
+              ? "text-white pl-[10px]"
+              : "text-[#94A3B8] hover:bg-white/[0.07] hover:text-[#E2E8F0]"
+          )}
+        >
+          <Icon className={cn("h-[18px] w-[18px] flex-shrink-0 transition-colors", active ? activeIcon : "text-[#64748B] group-hover:text-[#94A3B8]")} />
+          <span className="flex-1 tracking-[0.01em]">{label}</span>
+          {bonus && (
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-500/20 text-purple-300/80 border border-purple-400/25 leading-none">
+              Bônus
+            </span>
+          )}
+          {badge != null && badge > 0 && (
+            <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-emerald-500/90 text-white text-[11px] font-bold flex items-center justify-center shadow-sm shadow-emerald-500/30">
+              {badge}
+            </span>
+          )}
+        </Link>
+      </div>
     );
   };
 
@@ -105,7 +120,11 @@ export function Sidebar() {
           isOpen ? "translate-x-0" : "-translate-x-full",
           "md:translate-x-0"
         )}
-        style={{ background: "linear-gradient(160deg, #0c1a52 0%, #1e1060 45%, #3b1585 80%, #4c1d96 100%)" }}
+        style={{
+          background: "linear-gradient(170deg, #080f2e 0%, #0e1848 30%, #1a0e56 60%, #2d1270 85%, #3b1585 100%)",
+          borderRight: "1px solid rgba(255,255,255,0.06)",
+          boxShadow: "4px 0 24px rgba(0,0,0,0.40)",
+        }}
       >
         {/* Logo */}
         <div className="px-5 py-5 flex items-center justify-between border-b border-white/8">
@@ -143,11 +162,21 @@ export function Sidebar() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-0.5">
+
+          {/* Principal */}
+          <p className="px-3 pt-1 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
+            Principal
+          </p>
           <NavLink href="/dashboard"     label="Dashboard"        icon={LayoutDashboard} />
           <NavLink href="/meus-imoveis"  label="Imóveis"          icon={Home} />
           <NavLink href="/compradores"   label="Compradores"      icon={Users} />
           <NavLink href="/matches"       label="Matches"          icon={Zap} />
+
+          {/* Rede */}
+          <p className="px-3 pt-3 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
+            Rede
+          </p>
           <NavLink
             href="/parcerias"
             label="Parcerias"
@@ -156,20 +185,30 @@ export function Sidebar() {
           />
           <NavLink href="/mensagens"     label="Mensagens"        icon={MessageSquare} />
           <NavLink href="/corretores"    label="Corretores"       icon={Search} />
-          <NavLink href="/oportunidades" label="Oportunidades"    icon={Zap}        activeColor="amber" />
+          <NavLink href="/oportunidades" label="Oportunidades"    icon={Flame}      activeColor="amber" />
           <NavLink href="/feed"          label="Feed da Rede"     icon={Rss} />
           <NavLink href="/ranking"       label="Ranking"          icon={Trophy} />
-          <NavLink href="/analytics"          label="Analytics"              icon={BarChart2} />
-          <NavLink href="/simulador-financiamento" label="Simulador"         icon={Calculator} bonus />
-          <NavLink href="/perfil"        label="Perfil"           icon={Settings} />
-          <NavLink href="/meu-plano"     label="Planos"           icon={CreditCard}  activeColor="amber" />
+
+          {/* Ferramentas */}
+          <p className="px-3 pt-3 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
+            Ferramentas
+          </p>
+          <NavLink href="/analytics"               label="Analytics"   icon={BarChart2} />
+          <NavLink href="/simulador-financiamento" label="Simulador"   icon={Calculator} bonus />
+          <NavLink href="/perfil"                  label="Perfil"      icon={Settings} />
+          <NavLink href="/meu-plano"               label="Planos"      icon={CreditCard} activeColor="amber" />
 
           {(user?.plan === "agency" || user?.isLifetime) && (
             <NavLink href="/team" label="Gestão de Equipe" icon={UsersRound} />
           )}
 
           {user?.role === "ADMIN" && (
-            <NavLink href="/admin" label="Administração" icon={Shield} activeColor="purple" />
+            <>
+              <p className="px-3 pt-3 pb-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/20 select-none">
+                Sistema
+              </p>
+              <NavLink href="/admin" label="Administração" icon={Shield} activeColor="purple" />
+            </>
           )}
         </nav>
 

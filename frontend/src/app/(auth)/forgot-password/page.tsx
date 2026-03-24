@@ -35,28 +35,28 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="bg-card border border-border rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center mb-6">
-            <img src="/logo_texto_preto.png" alt="ImobMatch" className="h-12 w-auto object-contain" />
+            <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-12 w-auto object-contain" />
           </Link>
 
           {sent ? (
             <>
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h1 className="text-2xl font-bold text-gray-900">E-mail enviado!</h1>
-              <p className="text-gray-500 mt-2">
+              <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-foreground">E-mail enviado!</h1>
+              <p className="text-muted-foreground mt-2">
                 Se o e-mail existir em nossa base, você receberá as instruções de redefinição de senha em breve.
               </p>
-              <Link href="/login" className="mt-6 inline-flex items-center gap-2 text-blue-600 hover:underline">
+              <Link href="/login" className="mt-6 inline-flex items-center gap-2 text-primary hover:underline">
                 <ArrowLeft className="h-4 w-4" /> Voltar ao login
               </Link>
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold text-gray-900">Esqueceu a senha?</h1>
-              <p className="text-gray-500 mt-1">Digite seu e-mail para receber as instruções</p>
+              <h1 className="text-2xl font-bold text-foreground">Esqueceu a senha?</h1>
+              <p className="text-muted-foreground mt-1">Digite seu e-mail para receber as instruções</p>
             </>
           )}
         </div>
@@ -64,15 +64,15 @@ export default function ForgotPasswordPage() {
         {!sent && (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">E-mail</label>
+              <label className="text-sm font-medium text-foreground/80 block mb-1">E-mail</label>
               <Input type="email" placeholder="seu@email.com" {...register("email")} />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+              {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
             </div>
-            <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700" disabled={loading}>
+            <Button type="submit" className="w-full h-11" disabled={loading}>
               {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Enviar instruções
             </Button>
-            <Link href="/login" className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-blue-600">
+            <Link href="/login" className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary">
               <ArrowLeft className="h-4 w-4" /> Voltar ao login
             </Link>
           </form>

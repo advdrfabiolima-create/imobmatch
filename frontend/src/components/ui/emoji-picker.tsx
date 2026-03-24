@@ -37,16 +37,16 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
   const [tab, setTab] = useState(0);
 
   return (
-    <div className="w-72 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+    <div className="w-72 bg-card border border-border rounded-2xl shadow-xl overflow-hidden">
       {/* Category tabs */}
-      <div className="flex border-b overflow-x-auto scrollbar-hide">
+      <div className="flex border-b border-border overflow-x-auto scrollbar-hide">
         {CATEGORIES.map((cat, i) => (
           <button
             key={i}
             onClick={() => setTab(i)}
             title={cat.label}
             className={`flex-shrink-0 px-2.5 py-2 text-base transition ${
-              tab === i ? "border-b-2 border-blue-600" : "hover:bg-gray-50"
+              tab === i ? "border-b-2 border-primary" : "hover:bg-accent"
             }`}
           >
             {cat.emojis[0]}
@@ -60,7 +60,7 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
           <button
             key={emoji}
             onClick={() => onSelect(emoji)}
-            className="text-xl p-1 rounded-lg hover:bg-gray-100 transition leading-none"
+            className="text-xl p-1 rounded-lg hover:bg-accent transition leading-none"
             title={emoji}
           >
             {emoji}

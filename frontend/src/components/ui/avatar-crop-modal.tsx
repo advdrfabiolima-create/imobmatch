@@ -113,11 +113,11 @@ export function AvatarCropModal({ src, onConfirm, onCancel }: AvatarCropModalPro
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+      <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-2xl">
         {/* Title */}
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-900">Ajustar foto</h3>
-          <button onClick={onCancel} className="p-1 hover:bg-gray-100 rounded-lg transition">
+          <h3 className="font-semibold text-foreground">Ajustar foto</h3>
+          <button onClick={onCancel} className="p-1 hover:bg-accent rounded-lg transition">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -125,7 +125,7 @@ export function AvatarCropModal({ src, onConfirm, onCancel }: AvatarCropModalPro
         {/* Crop area */}
         <div
           className="mx-auto mb-3 rounded-full overflow-hidden cursor-grab active:cursor-grabbing select-none"
-          style={{ width: SIZE, height: SIZE, border: "3px solid #2563eb", position: "relative" }}
+          style={{ width: SIZE, height: SIZE, border: "3px solid #6366f1", position: "relative" }}
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}
         >
@@ -150,34 +150,34 @@ export function AvatarCropModal({ src, onConfirm, onCancel }: AvatarCropModalPro
             }}
           />
         </div>
-        <p className="text-xs text-center text-gray-400 mb-4">Arraste para reposicionar a imagem</p>
+        <p className="text-xs text-center text-muted-foreground mb-4">Arraste para reposicionar a imagem</p>
 
         {/* Zoom slider */}
         <div className="flex items-center gap-3 mb-5">
           <button
             onClick={() => changeZoom(Math.max(1, +(zoom - 0.1).toFixed(2)))}
-            className="p-1 hover:bg-gray-100 rounded transition"
+            className="p-1 hover:bg-accent rounded transition"
           >
-            <ZoomOut className="h-4 w-4 text-gray-600" />
+            <ZoomOut className="h-4 w-4 text-muted-foreground" />
           </button>
           <input
             type="range" min="1" max="3" step="0.05"
             value={zoom}
             onChange={(e) => changeZoom(Number(e.target.value))}
-            className="flex-1 accent-blue-600"
+            className="flex-1 accent-indigo-500"
           />
           <button
             onClick={() => changeZoom(Math.min(3, +(zoom + 0.1).toFixed(2)))}
-            className="p-1 hover:bg-gray-100 rounded transition"
+            className="p-1 hover:bg-accent rounded transition"
           >
-            <ZoomIn className="h-4 w-4 text-gray-600" />
+            <ZoomIn className="h-4 w-4 text-muted-foreground" />
           </button>
         </div>
 
         {/* Actions */}
         <div className="flex gap-3">
           <Button variant="outline" onClick={onCancel} className="flex-1">Cancelar</Button>
-          <Button onClick={confirm} className="flex-1 bg-blue-600 hover:bg-blue-700">Confirmar</Button>
+          <Button onClick={confirm} className="flex-1">Confirmar</Button>
         </div>
       </div>
     </div>

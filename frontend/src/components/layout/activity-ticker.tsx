@@ -153,17 +153,18 @@ export function ActivityTicker() {
   const item = items[current];
 
   return (
-    <div className="flex items-center gap-3 bg-gradient-to-r from-blue-800 via-blue-700 to-indigo-800 text-white px-4 py-2 text-xs overflow-hidden">
+    <div className="flex items-center gap-3 text-white px-4 py-2 text-xs overflow-hidden"
+      style={{ background: "linear-gradient(160deg, #0c1a52 0%, #1a0f5c 50%, #2d1472 100%)" }}>
       {/* Live dot */}
       <div className="flex items-center gap-1.5 flex-shrink-0">
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
         </span>
-        <span className="text-blue-200 font-medium uppercase tracking-wider text-[10px]">AO VIVO</span>
+        <span className="text-violet-200 font-medium uppercase tracking-wider text-[10px]">AO VIVO</span>
       </div>
 
-      <div className="w-px h-3 bg-blue-600 flex-shrink-0" />
+      <div className="w-px h-3 bg-white/20 flex-shrink-0" />
 
       {/* Rotating message */}
       <div className="flex-1 overflow-hidden">
@@ -176,7 +177,7 @@ export function ActivityTicker() {
       </div>
 
       {/* Counter */}
-      <span className="flex-shrink-0 text-blue-300 text-[10px]">
+      <span className="flex-shrink-0 text-violet-300/60 text-[10px]">
         {current + 1}/{items.length}
       </span>
     </div>

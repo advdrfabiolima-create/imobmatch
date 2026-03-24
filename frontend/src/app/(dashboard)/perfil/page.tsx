@@ -151,24 +151,24 @@ export default function PerfilPage() {
       />
     )}
     {showDeleteModal && (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
-          <div className="flex items-center gap-3 p-5 border-b">
-            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="h-5 w-5 text-red-600" />
+      <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-xl">
+          <div className="flex items-center gap-3 p-5 border-b border-border">
+            <div className="w-10 h-10 rounded-full bg-red-500/15 flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="h-5 w-5 text-red-400" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-gray-900">Encerrar minha conta</h2>
-              <p className="text-xs text-gray-500">Esta ação não pode ser desfeita</p>
+              <h2 className="text-base font-semibold text-foreground">Encerrar minha conta</h2>
+              <p className="text-xs text-muted-foreground">Esta ação não pode ser desfeita</p>
             </div>
           </div>
           <div className="p-5 space-y-4">
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-foreground/80">
               Ao encerrar sua conta, você perderá acesso à plataforma e seus dados serão desativados.
               Seus termos de parceria e histórico permanecerão registrados por questões legais.
             </p>
-            <p className="text-sm font-medium text-gray-900">
-              Tem certeza que deseja encerrar a conta de <span className="text-red-600">{user?.email}</span>?
+            <p className="text-sm font-medium text-foreground">
+              Tem certeza que deseja encerrar a conta de <span className="text-red-400">{user?.email}</span>?
             </p>
             <div className="flex gap-3 pt-1">
               <Button
@@ -202,7 +202,7 @@ export default function PerfilPage() {
             <div className="flex items-center gap-5">
               {/* Avatar com botão de upload */}
               <div className="relative flex-shrink-0">
-                <div className="w-20 h-20 rounded-full bg-blue-100 overflow-hidden flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-primary/20 overflow-hidden flex items-center justify-center ring-2 ring-primary/20">
                   {currentAvatar ? (
                     <img
                       src={currentAvatar}
@@ -210,7 +210,7 @@ export default function PerfilPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-blue-600 text-3xl font-bold select-none">
+                    <span className="text-primary text-3xl font-bold select-none">
                       {user?.name?.charAt(0)}
                     </span>
                   )}
@@ -219,7 +219,7 @@ export default function PerfilPage() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingAvatar}
-                  className="absolute -bottom-1 -right-1 w-7 h-7 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white rounded-full flex items-center justify-center shadow-md transition"
+                  className="absolute -bottom-1 -right-1 w-7 h-7 bg-primary hover:bg-primary/90 disabled:opacity-70 text-white rounded-full flex items-center justify-center shadow-md transition"
                   title="Alterar foto ou logomarca"
                 >
                   {uploadingAvatar ? (
@@ -238,23 +238,23 @@ export default function PerfilPage() {
               </div>
 
               <div>
-                <h2 className="text-xl font-bold text-gray-900">{user?.name}</h2>
-                <p className="text-gray-500">{user?.email}</p>
+                <h2 className="text-xl font-bold text-foreground">{user?.name}</h2>
+                <p className="text-muted-foreground">{user?.email}</p>
                 <div className="flex items-center gap-2 mt-2 flex-wrap">
                   {user?.agency && (
-                    <div className="flex items-center gap-1 text-sm text-blue-600">
+                    <div className="flex items-center gap-1 text-sm text-primary">
                       <Building2 className="h-3.5 w-3.5" />
                       <span>{user.agency}</span>
                     </div>
                   )}
                   {user?.city && (
-                    <div className="flex items-center gap-1 text-sm text-gray-500">
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <MapPin className="h-3.5 w-3.5" />
                       <span>{user.city}{user.state ? `/${user.state}` : ""}</span>
                     </div>
                   )}
                   {user?.creci && (
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded border border-border">
                       {user.creci}
                     </span>
                   )}
@@ -262,7 +262,7 @@ export default function PerfilPage() {
                     {user?.role === "ADMIN" ? "Administrador" : "Corretor"}
                   </Badge>
                 </div>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-muted-foreground/60 mt-2">
                   Clique no ícone de câmera para adicionar sua foto ou logomarca
                 </p>
               </div>
@@ -322,7 +322,7 @@ export default function PerfilPage() {
 
                 <div className="col-span-2">
                   <label className="text-sm font-medium mb-2 block">Tipo de Pessoa</label>
-                  <div className="flex rounded-lg border border-gray-200 overflow-hidden w-fit mb-3">
+                  <div className="flex rounded-lg border border-border overflow-hidden w-fit mb-3">
                     {["PF", "PJ"].map((type) => (
                       <button
                         key={type}
@@ -333,8 +333,8 @@ export default function PerfilPage() {
                         }}
                         className={`px-4 py-1.5 text-sm font-medium transition ${
                           personType === type
-                            ? "bg-blue-600 text-white"
-                            : "bg-white text-gray-600 hover:bg-gray-50"
+                            ? "bg-primary text-white"
+                            : "bg-card text-muted-foreground hover:bg-accent"
                         }`}
                       >
                         {type === "PF" ? "Pessoa Física" : "Pessoa Jurídica"}
@@ -353,7 +353,6 @@ export default function PerfilPage() {
 
               <Button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700"
                 disabled={mutation.isPending || !isDirty}
               >
                 {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
@@ -368,13 +367,13 @@ export default function PerfilPage() {
           <CardHeader><CardTitle className="text-lg">Informações da Conta</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-2 text-gray-600">
-                <Mail className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Mail className="h-4 w-4 text-muted-foreground/60" />
                 <span>{user?.email}</span>
                 <Badge variant="success" className="ml-auto">Verificado</Badge>
               </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <User className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <User className="h-4 w-4 text-muted-foreground/60" />
                 <span>Conta ativa</span>
               </div>
             </div>
@@ -385,7 +384,7 @@ export default function PerfilPage() {
         <Card className="mt-4">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Lock className="h-4 w-4 text-gray-500" />
+              <Lock className="h-4 w-4 text-muted-foreground" />
               Alterar Senha
             </CardTitle>
           </CardHeader>
@@ -403,7 +402,7 @@ export default function PerfilPage() {
                     required
                   />
                   <button type="button" onClick={() => setShowCurrentPw((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                     {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
@@ -420,7 +419,7 @@ export default function PerfilPage() {
                     required
                   />
                   <button type="button" onClick={() => setShowNewPw((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                     {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
@@ -437,14 +436,13 @@ export default function PerfilPage() {
                     required
                   />
                   <button type="button" onClick={() => setShowConfirmPw((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                     {showConfirmPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
               <Button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700"
                 disabled={pwLoading || !pwForm.current || !pwForm.next || !pwForm.confirm}
               >
                 {pwLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
@@ -455,19 +453,19 @@ export default function PerfilPage() {
         </Card>
 
         {/* Danger zone */}
-        <Card className="mt-4 border-red-100">
-          <CardHeader><CardTitle className="text-lg text-red-700">Zona de Perigo</CardTitle></CardHeader>
+        <Card className="mt-4 border-red-500/25">
+          <CardHeader><CardTitle className="text-lg text-red-400">Zona de Perigo</CardTitle></CardHeader>
           <CardContent>
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-900">Encerrar minha conta</p>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-sm font-medium text-foreground">Encerrar minha conta</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Desativa sua conta permanentemente. Você perderá acesso à plataforma.
                 </p>
               </div>
               <Button
                 variant="outline"
-                className="border-red-300 text-red-600 hover:bg-red-50 flex-shrink-0"
+                className="border-red-500/30 text-red-400 hover:bg-red-500/10 flex-shrink-0"
                 onClick={() => setShowDeleteModal(true)}
               >
                 Encerrar conta

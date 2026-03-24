@@ -20,7 +20,7 @@ function FloatingCard({
     <div
       style={style}
       className={[
-        "rounded-2xl border border-white/70 bg-white/80 shadow-[0_20px_60px_rgba(37,99,235,0.12)] backdrop-blur-xl",
+        "rounded-2xl border border-white/10 bg-white/[0.06] shadow-[0_20px_60px_rgba(99,102,241,0.15)] backdrop-blur-xl",
         className ?? "",
       ].join(" ")}
     >
@@ -33,8 +33,8 @@ function FloatingCard({
 function HeroStat({ value, label }: { value: string; label: string }) {
   return (
     <div className="min-w-[110px]">
-      <div className="text-2xl font-bold tracking-tight text-slate-950">{value}</div>
-      <div className="mt-1 text-sm text-slate-500">{label}</div>
+      <div className="text-2xl font-bold tracking-tight text-white">{value}</div>
+      <div className="mt-1 text-sm text-white/50">{label}</div>
     </div>
   );
 }
@@ -101,10 +101,10 @@ function HeroCanvas() {
 
       // ── Base gradient ──────────────────────────────────────────────────────
       const bg = ctx.createLinearGradient(0, 0, W * 0.7, H);
-      bg.addColorStop(0, "rgba(248,251,255,1)");
-      bg.addColorStop(0.35, "rgba(235,230,255,0.95)");
-      bg.addColorStop(0.65, "rgba(220,215,255,0.90)");
-      bg.addColorStop(1, "rgba(230,225,255,1)");
+      bg.addColorStop(0, "rgba(6,12,25,1)");
+      bg.addColorStop(0.35, "rgba(10,14,40,0.98)");
+      bg.addColorStop(0.65, "rgba(15,10,45,0.97)");
+      bg.addColorStop(1, "rgba(12,8,35,1)");
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
@@ -198,7 +198,7 @@ function HeroCanvas() {
         // Core dot
         ctx.beginPath();
         ctx.arc(px, py, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(240,230,255,${alpha.toFixed(2)})`;
+        ctx.fillStyle = `rgba(180,160,255,${(alpha * 0.5).toFixed(2)})`;
         ctx.fill();
       });
 
@@ -271,28 +271,28 @@ export default function HeroSection() {
           }}
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/70 px-3 py-1.5 text-xs font-medium text-blue-600 shadow-sm backdrop-blur w-fit sm:px-4 sm:py-2 sm:text-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur w-fit sm:px-4 sm:py-2 sm:text-sm">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
             Plataforma em crescimento com corretores em todo o Brasil
           </div>
 
           {/* Headline */}
-          <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-[-0.03em] text-slate-950 sm:text-5xl lg:mt-8 lg:text-[64px] lg:leading-[1.0]">
+          <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-[-0.03em] text-white sm:text-5xl lg:mt-8 lg:text-[64px] lg:leading-[1.0]">
             Pare de perder clientes por{" "}
             <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
               não ter o imóvel certo.
             </span>
           </h1>
 
-          <p className="mt-5 max-w-[560px] text-lg leading-relaxed text-slate-600 lg:mt-8 lg:text-[22px]">
+          <p className="mt-5 max-w-[560px] text-lg leading-relaxed text-white/60 lg:mt-8 lg:text-[22px]">
             Conecte-se com outros corretores e encontre oportunidades reais de negócio.
           </p>
 
           {/* Bullets */}
-          <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2.5 text-sm text-slate-500 lg:mt-8 lg:text-base">
+          <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2.5 text-sm text-white/50 lg:mt-8 lg:text-base">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               Novos matches sendo gerados
@@ -318,14 +318,14 @@ export default function HeroSection() {
             </Link>
             <Link
               href="/imoveis"
-              className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-6 py-4 text-base font-semibold text-slate-700 shadow-sm backdrop-blur transition hover:border-slate-300 hover:bg-white sm:w-auto sm:px-8 sm:py-5 sm:text-lg"
+              className="inline-flex w-full items-center justify-center rounded-2xl border border-white/15 bg-white/[0.07] px-6 py-4 text-base font-semibold text-white/80 shadow-sm backdrop-blur transition hover:border-white/25 hover:bg-white/[0.12] sm:w-auto sm:px-8 sm:py-5 sm:text-lg"
             >
               <Flame className="mr-3 h-5 w-5 text-orange-500" />
               Ver oportunidades
             </Link>
           </div>
 
-          <p className="mt-4 text-sm text-slate-400 lg:mt-6">Sem cartão de crédito · Cancele quando quiser</p>
+          <p className="mt-4 text-sm text-white/35 lg:mt-6">Sem cartão de crédito · Cancele quando quiser</p>
 
           {/* Mobile: imagem simplificada (sem cards) */}
           <div className="mt-10 flex justify-center lg:hidden">
@@ -386,12 +386,12 @@ export default function HeroSection() {
           {/* Card: Negócio fechado — acima da cabeça da corretora */}
           <FloatingCard className="absolute right-[3%] top-[5%] z-20 px-5 py-4" style={fadeUp(0.32)}>
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-100 text-orange-500">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-500/20 text-orange-400">
                 <Users className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-[15px] font-semibold text-slate-800">Negócio fechado</div>
-                <div className="text-sm text-slate-400">na plataforma</div>
+                <div className="text-[15px] font-semibold text-white">Negócio fechado</div>
+                <div className="text-sm text-white/50">na plataforma</div>
               </div>
             </div>
           </FloatingCard>
@@ -400,41 +400,41 @@ export default function HeroSection() {
           <FloatingCard className="absolute left-[-18%] top-[41%] z-20 w-[245px] px-3 py-2.5" style={fadeUp(0.48)}>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-600">
+                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-violet-500/20 text-violet-400">
                   <Zap className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-[13px] font-semibold text-slate-800">Match encontrado</div>
-                  <div className="text-[11px] text-slate-400">Atualizado em tempo real</div>
+                  <div className="text-[13px] font-semibold text-white">Match encontrado</div>
+                  <div className="text-[11px] text-white/50">Atualizado em tempo real</div>
                 </div>
               </div>
-              <div className="rounded-full bg-violet-100 px-2 py-0.5 text-[11px] font-bold text-violet-700">93%</div>
+              <div className="rounded-full bg-violet-500/20 px-2 py-0.5 text-[11px] font-bold text-violet-300">93%</div>
             </div>
-            <div className="mt-2.5 flex items-center justify-between text-[11px] font-medium text-slate-400">
+            <div className="mt-2.5 flex items-center justify-between text-[11px] font-medium text-white/40">
               <span>Compatibilidade</span>
-              <span className="text-violet-700">93 / 100</span>
+              <span className="text-violet-300">93 / 100</span>
             </div>
-            <div className="mt-1.5 h-1.5 rounded-full bg-slate-100">
+            <div className="mt-1.5 h-1.5 rounded-full bg-white/10">
               <div className="h-1.5 w-[93%] rounded-full bg-gradient-to-r from-blue-500 to-violet-500" />
             </div>
-            <div className="mt-2.5 flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5">
+            <div className="mt-2.5 flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-2.5 py-1.5">
               <div className="flex -space-x-1.5">
-                <div className="grid h-5 w-5 place-items-center rounded-full border-2 border-white bg-blue-500 text-[8px] font-bold text-white">J</div>
-                <div className="grid h-5 w-5 place-items-center rounded-full border-2 border-white bg-violet-500 text-[8px] font-bold text-white">MC</div>
+                <div className="grid h-5 w-5 place-items-center rounded-full border-2 border-white/20 bg-blue-500 text-[8px] font-bold text-white">J</div>
+                <div className="grid h-5 w-5 place-items-center rounded-full border-2 border-white/20 bg-violet-500 text-[8px] font-bold text-white">MC</div>
               </div>
-              <span className="text-[11px] text-slate-500">2 corretores conectados</span>
+              <span className="text-[11px] text-white/50">2 corretores conectados</span>
             </div>
           </FloatingCard>
 
           {/* Card: Parceria iniciada — esquerda inferior */}
           <FloatingCard className="absolute left-[2%] bottom-[16%] z-20 px-5 py-4" style={fadeUp(0.58)}>
             <div className="flex items-center gap-3">
-              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-600">
+              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-500/20 text-emerald-400">
                 <HeartHandshake className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-[15px] font-semibold text-slate-800">Parceria iniciada</div>
-                <div className="text-sm font-medium text-emerald-500">Comissão acordada</div>
+                <div className="text-[15px] font-semibold text-white">Parceria iniciada</div>
+                <div className="text-sm font-medium text-emerald-400">Comissão acordada</div>
               </div>
             </div>
           </FloatingCard>
@@ -446,11 +446,11 @@ export default function HeroSection() {
                 <TrendingUp className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-sm text-slate-400">Comissão estimada</div>
-                <div className="text-[20px] font-black text-emerald-600">R$ 14.200</div>
+                <div className="text-sm text-white/50">Comissão estimada</div>
+                <div className="text-[20px] font-black text-emerald-400">R$ 14.200</div>
               </div>
             </div>
-            <div className="mt-3 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-600">
+            <div className="mt-3 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-center text-sm font-medium text-emerald-400">
               sua parte neste match
             </div>
           </FloatingCard>

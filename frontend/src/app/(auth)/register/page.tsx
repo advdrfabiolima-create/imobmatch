@@ -69,14 +69,12 @@ type FormData = z.infer<typeof schema>;
 
 const inputCls = (err?: boolean) =>
   [
-    "h-11 text-sm rounded-xl bg-slate-50 border-slate-200 text-slate-900",
-    "placeholder:text-slate-300 transition-all duration-150",
-    "focus:bg-white focus:border-blue-400 focus:ring-4 focus:ring-blue-500/[0.09] focus:outline-none",
+    "h-11 text-sm rounded-xl transition-all duration-150",
     err ? "border-red-400 focus:border-red-400 focus:ring-red-500/[0.09]" : "",
   ].join(" ");
 
 const selectCls =
-  "flex h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 transition-all duration-150 focus:bg-white focus:border-blue-400 focus:ring-4 focus:ring-blue-500/[0.09] focus:outline-none";
+  "flex h-11 w-full rounded-xl border border-border bg-muted/60 text-foreground px-3 py-2 text-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-ring";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP INDICATOR
@@ -89,7 +87,7 @@ function StepIndicator({ step }: { step: 1 | 2 }) {
         "w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-300",
         step >= n
           ? "bg-gradient-to-br from-blue-600 to-violet-600 text-white"
-          : "bg-slate-100 text-slate-400",
+          : "bg-white/10 text-muted-foreground",
       ].join(" ")}
     >
       {n === 1 && step > 1 ? <Check className="h-2.5 w-2.5" /> : n}
@@ -99,7 +97,7 @@ function StepIndicator({ step }: { step: 1 | 2 }) {
   return (
     <div className="flex items-center gap-1.5 flex-shrink-0">
       {dot(1)}
-      <div className={["w-6 h-px transition-all duration-500", step >= 2 ? "bg-blue-400" : "bg-slate-200"].join(" ")} />
+      <div className={["w-6 h-px transition-all duration-500", step >= 2 ? "bg-primary" : "bg-border"].join(" ")} />
       {dot(2)}
     </div>
   );
@@ -112,7 +110,7 @@ function StepIndicator({ step }: { step: 1 | 2 }) {
 function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: PlanId) => void }) {
   return (
     <div className="mb-7">
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-2.5">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2.5">
         Plano
       </p>
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 pt-3">
@@ -126,20 +124,20 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
               className={[
                 "relative flex flex-col items-center px-2 py-2.5 rounded-xl transition-all duration-150 w-full",
                 active
-                  ? "bg-blue-600 shadow-sm shadow-blue-300/30"
+                  ? "bg-primary shadow-sm shadow-primary/20"
                   : plan.popular
-                  ? "bg-white border border-blue-200 hover:border-blue-300"
-                  : "bg-white border border-slate-200 hover:border-slate-300",
+                  ? "bg-card border border-primary/30 hover:border-primary/50"
+                  : "bg-card border border-border hover:border-border/80",
               ].join(" ")}
             >
-              <span className={["text-[11.5px] font-semibold leading-tight", active ? "text-white" : "text-slate-700"].join(" ")}>
+              <span className={["text-[11.5px] font-semibold leading-tight", active ? "text-white" : "text-foreground"].join(" ")}>
                 {plan.name}
               </span>
-              <span className={["text-[10px] mt-0.5 leading-tight", active ? "text-blue-200" : "text-slate-400"].join(" ")}>
+              <span className={["text-[10px] mt-0.5 leading-tight", active ? "text-white/70" : "text-muted-foreground"].join(" ")}>
                 {plan.price}{plan.period}
               </span>
               {plan.popular && !active && (
-                <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[8.5px] font-bold text-blue-600 bg-blue-50 border border-blue-200 px-1.5 py-px rounded-full whitespace-nowrap leading-none">
+                <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[8.5px] font-bold text-primary bg-primary/10 border border-primary/30 px-1.5 py-px rounded-full whitespace-nowrap leading-none">
                   Popular
                 </span>
               )}
@@ -147,7 +145,7 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
           );
         })}
       </div>
-      <p className="text-[11px] text-slate-400 mt-2">
+      <p className="text-[11px] text-muted-foreground mt-2">
         Free sempre grátis · Sem cartão para planos pagos
       </p>
     </div>
@@ -161,9 +159,9 @@ function PlanSelector({ selected, onChange }: { selected: PlanId; onChange: (p: 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-[12px] font-medium text-slate-500 mb-1.5">{label}</label>
+      <label className="block text-[12px] font-medium text-muted-foreground mb-1.5">{label}</label>
       {children}
-      {error && <p className="mt-1 text-[11.5px] text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-[11.5px] text-red-400">{error}</p>}
     </div>
   );
 }
@@ -213,19 +211,19 @@ function RegisterForm() {
 
   return (
     <div
-      className="bg-white rounded-2xl border border-slate-100 px-8 py-8"
-      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 10px 36px rgba(0,0,0,0.07)" }}
+      className="bg-card border border-border rounded-2xl px-8 py-8"
+      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.2), 0 10px 36px rgba(0,0,0,0.3)" }}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-7">
         <div className="flex-1 min-w-0 pr-4">
-          <h2 className="text-xl font-bold text-slate-900 tracking-[-0.02em] leading-tight">
+          <h2 className="text-xl font-bold text-foreground tracking-[-0.02em] leading-tight">
             {step === 1 ? "Criar conta" : "Dados profissionais"}
           </h2>
-          <p className="text-[13px] text-slate-400 mt-1">
+          <p className="text-[13px] text-muted-foreground mt-1">
             {step === 1 ? (
               <>Já tem conta?{" "}
-                <Link href="/login" className="text-blue-600 hover:text-blue-700 transition-colors">
+                <Link href="/login" className="text-primary hover:text-primary/80 transition-colors">
                   Entrar
                 </Link>
               </>
@@ -260,12 +258,12 @@ function RegisterForm() {
                   autoComplete="new-password" {...register("password")}
                   className={inputCls(!!errors.password) + " pr-11"} />
                 <button type="button" tabIndex={-1} onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors">
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors">
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               {!errors.password && (
-                <p className="text-xs text-slate-400 mt-1.5">
+                <p className="text-xs text-muted-foreground mt-1.5">
                   Mínimo 8 caracteres com 1 maiúscula, 1 minúscula, 1 número e 1 caractere especial.
                 </p>
               )}
@@ -274,12 +272,12 @@ function RegisterForm() {
             <div className="pt-0.5">
               <label className="flex items-start gap-3 cursor-pointer">
                 <input type="checkbox" {...register("acceptTerms")}
-                  className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer flex-shrink-0" />
-                <span className="text-[12px] text-slate-500 leading-relaxed">
+                  className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-ring cursor-pointer flex-shrink-0" />
+                <span className="text-[12px] text-muted-foreground leading-relaxed">
                   Concordo com os{" "}
-                  <Link href="/termos" target="_blank" className="text-blue-600 hover:underline">Termos de Uso</Link>
+                  <Link href="/termos" target="_blank" className="text-primary hover:underline">Termos de Uso</Link>
                   {" "}e a{" "}
-                  <Link href="/privacidade" target="_blank" className="text-blue-600 hover:underline">Política de Privacidade</Link>.
+                  <Link href="/privacidade" target="_blank" className="text-primary hover:underline">Política de Privacidade</Link>.
                 </span>
               </label>
               {errors.acceptTerms && (
@@ -294,7 +292,7 @@ function RegisterForm() {
                 Criar conta grátis
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
-              <p className="text-center text-[11px] text-slate-400">
+              <p className="text-center text-[11px] text-muted-foreground">
                 Sem cartão · Comece em segundos
               </p>
             </div>
@@ -304,7 +302,7 @@ function RegisterForm() {
         {/* ── STEP 2 ── */}
         {step === 2 && (
           <div className="space-y-4">
-            <p className="text-[12.5px] text-slate-400 -mt-2 mb-2">
+            <p className="text-[12.5px] text-muted-foreground -mt-2 mb-2">
               Essas informações ajudam corretores a te encontrar na rede.
             </p>
 
@@ -349,15 +347,15 @@ function RegisterForm() {
                 )}
               </Button>
 
-              <div className="flex items-center gap-3 text-[12px] text-slate-400">
+              <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                 <button type="button" onClick={() => setStep(1)}
-                  className="flex items-center gap-1.5 hover:text-slate-600 transition-colors py-1">
+                  className="flex items-center gap-1.5 hover:text-foreground transition-colors py-1">
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Voltar
                 </button>
-                <span className="text-slate-200">·</span>
+                <span className="text-border">·</span>
                 <button type="submit" disabled={isLoading}
-                  className="hover:text-blue-600 transition-colors py-1 disabled:opacity-40">
+                  className="hover:text-primary transition-colors py-1 disabled:opacity-40">
                   Pular esta etapa →
                 </button>
               </div>
@@ -453,24 +451,24 @@ export default function RegisterPage() {
     <div className="min-h-screen flex">
       <LeftPanel />
 
-      <div className="w-full lg:w-[55%] xl:w-7/12 flex flex-col items-center justify-center px-6 py-14 sm:px-10 bg-[#f8f9fb] overflow-y-auto">
+      <div className="w-full lg:w-[55%] xl:w-7/12 flex flex-col items-center justify-center px-6 py-14 sm:px-10 bg-background overflow-y-auto">
 
         {/* Mobile logo */}
         <div className="lg:hidden mb-10">
           <Link href="/">
-            <Image src="/logo_texto_preto.png" alt="ImobMatch" width={148} height={44}
+            <Image src="/logo_texto_branco.png" alt="ImobMatch" width={148} height={44}
               className="h-7 w-auto object-contain" />
           </Link>
         </div>
 
         <div className="w-full max-w-[480px]">
           <Suspense fallback={
-            <div className="bg-white rounded-2xl border border-slate-100 px-8 py-8 h-[500px] animate-pulse" />
+            <div className="bg-card border border-border rounded-2xl px-8 py-8 h-[500px] animate-pulse" />
           }>
             <RegisterForm />
           </Suspense>
 
-          <p className="mt-5 text-center text-[11px] text-slate-400">
+          <p className="mt-5 text-center text-[11px] text-muted-foreground">
             Sem cartão de crédito &nbsp;·&nbsp; Cancele quando quiser &nbsp;·&nbsp; Dados seguros
           </p>
         </div>

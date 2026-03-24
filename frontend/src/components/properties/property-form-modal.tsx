@@ -178,13 +178,13 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-card border border-border rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
-          <h2 className="text-xl font-semibold">
+        <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card z-10">
+          <h2 className="text-xl font-semibold text-foreground">
             {isEditing ? "Editar Imóvel" : "Cadastrar Imóvel"}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+          <button onClick={onClose} className="p-2 hover:bg-accent rounded-lg">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -192,14 +192,14 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
         <div className="p-6 space-y-5">
           {/* Seletor de modo — só exibido em criação */}
           {!isEditing && (
-            <div className="flex rounded-xl border border-gray-200 overflow-hidden">
+            <div className="flex rounded-xl border border-border overflow-hidden">
               <button
                 type="button"
                 onClick={() => setMode("manual")}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium transition ${
                   mode === "manual"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-muted-foreground hover:bg-accent"
                 }`}
               >
                 <PenLine className="h-4 w-4" />
@@ -210,8 +210,8 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                 onClick={() => setMode("import")}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium transition ${
                   mode === "import"
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-50"
+                    ? "bg-primary text-white"
+                    : "bg-card text-muted-foreground hover:bg-accent"
                 }`}
               >
                 <Link2 className="h-4 w-4" />
@@ -222,12 +222,12 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
 
           {/* ── Painel de Importação ─────────────────────────────────────── */}
           {mode === "import" && !isEditing && (
-            <div className="bg-blue-50 rounded-xl p-5 space-y-3">
+            <div className="bg-primary/5 border border-primary/10 rounded-xl p-5 space-y-3">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                <label className="text-sm font-medium text-foreground/80 mb-1 block">
                   Cole o link do imóvel
                 </label>
-                <p className="text-xs text-gray-500 mb-2">
+                <p className="text-xs text-muted-foreground mb-2">
                   Ex: link de sites como VivaReal, ZAP Imóveis, OLX ou qualquer página de imóvel.
                 </p>
                 <Input
@@ -236,14 +236,14 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                   value={importUrl}
                   onChange={(e) => setImportUrl(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleImport()}
-                  className="bg-white"
+                  className="bg-card"
                 />
               </div>
               <Button
                 type="button"
                 onClick={handleImport}
                 disabled={importing || !importUrl.trim()}
-                className="w-full bg-blue-600 hover:bg-blue-700 gap-2"
+                className="w-full gap-2"
               >
                 {importing ? (
                   <><Loader2 className="h-4 w-4 animate-spin" /> Importando...</>
@@ -251,7 +251,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                   <><Download className="h-4 w-4" /> Importar Imóvel</>
                 )}
               </Button>
-              <p className="text-xs text-gray-400 text-center">
+              <p className="text-xs text-muted-foreground text-center">
                 Os dados serão extraídos automaticamente e poderão ser editados antes de salvar.
               </p>
             </div>
@@ -276,7 +276,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                   <label className="text-sm font-medium mb-1 block">Tipo *</label>
                   <select
                     {...register("type")}
-                    className="h-10 w-full rounded-md border px-3 text-sm"
+                    className="h-10 w-full rounded-md border border-border bg-muted/60 text-foreground px-3 text-sm"
                   >
                     <option value="APARTMENT">Apartamento</option>
                     <option value="HOUSE">Casa</option>
@@ -288,7 +288,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">Modalidade *</label>
-                  <div className="flex rounded-md border overflow-hidden h-10">
+                  <div className="flex rounded-md border border-border overflow-hidden h-10">
                     {[
                       { value: "SALE", label: "Venda" },
                       { value: "RENT", label: "Aluguel" },
@@ -299,8 +299,8 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                         onClick={() => setValue("listingType", opt.value as "SALE" | "RENT")}
                         className={`flex-1 text-sm font-medium transition ${
                           watchedListingType === opt.value
-                            ? "bg-blue-600 text-white"
-                            : "bg-white text-gray-600 hover:bg-gray-50"
+                            ? "bg-primary text-white"
+                            : "bg-card text-muted-foreground hover:bg-accent"
                         }`}
                       >
                         {opt.label}
@@ -331,7 +331,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                       setValue("state", e.target.value, { shouldValidate: true });
                       setValue("city", "");
                     }}
-                    className="h-10 w-full rounded-md border px-3 text-sm"
+                    className="h-10 w-full rounded-md border border-border bg-muted/60 text-foreground px-3 text-sm"
                   >
                     <option value="">Selecione</option>
                     {STATES.map((s) => (
@@ -397,7 +397,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                     {photos.map((url, i) => (
                       <div
                         key={i}
-                        className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 group"
+                        className="relative aspect-video rounded-lg overflow-hidden bg-white/5 group"
                       >
                         <img
                           src={url}
@@ -420,18 +420,18 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                   className={`flex items-center justify-center gap-2 w-full border-2 border-dashed rounded-xl p-4 cursor-pointer transition ${
                     uploading
                       ? "opacity-50 cursor-not-allowed"
-                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                      : "border-border hover:border-primary/50 hover:bg-primary/5"
                   }`}
                 >
                   {uploading ? (
                     <>
-                      <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
-                      <span className="text-sm text-blue-600">Enviando...</span>
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      <span className="text-sm text-primary">Enviando...</span>
                     </>
                   ) : (
                     <>
-                      <ImagePlus className="h-5 w-5 text-gray-400" />
-                      <span className="text-sm text-gray-500">
+                      <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
                         Clique para adicionar fotos (máx. 10MB cada)
                       </span>
                     </>
@@ -459,7 +459,7 @@ export function PropertyFormModal({ property, onClose, onSuccess }: Props) {
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1"
                   disabled={mutation.isPending || uploading}
                 >
                   {mutation.isPending && (

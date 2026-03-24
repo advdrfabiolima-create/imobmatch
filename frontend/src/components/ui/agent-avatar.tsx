@@ -36,7 +36,7 @@ export function AgentAvatar({
   avatarUrl,
   score,
   size = "md",
-  fallbackClassName = "bg-blue-100 text-blue-600",
+  fallbackClassName = "bg-primary/20 text-primary",
   className,
 }: Props) {
   const s = SIZE[size];

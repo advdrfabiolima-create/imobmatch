@@ -72,12 +72,12 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="bg-card border border-border rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center mb-6">
             <img
-              src="/logo_texto_preto.png"
+              src="/logo_texto_branco.png"
               alt="ImobMatch"
               className="h-12 w-auto object-contain"
             />
@@ -85,45 +85,45 @@ function ResetPasswordForm() {
 
           {success ? (
             <>
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h1 className="text-2xl font-bold text-gray-900">
+              <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-foreground">
                 Senha redefinida!
               </h1>
-              <p className="text-gray-500 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Sua senha foi alterada com sucesso. Redirecionando para o
                 login...
               </p>
               <Link
                 href="/login"
-                className="mt-6 inline-flex items-center gap-2 text-blue-600 hover:underline"
+                className="mt-6 inline-flex items-center gap-2 text-primary hover:underline"
               >
                 <ArrowLeft className="h-4 w-4" /> Ir para o login agora
               </Link>
             </>
           ) : tokenError ? (
             <>
-              <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-              <h1 className="text-2xl font-bold text-gray-900">
+              <XCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-foreground">
                 Link inválido
               </h1>
-              <p className="text-gray-500 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Este link de redefinição é inválido ou expirou.
                 <br />
                 Solicite um novo link abaixo.
               </p>
               <Link
                 href="/forgot-password"
-                className="mt-6 inline-flex items-center gap-2 text-blue-600 hover:underline font-medium"
+                className="mt-6 inline-flex items-center gap-2 text-primary hover:underline font-medium"
               >
                 Solicitar novo link
               </Link>
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-foreground">
                 Redefinir senha
               </h1>
-              <p className="text-gray-500 mt-1">
+              <p className="text-muted-foreground mt-1">
                 Escolha uma nova senha para sua conta
               </p>
             </>
@@ -133,7 +133,7 @@ function ResetPasswordForm() {
         {!success && !tokenError && (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">
+              <label className="text-sm font-medium text-foreground/80 block mb-1">
                 Nova senha
               </label>
               <div className="relative">
@@ -145,7 +145,7 @@ function ResetPasswordForm() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground"
                   onClick={() => setShowPassword((v) => !v)}
                 >
                   {showPassword ? (
@@ -156,11 +156,11 @@ function ResetPasswordForm() {
                 </button>
               </div>
               {errors.password ? (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-400 text-xs mt-1">
                   {errors.password.message}
                 </p>
               ) : (
-                <p className="text-xs text-slate-400 mt-1.5">
+                <p className="text-xs text-muted-foreground mt-1.5">
                   Mínimo 8 caracteres com 1 maiúscula, 1 minúscula, 1 número e
                   1 caractere especial.
                 </p>
@@ -168,7 +168,7 @@ function ResetPasswordForm() {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">
+              <label className="text-sm font-medium text-foreground/80 block mb-1">
                 Confirmar nova senha
               </label>
               <div className="relative">
@@ -180,7 +180,7 @@ function ResetPasswordForm() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground"
                   onClick={() => setShowConfirm((v) => !v)}
                 >
                   {showConfirm ? (
@@ -191,7 +191,7 @@ function ResetPasswordForm() {
                 </button>
               </div>
               {errors.confirm && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-400 text-xs mt-1">
                   {errors.confirm.message}
                 </p>
               )}
@@ -199,7 +199,7 @@ function ResetPasswordForm() {
 
             <Button
               type="submit"
-              className="w-full h-11 bg-blue-600 hover:bg-blue-700"
+              className="w-full h-11"
               disabled={loading}
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
@@ -208,7 +208,7 @@ function ResetPasswordForm() {
 
             <Link
               href="/login"
-              className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-blue-600"
+              className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary"
             >
               <ArrowLeft className="h-4 w-4" /> Voltar ao login
             </Link>
