@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,58 @@ import {
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { maskPhone } from "@/lib/masks";
+
+// ── Contador real de cadastros ────────────────────────────────────────────────
+function VipCounter() {
+  const [count, setCount] = useState<number | null>(null);
+  const [displayed, setDisplayed] = useState(0);
+
+  useEffect(() => {
+    api.get("/early-access/count").then((res) => {
+      const total = typeof res.data === "number" ? res.data : res.data?.count ?? 0;
+      setCount(total);
+    }).catch(() => {});
+  }, []);
+
+  // animação de contagem
+  useEffect(() => {
+    if (count === null) return;
+    let start = 0;
+    const duration = 1200;
+    const step = Math.ceil(count / (duration / 16));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= count) { setDisplayed(count); clearInterval(timer); }
+      else setDisplayed(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [count]);
+
+  if (count === null) return null;
+
+  return (
+    <div
+      className="flex items-center gap-2.5 rounded-full px-4 py-2 mb-5 w-fit"
+      style={{
+        background: "rgba(16,185,129,0.10)",
+        border: "1px solid rgba(16,185,129,0.25)",
+      }}
+    >
+      <span className="flex -space-x-1.5">
+        {[...Array(3)].map((_, i) => (
+          <span
+            key={i}
+            className="w-5 h-5 rounded-full border-2 border-[#0b1437] bg-gradient-to-br from-violet-400 to-blue-500 flex-shrink-0"
+          />
+        ))}
+      </span>
+      <span className="text-emerald-400 text-xs font-semibold">
+        <span className="font-extrabold text-white">{displayed.toLocaleString("pt-BR")}</span> corretores já garantiram sua vaga
+      </span>
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+    </div>
+  );
+}
 
 const schema = z.object({
   fullName: z.string().min(2, "Nome obrigatório"),
@@ -120,6 +172,8 @@ function SignupForm() {
 
   return (
     <>
+      <VipCounter />
+
       <div className="mb-5">
         <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-1">
           Acesso exclusivo · Grupo Negócios Imobiliários
