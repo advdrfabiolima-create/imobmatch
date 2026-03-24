@@ -175,7 +175,8 @@ function ActivityTicker() {
   ];
 
   return (
-    <div className="border-y border-gray-100 bg-gray-50/70 py-3 overflow-hidden">
+    <div className="border-y py-3 overflow-hidden"
+      style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.06)" }}>
       <style>{`
         @keyframes ticker-scroll {
           from { transform: translateX(0); }
@@ -190,10 +191,11 @@ function ActivityTicker() {
       `}</style>
       <div className="flex items-center gap-4 px-6">
         {/* Label */}
-        <span className="flex-shrink-0 flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full whitespace-nowrap">
+        <span className="flex-shrink-0 flex items-center gap-1.5 text-xs font-bold text-blue-300 px-3 py-1 rounded-full whitespace-nowrap border"
+          style={{ background: "rgba(37,99,235,0.12)", borderColor: "rgba(96,165,250,0.25)" }}>
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-400" />
           </span>
           Ativo agora
         </span>
@@ -201,7 +203,7 @@ function ActivityTicker() {
         <div className="overflow-hidden flex-1">
           <div className="ticker-track flex gap-10 w-max">
             {[...items, ...items].map((item, i) => (
-              <span key={i} className="flex items-center gap-1.5 text-sm text-gray-500 whitespace-nowrap">
+              <span key={i} className="flex items-center gap-1.5 text-sm whitespace-nowrap" style={{ color: "rgba(255,255,255,0.38)" }}>
                 <span>{item.icon}</span>
                 {item.text}
               </span>
@@ -218,19 +220,19 @@ function ActivityTicker() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const FEED_POOL = [
-  { icon: "🔥", title: "Nova oportunidade publicada", desc: "Apartamento em Salvador com −18% de desconto", border: "border-orange-100", bg: "bg-orange-50/70", dot: "bg-orange-400" },
-  { icon: "💡", title: "Match encontrado", desc: "92% de compatibilidade — comprador em Salvador, BA", border: "border-violet-100", bg: "bg-violet-50/70", dot: "bg-violet-400" },
-  { icon: "🤝", title: "Parceria iniciada", desc: "Dois corretores formalizaram acordo de comissão", border: "border-blue-100", bg: "bg-blue-50/70", dot: "bg-blue-400" },
-  { icon: "📈", title: "Imóvel adicionado à rede", desc: "Casa em São Paulo · R$ 650.000 · 3 quartos", border: "border-emerald-100", bg: "bg-emerald-50/70", dot: "bg-emerald-400" },
-  { icon: "💡", title: "Match de alto impacto", desc: "94% de compatibilidade — Rio de Janeiro, RJ", border: "border-violet-100", bg: "bg-violet-50/70", dot: "bg-violet-400" },
-  { icon: "🔥", title: "Oportunidade urgente", desc: "Studio no RJ com −15% · 3 interessados na fila", border: "border-orange-100", bg: "bg-orange-50/70", dot: "bg-orange-400" },
-  { icon: "🤝", title: "Negócio fechado", desc: "Comissão dividida entre dois corretores — BH, MG", border: "border-blue-100", bg: "bg-blue-50/70", dot: "bg-blue-400" },
-  { icon: "📈", title: "Corretor entrou na rede", desc: "Novo membro em Fortaleza, CE — perfil ativo", border: "border-emerald-100", bg: "bg-emerald-50/70", dot: "bg-emerald-400" },
-  { icon: "🔥", title: "Oportunidade publicada", desc: "Cobertura em Fortaleza com −18% — 4 matches", border: "border-orange-100", bg: "bg-orange-50/70", dot: "bg-orange-400" },
-  { icon: "💡", title: "Match gerado automaticamente", desc: "88% de compatibilidade — Recife, PE", border: "border-violet-100", bg: "bg-violet-50/70", dot: "bg-violet-400" },
+  { icon: "🔥", title: "Nova oportunidade publicada", desc: "Apartamento em Salvador com −18% de desconto", borderStyle: "rgba(251,146,60,0.22)", bgStyle: "rgba(251,146,60,0.07)", dot: "bg-orange-400" },
+  { icon: "💡", title: "Match encontrado", desc: "92% de compatibilidade — comprador em Salvador, BA", borderStyle: "rgba(167,139,250,0.22)", bgStyle: "rgba(139,92,246,0.07)", dot: "bg-violet-400" },
+  { icon: "🤝", title: "Parceria iniciada", desc: "Dois corretores formalizaram acordo de comissão", borderStyle: "rgba(96,165,250,0.22)", bgStyle: "rgba(37,99,235,0.07)", dot: "bg-blue-400" },
+  { icon: "📈", title: "Imóvel adicionado à rede", desc: "Casa em São Paulo · R$ 650.000 · 3 quartos", borderStyle: "rgba(52,211,153,0.22)", bgStyle: "rgba(16,185,129,0.07)", dot: "bg-emerald-400" },
+  { icon: "💡", title: "Match de alto impacto", desc: "94% de compatibilidade — Rio de Janeiro, RJ", borderStyle: "rgba(167,139,250,0.22)", bgStyle: "rgba(139,92,246,0.07)", dot: "bg-violet-400" },
+  { icon: "🔥", title: "Oportunidade urgente", desc: "Studio no RJ com −15% · 3 interessados na fila", borderStyle: "rgba(251,146,60,0.22)", bgStyle: "rgba(251,146,60,0.07)", dot: "bg-orange-400" },
+  { icon: "🤝", title: "Negócio fechado", desc: "Comissão dividida entre dois corretores — BH, MG", borderStyle: "rgba(96,165,250,0.22)", bgStyle: "rgba(37,99,235,0.07)", dot: "bg-blue-400" },
+  { icon: "📈", title: "Corretor entrou na rede", desc: "Novo membro em Fortaleza, CE — perfil ativo", borderStyle: "rgba(52,211,153,0.22)", bgStyle: "rgba(16,185,129,0.07)", dot: "bg-emerald-400" },
+  { icon: "🔥", title: "Oportunidade publicada", desc: "Cobertura em Fortaleza com −18% — 4 matches", borderStyle: "rgba(251,146,60,0.22)", bgStyle: "rgba(251,146,60,0.07)", dot: "bg-orange-400" },
+  { icon: "💡", title: "Match gerado automaticamente", desc: "88% de compatibilidade — Recife, PE", borderStyle: "rgba(167,139,250,0.22)", bgStyle: "rgba(139,92,246,0.07)", dot: "bg-violet-400" },
 ];
 
-type FeedEvent = typeof FEED_POOL[0] & { uid: number; time: string };
+type FeedEvent = typeof FEED_POOL[0] & { uid: number; time: string; border?: string; bg?: string; };
 
 function formatAgo(secsAgo: number): string {
   if (secsAgo < 60) return "agora";
@@ -265,7 +267,7 @@ function LiveActivitySection() {
   }, []);
 
   return (
-    <section className="bg-white py-20">
+    <section className="py-20" style={{ background: "rgba(255,255,255,0.01)" }}>
       <style>{`
         @keyframes feed-slide-in {
           from { opacity: 0; transform: translateY(-10px); }
@@ -283,17 +285,18 @@ function LiveActivitySection() {
             transition: "opacity 0.55s ease, transform 0.55s ease",
           }}
         >
-          <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-4 py-1.5 rounded-full mb-5">
+          <div className="inline-flex items-center gap-2 text-emerald-300 text-xs font-bold px-4 py-1.5 rounded-full mb-5 border"
+            style={{ background: "rgba(16,185,129,0.08)", borderColor: "rgba(52,211,153,0.25)" }}>
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
             </span>
             Atividade na rede
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
             O que está acontecendo agora
           </h2>
-          <p className="text-lg text-gray-500 max-w-xl mx-auto">
+          <p className="text-lg max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>
             Matches, parcerias e oportunidades como essas surgem todos os dias na rede ImobMatch.
           </p>
         </div>
@@ -302,20 +305,22 @@ function LiveActivitySection() {
           {feed.map((ev) => (
             <div
               key={ev.uid}
-              className={`${ev.uid === newUid ? "feed-new" : ""} flex items-start gap-3 p-4 rounded-2xl border ${ev.border} ${ev.bg} hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 cursor-default`}
+              className={`${ev.uid === newUid ? "feed-new" : ""} flex items-start gap-3 p-4 rounded-2xl border hover:-translate-y-0.5 transition-all duration-200 cursor-default`}
+              style={{ background: ev.bgStyle, borderColor: ev.borderStyle }}
             >
-              <div className="flex-shrink-0 w-9 h-9 bg-white rounded-xl flex items-center justify-center text-base shadow-sm border border-gray-100">
+              <div className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-base border"
+                style={{ background: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.08)" }}>
                 {ev.icon}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2 mb-0.5">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{ev.title}</p>
-                  <span className="text-[10px] text-gray-400 flex-shrink-0 flex items-center gap-1 whitespace-nowrap">
+                  <p className="text-sm font-semibold truncate" style={{ color: "rgba(255,255,255,0.85)" }}>{ev.title}</p>
+                  <span className="text-[10px] flex-shrink-0 flex items-center gap-1 whitespace-nowrap" style={{ color: "rgba(255,255,255,0.30)" }}>
                     <span className={`w-1.5 h-1.5 rounded-full ${ev.dot} ${ev.uid === newUid ? "animate-ping" : ""}`} />
                     {ev.time}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 leading-relaxed">{ev.desc}</p>
+                <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.42)" }}>{ev.desc}</p>
               </div>
             </div>
           ))}
@@ -325,12 +330,12 @@ function LiveActivitySection() {
           className="text-center mt-8"
           style={{ opacity: visible ? 1 : 0, transition: "opacity 0.5s ease 700ms" }}
         >
-          <p className="text-xs text-gray-400 mb-3">
+          <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.25)" }}>
             Esses são exemplos do tipo de atividade que acontece na plataforma
           </p>
           <Link
             href="/register"
-            className="group inline-flex items-center gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors"
+            className="group inline-flex items-center gap-2 text-blue-400 font-semibold text-sm hover:text-blue-300 transition-colors"
           >
             Quero fazer parte da rede
             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -448,26 +453,27 @@ function OpportunityImpactSection() {
   const currentGroup = pool.slice(groupIdx * 3, groupIdx * 3 + 3);
 
   return (
-    <section className="relative py-20 overflow-hidden bg-[linear-gradient(180deg,#ede9fe_0%,#ddd6fe_60%,#e0d9ff_100%)]">
+    <section className="relative py-20 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(251,146,60,0.04) 50%, rgba(255,255,255,0.01) 100%)" }}>
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-400/10 blur-3xl rounded-full" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-violet-400/10 blur-3xl rounded-full" />
-        <div className="absolute top-1/2 left-0 w-64 h-64 bg-blue-300/8 blur-3xl rounded-full" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-500/8 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-violet-500/6 blur-3xl rounded-full" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-600 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 text-orange-300 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-wider border"
+            style={{ background: "rgba(251,146,60,0.10)", borderColor: "rgba(251,146,60,0.28)" }}>
             <Flame className="h-3.5 w-3.5" />
             {isReal ? "Oportunidades publicadas agora" : "Exemplos de oportunidades na plataforma"}
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
             Oportunidades como essa{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
               surgem todos os dias
             </span>
           </h2>
-          <p className="text-slate-500 text-lg max-w-xl mx-auto">
+          <p className="text-lg max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>
             Corretores publicam imóveis com desconto urgente na rede. Quem está cadastrado acessa primeiro.
           </p>
         </div>
@@ -479,11 +485,12 @@ function OpportunityImpactSection() {
           {currentGroup.map((opp, i) => (
             <div
               key={(opp as any).id ?? opp.label}
-              className={`relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
-                opp.featured
-                  ? "border-orange-300/60 bg-white shadow-lg shadow-orange-100/80"
-                  : "border-slate-200 bg-white hover:shadow-slate-200/60"
-              }`}
+              className="relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1"
+              style={{
+                background: opp.featured ? "rgba(251,146,60,0.07)" : "rgba(255,255,255,0.03)",
+                borderColor: opp.featured ? "rgba(251,146,60,0.35)" : "rgba(255,255,255,0.08)",
+                boxShadow: opp.featured ? "0 0 24px rgba(251,146,60,0.08)" : undefined,
+              }}
             >
               {opp.featured && (
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500" />
@@ -492,28 +499,31 @@ function OpportunityImpactSection() {
               <div className="p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <p className="font-bold text-slate-900 text-sm">{opp.label}</p>
-                    <p className="text-slate-400 text-xs mt-0.5">{opp.type}</p>
+                    <p className="font-bold text-sm" style={{ color: "rgba(255,255,255,0.88)" }}>{opp.label}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.38)" }}>{opp.type}</p>
                   </div>
-                  <span className="text-[10px] font-black text-red-500 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-black text-orange-300 px-2 py-0.5 rounded-full border"
+                    style={{ background: "rgba(251,146,60,0.12)", borderColor: "rgba(251,146,60,0.30)" }}>
                     −{opp.pct} OFF
                   </span>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-3.5 mb-4 border border-slate-100">
+                <div className="rounded-xl p-3.5 mb-4 border"
+                  style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-slate-400 line-through">{opp.from}</p>
-                      <p className="text-xl font-extrabold text-slate-900 mt-0.5">{opp.to}</p>
+                      <p className="text-xs line-through" style={{ color: "rgba(255,255,255,0.30)" }}>{opp.from}</p>
+                      <p className="text-xl font-extrabold mt-0.5" style={{ color: "rgba(255,255,255,0.92)" }}>{opp.to}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-slate-400">Economia</p>
-                      <p className="text-sm font-bold text-orange-500">{opp.save}</p>
+                      <p className="text-xs" style={{ color: "rgba(255,255,255,0.32)" }}>Economia</p>
+                      <p className="text-sm font-bold text-orange-400">{opp.save}</p>
                     </div>
                   </div>
                 </div>
                 {!(opp as any).isReal && (opp as any).matches && (
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                    <div className="flex items-center gap-1.5 text-xs text-emerald-300 px-2.5 py-1 rounded-lg border"
+                      style={{ background: "rgba(16,185,129,0.10)", borderColor: "rgba(52,211,153,0.25)" }}>
                       <Zap className="h-3 w-3" />
                       {(opp as any).matches} compradores compatíveis
                     </div>
@@ -521,7 +531,8 @@ function OpportunityImpactSection() {
                 )}
                 <Link
                   href={isReal ? "/radar" : "/register"}
-                  className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition"
+                  className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition"
+                  style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)" }}
                 >
                   {isReal ? "Ver esta oportunidade" : "Ver oportunidades reais"}
                   <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -538,14 +549,15 @@ function OpportunityImpactSection() {
               onClick={() => rotate(i)}
               aria-label={`Grupo ${i + 1}`}
               className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === groupIdx ? "w-6 bg-orange-500" : "w-1.5 bg-slate-300 hover:bg-slate-400"
+                i === groupIdx ? "w-6 bg-orange-500" : "w-1.5 hover:bg-white/30"
               }`}
+              style={{ background: i === groupIdx ? undefined : "rgba(255,255,255,0.15)" }}
             />
           ))}
         </div>
 
         <div className="text-center">
-          <p className="text-slate-400 text-sm mb-4">
+          <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.32)" }}>
             {isReal
               ? "Oportunidades reais publicadas por corretores na plataforma"
               : "Exemplos do tipo de oportunidade publicada por corretores da plataforma todos os dias"}
@@ -560,7 +572,8 @@ function OpportunityImpactSection() {
             </Link>
             <Link
               href="/register"
-              className="group inline-flex items-center gap-2 border-2 border-orange-400 text-orange-600 px-8 py-3.5 rounded-xl font-bold hover:bg-orange-50 active:scale-[0.99] transition-all duration-200"
+              className="group inline-flex items-center gap-2 border text-orange-300 px-8 py-3.5 rounded-xl font-bold active:scale-[0.99] transition-all duration-200 hover:bg-orange-500/10"
+              style={{ borderColor: "rgba(251,146,60,0.40)" }}
             >
               Começar a gerar oportunidades
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -580,7 +593,7 @@ function MatchShowcaseSection() {
   const { ref, visible } = useFadeIn(0.12);
 
   return (
-    <section className="bg-[#F8FAFC] py-20">
+    <section className="py-20">
       <div ref={ref} className="mx-auto max-w-7xl px-6">
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center">
 
@@ -592,14 +605,15 @@ function MatchShowcaseSection() {
               transition: "opacity 0.6s ease 100ms, transform 0.6s ease 100ms",
             }}
           >
-            <div className="inline-flex items-center gap-2 bg-violet-50 border border-violet-200 text-violet-700 text-xs font-bold px-3 py-1.5 rounded-full mb-5">
+            <div className="inline-flex items-center gap-2 text-violet-300 text-xs font-bold px-3 py-1.5 rounded-full mb-5 border"
+              style={{ background: "rgba(124,58,237,0.10)", borderColor: "rgba(167,139,250,0.25)" }}>
               <ArrowRightLeft className="h-3.5 w-3.5" />
               Matching inteligente
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 leading-tight tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4 leading-tight tracking-tight">
               Seu próximo negócio já pode estar esperando na rede.
             </h2>
-            <p className="text-gray-500 leading-relaxed mb-6">
+            <p className="leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.50)" }}>
               O algoritmo cruza automaticamente compradores e imóveis de toda a rede. Quando há alta compatibilidade, você recebe o match — e fecha o negócio com outro corretor dividindo a comissão.
             </p>
             <ul className="space-y-3">
@@ -608,17 +622,17 @@ function MatchShowcaseSection() {
                 "Notificação imediata quando um match é encontrado",
                 "Chat direto para formalizar a parceria sem burocracia",
               ].map((t) => (
-                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-600">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                <li key={t} className="flex items-start gap-2.5 text-sm" style={{ color: "rgba(255,255,255,0.60)" }}>
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                   {t}
                 </li>
               ))}
             </ul>
             <div className="mt-8 flex items-center gap-2">
-              <span className="text-xs text-gray-400">Novos matches sendo gerados</span>
+              <span className="text-xs" style={{ color: "rgba(255,255,255,0.30)" }}>Novos matches sendo gerados</span>
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-                <span className="text-xs text-violet-600 font-medium">continuamente</span>
+                <span className="text-xs text-violet-400 font-medium">continuamente</span>
               </span>
             </div>
           </div>
@@ -632,28 +646,31 @@ function MatchShowcaseSection() {
             }}
             className="relative"
           >
-            <div className="absolute -inset-4 bg-gradient-to-br from-violet-100/70 to-blue-100/50 rounded-3xl blur-2xl pointer-events-none" />
+            <div className="absolute -inset-4 rounded-3xl blur-2xl pointer-events-none"
+              style={{ background: "radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, rgba(37,99,235,0.10) 60%, transparent 100%)" }} />
 
-            <div className="relative bg-white rounded-2xl border border-violet-100 p-5 shadow-xl shadow-violet-100/60">
+            <div className="relative rounded-2xl border p-5"
+              style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(167,139,250,0.20)", boxShadow: "0 0 40px rgba(124,58,237,0.12)" }}>
               <div className="flex items-center gap-2.5 mb-5">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-md">
                   <Zap className="h-4.5 w-4.5 text-white" style={{ height: "18px", width: "18px" }} />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-gray-800">Match encontrado</p>
-                  <p className="text-[11px] text-gray-400">Compatibilidade calculada pelo algoritmo</p>
+                  <p className="text-sm font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>Match encontrado</p>
+                  <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.35)" }}>Compatibilidade calculada pelo algoritmo</p>
                 </div>
-                <span className="text-sm font-black text-violet-700 bg-violet-100 px-3 py-1 rounded-full">
+                <span className="text-sm font-black text-violet-300 px-3 py-1 rounded-full"
+                  style={{ background: "rgba(139,92,246,0.18)" }}>
                   94%
                 </span>
               </div>
 
               <div className="mb-5">
-                <div className="flex justify-between text-[11px] text-gray-400 mb-1.5">
+                <div className="flex justify-between text-[11px] mb-1.5" style={{ color: "rgba(255,255,255,0.35)" }}>
                   <span>Compatibilidade</span>
-                  <span className="text-violet-600 font-semibold">94 / 100</span>
+                  <span className="text-violet-400 font-semibold">94 / 100</span>
                 </div>
-                <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.07)" }}>
                   <div
                     className="h-2.5 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"
                     style={{
@@ -665,32 +682,34 @@ function MatchShowcaseSection() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-blue-50 rounded-xl p-3.5 border border-blue-100">
-                  <p className="text-[9px] font-bold text-blue-600 uppercase tracking-wider mb-1.5">Imóvel disponível</p>
-                  <p className="text-xs font-bold text-gray-800">Casa · Salvador</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5">R$ 650.000 · 3 quartos</p>
+                <div className="rounded-xl p-3.5 border" style={{ background: "rgba(37,99,235,0.10)", borderColor: "rgba(96,165,250,0.20)" }}>
+                  <p className="text-[9px] font-bold text-blue-400 uppercase tracking-wider mb-1.5">Imóvel disponível</p>
+                  <p className="text-xs font-bold" style={{ color: "rgba(255,255,255,0.80)" }}>Casa · Salvador</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.40)" }}>R$ 650.000 · 3 quartos</p>
                 </div>
-                <div className="bg-violet-50 rounded-xl p-3.5 border border-violet-100">
-                  <p className="text-[9px] font-bold text-violet-600 uppercase tracking-wider mb-1.5">Comprador na rede</p>
-                  <p className="text-xs font-bold text-gray-800">Quer: Casa · Salvador</p>
-                  <p className="text-[11px] text-gray-500 mt-0.5">Até R$ 700.000 · 2-4q</p>
+                <div className="rounded-xl p-3.5 border" style={{ background: "rgba(124,58,237,0.10)", borderColor: "rgba(167,139,250,0.20)" }}>
+                  <p className="text-[9px] font-bold text-violet-400 uppercase tracking-wider mb-1.5">Comprador na rede</p>
+                  <p className="text-xs font-bold" style={{ color: "rgba(255,255,255,0.80)" }}>Quer: Casa · Salvador</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.40)" }}>Até R$ 700.000 · 2-4q</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
+              <div className="flex items-center gap-3 rounded-xl p-3 border"
+                style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.07)" }}>
                 <div className="flex -space-x-2 flex-shrink-0">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[9px] font-bold text-white border-2 border-white shadow-sm">JS</div>
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-[9px] font-bold text-white border-2 border-white shadow-sm">MC</div>
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[9px] font-bold text-white border-2 shadow-sm" style={{ borderColor: "rgba(255,255,255,0.12)" }}>JS</div>
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-[9px] font-bold text-white border-2 shadow-sm" style={{ borderColor: "rgba(255,255,255,0.12)" }}>MC</div>
                 </div>
-                <p className="text-xs text-gray-600 flex-1">
-                  <span className="font-semibold">2 corretores</span> · divisão de comissão acordada
+                <p className="text-xs flex-1" style={{ color: "rgba(255,255,255,0.55)" }}>
+                  <span className="font-semibold" style={{ color: "rgba(255,255,255,0.80)" }}>2 corretores</span> · divisão de comissão acordada
                 </p>
-                <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 flex-shrink-0">
+                <span className="text-[10px] text-emerald-300 font-bold px-2 py-0.5 rounded-full border flex-shrink-0"
+                  style={{ background: "rgba(16,185,129,0.12)", borderColor: "rgba(52,211,153,0.25)" }}>
                   Ativo
                 </span>
               </div>
 
-              <p className="text-center text-[11px] text-gray-400 mt-3">
+              <p className="text-center text-[11px] mt-3" style={{ color: "rgba(255,255,255,0.28)" }}>
                 Corretores entrando na rede · Novos matches todos os dias
               </p>
             </div>
@@ -715,7 +734,7 @@ export default function HomePage() {
   const fadePlanos          = useFadeIn(0.1);
 
   return (
-    <div className="min-h-screen bg-white antialiased">
+    <div className="min-h-screen antialiased" style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 50%, #080e1f 100%)" }}>
 
       {/* ══════════════════════════════════════════════════════════════════
           HEADER
@@ -757,7 +776,7 @@ export default function HomePage() {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t border-white/10 bg-blue-800/95 backdrop-blur-sm px-6 py-4 space-y-1 shadow-xl">
+          <div className="md:hidden border-t border-white/10 backdrop-blur-xl px-6 py-4 space-y-1 shadow-xl" style={{ background: "rgba(10,18,40,0.97)" }}>
             {NAV_LINKS.map(l => (
               <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
                 className="block py-2.5 text-sm font-medium text-white/80 hover:text-white transition-colors">
@@ -801,7 +820,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           COMO FUNCIONA
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="como-funciona" className="bg-white py-24">
+      <section id="como-funciona" className="py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div
             ref={fadeComoFunciona.ref}
@@ -812,34 +831,35 @@ export default function HomePage() {
               transition: "opacity 0.55s ease, transform 0.55s ease",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-3">Simples assim</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Como funciona</h2>
-            <p className="text-lg text-gray-500 max-w-xl mx-auto">
+            <p className="text-xs font-semibold uppercase tracking-widest text-violet-400 mb-3">Simples assim</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Como funciona</h2>
+            <p className="text-lg max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>
               Em 3 passos você já começa a gerar oportunidades e fechar mais negócios.
             </p>
           </div>
 
           <div className="relative grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="hidden md:block absolute top-9 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-gradient-to-r from-blue-300 via-violet-300 to-purple-300 z-0" />
+            <div className="hidden md:block absolute top-9 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-gradient-to-r from-blue-500/30 via-violet-500/40 to-purple-500/30 z-0" />
 
             {STEPS.map((step, i) => {
               const Icon = step.icon;
               return (
                 <div key={step.num} className="relative z-10 text-center group">
                   <div className="relative mx-auto mb-6 w-20 h-20 flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 opacity-10 group-hover:opacity-20 transition-opacity blur-sm" />
-                    <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-200/60 group-hover:scale-105 transition-transform duration-300">
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 opacity-15 group-hover:opacity-25 transition-opacity blur-sm" />
+                    <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform duration-300">
                       <Icon className="h-7 w-7 text-white" />
                     </div>
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gray-900 text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-black rounded-full flex items-center justify-center"
+                      style={{ background: "rgba(15,20,40,0.95)", border: "1px solid rgba(255,255,255,0.15)" }}>
                       {i + 1}
                     </span>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2.5 text-lg leading-tight">{step.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                  <h3 className="font-bold mb-2.5 text-lg leading-tight" style={{ color: "rgba(255,255,255,0.85)" }}>{step.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{step.desc}</p>
                   {i < STEPS.length - 1 && (
                     <div className="md:hidden flex justify-center mt-7">
-                      <ChevronRight className="h-5 w-5 text-gray-300 rotate-90" />
+                      <ChevronRight className="h-5 w-5 rotate-90" style={{ color: "rgba(255,255,255,0.15)" }} />
                     </div>
                   )}
                 </div>
@@ -849,7 +869,8 @@ export default function HomePage() {
 
           <div className="text-center mt-14">
             <Link href="/register"
-              className="group inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-300/40 hover:shadow-xl hover:opacity-95 active:scale-[0.98] transition-all duration-200">
+              className="group inline-flex items-center gap-2 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg hover:opacity-95 active:scale-[0.98] transition-all duration-200"
+              style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)", boxShadow: "0 4px 20px rgba(37,99,235,0.30)" }}>
               Começar a gerar oportunidades
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
@@ -1013,7 +1034,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           FUNCIONALIDADES
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="funcionalidades" className="bg-[#F8FAFC] py-24">
+      <section id="funcionalidades" className="py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div
             ref={fadeFuncionalidades.ref}
@@ -1024,9 +1045,9 @@ export default function HomePage() {
               transition: "opacity 0.55s ease, transform 0.55s ease",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Plataforma completa</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Tudo que você precisa</h2>
-            <p className="text-lg text-gray-500 max-w-xl mx-auto">Uma plataforma completa para gestão e colaboração imobiliária.</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-blue-400 mb-3">Plataforma completa</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Tudo que você precisa</h2>
+            <p className="text-lg max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>Uma plataforma completa para gestão e colaboração imobiliária.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -1037,14 +1058,16 @@ export default function HomePage() {
                   opacity: fadeFuncionalidades.visible ? 1 : 0,
                   transform: fadeFuncionalidades.visible ? "translateY(0)" : "translateY(20px)",
                   transition: `opacity 0.5s ease ${i * 70}ms, transform 0.5s ease ${i * 70}ms`,
+                  background: "rgba(255,255,255,0.03)",
+                  borderColor: "rgba(255,255,255,0.07)",
                 }}
-                className="group relative rounded-2xl border border-gray-100 bg-white p-6 hover:border-gray-200 hover:shadow-xl hover:shadow-gray-100/80 hover:-translate-y-1 transition-all duration-300 cursor-default"
+                className="group relative rounded-2xl border p-6 hover:-translate-y-1 transition-all duration-300 cursor-default hover:border-white/[0.12]"
               >
-                <div className={`mb-5 w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg ${feature.glow} group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`mb-5 w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                   <feature.icon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{feature.desc}</p>
+                <h3 className="text-base font-bold mb-2" style={{ color: "rgba(255,255,255,0.85)" }}>{feature.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{feature.desc}</p>
               </div>
             ))}
           </div>
@@ -1054,11 +1077,10 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           DEPOIMENTOS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 overflow-hidden bg-[linear-gradient(160deg,#ede9fe_0%,#ddd6fe_45%,#c4b5fd_75%,#ddd6fe_100%)]">
+      <section className="relative py-24 overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute top-0 right-1/4 w-[500px] h-[400px] bg-violet-400/12 blur-3xl rounded-full" />
-          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-400/10 blur-3xl rounded-full" />
-          <div className="absolute top-1/2 right-0 w-64 h-64 bg-purple-500/8 blur-3xl rounded-full" />
+          <div className="absolute top-0 right-1/4 w-[500px] h-[400px] bg-violet-500/6 blur-3xl rounded-full" />
+          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-500/5 blur-3xl rounded-full" />
         </div>
         <div className="relative mx-auto max-w-7xl px-6">
           <div
@@ -1070,9 +1092,9 @@ export default function HomePage() {
               transition: "opacity 0.55s ease, transform 0.55s ease",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-3">Resultados reais</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">O que dizem os corretores</h2>
-            <p className="text-lg text-slate-500">De quem já usa a plataforma para gerar negócios.</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-violet-400 mb-3">Resultados reais</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">O que dizem os corretores</h2>
+            <p className="text-lg" style={{ color: "rgba(255,255,255,0.45)" }}>De quem já usa a plataforma para gerar negócios.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -1083,27 +1105,30 @@ export default function HomePage() {
                   opacity: fadeDepoimentos.visible ? 1 : 0,
                   transform: fadeDepoimentos.visible ? "translateY(0)" : "translateY(20px)",
                   transition: `opacity 0.5s ease ${i * 100}ms, transform 0.5s ease ${i * 100}ms`,
+                  background: "rgba(255,255,255,0.03)",
+                  borderColor: "rgba(167,139,250,0.15)",
                 }}
-                className="group flex flex-col gap-4 rounded-2xl border border-violet-200/60 bg-white/75 backdrop-blur-sm p-7 shadow-lg shadow-violet-100/50 hover:shadow-xl hover:shadow-violet-200/60 hover:border-violet-300/70 hover:-translate-y-1 transition-all duration-300"
+                className="group flex flex-col gap-4 rounded-2xl border p-7 hover:border-violet-400/25 hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="bg-violet-50 rounded-xl px-3 py-2 border border-violet-100">
-                  <p className="text-xs font-bold text-violet-800">&ldquo;{t.highlight}&rdquo;</p>
+                <div className="rounded-xl px-3 py-2 border"
+                  style={{ background: "rgba(124,58,237,0.10)", borderColor: "rgba(167,139,250,0.20)" }}>
+                  <p className="text-xs font-bold text-violet-300">&ldquo;{t.highlight}&rdquo;</p>
                 </div>
                 <div className="flex gap-0.5">
                   {Array.from({ length: t.stars }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <p className="text-slate-500 text-sm leading-relaxed flex-1">
+                <p className="text-sm leading-relaxed flex-1" style={{ color: "rgba(255,255,255,0.50)" }}>
                   &ldquo;{t.text}&rdquo;
                 </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-violet-100/60">
-                  <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center flex-shrink-0 shadow-md shadow-violet-200/50`}>
+                <div className="flex items-center gap-3 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                  <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center flex-shrink-0 shadow-md`}>
                     <span className="text-xs font-bold text-white">{t.initial}</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-slate-900">{t.name}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">{t.role}</p>
+                    <p className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>{t.name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -1115,7 +1140,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           PLANOS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#F8FAFC] py-24">
+      <section className="py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div
             ref={fadePlanos.ref}
@@ -1126,11 +1151,11 @@ export default function HomePage() {
               transition: "opacity 0.55s ease, transform 0.55s ease",
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Preços transparentes</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+            <p className="text-xs font-semibold uppercase tracking-widest text-blue-400 mb-3">Preços transparentes</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
               Comece grátis. Escale quando quiser.
             </h2>
-            <p className="text-lg text-gray-500">Sem cartão de crédito. Sem burocracia.</p>
+            <p className="text-lg" style={{ color: "rgba(255,255,255,0.45)" }}>Sem cartão de crédito. Sem burocracia.</p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-5 max-w-3xl mx-auto mb-10">
@@ -1145,38 +1170,38 @@ export default function HomePage() {
                   opacity: fadePlanos.visible ? 1 : 0,
                   transform: fadePlanos.visible ? "translateY(0)" : "translateY(20px)",
                   transition: `opacity 0.5s ease ${i * 80}ms, transform 0.5s ease ${i * 80}ms`,
+                  background: p.highlight ? "rgba(37,99,235,0.10)" : "rgba(255,255,255,0.03)",
+                  borderColor: p.highlight ? "rgba(96,165,250,0.40)" : "rgba(255,255,255,0.08)",
+                  boxShadow: p.highlight ? "0 0 30px rgba(37,99,235,0.15)" : undefined,
                 }}
-                className={`relative rounded-2xl p-6 text-center transition-all duration-200 ${
-                  p.highlight
-                    ? "bg-white border-2 border-blue-600 shadow-xl shadow-blue-100/60 scale-[1.02]"
-                    : "bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md"
-                }`}
+                className={`relative rounded-2xl p-6 text-center transition-all duration-200 border ${p.highlight ? "scale-[1.02]" : "hover:border-white/[0.14]"}`}
               >
                 {p.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[11px] font-bold px-4 py-1 rounded-full shadow-md shadow-blue-200">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-block text-white text-[11px] font-bold px-4 py-1 rounded-full shadow-md"
+                    style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)" }}>
                     Mais popular
                   </span>
                 )}
-                <p className={`font-bold text-base mb-1 ${p.highlight ? "text-gray-900" : "text-gray-700"}`}>{p.name}</p>
-                <p className={`text-2xl font-extrabold mb-1 ${p.highlight ? "bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent" : "text-gray-900"}`}>
+                <p className="font-bold text-base mb-1" style={{ color: p.highlight ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.70)" }}>{p.name}</p>
+                <p className={`text-2xl font-extrabold mb-1 ${p.highlight ? "bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent" : "text-white"}`}>
                   {p.price}
                 </p>
-                <p className={`text-xs mb-5 ${p.highlight ? "text-gray-500" : "text-gray-400"}`}>{p.desc}</p>
+                <p className="text-xs mb-5" style={{ color: "rgba(255,255,255,0.38)" }}>{p.desc}</p>
                 <Link href="/register"
-                  className={`inline-flex items-center justify-center gap-1 w-full py-2.5 rounded-xl text-sm font-semibold transition active:scale-[0.98] ${
-                    p.highlight
-                      ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:opacity-90 shadow-md shadow-blue-200/60"
-                      : "bg-gray-50 border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-600"
-                  }`}>
+                  className="inline-flex items-center justify-center gap-1 w-full py-2.5 rounded-xl text-sm font-semibold transition active:scale-[0.98]"
+                  style={p.highlight
+                    ? { background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)", color: "#fff", boxShadow: "0 2px 12px rgba(37,99,235,0.30)" }
+                    : { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.60)" }
+                  }>
                   Começar <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm" style={{ color: "rgba(255,255,255,0.40)" }}>
             Precisa de mais?{" "}
-            <Link href="/plans" className="font-semibold text-blue-600 hover:text-blue-700 underline underline-offset-2">
+            <Link href="/plans" className="font-semibold text-blue-400 hover:text-blue-300 underline underline-offset-2">
               Ver todos os planos →
             </Link>
           </p>
@@ -1186,7 +1211,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           BAIXE O APP
       ══════════════════════════════════════════════════════════════════ */}
-      <section id="app" className="bg-white py-24 overflow-hidden">
+      <section id="app" className="py-24 overflow-hidden">
         <div className="mx-auto max-w-7xl px-6">
           <div className="relative rounded-3xl overflow-hidden"
             style={{ background: "linear-gradient(135deg, #0b1849 0%, #18106a 50%, #461a8e 100%)" }}>
