@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Loader2, ArrowLeft, ArrowRight, CheckCircle, XCircle,
-  Eye, EyeOff, Users, Handshake, Star, ShieldCheck,
+  Eye, EyeOff, Users, HeartHandshake, Star, ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,7 +51,7 @@ type InviteInfo = {
 
 const BULLETS = [
   { icon: Users,     text: "Conecte-se à sua equipe e comece a colaborar agora" },
-  { icon: Handshake, text: "Acesso a parcerias e oportunidades da rede ImobMatch" },
+  { icon: HeartHandshake, text: "Acesso a parcerias e oportunidades da rede ImobMatch" },
   { icon: Star,      text: "Ferramentas exclusivas para corretores de alto desempenho" },
 ];
 
