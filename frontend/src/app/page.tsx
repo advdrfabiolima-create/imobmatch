@@ -1285,7 +1285,7 @@ export default function HomePage() {
               <div className="flex-shrink-0 hidden md:flex items-end relative">
 
                 {/* Balão "Deu Match!" — sobre o celular físico do corretor */}
-                <div className="absolute z-20 flex flex-col items-center" style={{ left: "-6%", top: "28%" }}>
+                <div className="absolute z-20 flex flex-col items-center" style={{ left: "-10%", top: "33%" }}>
                   <div
                     className="flex items-center gap-2 px-4 py-2.5 rounded-2xl shadow-xl whitespace-nowrap"
                     style={{
