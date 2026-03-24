@@ -83,7 +83,7 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
 
       setEchoes(prev => {
         if (nearby.size === 0 && prev.size === 0) return prev;
-        const next = new Set([...prev, ...nearby]);
+        const next = new Set(Array.from(prev).concat(Array.from(nearby)));
         // decai nós que saíram da janela
         prev.forEach(k => { if (!nearby.has(k)) next.delete(k); });
         return next;
