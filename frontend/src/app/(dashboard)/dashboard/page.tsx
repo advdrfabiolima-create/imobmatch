@@ -818,7 +818,7 @@ export default function DashboardPage() {
                   <div className="w-56 h-56 rounded-full"
                     style={{ background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)" }} />
                 </div>
-                <MatchRadar stats={stats} size={300} />
+                <MatchRadar stats={stats} size={360} />
               </div>
 
               {/* Footer info */}
