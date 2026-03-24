@@ -454,10 +454,10 @@ function OpportunityImpactSection() {
 
   return (
     <section className="relative py-20 overflow-hidden"
-      style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(251,146,60,0.04) 50%, rgba(255,255,255,0.01) 100%)" }}>
+      style={{ background: "linear-gradient(160deg, #0b1849 0%, #18106a 44%, #361178 72%, #461a8e 100%)" }}>
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-orange-500/8 blur-3xl rounded-full" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-violet-500/6 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-orange-400/5 blur-3xl rounded-full" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
