@@ -62,8 +62,8 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
   const buyerCount = Math.min(stats?.buyersCount      ?? 0, 5);
   const matchCount = stats?.matchesCount ?? 0;
   const oppCount   = Math.min(stats?.myOpportunities?.length ?? 0, 3);
-  const showProps  = Math.max(propCount,  3);
-  const showBuyers = Math.max(buyerCount, 3);
+  const showProps  = propCount;
+  const showBuyers = buyerCount;
 
   const toXY = (deg: number, r: number) => ({
     x: CX + Math.cos((deg * Math.PI) / 180) * r * MAX_R,
