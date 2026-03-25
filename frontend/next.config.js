@@ -4,6 +4,16 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const nextConfig = {
   // Proxy /api/* → NestJS backend (garante que webhooks externos como Asaas funcionem
   // mesmo quando o nginx não está interceptando a rota antes do Next.js)
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/em-breve',
+        permanent: false, // 307 — fácil de remover quando lançar
+      },
+    ];
+  },
+
   async rewrites() {
     const backendUrl = process.env.BACKEND_INTERNAL_URL || 'http://localhost:3001';
     return [
