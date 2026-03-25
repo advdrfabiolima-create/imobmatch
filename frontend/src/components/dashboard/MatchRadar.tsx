@@ -251,6 +251,18 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
 
+          {/* Blade: wide soft bloom (lightsaber halo) */}
+          <filter id="rm-blade-bloom" x="-80%" y="-800%" width="260%" height="1700%">
+            <feGaussianBlur stdDeviation="7" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+
+          {/* Blade tip: hot flare */}
+          <filter id="rm-blade-tip" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+
           {/* Orange glow for opportunity nodes */}
           <filter id="rm-glow-orange" x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -304,46 +316,52 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
             strokeWidth={t.width} strokeLinecap="round" />
         ))}
 
-        {/* ── 3-layer rotary sweep ── */}
+        {/* ── Lightsaber sweep ── */}
         {mounted && (
           <g clipPath="url(#rm-clip)"
             style={{ transformOrigin: `${CX}px ${CY}px`, animation: `radar-rotate ${SWEEP_MS}ms linear infinite` }}>
 
-            {/* Layer 1: wide trail */}
+            {/* Wide atmospheric trail */}
             <path
               d={`M ${CX} ${CY} L ${CX + MAX_R} ${CY}
                   A ${MAX_R} ${MAX_R} 0 0 0
-                  ${CX + MAX_R * Math.cos((-110 * Math.PI) / 180)}
-                  ${CY + MAX_R * Math.sin((-110 * Math.PI) / 180)} Z`}
+                  ${CX + MAX_R * Math.cos((-115 * Math.PI) / 180)}
+                  ${CY + MAX_R * Math.sin((-115 * Math.PI) / 180)} Z`}
               fill="url(#rm-sweep-trail)"
             />
-
-            {/* Layer 2: mid sweep */}
+            {/* Mid cone */}
             <path
               d={`M ${CX} ${CY} L ${CX + MAX_R} ${CY}
                   A ${MAX_R} ${MAX_R} 0 0 0
-                  ${CX + MAX_R * Math.cos((-70 * Math.PI) / 180)}
-                  ${CY + MAX_R * Math.sin((-70 * Math.PI) / 180)} Z`}
+                  ${CX + MAX_R * Math.cos((-65 * Math.PI) / 180)}
+                  ${CY + MAX_R * Math.sin((-65 * Math.PI) / 180)} Z`}
               fill="url(#rm-sweep-mid)"
             />
-
-            {/* Layer 3: sharp bright lead */}
+            {/* Tight lead cone */}
             <path
               d={`M ${CX} ${CY} L ${CX + MAX_R} ${CY}
                   A ${MAX_R} ${MAX_R} 0 0 0
-                  ${CX + MAX_R * Math.cos((-24 * Math.PI) / 180)}
-                  ${CY + MAX_R * Math.sin((-24 * Math.PI) / 180)} Z`}
+                  ${CX + MAX_R * Math.cos((-20 * Math.PI) / 180)}
+                  ${CY + MAX_R * Math.sin((-20 * Math.PI) / 180)} Z`}
               fill="url(#rm-sweep-lead)"
             />
-
-            {/* Leading edge line */}
+            {/* Blade: outer bloom */}
             <line x1={CX} y1={CY} x2={CX + MAX_R} y2={CY}
-              stroke="#c7d2fe" strokeWidth={2} opacity={0.95}
+              stroke="#93c5fd" strokeWidth={10} opacity={0.20}
+              filter="url(#rm-blade-bloom)" />
+            {/* Blade: mid electric glow */}
+            <line x1={CX} y1={CY} x2={CX + MAX_R} y2={CY}
+              stroke="#60a5fa" strokeWidth={4.5} opacity={0.60}
               filter="url(#rm-sweep-line)" />
-
-            {/* Bright tip dot */}
-            <circle cx={CX + MAX_R - 2} cy={CY} r={3.5}
-              fill="#e0e7ff" opacity={0.92} filter="url(#rm-glow)" />
+            {/* Blade: white-hot core */}
+            <line x1={CX} y1={CY} x2={CX + MAX_R} y2={CY}
+              stroke="#e0f2fe" strokeWidth={1.6} opacity={1} />
+            {/* Tip flare outer */}
+            <circle cx={CX + MAX_R - 3} cy={CY} r={6}
+              fill="#93c5fd" opacity={0.70} filter="url(#rm-blade-tip)" />
+            {/* Tip flare core */}
+            <circle cx={CX + MAX_R - 3} cy={CY} r={2.5}
+              fill="#ffffff" opacity={1} />
           </g>
         )}
 
@@ -396,80 +414,109 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
           );
         })}
 
-        {/* ── Property nodes (diamond, 4-layer) ── */}
+        {/* ── Property nodes (glowing person, blue) ── */}
         {PROP_NODES.slice(0, showProps).map((n, i) => {
           const pos    = toXY(n.angle, n.r);
           const isReal = i < propCount;
           const echo   = echoes.has(`p${i}`);
-          const ds     = isReal ? 6.5 : 3;
+          const lit    = isReal && echo;
+          const color  = isReal ? "#60a5fa" : "rgba(96,165,250,0.20)";
+          const glowC  = lit    ? "#bfdbfe"  : color;
           return (
             <g key={`p-${i}`}>
-              {/* Scan-echo: two expanding rings */}
-              {echo && isReal && (
+              {/* Scan-echo rings */}
+              {lit && (
                 <>
-                  <circle cx={pos.x} cy={pos.y} r={24}
-                    fill="none" stroke="#60a5fa" strokeWidth={1.5} opacity={0.45}
+                  <circle cx={pos.x} cy={pos.y} r={26}
+                    fill="none" stroke="#93c5fd" strokeWidth={1.5} opacity={0.50}
                     style={{ animation: "radar-ping 0.65s ease-out forwards" }} />
-                  <circle cx={pos.x} cy={pos.y} r={17}
-                    fill="none" stroke="#93c5fd" strokeWidth={1} opacity={0.30}
+                  <circle cx={pos.x} cy={pos.y} r={18}
+                    fill="none" stroke="#bfdbfe" strokeWidth={1} opacity={0.32}
                     style={{ animation: "radar-ping 0.65s ease-out forwards", animationDelay: "0.08s" }} />
                 </>
               )}
-              {/* Layer 1: outer ambient halo */}
-              {isReal && <circle cx={pos.x} cy={pos.y} r={15}
-                fill="rgba(96,165,250,0.05)" />}
-              {/* Layer 2: mid halo */}
-              {isReal && <circle cx={pos.x} cy={pos.y} r={10.5}
-                fill="rgba(96,165,250,0.09)" />}
-              {/* Layer 3: ring stroke */}
-              {isReal && <circle cx={pos.x} cy={pos.y} r={8.5}
-                fill="none" stroke="rgba(96,165,250,0.28)" strokeWidth={1} />}
-              {/* Layer 4: diamond core */}
+              {/* Ambient outer halo */}
+              {isReal && <circle cx={pos.x} cy={pos.y} r={16}
+                fill={lit ? "rgba(96,165,250,0.14)" : "rgba(96,165,250,0.04)"} />}
+              {/* Mid halo */}
+              {isReal && <circle cx={pos.x} cy={pos.y} r={11}
+                fill={lit ? "rgba(96,165,250,0.20)" : "rgba(96,165,250,0.07)"} />}
+              {/* Ring stroke */}
+              {isReal && <circle cx={pos.x} cy={pos.y} r={9}
+                fill="none" stroke={lit ? "rgba(147,197,253,0.55)" : "rgba(96,165,250,0.20)"}
+                strokeWidth={1} />}
+              {/* House: walls */}
               <rect
-                x={pos.x - ds} y={pos.y - ds}
-                width={ds * 2} height={ds * 2}
-                transform={`rotate(45 ${pos.x} ${pos.y})`}
-                fill={isReal ? "#60a5fa" : "rgba(96,165,250,0.14)"}
-                filter={isReal ? "url(#rm-glow)" : undefined}
+                x={pos.x - 5} y={pos.y - 1}
+                width={10} height={7} rx={0.5}
+                fill={glowC}
+                filter={isReal ? (lit ? "url(#rm-glow-strong)" : "url(#rm-glow)") : undefined}
               />
+              {/* House: roof */}
+              <polygon
+                points={`${pos.x},${pos.y - 9} ${pos.x - 6.5},${pos.y - 1} ${pos.x + 6.5},${pos.y - 1}`}
+                fill={glowC}
+                filter={isReal ? (lit ? "url(#rm-glow-strong)" : "url(#rm-glow)") : undefined}
+              />
+              {/* House: door */}
+              <rect
+                x={pos.x - 1.5} y={pos.y + 2}
+                width={3} height={4}
+                fill="rgba(0,10,40,0.38)"
+              />
+              {/* Highlight when lit */}
+              {lit && <circle cx={pos.x} cy={pos.y - 4} r={2.2} fill="#ffffff" opacity={0.80} />}
             </g>
           );
         })}
 
-        {/* ── Buyer nodes (circle, 4-layer) ── */}
+        {/* ── Buyer nodes (glowing person, violet) ── */}
         {BUYER_NODES.slice(0, showBuyers).map((n, i) => {
           const pos    = toXY(n.angle, n.r);
           const isReal = i < buyerCount;
           const echo   = echoes.has(`b${i}`);
+          const lit    = isReal && echo;
+          const color  = isReal ? "#a78bfa" : "rgba(167,139,250,0.20)";
+          const glowC  = lit    ? "#ddd6fe"  : color;
+          const hr = 4.5;
+          const bw = 7;
+          const bh = 8;
+          const hy = pos.y - bh * 0.5 - hr;
           return (
             <g key={`b-${i}`}>
-              {/* Scan-echo: two expanding rings */}
-              {echo && isReal && (
+              {/* Scan-echo rings */}
+              {lit && (
                 <>
-                  <circle cx={pos.x} cy={pos.y} r={22}
-                    fill="none" stroke="#a78bfa" strokeWidth={1.5} opacity={0.45}
+                  <circle cx={pos.x} cy={pos.y} r={24}
+                    fill="none" stroke="#c4b5fd" strokeWidth={1.5} opacity={0.50}
                     style={{ animation: "radar-ping 0.65s ease-out forwards" }} />
-                  <circle cx={pos.x} cy={pos.y} r={15}
-                    fill="none" stroke="#c4b5fd" strokeWidth={1} opacity={0.28}
+                  <circle cx={pos.x} cy={pos.y} r={16}
+                    fill="none" stroke="#ddd6fe" strokeWidth={1} opacity={0.30}
                     style={{ animation: "radar-ping 0.65s ease-out forwards", animationDelay: "0.08s" }} />
                 </>
               )}
-              {/* Layer 1: outer ambient halo */}
-              {isReal && <circle cx={pos.x} cy={pos.y} r={14}
-                fill="rgba(167,139,250,0.05)" />}
-              {/* Layer 2: mid halo */}
-              {isReal && <circle cx={pos.x} cy={pos.y} r={9.5}
-                fill="rgba(167,139,250,0.09)" />}
-              {/* Layer 3: ring stroke */}
-              {isReal && <circle cx={pos.x} cy={pos.y} r={7.5}
-                fill="none" stroke="rgba(167,139,250,0.28)" strokeWidth={1} />}
-              {/* Layer 4: circle core */}
-              <circle
-                cx={pos.x} cy={pos.y}
-                r={isReal ? 5 : 2.8}
-                fill={isReal ? "#a78bfa" : "rgba(167,139,250,0.14)"}
-                filter={isReal ? "url(#rm-glow)" : undefined}
+              {isReal && <circle cx={pos.x} cy={pos.y} r={16}
+                fill={lit ? "rgba(167,139,250,0.14)" : "rgba(167,139,250,0.04)"} />}
+              {isReal && <circle cx={pos.x} cy={pos.y} r={11}
+                fill={lit ? "rgba(167,139,250,0.20)" : "rgba(167,139,250,0.07)"} />}
+              {isReal && <circle cx={pos.x} cy={pos.y} r={9}
+                fill="none" stroke={lit ? "rgba(196,181,253,0.55)" : "rgba(167,139,250,0.20)"}
+                strokeWidth={1} />}
+              {/* Person: body */}
+              <ellipse
+                cx={pos.x} cy={pos.y + bh * 0.18}
+                rx={bw * 0.78} ry={bh * 0.52}
+                fill={glowC}
+                filter={isReal ? (lit ? "url(#rm-glow-strong)" : "url(#rm-glow)") : undefined}
               />
+              {/* Person: head */}
+              <circle
+                cx={pos.x} cy={hy}
+                r={hr}
+                fill={glowC}
+                filter={isReal ? (lit ? "url(#rm-glow-strong)" : "url(#rm-glow)") : undefined}
+              />
+              {lit && <circle cx={pos.x} cy={hy} r={hr * 0.55} fill="#ffffff" opacity={0.85} />}
             </g>
           );
         })}
@@ -490,17 +537,10 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
           );
         })}
 
-        {/* ── Opportunity nodes (triangle, orange, pulsing) ── */}
+        {/* ── Opportunity nodes (house, orange, pulsing) ── */}
         {OPP_NODES.slice(0, oppCount).map((n, i) => {
           const pos  = toXY(n.angle, n.r);
           const echo = echoes.has(`o${i}`);
-          const ts   = 6.5;
-          const triPts = [0, 120, 240]
-            .map(deg => {
-              const rad = ((deg - 90) * Math.PI) / 180;
-              return `${pos.x + Math.cos(rad) * ts},${pos.y + Math.sin(rad) * ts}`;
-            })
-            .join(" ");
           return (
             <g key={`o-${i}`}>
               {echo && (
@@ -518,11 +558,26 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
               <circle cx={pos.x} cy={pos.y} r={11}
                 fill="none" stroke="rgba(251,146,60,0.32)" strokeWidth={1}
                 style={{ animation: "node-pulse 2.8s ease-in-out infinite" }} />
-              <polygon points={triPts}
+              {/* House: walls */}
+              <rect
+                x={pos.x - 4} y={pos.y - 0.5}
+                width={8} height={5.5} rx={0.4}
                 fill="#fb923c" filter="url(#rm-glow-orange)"
-                style={{ animation: "node-pulse 2.8s ease-in-out infinite" }} />
-              <circle cx={pos.x} cy={pos.y} r={2}
-                fill="#fed7aa" />
+                style={{ animation: "node-pulse 2.8s ease-in-out infinite" }}
+              />
+              {/* House: roof */}
+              <polygon
+                points={`${pos.x},${pos.y - 7} ${pos.x - 5.5},${pos.y - 0.5} ${pos.x + 5.5},${pos.y - 0.5}`}
+                fill="#fb923c" filter="url(#rm-glow-orange)"
+                style={{ animation: "node-pulse 2.8s ease-in-out infinite" }}
+              />
+              {/* House: door */}
+              <rect
+                x={pos.x - 1.2} y={pos.y + 1.5}
+                width={2.5} height={3.5}
+                fill="rgba(0,0,0,0.28)"
+              />
+              <circle cx={pos.x} cy={pos.y - 3} r={1.5} fill="#fed7aa" />
             </g>
           );
         })}
@@ -555,14 +610,14 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
 
       {/* ── Premium legend ── */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-4 pb-1 flex-wrap">
-        <LegendItem color="#60a5fa" shape="diamond"   label="Imóveis" />
-        <LegendItem color="#a78bfa" shape="circle"    label="Compradores" />
+        <LegendItem color="#60a5fa" shape="house"    label="Imóveis" />
+        <LegendItem color="#a78bfa" shape="person"   label="Compradores" />
         {matchCount > 0 && (
           <LegendItem color="#34d399" shape="circle"
             label={`${matchCount} match${matchCount > 1 ? "es" : ""}`} pulse />
         )}
         {oppCount > 0 && (
-          <LegendItem color="#fb923c" shape="triangle"
+          <LegendItem color="#fb923c" shape="house"
             label={`${oppCount} oport.`} pulse />
         )}
       </div>
@@ -576,7 +631,7 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
 function LegendItem({
   color, shape, label, pulse,
 }: {
-  color: string; shape: "circle" | "diamond" | "triangle"; label: string; pulse?: boolean;
+  color: string; shape: "circle" | "diamond" | "triangle" | "person" | "house"; label: string; pulse?: boolean;
 }) {
   return (
     <div className="flex items-center gap-1.5">
@@ -585,7 +640,18 @@ function LegendItem({
           <span className="absolute inset-0 rounded-full animate-ping opacity-40"
             style={{ backgroundColor: color }} />
         )}
-        {shape === "diamond" ? (
+        {shape === "house" ? (
+          <svg width="9" height="12" viewBox="0 0 9 12">
+            <polygon points="4.5,0.5 0.5,5 8.5,5" fill={color} />
+            <rect x="1.5" y="5" width="6" height="5.5" rx="0.5" fill={color} />
+            <rect x="3.2" y="7.5" width="2.6" height="3" fill="rgba(0,0,0,0.30)" />
+          </svg>
+        ) : shape === "person" ? (
+          <svg width="9" height="12" viewBox="0 0 9 12">
+            <circle cx="4.5" cy="3" r="2.4" fill={color} />
+            <ellipse cx="4.5" cy="9" rx="3.4" ry="2.8" fill={color} />
+          </svg>
+        ) : shape === "diamond" ? (
           <svg width="9" height="9" viewBox="0 0 9 9">
             <rect x="1.5" y="1.5" width="6" height="6" transform="rotate(45 4.5 4.5)"
               fill={color} />
