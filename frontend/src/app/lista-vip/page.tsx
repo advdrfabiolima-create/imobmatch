@@ -16,20 +16,28 @@ import { maskPhone } from "@/lib/masks";
 function VisitCounter() {
   const [count, setCount] = useState<number | null>(null);
   const [displayed, setDisplayed] = useState(0);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    // Registra a visita e retorna o total de visitantes únicos.
-    // O backend deve verificar o IP e só incrementar se for um IP novo.
-    api.post("/visits/track").then((res) => {
-      const total = typeof res.data === "number" ? res.data : res.data?.uniqueVisitors ?? 0;
-      setCount(total);
-    }).catch(() => {
-      // Fallback: tenta apenas buscar o contador sem registrar
-      api.get("/visits/count").then((res) => {
-        const total = typeof res.data === "number" ? res.data : res.data?.uniqueVisitors ?? 0;
+    const timeout = setTimeout(() => setFailed(true), 6000);
+
+    api.post("/visits/track")
+      .then((res) => {
+        clearTimeout(timeout);
+        const total = typeof res.data === "number" ? res.data : (res.data?.uniqueVisitors ?? 0);
         setCount(total);
-      }).catch(() => {});
-    });
+      })
+      .catch(() => {
+        api.get("/visits/count")
+          .then((res) => {
+            clearTimeout(timeout);
+            const total = typeof res.data === "number" ? res.data : (res.data?.uniqueVisitors ?? 0);
+            setCount(total);
+          })
+          .catch(() => { clearTimeout(timeout); setFailed(true); });
+      });
+
+    return () => clearTimeout(timeout);
   }, []);
 
   // Animação de contagem
@@ -46,7 +54,12 @@ function VisitCounter() {
     return () => clearInterval(timer);
   }, [count]);
 
-  if (count === null) return null;
+  if (failed) return null;
+  if (count === null) return (
+    <div className="flex items-center gap-2 mb-5 h-8">
+      <div className="w-32 h-5 rounded-full animate-pulse" style={{ background: "rgba(255,255,255,0.07)" }} />
+    </div>
+  );
 
   return (
     <div
