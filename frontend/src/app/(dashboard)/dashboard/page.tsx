@@ -191,26 +191,23 @@ function PlanBanner() {
   const isPaidTop = plan === "premium" || plan === "agency";
 
   return (
-    <GlassCard className={`flex flex-col sm:flex-row items-start sm:items-center gap-3 px-4 py-3 bg-gradient-to-r ${meta.gradient}`}>
-      <div className="flex items-center gap-2">
+    <GlassCard className={`flex flex-row flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 bg-gradient-to-r ${meta.gradient}`}>
+      <div className="flex items-center gap-2 min-w-0">
         <Crown className="h-4 w-4 text-slate-500 flex-shrink-0" />
-        <span className="text-sm font-medium text-slate-400">Seu plano:</span>
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white">
-          <span className={`w-1.5 h-1.5 rounded-full ${meta.dot}`} />{meta.label}
+        <span className="text-sm font-medium text-slate-400 whitespace-nowrap">Seu plano:</span>
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white whitespace-nowrap">
+          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${meta.dot}`} />{meta.label}
         </span>
       </div>
-      <div className="hidden sm:block w-px h-5 bg-white/10" />
-      <div>
-        {isPaidTop ? (
-          <span className="text-xs text-slate-500 flex items-center gap-1">
-            <Crown className="h-3 w-3" /> Plano completo
-          </span>
-        ) : (
-          <Link href="/meu-plano" className="inline-flex items-center gap-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-3 py-1.5 rounded-lg hover:opacity-90 transition">
-            <Sparkles className="h-3.5 w-3.5" /> Fazer upgrade
-          </Link>
-        )}
-      </div>
+      {isPaidTop ? (
+        <span className="text-xs text-slate-500 flex items-center gap-1 whitespace-nowrap">
+          <Crown className="h-3 w-3" /> Plano completo
+        </span>
+      ) : (
+        <Link href="/meu-plano" className="inline-flex items-center gap-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-3 py-1.5 rounded-lg hover:opacity-90 transition whitespace-nowrap">
+          <Sparkles className="h-3.5 w-3.5" /> Fazer upgrade
+        </Link>
+      )}
     </GlassCard>
   );
 }
