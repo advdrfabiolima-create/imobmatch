@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/auth.store";
 import {
   Building2, Users, Zap, UserCheck, TrendingUp, ArrowRight, Trophy, Loader2,
 } from "lucide-react";
+import { PROPERTY_TYPE_LABELS } from "@/lib/utils";
 import Link from "next/link";
 import {
   ResponsiveContainer, AreaChart, Area, BarChart, Bar,
@@ -225,7 +226,7 @@ export default function AnalyticsPage() {
               ) : (
                 <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
-                    <Pie data={data?.propertiesByType ?? []} dataKey="count" nameKey="type"
+                    <Pie data={data?.propertiesByType.map(d => ({ ...d, type: PROPERTY_TYPE_LABELS[d.type] ?? d.type })) ?? []} dataKey="count" nameKey="type"
                       cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={3}>
                       {data?.propertiesByType.map((_, i) => (
                         <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
@@ -293,7 +294,7 @@ export default function AnalyticsPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{p.title}</p>
-                        <p className="text-xs text-muted-foreground">{p.type} · {p.city}</p>
+                        <p className="text-xs text-muted-foreground">{PROPERTY_TYPE_LABELS[p.type] ?? p.type} · {p.city}</p>
                       </div>
                       <div className="flex-shrink-0 text-right">
                         <span className="inline-flex items-center gap-1 bg-primary/15 text-primary text-xs font-semibold px-2 py-0.5 rounded-full">

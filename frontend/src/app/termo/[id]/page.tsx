@@ -174,11 +174,12 @@ export default function TermoParceriaPage() {
             <div className="bg-gray-50 rounded-xl p-4 space-y-1">
               <p><span className="text-gray-500">Título:</span> <strong>{agreement.property.title}</strong></p>
               <p><span className="text-gray-500">Tipo:</span> {{
-                HOUSE:      "Casa",
-                APARTMENT:  "Apartamento",
-                LAND:       "Terreno",
-                COMMERCIAL: "Comercial",
-                RURAL:      "Rural",
+                HOUSE:       "Casa",
+                CONDO_HOUSE: "Casa em Condomínio",
+                APARTMENT:   "Apartamento",
+                LAND:        "Terreno",
+                COMMERCIAL:  "Comercial",
+                RURAL:       "Rural",
               }[agreement.property.type as string] ?? agreement.property.type}</p>
               {agreement.property.city && (
                 <p>
