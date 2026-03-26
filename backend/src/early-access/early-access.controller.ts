@@ -1,7 +1,8 @@
 import {
-  Controller, Post, Get, Body, Param, Query,
+  Controller, Post, Get, Delete, Body, Param, Query, Res,
   HttpCode, HttpStatus, UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -70,5 +71,27 @@ export class EarlyAccessController {
   @ApiOperation({ summary: 'Admin: enviar convites em massa' })
   inviteBulk(@Body() dto: BulkInviteDto) {
     return this.service.inviteBulk(dto.ids);
+  }
+
+  @Delete('leads/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Admin: excluir lead da lista' })
+  remove(@Param('id') id: string) {
+    return this.service.remove(id);
+  }
+
+  @Get('leads/export/csv')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Admin: exportar leads em CSV' })
+  async exportCsv(@Res() res: Response) {
+    const csv = await this.service.exportCsv();
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="leads-imobmatch.csv"');
+    res.send('\uFEFF' + csv); // BOM para Excel abrir corretamente com acentos
   }
 }

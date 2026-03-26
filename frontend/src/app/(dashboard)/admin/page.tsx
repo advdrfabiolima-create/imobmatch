@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import {
   Users, Building2, Zap, UserCheck, Search, ToggleLeft, Trash2,
-  Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard, MessageSquarePlus,
+  Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard, MessageSquarePlus, Download,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
@@ -88,6 +88,20 @@ function LeadsTab() {
     },
     onError: () => toast.error("Erro ao enviar convite."),
   });
+
+  const removeLead = useMutation({
+    mutationFn: (id: string) => api.delete(`/early-access/leads/${id}`),
+    onSuccess: () => {
+      toast.success("Lead removido.");
+      queryClient.invalidateQueries({ queryKey: ["admin-leads"] });
+    },
+    onError: () => toast.error("Erro ao remover lead."),
+  });
+
+  function downloadCsv() {
+    const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"}/early-access/leads/export/csv`;
+    window.open(url, "_blank");
+  }
 
   const inviteBulk = useMutation({
     mutationFn: (ids: string[]) => api.post("/early-access/leads/bulk-invite", { ids }),
@@ -177,6 +191,14 @@ function LeadsTab() {
             Convidar {selectedWaiting.length} selecionado(s)
           </Button>
         )}
+        <Button
+          variant="outline"
+          onClick={downloadCsv}
+          className="gap-2 whitespace-nowrap"
+        >
+          <Download className="h-4 w-4" />
+          CSV
+        </Button>
       </div>
 
       {/* Tabela */}
@@ -262,7 +284,7 @@ function LeadsTab() {
                 </div>
 
                 {/* Ação */}
-                <div className="w-28 flex justify-end">
+                <div className="w-36 flex items-center justify-end gap-2">
                   {lead.status === "WAITING" && (
                     <Button
                       size="sm"
@@ -290,6 +312,20 @@ function LeadsTab() {
                       <CheckCircle2 className="h-3.5 w-3.5" /> Ativo
                     </span>
                   )}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                    onClick={() => {
+                      if (confirm(`Remover "${lead.fullName}" da lista?`)) {
+                        removeLead.mutate(lead.id);
+                      }
+                    }}
+                    disabled={removeLead.isPending}
+                    title="Remover lead"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
               </div>
             ))}

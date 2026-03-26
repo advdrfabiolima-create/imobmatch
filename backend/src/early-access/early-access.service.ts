@@ -104,6 +104,37 @@ export class EarlyAccessService {
     return { sent: leads.length, message: `${leads.length} convite(s) enviado(s).` };
   }
 
+  // ── Admin: excluir lead ─────────────────────────────────────────────────────
+
+  async remove(id: string) {
+    const lead = await this.prisma.earlyAccessLead.findUnique({ where: { id } });
+    if (!lead) throw new NotFoundException('Lead não encontrado.');
+    await this.prisma.earlyAccessLead.delete({ where: { id } });
+    return { message: 'Lead removido com sucesso.' };
+  }
+
+  // ── Admin: exportar CSV ─────────────────────────────────────────────────────
+
+  async exportCsv() {
+    const leads = await this.prisma.earlyAccessLead.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const header = 'Nome,Email,WhatsApp,Status,Cadastro,Convidado em';
+    const rows = leads.map(l =>
+      [
+        `"${l.fullName}"`,
+        `"${l.email}"`,
+        `"${l.whatsapp ?? ''}"`,
+        l.status,
+        l.createdAt.toISOString().slice(0, 10),
+        l.invitedAt ? l.invitedAt.toISOString().slice(0, 10) : '',
+      ].join(',')
+    );
+
+    return [header, ...rows].join('\n');
+  }
+
   // ── Chamado pelo AuthService ao registrar ───────────────────────────────────
 
   async markAsRegistered(email: string) {
