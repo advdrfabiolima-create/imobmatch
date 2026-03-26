@@ -6,6 +6,8 @@ export interface MatchRadarProps {
   stats?: {
     propertiesCount?: number;
     buyersCount?: number;
+    networkPropertiesCount?: number;
+    networkBuyersCount?: number;
     matchesCount?: number;
     partnershipsPending?: number;
     myOpportunities?: any[];
@@ -58,8 +60,8 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
   const CY    = size / 2;
   const MAX_R = size * 0.44;
 
-  const propCount  = Math.min(stats?.propertiesCount ?? 0, 5);
-  const buyerCount = Math.min(stats?.buyersCount      ?? 0, 5);
+  const propCount  = Math.min(stats?.networkPropertiesCount ?? stats?.propertiesCount ?? 0, 5);
+  const buyerCount = Math.min(stats?.networkBuyersCount    ?? stats?.buyersCount      ?? 0, 5);
   const matchCount = stats?.matchesCount ?? 0;
   const oppCount   = Math.min(stats?.myOpportunities?.length ?? 0, 3);
   const showProps  = propCount;
@@ -610,8 +612,8 @@ export function MatchRadar({ stats, size = 300 }: MatchRadarProps) {
 
       {/* ── Premium legend ── */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-4 pb-1 flex-wrap">
-        <LegendItem color="#60a5fa" shape="house"    label="Imóveis" />
-        <LegendItem color="#a78bfa" shape="person"   label="Compradores" />
+        <LegendItem color="#60a5fa" shape="house"    label="Imóveis da rede" />
+        <LegendItem color="#a78bfa" shape="person"   label="Compradores da rede" />
         {matchCount > 0 && (
           <LegendItem color="#34d399" shape="circle"
             label={`${matchCount} match${matchCount > 1 ? "es" : ""}`} pulse />

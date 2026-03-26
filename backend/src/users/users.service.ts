@@ -131,13 +131,15 @@ export class UsersService {
       select: { city: true, state: true },
     });
 
-    const [propertiesCount, buyersCount, matchesCount, partnershipsPending] = await Promise.all([
+    const [propertiesCount, buyersCount, matchesCount, partnershipsPending, networkPropertiesCount, networkBuyersCount] = await Promise.all([
       this.prisma.property.count({ where: { agentId: userId } }),
       this.prisma.buyer.count({ where: { agentId: userId, status: 'ACTIVE' } }),
       this.prisma.match.count({
         where: { OR: [{ buyer: { agentId: userId } }, { property: { agentId: userId } }] },
       }),
       this.prisma.partnership.count({ where: { receiverId: userId, status: 'PENDING' } }),
+      this.prisma.property.count({ where: { status: 'AVAILABLE' } }),
+      this.prisma.buyer.count({ where: { status: 'ACTIVE' } }),
     ]);
 
     // Compradores sem nenhum match (precisam de imóvel)
@@ -216,6 +218,7 @@ export class UsersService {
 
     return {
       propertiesCount, buyersCount, matchesCount, partnershipsPending,
+      networkPropertiesCount, networkBuyersCount,
       recentProperties, recentMatches, recentPartnerships, myOpportunities,
       unmatchedBuyers, propertiesWithoutMatches, networkOpportunities,
       userCity: user?.city ?? null,
