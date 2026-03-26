@@ -7,7 +7,7 @@ import { z } from "zod";
 import {
   CheckCircle2, AlertCircle, ArrowRight, Lock,
   Users, HelpingHand, TrendingUp, Search, Star,
-  ChevronRight, Shield, Zap,
+  ChevronRight, Shield, Zap, Building2, Flame,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { maskPhone } from "@/lib/masks";
@@ -315,6 +315,311 @@ function SignupForm() {
   );
 }
 
+// ── Dashboard preview (demo) ──────────────────────────────────────────────────
+const DEMO_BUYERS = [
+  { name: "Ana Pereira",    sub: "Apartamento · até R$ 450k",    initials: "AP", color: "#2563eb" },
+  { name: "Marcos Santos",  sub: "Casa c/ quintal · até R$ 850k", initials: "MS", color: "#7c3aed" },
+  { name: "Julia Ferreira", sub: "Studio · até R$ 320k",         initials: "JF", color: "#0891b2" },
+  { name: "Roberto Lima",   sub: "Casa em cond. · até R$ 1.2M",  initials: "RL", color: "#059669" },
+  { name: "Fernanda Costa", sub: "Terreno comerc. · R$ 600k",    initials: "FC", color: "#d97706" },
+];
+
+const DEMO_PROPERTIES = [
+  { title: "Apto 2 quartos · Pinheiros",  sub: "São Paulo / SP · R$ 420k"  },
+  { title: "Casa c/ quintal · Centro",    sub: "Campinas / SP · R$ 780k"   },
+  { title: "Studio moderno · Bela Vista", sub: "São Paulo / SP · R$ 298k"  },
+  { title: "Casa em condo. · Tamboré",    sub: "Alphaville / SP · R$ 1.1M" },
+  { title: "Terreno comerc. · Cumbica",   sub: "Guarulhos / SP · R$ 550k"  },
+];
+
+const DEMO_MATCHES = [
+  { buyerIdx: 0, propIdx: 0, score: 97 },
+  { buyerIdx: 1, propIdx: 1, score: 94 },
+  { buyerIdx: 3, propIdx: 3, score: 98 },
+];
+
+const DEMO_OPPS = [
+  { title: "Casa Jardins",       city: "São Paulo / SP", priceNormal: 1200000, priceUrgent: 980000  },
+  { title: "Apto Vila Madalena", city: "São Paulo / SP", priceNormal: 620000,  priceUrgent: 520000  },
+  { title: "Cobertura Moema",    city: "São Paulo / SP", priceNormal: 2100000, priceUrgent: 1720000 },
+];
+
+function fmtBRL(v: number) {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v);
+}
+
+function DashboardPreview() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setActiveIdx((prev) => (prev + 1) % DEMO_MATCHES.length);
+        setFade(true);
+      }, 350);
+    }, 3800);
+    return () => clearInterval(id);
+  }, []);
+
+  const m = DEMO_MATCHES[activeIdx];
+  const activeBuyer = DEMO_BUYERS[m.buyerIdx];
+  const activeProp  = DEMO_PROPERTIES[m.propIdx];
+
+  return (
+    <section
+      className="py-16 md:py-24 border-y"
+      style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.015)" }}
+    >
+      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-4 text-xs font-semibold uppercase tracking-widest"
+            style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.25)", color: "#34d399" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Prévia ao vivo
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight mb-3">
+            Veja o que acontece dentro da plataforma
+          </h2>
+          <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">
+            Compradores, imóveis e matches sendo gerados em tempo real por corretores da rede.
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+          {[
+            { value: "48",  label: "Compradores ativos",     color: "#60a5fa" },
+            { value: "312", label: "Imóveis na rede",        color: "#a78bfa" },
+            { value: "23",  label: "Matches hoje",           color: "#34d399" },
+            { value: "7",   label: "Oportunidades urgentes", color: "#fb923c" },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="rounded-xl p-4 text-center border"
+              style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
+            >
+              <p className="text-2xl font-extrabold" style={{ color: s.color }}>{s.value}</p>
+              <p className="text-[11px] text-white/35 mt-0.5 leading-tight">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Main 3-column panel */}
+        <div className="grid lg:grid-cols-[1fr_160px_1fr] gap-4 mb-8 items-start">
+
+          {/* Buyers */}
+          <div
+            className="rounded-2xl border overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.08)" }}
+          >
+            <div
+              className="px-4 py-3 flex items-center justify-between"
+              style={{ background: "rgba(37,99,235,0.08)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+            >
+              <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">Compradores</span>
+              <span
+                className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                style={{ background: "rgba(37,99,235,0.20)", color: "#93c5fd" }}
+              >
+                48 ativos
+              </span>
+            </div>
+            {DEMO_BUYERS.map((b, i) => {
+              const isActive = i === m.buyerIdx;
+              return (
+                <div
+                  key={b.name}
+                  className="flex items-center gap-3 px-4 py-3 transition-all duration-300"
+                  style={{
+                    background: isActive ? "rgba(16,185,129,0.09)" : "transparent",
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    borderLeft: isActive ? "3px solid #10b981" : "3px solid transparent",
+                  }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                    style={{ background: b.color }}
+                  >
+                    {b.initials}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-white/80 truncate">{b.name}</p>
+                    <p className="text-xs text-white/35 truncate">{b.sub}</p>
+                  </div>
+                  {isActive && <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Radar center */}
+          <div className="flex flex-col items-center justify-start pt-8 lg:pt-10 gap-4">
+            <div className="relative flex items-center justify-center" style={{ width: 120, height: 120 }}>
+              <div
+                className="absolute rounded-full animate-ping"
+                style={{ width: 108, height: 108, border: "1px solid rgba(16,185,129,0.15)", animationDuration: "2.2s" }}
+              />
+              <div
+                className="absolute rounded-full animate-ping"
+                style={{ width: 82, height: 82, border: "1px solid rgba(16,185,129,0.22)", animationDuration: "2.2s", animationDelay: "0.55s" }}
+              />
+              <div
+                className="relative w-[68px] h-[68px] rounded-full flex flex-col items-center justify-center z-10"
+                style={{ background: "linear-gradient(135deg, #059669 0%, #0891b2 100%)", boxShadow: "0 0 28px rgba(5,150,105,0.40)" }}
+              >
+                <span
+                  className="text-white font-extrabold text-lg leading-none transition-opacity duration-300"
+                  style={{ opacity: fade ? 1 : 0 }}
+                >
+                  {m.score}%
+                </span>
+                <span className="text-emerald-100/80 text-[8px] font-bold uppercase tracking-wide">match</span>
+              </div>
+            </div>
+
+            <div
+              className="text-center transition-all duration-300 w-full"
+              style={{ opacity: fade ? 1 : 0, transform: fade ? "translateY(0)" : "translateY(4px)" }}
+            >
+              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-2">Match gerado!</p>
+              <p className="text-xs text-white/55 font-medium truncate">{activeBuyer.name}</p>
+              <div className="flex flex-col items-center gap-0.5 my-1.5">
+                <div className="w-px h-2 bg-white/15" />
+                <div className="w-1 h-1 rounded-full bg-white/20" />
+                <div className="w-px h-2 bg-white/15" />
+              </div>
+              <p className="text-xs text-white/55 leading-tight">{activeProp.title}</p>
+            </div>
+          </div>
+
+          {/* Properties */}
+          <div
+            className="rounded-2xl border overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.08)" }}
+          >
+            <div
+              className="px-4 py-3 flex items-center justify-between"
+              style={{ background: "rgba(124,58,237,0.08)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+            >
+              <span className="text-xs font-bold text-violet-400 uppercase tracking-wider">Imóveis da Rede</span>
+              <span
+                className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                style={{ background: "rgba(124,58,237,0.20)", color: "#c4b5fd" }}
+              >
+                312 cadastros
+              </span>
+            </div>
+            {DEMO_PROPERTIES.map((p, i) => {
+              const isActive = i === m.propIdx;
+              return (
+                <div
+                  key={p.title}
+                  className="flex items-center gap-3 px-4 py-3 transition-all duration-300"
+                  style={{
+                    background: isActive ? "rgba(16,185,129,0.09)" : "transparent",
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
+                    borderRight: isActive ? "3px solid #10b981" : "3px solid transparent",
+                  }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: isActive ? "rgba(124,58,237,0.30)" : "rgba(255,255,255,0.06)" }}
+                  >
+                    <Building2 className="h-4 w-4" style={{ color: isActive ? "#c4b5fd" : "rgba(255,255,255,0.25)" }} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-white/80 truncate">{p.title}</p>
+                    <p className="text-xs text-white/35 truncate">{p.sub}</p>
+                  </div>
+                  {isActive && <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Recent matches strip */}
+        <p className="text-[11px] font-bold uppercase tracking-widest text-white/25 mb-4">
+          Últimos matches gerados
+        </p>
+        <div className="grid md:grid-cols-3 gap-4 mb-10">
+          {DEMO_MATCHES.map((match, i) => {
+            const b = DEMO_BUYERS[match.buyerIdx];
+            const p = DEMO_PROPERTIES[match.propIdx];
+            return (
+              <div
+                key={i}
+                className="rounded-xl p-4 border flex items-center gap-3"
+                style={{ background: "rgba(5,150,105,0.06)", borderColor: "rgba(5,150,105,0.20)" }}
+              >
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                  style={{ background: b.color }}
+                >
+                  {b.initials}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-white/70 truncate">{b.name}</p>
+                  <p className="text-[10px] text-white/35 truncate">{p.title}</p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-base font-extrabold text-emerald-400">{match.score}%</p>
+                  <p className="text-[9px] text-white/30">compatível</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Opportunities */}
+        <p className="text-[11px] font-bold uppercase tracking-widest text-white/25 mb-4 flex items-center gap-2">
+          <Flame className="h-3.5 w-3.5 text-orange-400" />
+          Oportunidades urgentes na rede
+        </p>
+        <div className="grid md:grid-cols-3 gap-4">
+          {DEMO_OPPS.map((o) => {
+            const pct  = Math.round((1 - o.priceUrgent / o.priceNormal) * 100);
+            const save = o.priceNormal - o.priceUrgent;
+            return (
+              <div
+                key={o.title}
+                className="rounded-xl p-4 border"
+                style={{ background: "rgba(234,88,12,0.06)", borderColor: "rgba(234,88,12,0.20)" }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span
+                    className="text-[10px] font-black text-white px-2 py-0.5 rounded-full"
+                    style={{ background: "#dc2626" }}
+                  >
+                    −{pct}% OFF
+                  </span>
+                  <span className="text-[10px] text-white/30">Urgente</span>
+                </div>
+                <p className="text-sm font-bold text-white/80 mb-0.5">{o.title}</p>
+                <p className="text-xs text-white/35 mb-3">{o.city}</p>
+                <p className="text-xs text-white/25 line-through">{fmtBRL(o.priceNormal)}</p>
+                <p className="text-lg font-extrabold text-white/85">{fmtBRL(o.priceUrgent)}</p>
+                <p className="text-xs text-orange-400 font-semibold mt-0.5">Economia: −{fmtBRL(save)}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Disclaimer */}
+        <p className="text-center text-[11px] text-white/18 mt-10 italic">
+          * Dados ilustrativos. Cadastre-se para ver os matches e oportunidades da Rede ImobMatch.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 // ── Página principal ──────────────────────────────────────────────────────────
 export default function ListaVipPage() {
   return (
@@ -461,6 +766,8 @@ export default function ListaVipPage() {
             </div>
           </div>
         </section>
+
+        <DashboardPreview />
 
         {/* ── BENEFÍCIOS ─────────────────────────────────────────────────────── */}
         <section className="py-14 md:py-20">
