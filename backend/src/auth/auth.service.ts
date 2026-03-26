@@ -33,7 +33,7 @@ export class AuthService {
   private async generateTokens(user: { id: string; email: string; role: string }) {
     const accessToken = this.jwtService.sign(
       { sub: user.id, email: user.email, role: user.role },
-      { expiresIn: '15m' },
+      { expiresIn: '1h' },
     );
 
     const rawRefreshToken = uuidv4();
@@ -61,17 +61,18 @@ export class AuthService {
       include: { user: true },
     });
 
-    // Token reutilizado após revogação → possível roubo → invalida toda a família
-    if (stored?.revokedAt) {
-      await this.prisma.refreshToken.updateMany({
-        where: { userId: stored.userId, revokedAt: null },
-        data: { revokedAt: new Date() },
-      });
-      throw new UnauthorizedException('Sessão inválida. Faça login novamente.');
+    if (!stored) {
+      throw new UnauthorizedException('Sessão expirada. Faça login novamente.');
     }
 
-    if (!stored || stored.expiresAt < new Date()) {
+    if (stored.expiresAt < new Date()) {
       throw new UnauthorizedException('Sessão expirada. Faça login novamente.');
+    }
+
+    // Token já revogado — pode ser race condition (múltiplas abas) ou reuso malicioso.
+    // Retorna 401 sem destruir toda a sessão para não causar logout inesperado em uso normal.
+    if (stored.revokedAt) {
+      throw new UnauthorizedException('Sessão inválida. Faça login novamente.');
     }
 
     // Revoga o token usado (rotação)

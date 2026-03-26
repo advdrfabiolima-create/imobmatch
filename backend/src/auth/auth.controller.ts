@@ -7,7 +7,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 const ACCESS_COOKIE  = 'access_token';
 const REFRESH_COOKIE = 'refresh_token';
-const ACCESS_MAX_AGE  = 15 * 60 * 1000;           // 15 minutos em ms
+const ACCESS_MAX_AGE  = 60 * 60 * 1000;            // 1 hora em ms
 const REFRESH_MAX_AGE = 7 * 24 * 60 * 60 * 1000;  // 7 dias em ms
 
 @ApiTags('Autenticação')

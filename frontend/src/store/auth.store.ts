@@ -70,6 +70,8 @@ export const useAuthStore = create<AuthState>()(
           // ignora erros de rede — limpamos o estado de qualquer forma
         }
         set({ user: null, isAuthenticated: false });
+        // Notifica outras abas para também fazerem logout
+        try { localStorage.setItem("imobmatch_logout", Date.now().toString()); } catch {}
         window.location.href = "/login";
       },
 

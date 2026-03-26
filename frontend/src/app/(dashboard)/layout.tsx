@@ -59,7 +59,7 @@ function EmailVerificationBanner() {
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -67,6 +67,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.push("/login");
     }
   }, [isAuthenticated, router]);
+
+  // Sincroniza logout entre abas: se outra aba fizer logout, esta também redireciona
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "imobmatch_logout") {
+        router.push("/login");
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [router]);
 
   if (!isAuthenticated) return null;
 
