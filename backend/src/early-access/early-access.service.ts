@@ -120,13 +120,19 @@ export class EarlyAccessService {
       orderBy: { createdAt: 'desc' },
     });
 
+    const STATUS_PT: Record<string, string> = {
+      WAITING:    'Aguardando',
+      INVITED:    'Convidado',
+      REGISTERED: 'Cadastrado',
+    };
+
     const header = 'Nome,Email,WhatsApp,Status,Cadastro,Convidado em';
     const rows = leads.map(l =>
       [
-        `"${l.fullName}"`,
+        `"${l.fullName.trim()}"`,
         `"${l.email}"`,
         `"${l.whatsapp ?? ''}"`,
-        l.status,
+        STATUS_PT[l.status] ?? l.status,
         l.createdAt.toISOString().slice(0, 10),
         l.invitedAt ? l.invitedAt.toISOString().slice(0, 10) : '',
       ].join(',')
