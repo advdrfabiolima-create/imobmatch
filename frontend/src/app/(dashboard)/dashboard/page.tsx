@@ -179,7 +179,7 @@ function PlanBanner() {
         <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300">
           <Infinity className="h-3.5 w-3.5" /> Acesso vitalício
         </div>
-        <div className="sm:ml-auto text-xs text-amber-500 flex items-center gap-1 font-medium">
+        <div className="text-xs text-amber-500 flex items-center gap-1 font-medium">
           <Crown className="h-3 w-3" /> Fundador
         </div>
       </GlassCard>
@@ -200,7 +200,7 @@ function PlanBanner() {
         </span>
       </div>
       <div className="hidden sm:block w-px h-5 bg-white/10" />
-      <div className="sm:ml-auto">
+      <div>
         {isPaidTop ? (
           <span className="text-xs text-slate-500 flex items-center gap-1">
             <Crown className="h-3 w-3" /> Plano completo
