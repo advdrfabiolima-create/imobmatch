@@ -342,13 +342,13 @@ function fmtBRL(v: number) {
 
 function DashboardPreview() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [radarSize, setRadarSize] = useState(420);
+  const [radarSize, setRadarSize] = useState(500);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const ro = new ResizeObserver(([entry]) => {
-      setRadarSize(Math.min(420, Math.floor(entry.contentRect.width) - 8));
+      setRadarSize(Math.min(500, Math.floor(entry.contentRect.width) - 8));
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -399,11 +399,11 @@ function DashboardPreview() {
         </div>
 
         {/* Main panel: Radar + Cards */}
-        <div className="grid lg:grid-cols-[1fr_310px] gap-5 items-start">
+        <div className="grid lg:grid-cols-[1fr_310px] gap-5 items-stretch">
 
           {/* Radar card */}
           <div
-            className="rounded-2xl border overflow-hidden"
+            className="rounded-2xl border overflow-hidden flex flex-col"
             style={{
               background: "rgba(8,14,36,0.70)",
               borderColor: "rgba(99,102,241,0.18)",
@@ -427,7 +427,7 @@ function DashboardPreview() {
             </div>
 
             {/* Radar canvas */}
-            <div className="p-5 flex items-center justify-center relative" ref={containerRef}>
+            <div className="p-5 flex flex-1 items-center justify-center relative" ref={containerRef}>
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div
                   className="w-72 h-72 rounded-full"
