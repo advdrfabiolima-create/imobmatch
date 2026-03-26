@@ -356,7 +356,7 @@ export class MailService {
       <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
       <body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
         <div style="max-width:560px;margin:40px auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.07);">
-          <div style="background:linear-gradient(135deg,#1d4ed8 0%,#4f46e5 100%);padding:24px 40px;text-align:center;">
+          <div style="background:#1d4ed8;padding:24px 40px;text-align:center;">
             <img src="${this.frontendUrl}/logo_texto_branco.png" alt="ImobMatch" width="160" style="height:auto;display:block;margin:0 auto;" />
           </div>
           <div style="padding:36px 40px;">${content}</div>
