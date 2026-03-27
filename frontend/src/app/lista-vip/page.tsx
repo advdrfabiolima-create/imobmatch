@@ -654,20 +654,33 @@ const PAGE_CSS = `
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  .lv-hero-inner { grid-template-columns: 1fr; min-height: auto; padding: 80px 24px 40px; gap: 32px; }
-  .lv-form-card { max-width: 100%; }
-  .lv-nav-inner { padding: 16px 24px; }
-  .lv-section { padding: 60px 24px; }
-  .lv-how-section { padding: 60px 24px 80px; }
+  .lv-hero-inner { grid-template-columns: 1fr; min-height: auto; padding: 80px 16px 40px; gap: 32px; }
+  .lv-hero-right { padding: 0 0 24px; width: 100%; }
+  .lv-form-card { max-width: 100%; padding: 28px 20px; }
+  .lv-nav-inner { padding: 16px 16px; }
+  .lv-section { padding: 60px 16px; }
+  .lv-how-section { padding: 60px 16px 80px; }
   .lv-benefits-grid { grid-template-columns: 1fr; }
   .lv-steps-grid { grid-template-columns: 1fr; }
   .lv-step-connector { display: none; }
-  .lv-honesty { padding: 0 24px; }
-  .lv-honesty-inner { grid-template-columns: 1fr; padding: 36px 28px; gap: 24px; }
+  .lv-honesty { padding: 0 16px; }
+  .lv-honesty-inner { grid-template-columns: 1fr; padding: 28px 20px; gap: 24px; }
   .lv-honesty-left { font-size: 26px; }
-  .lv-footer { padding: 24px; flex-direction: column; gap: 10px; text-align: center; }
+  .lv-footer { padding: 24px 16px; flex-direction: column; gap: 10px; text-align: center; }
   .lv-stats-row { gap: 24px; flex-wrap: wrap; }
-  .lv-form-card { padding: 28px 24px; }
+  .lv-form-trust { gap: 12px; flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .lv-hero-inner { padding: 72px 12px 32px; }
+  .lv-form-card { padding: 24px 16px; border-radius: 14px; }
+  .lv-nav-inner { padding: 14px 12px; }
+  .lv-section { padding: 48px 12px; }
+  .lv-how-section { padding: 48px 12px 64px; }
+  .lv-honesty { padding: 0 12px; }
+  .lv-honesty-inner { padding: 24px 16px; }
+  .lv-founder-counter { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .lv-form-trust { flex-direction: column; align-items: center; gap: 8px; }
 }
 `;
 
