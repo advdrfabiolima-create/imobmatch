@@ -74,16 +74,6 @@ export default async function ImoveisPublicPage({ searchParams }: { searchParams
             >
               🔥 Oportunidades
             </Link>
-            <Link
-              href="/login"
-              className="text-sm font-semibold text-white px-4 py-2 rounded-xl transition-opacity hover:opacity-90"
-              style={{
-                background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
-                boxShadow: "0 2px 10px rgba(37,99,235,0.25)",
-              }}
-            >
-              Entrar / Cadastrar
-            </Link>
           </div>
         </div>
       </header>
