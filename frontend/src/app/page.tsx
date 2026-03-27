@@ -252,11 +252,6 @@ export default function GatewayPage() {
       ══════════════════════════════════════════════════════ */}
       <div className="flex md:hidden flex-col h-full">
 
-        {/* Logo mobile */}
-        <div className="absolute top-0 left-0 right-0 z-30 flex justify-center pt-6 pointer-events-none">
-          <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto opacity-90" />
-        </div>
-
         {/* Painel comprador */}
         <div
           className="flex-1 relative flex flex-col items-center justify-center px-8 py-10 active:brightness-90 transition-all"
