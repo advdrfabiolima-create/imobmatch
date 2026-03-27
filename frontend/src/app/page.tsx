@@ -17,11 +17,11 @@ export default function GatewayPage() {
       style={{ background: "#060c1a" }}
     >
       {/* ── Logo centrada flutuante ── */}
-      <div className="absolute top-0 left-0 right-0 z-30 flex justify-center pt-7 pointer-events-none">
+      <div className="absolute top-0 left-0 right-0 z-30 flex justify-center pt-3 md:pt-7 pointer-events-none">
         <img
           src="/logo_texto_branco.png"
           alt="ImobMatch"
-          className="h-6 w-auto drop-shadow-lg opacity-95"
+          className="h-4 md:h-6 w-auto drop-shadow-lg opacity-95"
         />
       </div>
 
