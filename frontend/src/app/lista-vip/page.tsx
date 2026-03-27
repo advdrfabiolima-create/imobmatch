@@ -81,7 +81,7 @@ const PAGE_CSS = `
   transition: opacity 0.2s;
 }
 .lv-logo:hover { opacity: 0.65; }
-.lv-logo img { height: 20px; width: auto; object-fit: contain; }
+.lv-logo img { height: 28px; width: auto; object-fit: contain; }
 .lv-nav-badge {
   font-size: 11px;
   font-weight: 600;
@@ -96,12 +96,13 @@ const PAGE_CSS = `
 
 /* HERO */
 .lv-hero {
-  min-height: 100vh;
+  min-height: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
   position: relative;
   overflow: hidden;
+  align-items: center;
 }
 .lv-hero-bg {
   position: absolute;
@@ -125,7 +126,7 @@ const PAGE_CSS = `
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 120px 60px 80px 60px;
+  padding: 100px 48px 60px 60px;
   position: relative;
   z-index: 1;
 }
@@ -228,7 +229,7 @@ const PAGE_CSS = `
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 120px 60px 80px 40px;
+  padding: 100px 60px 60px 32px;
   position: relative;
   z-index: 1;
 }
@@ -245,9 +246,7 @@ const PAGE_CSS = `
 .lv-form-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 2px;
   background: linear-gradient(90deg, #7c5cfc, #a78bfa, transparent);
 }
@@ -285,38 +284,20 @@ const PAGE_CSS = `
   justify-content: space-between;
   margin-bottom: 28px;
 }
-.lv-fc-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.lv-fc-left { display: flex; align-items: center; gap: 10px; }
 .lv-fc-dot {
-  width: 8px;
-  height: 8px;
+  width: 8px; height: 8px;
   background: var(--accent-bright);
-  border-radius: 50%;
-  flex-shrink: 0;
+  border-radius: 50%; flex-shrink: 0;
   animation: lv-pulse-green 2s infinite;
 }
 @keyframes lv-pulse-green {
   0%, 100% { box-shadow: 0 0 0 0 rgba(124,92,252,0.6); }
   50% { box-shadow: 0 0 0 6px rgba(124,92,252,0); }
 }
-.lv-fc-text {
-  font-size: 13px;
-  color: var(--text);
-  font-weight: 500;
-}
-.lv-fc-count {
-  color: var(--accent-bright);
-  font-weight: 700;
-  font-size: 15px;
-}
-.lv-fc-badge {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 500;
-}
+.lv-fc-text { font-size: 13px; color: var(--text); font-weight: 500; }
+.lv-fc-count { color: var(--accent-bright); font-weight: 700; font-size: 15px; }
+.lv-fc-badge { font-size: 11px; color: var(--muted); font-weight: 500; }
 
 /* Form inputs */
 .lv-form-group { margin-bottom: 18px; }
@@ -415,14 +396,11 @@ const PAGE_CSS = `
   padding: 20px 0;
 }
 .lv-success-icon {
-  width: 56px;
-  height: 56px;
+  width: 56px; height: 56px;
   background: var(--accent-dim);
   border: 1px solid rgba(124,92,252,0.4);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   margin: 0 auto 20px;
   font-size: 24px;
   color: var(--accent-bright);
@@ -486,11 +464,11 @@ const PAGE_CSS = `
   padding: 36px 32px;
   transition: background 0.2s;
 }
-.lv-benefit-item:hover { background: #131325; }
+.lv-benefit-item:hover { background: #151520; }
 .lv-benefit-num {
   font-family: 'Instrument Serif', serif;
   font-size: 48px;
-  color: rgba(124,92,252,0.2);
+  color: rgba(124,92,252,0.22);
   line-height: 1;
   margin-bottom: 16px;
   font-weight: 400;
@@ -605,11 +583,9 @@ const PAGE_CSS = `
 .lv-cta::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
-  height: 300px;
+  width: 600px; height: 300px;
   background: radial-gradient(ellipse, rgba(124,92,252,0.1) 0%, transparent 70%);
   pointer-events: none;
 }
