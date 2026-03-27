@@ -1,32 +1,701 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Link from "next/link";
-import {
-  CheckCircle2, AlertCircle, ArrowRight, Users,
-  Zap, Shield, TrendingUp, Clock, Star, ChevronRight,
-} from "lucide-react";
 import { api } from "@/lib/api";
 import { maskPhone } from "@/lib/masks";
 
-/* ─── Paleta ────────────────────────────────────────────── */
-const BG       = "#07070d";
-const CARD_BG  = "#0e0e18";
-const BORDER   = "rgba(255,255,255,0.08)";
-const ACCENT   = "#c8f04a";    // lime ácido
-const GOLD     = "#e8c96a";    // dourado suave
-const MUTED    = "rgba(255,255,255,0.40)";
+/* ═══════════════════════════════════════════════════════════
+   CSS — fiel ao modelo HTML
+═══════════════════════════════════════════════════════════ */
+const PAGE_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* ─── Fontes Google (injetadas via <style>) ─────────────────*/
-const FONT_STYLE = `
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --border: rgba(255,255,255,0.07);
+  --text: #f0efe8;
+  --muted: #7a7a8a;
+  --accent: #c8f04a;
+  --accent-dim: rgba(200,240,74,0.12);
+  --gold: #e8c96a;
+  --gold-dim: rgba(232,201,106,0.1);
+}
+
+.lv-wrap *, .lv-wrap *::before, .lv-wrap *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.lv-wrap {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* GRAIN */
+.lv-grain {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* NAV */
+.lv-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s;
+  backdrop-filter: blur(0px);
+}
+.lv-nav.scrolled {
+  background: rgba(10,10,15,0.9);
+  border-color: var(--border);
+  backdrop-filter: blur(20px);
+}
+.lv-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  opacity: 0.95;
+  transition: opacity 0.2s;
+}
+.lv-logo:hover { opacity: 0.65; }
+.lv-logo img { height: 20px; width: auto; object-fit: contain; }
+.lv-nav-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(200,240,74,0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* HERO */
+.lv-hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+}
+.lv-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(200,240,74,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(232,201,106,0.05) 0%, transparent 60%);
+}
+.lv-hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+}
+.lv-hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 60px 80px 60px;
+  position: relative;
+  z-index: 1;
+}
+.lv-founder-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(232,201,106,0.25);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 36px;
+  width: fit-content;
+}
+.lv-founder-tag::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: lv-pulse-gold 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes lv-pulse-gold {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.lv-h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(42px, 5vw, 68px);
+  line-height: 1.05;
+  font-weight: 400;
+  margin-bottom: 28px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.lv-h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+.lv-hero-sub {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 48px;
+}
+.lv-pain-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 48px;
+}
+.lv-pain-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  color: #aaa;
+}
+.lv-pain-list li::before {
+  content: '—';
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.lv-stats-row {
+  display: flex;
+  gap: 40px;
+}
+.lv-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lv-stat-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  color: var(--text);
+  line-height: 1;
+}
+.lv-stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+/* FORM SIDE */
+.lv-hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 60px 80px 40px;
+  position: relative;
+  z-index: 1;
+}
+.lv-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 44px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  overflow: hidden;
+}
+.lv-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--accent), transparent);
+}
+.lv-form-header { margin-bottom: 32px; }
+.lv-form-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.lv-form-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 400;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.lv-form-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Founder counter */
+.lv-founder-counter {
+  background: var(--accent-dim);
+  border: 1px solid rgba(200,240,74,0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.lv-fc-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lv-fc-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: lv-pulse-green 2s infinite;
+}
+@keyframes lv-pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,240,74,0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(200,240,74,0); }
+}
+.lv-fc-text {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+.lv-fc-count {
+  color: var(--accent);
+  font-weight: 600;
+}
+.lv-fc-badge {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Form inputs */
+.lv-form-group { margin-bottom: 18px; }
+.lv-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.lv-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  transition: all 0.2s;
+  outline: none;
+}
+.lv-input::placeholder { color: rgba(255,255,255,0.2); }
+.lv-input:focus {
+  border-color: rgba(200,240,74,0.4);
+  background: rgba(200,240,74,0.03);
+}
+.lv-input-error { border-color: rgba(239,68,68,0.5) !important; }
+
+.lv-error-msg {
+  font-size: 12px;
+  color: #f87171;
+  margin-top: 5px;
+}
+.lv-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.lv-alert-warn { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); color: #fbbf24; }
+.lv-alert-err  { background: rgba(239,68,68,0.08);  border: 1px solid rgba(239,68,68,0.18); color: #f87171; }
+
+.lv-btn-submit {
+  width: 100%;
+  background: var(--accent);
+  color: #0a0a0f;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+.lv-btn-submit:hover:not(:disabled) {
+  background: #d4f557;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(200,240,74,0.25);
+}
+.lv-btn-submit:active:not(:disabled) { transform: translateY(0); }
+.lv-btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.lv-form-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 18px;
+}
+.lv-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Success state */
+.lv-success {
+  text-align: center;
+  padding: 20px 0;
+}
+.lv-success-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(200,240,74,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+  color: var(--accent);
+}
+.lv-success h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.lv-success p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* SECTIONS */
+.lv-section {
+  padding: 100px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.lv-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.lv-section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.1;
+  font-weight: 400;
+  max-width: 700px;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+.lv-section > p {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 580px;
+  line-height: 1.7;
+  margin-bottom: 60px;
+}
+
+/* Benefits grid */
+.lv-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.lv-benefit-item {
+  background: var(--surface);
+  padding: 36px 32px;
+  transition: background 0.2s;
+}
+.lv-benefit-item:hover { background: #151520; }
+.lv-benefit-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 48px;
+  color: rgba(255,255,255,0.06);
+  line-height: 1;
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+.lv-benefit-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.lv-benefit-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* How it works */
+.lv-how-section {
+  padding: 80px 60px 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+.lv-how-section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1.1;
+  max-width: 600px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.lv-how-section > p {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.7;
+}
+.lv-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  margin-top: 60px;
+}
+.lv-step { position: relative; }
+.lv-step-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 64px;
+  color: rgba(255,255,255,0.04);
+  line-height: 1;
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+.lv-step-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.lv-step-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.lv-step-connector {
+  position: absolute;
+  top: 32px;
+  right: -24px;
+  color: var(--border);
+  font-size: 20px;
+}
+
+/* Honesty section */
+.lv-honesty {
+  margin: 0 auto 80px;
+  max-width: 1080px;
+  padding: 0 60px;
+}
+.lv-honesty-inner {
+  background: var(--gold-dim);
+  border: 1px solid rgba(232,201,106,0.2);
+  border-radius: 20px;
+  padding: 52px 60px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  align-items: center;
+}
+.lv-honesty-left {
+  font-family: 'Instrument Serif', serif;
+  font-size: 36px;
+  line-height: 1.2;
+  color: var(--gold);
+  font-weight: 400;
+}
+.lv-honesty-right p {
+  font-size: 16px;
+  color: #ccc;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.lv-honesty-right p:last-child { margin-bottom: 0; }
+.lv-honesty-right strong { color: var(--text); }
+
+/* CTA section */
+.lv-cta {
+  text-align: center;
+  padding: 100px 40px 120px;
+  position: relative;
+  overflow: hidden;
+}
+.lv-cta::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(200,240,74,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.lv-cta h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(36px, 5vw, 60px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  position: relative;
+  color: var(--text);
+}
+.lv-cta > p {
+  font-size: 16px;
+  color: var(--muted);
+  margin-bottom: 40px;
+  position: relative;
+}
+.lv-btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #0a0a0f;
+  border: none;
+  border-radius: 12px;
+  padding: 18px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  position: relative;
+}
+.lv-btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(200,240,74,0.3);
+}
+
+/* Footer */
+.lv-footer {
+  border-top: 1px solid var(--border);
+  padding: 30px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lv-footer p { font-size: 13px; color: var(--muted); }
+.lv-footer-links {
+  display: flex;
+  gap: 20px;
+}
+.lv-footer-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.lv-footer-links a:hover { color: var(--text); }
+
+/* Fade in */
+.lv-fade {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.lv-fade.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .lv-hero { grid-template-columns: 1fr; min-height: auto; }
+  .lv-hero-left { padding: 100px 24px 40px; }
+  .lv-hero-right { padding: 0 24px 60px; }
+  .lv-form-card { max-width: 100%; }
+  .lv-nav { padding: 16px 24px; }
+  .lv-section { padding: 60px 24px; }
+  .lv-how-section { padding: 60px 24px 80px; }
+  .lv-benefits-grid { grid-template-columns: 1fr; }
+  .lv-steps-grid { grid-template-columns: 1fr; }
+  .lv-step-connector { display: none; }
+  .lv-honesty { padding: 0 24px; }
+  .lv-honesty-inner { grid-template-columns: 1fr; padding: 36px 28px; gap: 24px; }
+  .lv-honesty-left { font-size: 26px; }
+  .lv-footer { padding: 24px; flex-direction: column; gap: 10px; text-align: center; }
+  .lv-stats-row { gap: 24px; flex-wrap: wrap; }
+  .lv-form-card { padding: 28px 24px; }
+}
 `;
 
-/* ─── Contagem real de membros ──────────────────────────── */
-function MemberCount({ onLoad }: { onLoad?: (n: number) => void }) {
+/* ═══════════════════════════════════════════════════════════
+   Founder counter (fetch real)
+═══════════════════════════════════════════════════════════ */
+function useFounderCount() {
   const [count, setCount] = useState<number | null>(null);
   const [displayed, setDisplayed] = useState(0);
 
@@ -35,7 +704,6 @@ function MemberCount({ onLoad }: { onLoad?: (n: number) => void }) {
       .then((res) => {
         const n = typeof res.data === "number" ? res.data : Number(res.data ?? 0);
         setCount(n);
-        onLoad?.(n);
       })
       .catch(() => setCount(0));
   }, []);
@@ -44,43 +712,45 @@ function MemberCount({ onLoad }: { onLoad?: (n: number) => void }) {
     if (count === null) return;
     let cur = 0;
     const step = Math.max(1, Math.ceil(count / 60));
-    const timer = setInterval(() => {
+    const id = setInterval(() => {
       cur = Math.min(cur + step, count);
       setDisplayed(cur);
-      if (cur >= count) clearInterval(timer);
+      if (cur >= count) clearInterval(id);
     }, 16);
-    return () => clearInterval(timer);
+    return () => clearInterval(id);
   }, [count]);
 
-  if (count === null)
-    return <span className="inline-block w-8 h-4 rounded animate-pulse" style={{ background: "rgba(200,240,74,0.2)" }} />;
-
-  return <span>{displayed.toLocaleString("pt-BR")}</span>;
+  return { count, displayed };
 }
 
-/* ─── Schema do formulário ──────────────────────────────── */
-const schema = z.object({
-  fullName: z.string().min(2, "Nome obrigatório"),
-  email:    z.string().email("E-mail inválido"),
-  whatsapp: z.string().optional(),
-});
-type FormData = z.infer<typeof schema>;
+/* ═══════════════════════════════════════════════════════════
+   Form
+═══════════════════════════════════════════════════════════ */
+type Status = "idle" | "loading" | "success" | "duplicate" | "error";
 
-/* ─── Formulário de cadastro ────────────────────────────── */
-function SignupForm({ id = "form-hero" }: { id?: string }) {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "duplicate" | "error">("idle");
-  const {
-    register, handleSubmit, setValue, watch,
-    formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+function FounderForm({ onSuccess }: { onSuccess?: () => void }) {
+  const [status, setStatus] = useState<Status>("idle");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
-  const whatsappVal = watch("whatsapp") ?? "";
+  function validate() {
+    const errs: Record<string, string> = {};
+    if (!fullName.trim() || fullName.trim().length < 2) errs.fullName = "Nome obrigatório";
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "E-mail inválido";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  }
 
-  async function onSubmit(data: FormData) {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!validate()) return;
     setStatus("loading");
     try {
-      await api.post("/early-access", { ...data, source: "facebook_group" });
+      await api.post("/early-access", { fullName: fullName.trim(), email: email.trim(), whatsapp, source: "facebook_group" });
       setStatus("success");
+      onSuccess?.();
     } catch (err: any) {
       const msg: string = err?.response?.data?.message ?? "";
       setStatus(msg.toLowerCase().includes("já") ? "duplicate" : "error");
@@ -89,101 +759,73 @@ function SignupForm({ id = "form-hero" }: { id?: string }) {
 
   if (status === "success") {
     return (
-      <div
-        className="rounded-2xl p-8 text-center"
-        style={{ background: CARD_BG, border: `1px solid ${ACCENT}33` }}
-      >
-        <CheckCircle2 className="h-12 w-12 mx-auto mb-4" style={{ color: ACCENT }} />
-        <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "Instrument Serif, serif" }}>
-          Você está na lista!
-        </h3>
-        <p style={{ color: MUTED, fontSize: 14, lineHeight: 1.6 }}>
-          Entraremos em contato assim que sua vaga for liberada.<br />
-          Fique de olho no e-mail e WhatsApp.
-        </p>
+      <div className="lv-success">
+        <div className="lv-success-icon">✓</div>
+        <h3>Você está dentro.</h3>
+        <p>Bem-vindo aos fundadores do ImobMatch.<br />Em breve você receberá o acesso por e-mail.</p>
       </div>
     );
   }
 
-  const inputClass = "w-full px-4 h-12 rounded-xl text-sm text-white placeholder-white/25 focus:outline-none transition-colors";
-  const inputStyle = { background: "rgba(255,255,255,0.06)", border: `1px solid ${BORDER}` };
-  const inputFocusStyle = { ...inputStyle, border: `1px solid ${ACCENT}55` };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id={id} className="flex flex-col gap-3">
-      <div>
+    <form onSubmit={handleSubmit} noValidate>
+      <div className="lv-form-group">
+        <label className="lv-label">Nome completo *</label>
         <input
-          {...register("fullName")}
-          placeholder="Seu nome completo"
-          className={inputClass}
-          style={inputStyle}
-          onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-          onBlur={e => Object.assign(e.target.style, inputStyle)}
+          className={`lv-input${errors.fullName ? " lv-input-error" : ""}`}
+          type="text"
+          placeholder="João Silva"
+          value={fullName}
+          onChange={e => setFullName(e.target.value)}
         />
-        {errors.fullName && (
-          <p className="text-xs mt-1" style={{ color: "#f87171" }}>{errors.fullName.message}</p>
-        )}
+        {errors.fullName && <p className="lv-error-msg">{errors.fullName}</p>}
       </div>
 
-      <div>
+      <div className="lv-form-group">
+        <label className="lv-label">E-mail *</label>
         <input
-          {...register("email")}
+          className={`lv-input${errors.email ? " lv-input-error" : ""}`}
           type="email"
-          placeholder="Seu melhor e-mail"
-          className={inputClass}
-          style={inputStyle}
-          onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-          onBlur={e => Object.assign(e.target.style, inputStyle)}
+          placeholder="joao@email.com"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
         />
-        {errors.email && (
-          <p className="text-xs mt-1" style={{ color: "#f87171" }}>{errors.email.message}</p>
-        )}
+        {errors.email && <p className="lv-error-msg">{errors.email}</p>}
       </div>
 
-      <div>
+      <div className="lv-form-group">
+        <label className="lv-label">
+          WhatsApp <span style={{ fontWeight: 400, textTransform: "none", fontSize: 11 }}>(opcional)</span>
+        </label>
         <input
-          {...register("whatsapp")}
-          placeholder="WhatsApp (opcional)"
-          className={inputClass}
-          style={inputStyle}
-          value={whatsappVal}
-          onChange={e => setValue("whatsapp", maskPhone(e.target.value))}
-          onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
-          onBlur={e => Object.assign(e.target.style, inputStyle)}
+          className="lv-input"
+          type="tel"
+          placeholder="(11) 99999-9999"
+          value={whatsapp}
+          onChange={e => setWhatsapp(maskPhone(e.target.value))}
         />
       </div>
 
       {status === "duplicate" && (
-        <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", color: "#fbbf24" }}>
-          <AlertCircle className="h-4 w-4 flex-shrink-0" />
-          Este e-mail já está na lista. Aguarde o contato.
+        <div className="lv-alert lv-alert-warn">
+          ⚠ Este e-mail já está na lista. Aguarde o contato.
         </div>
       )}
       {status === "error" && (
-        <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.18)", color: "#f87171" }}>
-          <AlertCircle className="h-4 w-4 flex-shrink-0" />
-          Algo deu errado. Tente novamente.
+        <div className="lv-alert lv-alert-err">
+          ✕ Algo deu errado. Tente novamente.
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="w-full h-12 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
-        style={{
-          background: status === "loading" ? "rgba(200,240,74,0.5)" : ACCENT,
-          color: "#07070d",
-          opacity: status === "loading" ? 0.7 : 1,
-        }}
-      >
-        {status === "loading" ? "Enviando..." : (
-          <>Garantir minha vaga como Membro Fundador <ArrowRight className="h-4 w-4" /></>
-        )}
+      <button className="lv-btn-submit" type="submit" disabled={status === "loading"}>
+        {status === "loading" ? "Enviando..." : "Quero ser membro fundador →"}
       </button>
 
-      <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.22)" }}>
-        100% gratuito · Sem cartão de crédito · Acesso antecipado
-      </p>
+      <div className="lv-form-trust">
+        <span className="lv-trust-item">🔒 100% gratuito</span>
+        <span className="lv-trust-item">✦ Dados protegidos</span>
+        <span className="lv-trust-item">✉ Sem spam</span>
+      </div>
     </form>
   );
 }
@@ -192,370 +834,205 @@ function SignupForm({ id = "form-hero" }: { id?: string }) {
    PAGE
 ═══════════════════════════════════════════════════════════ */
 export default function ListaVipPage() {
-  const [memberCount, setMemberCount] = useState<number | null>(null);
+  const [navScrolled, setNavScrolled] = useState(false);
+  const heroRightRef = useRef<HTMLDivElement>(null);
+  const { count, displayed } = useFounderCount();
+
+  /* Nav scroll effect */
+  useEffect(() => {
+    const onScroll = () => setNavScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* Fade-in on scroll */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".lv-fade").forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  function scrollToForm() {
+    heroRightRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
 
   return (
     <>
-      <style>{FONT_STYLE}</style>
+      <style>{PAGE_CSS}</style>
 
-      <div style={{ background: BG, minHeight: "100vh", fontFamily: "DM Sans, sans-serif" }}>
+      <div className="lv-wrap">
+        {/* Grain overlay */}
+        <div className="lv-grain" />
 
-        {/* ── Ambient glows ─────────────────────────────────── */}
-        <div className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 0 }}>
-          <div style={{
-            position: "absolute", top: "-10%", left: "60%",
-            width: 600, height: 600, borderRadius: "50%",
-            background: `radial-gradient(circle, ${ACCENT}0a 0%, transparent 65%)`,
-            filter: "blur(60px)",
-          }} />
-          <div style={{
-            position: "absolute", top: "40%", left: "-10%",
-            width: 500, height: 500, borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%)",
-            filter: "blur(60px)",
-          }} />
-        </div>
-
-        {/* ══════════════════════════════════════════════════════
-            NAVBAR
-        ══════════════════════════════════════════════════════ */}
-        <nav
-          className="sticky top-0 z-40"
-          style={{
-            background: "rgba(7,7,13,0.85)",
-            backdropFilter: "blur(16px)",
-            borderBottom: `1px solid ${BORDER}`,
-          }}
-        >
-          <div className="container mx-auto px-6 h-14 flex items-center justify-between">
-            <Link href="/" className="transition-opacity hover:opacity-70">
-              <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto object-contain" />
-            </Link>
-            <a
-              href="#form-hero"
-              className="text-xs font-semibold px-4 py-2 rounded-lg transition-all"
-              style={{ background: `${ACCENT}18`, color: ACCENT, border: `1px solid ${ACCENT}33` }}
-            >
-              Garantir vaga
-            </a>
-          </div>
+        {/* ── NAV ───────────────────────────────────────────── */}
+        <nav className={`lv-nav${navScrolled ? " scrolled" : ""}`}>
+          <Link href="/" className="lv-logo">
+            <img src="/logo_texto_branco.png" alt="ImobMatch" />
+          </Link>
+          <span className="lv-nav-badge">Membros Fundadores</span>
         </nav>
 
-        <div className="relative z-10">
+        {/* ── HERO ──────────────────────────────────────────── */}
+        <section className="lv-hero">
+          <div className="lv-hero-bg" />
 
-          {/* ══════════════════════════════════════════════════════
-              HERO — 2 colunas
-          ══════════════════════════════════════════════════════ */}
-          <section className="container mx-auto px-6 pt-16 pb-20 lg:pt-24 lg:pb-28">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Coluna esquerda */}
+          <div className="lv-hero-left">
+            <div className="lv-founder-tag">✦ Grupo Negócios Imobiliários · Acesso Fundador</div>
 
-              {/* Coluna esquerda — copy */}
-              <div>
-                {/* Badge */}
-                <div
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold mb-8"
-                  style={{ background: `${ACCENT}12`, border: `1px solid ${ACCENT}30`, color: ACCENT }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-                  Acesso antecipado —&nbsp;
-                  <MemberCount onLoad={setMemberCount} />
-                  &nbsp;membros na fila
-                </div>
+            <h1 className="lv-h1">
+              Seja um dos<br />
+              primeiros a<br />
+              <em>moldar a rede.</em>
+            </h1>
 
-                {/* Headline */}
-                <h1
-                  className="text-4xl lg:text-5xl xl:text-[3.4rem] leading-tight text-white mb-6"
-                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
-                >
-                  Seja um dos primeiros<br />
-                  <em style={{ color: ACCENT, fontStyle: "italic" }}>Membros Fundadores</em><br />
-                  da ImobMatch
-                </h1>
+            <p className="lv-hero-sub">
+              O ImobMatch ainda está nos primeiros dias. Estamos convidando corretores do grupo para ser membros fundadores — com vantagens que nunca mais voltarão.
+            </p>
 
-                {/* Sub */}
-                <p className="text-base lg:text-lg leading-relaxed mb-10" style={{ color: MUTED, maxWidth: 480 }}>
-                  A plataforma que conecta corretores a compradores qualificados via inteligência artificial —
-                  antes mesmo do lançamento público. Garanta condições exclusivas que não existirão depois.
-                </p>
+            <ul className="lv-pain-list">
+              <li>Tem cliente mas não acha o imóvel certo?</li>
+              <li>Tem imóvel mas não encontra o comprador ideal?</li>
+              <li>Difícil fechar parcerias confiáveis com outros corretores?</li>
+            </ul>
 
-                {/* Lista de benefícios rápidos */}
-                <ul className="flex flex-col gap-3 mb-10">
-                  {[
-                    "Acesso vitalício ao plano Fundador com desconto permanente",
-                    "Matches automáticos com compradores qualificados na sua região",
-                    "Radar de oportunidades da rede em tempo real",
-                    "Badge exclusivo de Membro Fundador no perfil",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-sm" style={{ color: "rgba(255,255,255,0.72)" }}>
-                      <CheckCircle2 className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: ACCENT }} />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Social proof sutil */}
-                <div className="flex items-center gap-3">
-                  <div className="flex -space-x-2">
-                    {["from-violet-500 to-blue-500", "from-teal-500 to-cyan-500", "from-pink-500 to-rose-500", "from-amber-400 to-orange-500"].map((g, i) => (
-                      <div key={i} className={`w-8 h-8 rounded-full border-2 bg-gradient-to-br ${g} flex-shrink-0`}
-                        style={{ borderColor: BG }} />
-                    ))}
-                  </div>
-                  <p className="text-xs" style={{ color: MUTED }}>
-                    Corretores de todo o Brasil já garantiram sua vaga
-                  </p>
-                </div>
+            <div className="lv-stats-row">
+              <div className="lv-stat-item">
+                <span className="lv-stat-num">Grátis</span>
+                <span className="lv-stat-label">Sem cartão de crédito</span>
               </div>
-
-              {/* Coluna direita — formulário */}
-              <div>
-                <div
-                  className="rounded-2xl p-8"
-                  style={{
-                    background: CARD_BG,
-                    border: `1px solid ${BORDER}`,
-                    boxShadow: `0 0 60px ${ACCENT}08`,
-                  }}
-                >
-                  <div className="mb-6">
-                    <div
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3 py-1 mb-4"
-                      style={{ background: `${GOLD}15`, color: GOLD, border: `1px solid ${GOLD}25` }}
-                    >
-                      <Star className="h-3 w-3" /> Vagas limitadas
-                    </div>
-                    <h2 className="text-xl font-bold text-white mb-1" style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}>
-                      Garanta sua vaga agora
-                    </h2>
-                    <p className="text-sm" style={{ color: MUTED }}>
-                      Sem compromisso. Gratuito para membros fundadores.
-                    </p>
-                  </div>
-
-                  <SignupForm id="form-hero" />
-                </div>
+              <div className="lv-stat-item">
+                <span className="lv-stat-num">62,5k</span>
+                <span className="lv-stat-label">Corretores no grupo</span>
+              </div>
+              <div className="lv-stat-item">
+                <span className="lv-stat-num">100%</span>
+                <span className="lv-stat-label">Focado em corretores</span>
               </div>
             </div>
-          </section>
+          </div>
 
-          {/* ══════════════════════════════════════════════════════
-              BENEFÍCIOS — 3×2 grid
-          ══════════════════════════════════════════════════════ */}
-          <section style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
-            <div className="container mx-auto px-6 py-20">
-              <div className="text-center mb-14">
-                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: `${ACCENT}90` }}>
-                  Por que entrar agora
-                </p>
-                <h2
-                  className="text-3xl lg:text-4xl text-white"
-                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
-                >
-                  O que Membros Fundadores ganham
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  {
-                    icon: <TrendingUp className="h-5 w-5" />,
-                    title: "Desconto permanente",
-                    desc: "Membros fundadores travam o preço de lançamento para sempre. Mesmo quando os planos subirem, você não paga a mais.",
-                    color: ACCENT,
-                  },
-                  {
-                    icon: <Zap className="h-5 w-5" />,
-                    title: "Matches automáticos",
-                    desc: "A IA conecta seus imóveis a compradores com perfil compatível na rede — sem você precisar fazer nada.",
-                    color: "#818cf8",
-                  },
-                  {
-                    icon: <Users className="h-5 w-5" />,
-                    title: "Radar da Rede",
-                    desc: "Veja em tempo real quais imóveis estão com desconto, quais compradores entraram na rede e onde estão as oportunidades.",
-                    color: "#fb923c",
-                  },
-                  {
-                    icon: <Shield className="h-5 w-5" />,
-                    title: "Badge exclusivo",
-                    desc: "Seu perfil terá o selo de Membro Fundador — um diferencial visível para outros corretores e compradores da plataforma.",
-                    color: GOLD,
-                  },
-                  {
-                    icon: <Clock className="h-5 w-5" />,
-                    title: "Acesso antecipado",
-                    desc: "Você entra antes do lançamento público. Menos concorrência, mais visibilidade, primeiros a fechar negócios na rede.",
-                    color: "#34d399",
-                  },
-                  {
-                    icon: <Star className="h-5 w-5" />,
-                    title: "Voz no produto",
-                    desc: "Fundadores participam de calls diretas com o time para sugerir funcionalidades. Você ajuda a moldar a plataforma.",
-                    color: "#f472b6",
-                  },
-                ].map(({ icon, title, desc, color }) => (
-                  <div
-                    key={title}
-                    className="rounded-2xl p-6"
-                    style={{ background: CARD_BG, border: `1px solid ${BORDER}` }}
-                  >
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-                      style={{ background: `${color}14`, color }}
-                    >
-                      {icon}
-                    </div>
-                    <h3 className="font-semibold text-white mb-2 text-sm">{title}</h3>
-                    <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ══════════════════════════════════════════════════════
-              COMO FUNCIONA — 3 passos
-          ══════════════════════════════════════════════════════ */}
-          <section className="container mx-auto px-6 py-20">
-            <div className="text-center mb-14">
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: `${ACCENT}90` }}>
-                Simples assim
-              </p>
-              <h2
-                className="text-3xl lg:text-4xl text-white"
-                style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
-              >
-                Como funciona
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              {[
-                {
-                  step: "01",
-                  title: "Cadastre-se na lista",
-                  desc: "Preencha o formulário acima. É gratuito e leva menos de 30 segundos.",
-                },
-                {
-                  step: "02",
-                  title: "Receba o convite",
-                  desc: "Assim que sua vaga for liberada, você recebe um e-mail com acesso à plataforma.",
-                },
-                {
-                  step: "03",
-                  title: "Comece a fechar negócios",
-                  desc: "Cadastre seus imóveis, ative os matches e acompanhe as oportunidades no radar.",
-                },
-              ].map(({ step, title, desc }, i) => (
-                <div key={step} className="flex flex-col items-center text-center">
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-xl font-bold"
-                    style={{
-                      fontFamily: "Instrument Serif, serif",
-                      background: `${ACCENT}12`,
-                      border: `1px solid ${ACCENT}25`,
-                      color: ACCENT,
-                    }}
-                  >
-                    {step}
-                  </div>
-                  {i < 2 && (
-                    <ChevronRight
-                      className="hidden md:block absolute translate-x-full mt-[-2.5rem]"
-                      style={{ color: BORDER, position: "relative" }}
-                    />
-                  )}
-                  <h3 className="font-semibold text-white mb-2">{title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{desc}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* ══════════════════════════════════════════════════════
-              HONESTY BLOCK — transparência
-          ══════════════════════════════════════════════════════ */}
-          <section style={{ borderTop: `1px solid ${BORDER}` }}>
-            <div className="container mx-auto px-6 py-20 max-w-3xl">
-              <div
-                className="rounded-2xl p-8 lg:p-10"
-                style={{ background: CARD_BG, border: `1px solid ${BORDER}` }}
-              >
-                <p className="text-xs font-bold uppercase tracking-widest mb-6" style={{ color: `${GOLD}90` }}>
-                  Transparência total
-                </p>
-                <h2
-                  className="text-2xl lg:text-3xl text-white mb-5"
-                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
-                >
-                  O que você precisa saber antes de entrar
-                </h2>
-                <div className="flex flex-col gap-4 text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.60)" }}>
-                  <p>
-                    A ImobMatch está em fase de lançamento. A plataforma existe, está funcionando e já tem corretores usando — mas ainda é cedo. Haverá bugs, ajustes e melhorias frequentes.
-                  </p>
-                  <p>
-                    A lista de Membros Fundadores é para corretores que querem entrar primeiro, aceitar imperfeições iniciais e crescer junto com o produto. Em troca, você ganha condições que nunca mais serão oferecidas depois do lançamento público.
-                  </p>
-                  <p>
-                    Não prometemos milagres nem resultados garantidos. O que prometemos é uma ferramenta séria, suporte ativo e um time comprometido em construir algo que realmente funcione para o corretor brasileiro.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ══════════════════════════════════════════════════════
-              CTA FINAL
-          ══════════════════════════════════════════════════════ */}
-          <section style={{ borderTop: `1px solid ${BORDER}` }}>
-            <div className="container mx-auto px-6 py-20 lg:py-28">
-              <div className="max-w-xl mx-auto text-center mb-10">
-                <h2
-                  className="text-3xl lg:text-4xl text-white mb-4"
-                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
-                >
-                  Pronto para garantir sua vaga?
-                </h2>
-                <p className="text-base" style={{ color: MUTED }}>
-                  As vagas de Membro Fundador são limitadas e serão encerradas sem aviso prévio.
+          {/* Coluna direita — formulário */}
+          <div className="lv-hero-right" ref={heroRightRef}>
+            <div className="lv-form-card">
+              <div className="lv-form-header">
+                <p className="lv-form-eyebrow">✦ Vaga de Fundador</p>
+                <h2 className="lv-form-title">Quero ser membro fundador</h2>
+                <p className="lv-form-subtitle">
+                  Estamos nos primeiros dias. Quem entra agora ajuda a construir — e ganha vantagens permanentes.
                 </p>
               </div>
 
-              <div className="max-w-md mx-auto">
-                <div
-                  className="rounded-2xl p-8"
-                  style={{
-                    background: CARD_BG,
-                    border: `1px solid ${ACCENT}25`,
-                    boxShadow: `0 0 80px ${ACCENT}0a`,
-                  }}
-                >
-                  <SignupForm id="form-cta" />
+              {/* Contador real */}
+              <div className="lv-founder-counter">
+                <div className="lv-fc-left">
+                  <div className="lv-fc-dot" />
+                  <span className="lv-fc-text">
+                    Fundadores confirmados:{" "}
+                    <span className="lv-fc-count">
+                      {count === null
+                        ? <span style={{ display: "inline-block", width: 28, height: 14, borderRadius: 4, background: "rgba(200,240,74,0.2)", verticalAlign: "middle" }} />
+                        : displayed.toLocaleString("pt-BR")
+                      }
+                    </span>
+                  </span>
                 </div>
+                <span className="lv-fc-badge">Atualizado agora</span>
               </div>
-            </div>
-          </section>
 
-          {/* ══════════════════════════════════════════════════════
-              FOOTER
-          ══════════════════════════════════════════════════════ */}
-          <footer style={{ borderTop: `1px solid ${BORDER}` }}>
-            <div className="container mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <Link href="/" className="transition-opacity hover:opacity-70">
-                <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-4 w-auto object-contain" />
-              </Link>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.22)" }}>
-                © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados
-              </p>
-              <div className="flex items-center gap-4 text-xs" style={{ color: "rgba(255,255,255,0.30)" }}>
-                <Link href="/imoveis" className="hover:text-white transition-colors">Ver imóveis</Link>
-                <Link href="/login" className="hover:text-white transition-colors">Entrar</Link>
+              <FounderForm />
+            </div>
+          </div>
+        </section>
+
+        {/* ── BENEFÍCIOS ────────────────────────────────────── */}
+        <section className="lv-section lv-fade">
+          <p className="lv-section-label">Por que entrar agora</p>
+          <h2>O que significa ser um membro fundador</h2>
+          <p>Entrar agora não é apenas ter acesso antecipado. É fazer parte da construção de algo que o mercado imobiliário brasileiro ainda não tem.</p>
+
+          <div className="lv-benefits-grid">
+            {[
+              { n: "01", title: "Acesso permanentemente gratuito", desc: "Fundadores nunca pagam pelo plano básico, independente de quando o ImobMatch lançar planos pagos. Isso é para sempre." },
+              { n: "02", title: "Perfil com selo Fundador", desc: "Seu perfil dentro da rede vai ter o selo de membro fundador — um diferencial de credibilidade para outros corretores da plataforma." },
+              { n: "03", title: "Voz no desenvolvimento", desc: "Fundadores têm canal direto para sugerir funcionalidades. As próximas features serão moldadas por quem está desde o começo." },
+              { n: "04", title: "Primeiros matches da rede", desc: "Conforme a rede cresce, os fundadores são os primeiros a receber cruzamentos — seus imóveis e compradores no topo da fila." },
+              { n: "05", title: "Prioridade no suporte", desc: "Acesso direto ao fundador da plataforma para dúvidas e suporte. Sem fila, sem chatbot." },
+              { n: "06", title: "Vagas limitadas", desc: "O status de fundador é exclusivo para os primeiros membros. Quando encerrarmos esta fase, a entrada passa a ser como usuário comum." },
+            ].map(({ n, title, desc }) => (
+              <div key={n} className="lv-benefit-item">
+                <div className="lv-benefit-num">{n}</div>
+                <div className="lv-benefit-title">{title}</div>
+                <div className="lv-benefit-desc">{desc}</div>
               </div>
-            </div>
-          </footer>
+            ))}
+          </div>
+        </section>
 
+        {/* ── COMO FUNCIONA ─────────────────────────────────── */}
+        <section className="lv-how-section lv-fade">
+          <p className="lv-section-label">Como funciona</p>
+          <h2>Do cadastro ao primeiro negócio</h2>
+          <p>Simples por design. Sem curva de aprendizado.</p>
+
+          <div className="lv-steps-grid">
+            <div className="lv-step">
+              <div className="lv-step-num">01</div>
+              <div className="lv-step-title">Garanta sua vaga de fundador</div>
+              <div className="lv-step-desc">Preencha o formulário acima. Você entra na fila prioritária e recebe o acesso assim que abrimos sua região.</div>
+              <div className="lv-step-connector">→</div>
+            </div>
+            <div className="lv-step">
+              <div className="lv-step-num">02</div>
+              <div className="lv-step-title">Configure seu perfil</div>
+              <div className="lv-step-desc">Cadastre seus imóveis e compradores. A plataforma organiza tudo — região, tipo, faixa de preço, perfil do comprador.</div>
+              <div className="lv-step-connector">→</div>
+            </div>
+            <div className="lv-step">
+              <div className="lv-step-num">03</div>
+              <div className="lv-step-title">Receba os matches</div>
+              <div className="lv-step-desc">O sistema cruza seus dados com os de outros corretores da rede. Quando houver compatibilidade, você recebe a oportunidade.</div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── HONESTIDADE ───────────────────────────────────── */}
+        <div className="lv-honesty lv-fade">
+          <div className="lv-honesty-inner">
+            <div className="lv-honesty-left">
+              Uma palavra honesta sobre o momento atual.
+            </div>
+            <div className="lv-honesty-right">
+              <p>O ImobMatch foi lançado há poucos dias. A rede ainda é pequena — e isso é exatamente o ponto. <strong>Um sistema de match só gera valor quando tem massa crítica.</strong></p>
+              <p>Estamos construindo essa massa agora, começando pelo maior grupo de corretores do Brasil. Cada fundador que entra aumenta o valor para todos os outros.</p>
+              <p>Se você quer estar presente quando a rede atingir escala — e garantir que seu perfil esteja posicionado desde o início — <strong>o momento é agora.</strong></p>
+            </div>
+          </div>
         </div>
+
+        {/* ── CTA FINAL ─────────────────────────────────────── */}
+        <section className="lv-cta lv-fade">
+          <h2>Sua concorrência ainda<br />não sabe que isso existe.</h2>
+          <p>Enquanto você lê isso, a janela de fundador ainda está aberta. Não por muito tempo.</p>
+          <button className="lv-btn-cta" onClick={scrollToForm}>
+            Garantir minha vaga de fundador →
+          </button>
+        </section>
+
+        {/* ── FOOTER ────────────────────────────────────────── */}
+        <footer className="lv-footer">
+          <Link href="/" className="lv-logo">
+            <img src="/logo_texto_branco.png" alt="ImobMatch" />
+          </Link>
+          <p>© {new Date().getFullYear()} ImobMatch · Todos os direitos reservados · Seus dados são protegidos</p>
+          <div className="lv-footer-links">
+            <Link href="/imoveis">Ver imóveis</Link>
+            <Link href="/login">Entrar</Link>
+          </div>
+        </footer>
       </div>
     </>
   );
