@@ -4,872 +4,558 @@ import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import Link from "next/link";
 import {
-  CheckCircle2, AlertCircle, ArrowRight, Lock,
-  Users, HelpingHand, TrendingUp, Search, Star,
-  ChevronRight, Shield, Zap, Flame, Target,
+  CheckCircle2, AlertCircle, ArrowRight, Users,
+  Zap, Shield, TrendingUp, Clock, Star, ChevronRight,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { maskPhone } from "@/lib/masks";
-import { MatchRadar } from "@/components/dashboard/MatchRadar";
 
-// ── Contador de visitantes únicos (por IP) ────────────────────────────────────
-function VisitCounter() {
+/* ─── Paleta ────────────────────────────────────────────── */
+const BG       = "#07070d";
+const CARD_BG  = "#0e0e18";
+const BORDER   = "rgba(255,255,255,0.08)";
+const ACCENT   = "#c8f04a";    // lime ácido
+const GOLD     = "#e8c96a";    // dourado suave
+const MUTED    = "rgba(255,255,255,0.40)";
+
+/* ─── Fontes Google (injetadas via <style>) ─────────────────*/
+const FONT_STYLE = `
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+`;
+
+/* ─── Contagem real de membros ──────────────────────────── */
+function MemberCount({ onLoad }: { onLoad?: (n: number) => void }) {
   const [count, setCount] = useState<number | null>(null);
   const [displayed, setDisplayed] = useState(0);
-  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setFailed(true), 6000);
-
-    api.post("/visits/track")
+    api.get("/early-access/count")
       .then((res) => {
-        clearTimeout(timeout);
-        const total = typeof res.data === "number" ? res.data : (res.data?.uniqueVisitors ?? 0);
-        setCount(total);
+        const n = typeof res.data === "number" ? res.data : Number(res.data ?? 0);
+        setCount(n);
+        onLoad?.(n);
       })
-      .catch(() => {
-        api.get("/visits/count")
-          .then((res) => {
-            clearTimeout(timeout);
-            const total = typeof res.data === "number" ? res.data : (res.data?.uniqueVisitors ?? 0);
-            setCount(total);
-          })
-          .catch(() => { clearTimeout(timeout); setFailed(true); });
-      });
-
-    return () => clearTimeout(timeout);
+      .catch(() => setCount(0));
   }, []);
 
-  // Animação de contagem
   useEffect(() => {
     if (count === null) return;
-    let start = 0;
-    const duration = 1200;
-    const step = Math.max(1, Math.ceil(count / (duration / 16)));
+    let cur = 0;
+    const step = Math.max(1, Math.ceil(count / 60));
     const timer = setInterval(() => {
-      start += step;
-      if (start >= count) { setDisplayed(count); clearInterval(timer); }
-      else setDisplayed(start);
+      cur = Math.min(cur + step, count);
+      setDisplayed(cur);
+      if (cur >= count) clearInterval(timer);
     }, 16);
     return () => clearInterval(timer);
   }, [count]);
 
-  if (failed) return null;
-  if (count === null) return (
-    <div className="flex items-center gap-2 mb-5 h-8">
-      <div className="w-32 h-5 rounded-full animate-pulse" style={{ background: "rgba(255,255,255,0.07)" }} />
-    </div>
-  );
+  if (count === null)
+    return <span className="inline-block w-8 h-4 rounded animate-pulse" style={{ background: "rgba(200,240,74,0.2)" }} />;
 
-  return (
-    <div
-      className="flex items-center gap-2.5 rounded-full px-4 py-2 mb-5 w-fit"
-      style={{
-        background: "rgba(16,185,129,0.10)",
-        border: "1px solid rgba(16,185,129,0.25)",
-      }}
-    >
-      <span className="flex -space-x-1.5">
-        {[...Array(3)].map((_, i) => (
-          <span
-            key={i}
-            className="w-5 h-5 rounded-full border-2 border-[#0b1437] bg-gradient-to-br from-violet-400 to-blue-500 flex-shrink-0"
-          />
-        ))}
-      </span>
-      <span className="text-emerald-400 text-xs font-semibold">
-        <span className="font-extrabold text-white">{displayed.toLocaleString("pt-BR")}</span> pessoas já visitaram esta página
-      </span>
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-    </div>
-  );
+  return <span>{displayed.toLocaleString("pt-BR")}</span>;
 }
 
+/* ─── Schema do formulário ──────────────────────────────── */
 const schema = z.object({
   fullName: z.string().min(2, "Nome obrigatório"),
   email:    z.string().email("E-mail inválido"),
   whatsapp: z.string().optional(),
 });
-
 type FormData = z.infer<typeof schema>;
 
-// ── Métricas ──────────────────────────────────────────────────────────────────
-const STATS = [
-  { value: "Gratuito",  label: "Sem cartão de crédito" },
-  { value: "R$ 48M+",  label: "Potencial estimado" },
-  { value: "1 semana", label: "Primeiros matches" },
-  { value: "100%",     label: "Focado em corretores" },
-];
+/* ─── Formulário de cadastro ────────────────────────────── */
+function SignupForm({ id = "form-hero" }: { id?: string }) {
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "duplicate" | "error">("idle");
+  const {
+    register, handleSubmit, setValue, watch,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-// ── Depoimentos ───────────────────────────────────────────────────────────────
-const TESTIMONIALS = [
-  {
-    name: "Carlos Mendonça",
-    role: "Corretor · São Paulo / SP",
-    text: "Em 3 semanas já tinha fechado uma parceria que me rendeu R$ 14 mil. Nunca achei que seria tão direto.",
-    stars: 5,
-  },
-  {
-    name: "Patrícia Lemos",
-    role: "Corretora · Campinas / SP",
-    text: "Eu tinha imóveis parados há meses. Na primeira semana na plataforma apareceu um comprador perfeito via match.",
-    stars: 5,
-  },
-  {
-    name: "Rodrigo Faria",
-    role: "Corretor · Belo Horizonte / MG",
-    text: "Finalmente uma ferramenta feita para quem é corretor de verdade. Simples, prática e que entrega resultado.",
-    stars: 5,
-  },
-];
-
-// ── Formulário de cadastro ────────────────────────────────────────────────────
-function SignupForm() {
-  const [submitted, setSubmitted] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
-
-  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+  const whatsappVal = watch("whatsapp") ?? "";
 
   async function onSubmit(data: FormData) {
-    setServerError(null);
+    setStatus("loading");
     try {
-      await api.post("/early-access", {
-        fullName: data.fullName,
-        email:    data.email,
-        whatsapp: data.whatsapp || undefined,
-        source:   "facebook_group",
-      });
-      setSubmitted(true);
+      await api.post("/early-access", { ...data, source: "facebook_group" });
+      setStatus("success");
     } catch (err: any) {
       const msg: string = err?.response?.data?.message ?? "";
-      if (msg.toLowerCase().includes("já está")) {
-        setServerError("Este e-mail já está na nossa lista! Fique de olho no inbox.");
-      } else {
-        setServerError("Ocorreu um erro. Tente novamente em instantes.");
-      }
+      setStatus(msg.toLowerCase().includes("já") ? "duplicate" : "error");
     }
   }
 
-  if (submitted) {
+  if (status === "success") {
     return (
-      <div className="text-center py-8">
-        <div
-          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5"
-          style={{ background: "rgba(16,185,129,0.15)" }}
-        >
-          <CheckCircle2 className="h-8 w-8 text-emerald-400" />
-        </div>
-        <h3 className="text-xl font-bold text-white mb-2">Você está na lista!</h3>
-        <p className="text-white/45 text-sm leading-relaxed mb-6">
-          Seu cadastro foi confirmado. Estamos liberando as vagas gradualmente
-          para garantir a qualidade da experiência. Fique de olho no seu e-mail.
+      <div
+        className="rounded-2xl p-8 text-center"
+        style={{ background: CARD_BG, border: `1px solid ${ACCENT}33` }}
+      >
+        <CheckCircle2 className="h-12 w-12 mx-auto mb-4" style={{ color: ACCENT }} />
+        <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "Instrument Serif, serif" }}>
+          Você está na lista!
+        </h3>
+        <p style={{ color: MUTED, fontSize: 14, lineHeight: 1.6 }}>
+          Entraremos em contato assim que sua vaga for liberada.<br />
+          Fique de olho no e-mail e WhatsApp.
         </p>
-        <div
-          className="rounded-xl p-4 text-left border"
-          style={{
-            background: "rgba(16,185,129,0.08)",
-            borderColor: "rgba(16,185,129,0.20)",
-          }}
-        >
-          <p className="text-sm font-semibold text-emerald-400 mb-2">Próximos passos:</p>
-          <ul className="space-y-2">
-            {[
-              "Verifique seu e-mail (incluindo a pasta de spam)",
-              "Aguarde o link de acesso exclusivo",
-              "Convide outros corretores do grupo",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2 text-sm text-emerald-300/70">
-                <ChevronRight className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     );
   }
 
-  return (
-    <>
-      <VisitCounter />
+  const inputClass = "w-full px-4 h-12 rounded-xl text-sm text-white placeholder-white/25 focus:outline-none transition-colors";
+  const inputStyle = { background: "rgba(255,255,255,0.06)", border: `1px solid ${BORDER}` };
+  const inputFocusStyle = { ...inputStyle, border: `1px solid ${ACCENT}55` };
 
-      <div className="mb-5">
-        <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-1">
-          Acesso exclusivo · Grupo Negócios Imobiliários
-        </p>
-        <h3 className="text-xl font-bold text-white">Garantir minha vaga grátis</h3>
-        <p className="text-sm text-white/35 mt-1">Sem cartão de crédito. Sem compromisso.</p>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} id={id} className="flex flex-col gap-3">
+      <div>
+        <input
+          {...register("fullName")}
+          placeholder="Seu nome completo"
+          className={inputClass}
+          style={inputStyle}
+          onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+          onBlur={e => Object.assign(e.target.style, inputStyle)}
+        />
+        {errors.fullName && (
+          <p className="text-xs mt-1" style={{ color: "#f87171" }}>{errors.fullName.message}</p>
+        )}
       </div>
 
-      {serverError && (
-        <div
-          className="flex items-start gap-2.5 rounded-xl px-4 py-3 mb-4 text-sm border"
-          style={{
-            background: "rgba(239,68,68,0.08)",
-            borderColor: "rgba(239,68,68,0.25)",
-            color: "#f87171",
-          }}
-        >
-          <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          {serverError}
+      <div>
+        <input
+          {...register("email")}
+          type="email"
+          placeholder="Seu melhor e-mail"
+          className={inputClass}
+          style={inputStyle}
+          onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+          onBlur={e => Object.assign(e.target.style, inputStyle)}
+        />
+        {errors.email && (
+          <p className="text-xs mt-1" style={{ color: "#f87171" }}>{errors.email.message}</p>
+        )}
+      </div>
+
+      <div>
+        <input
+          {...register("whatsapp")}
+          placeholder="WhatsApp (opcional)"
+          className={inputClass}
+          style={inputStyle}
+          value={whatsappVal}
+          onChange={e => setValue("whatsapp", maskPhone(e.target.value))}
+          onFocus={e => Object.assign(e.target.style, inputFocusStyle)}
+          onBlur={e => Object.assign(e.target.style, inputStyle)}
+        />
+      </div>
+
+      {status === "duplicate" && (
+        <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", color: "#fbbf24" }}>
+          <AlertCircle className="h-4 w-4 flex-shrink-0" />
+          Este e-mail já está na lista. Aguarde o contato.
+        </div>
+      )}
+      {status === "error" && (
+        <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.18)", color: "#f87171" }}>
+          <AlertCircle className="h-4 w-4 flex-shrink-0" />
+          Algo deu errado. Tente novamente.
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
-        <div>
-          <label className="block text-xs font-medium text-white/45 mb-1.5">
-            Nome completo <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="João Silva"
-            {...register("fullName")}
-            className="w-full h-11 px-4 rounded-xl text-sm text-white placeholder-white/25 border transition-colors focus:outline-none"
-            style={{
-              background: errors.fullName ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.07)",
-              borderColor: errors.fullName ? "rgba(239,68,68,0.40)" : "rgba(255,255,255,0.12)",
-            }}
-          />
-          {errors.fullName && (
-            <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" /> {errors.fullName.message}
-            </p>
-          )}
-        </div>
+      <button
+        type="submit"
+        disabled={status === "loading"}
+        className="w-full h-12 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
+        style={{
+          background: status === "loading" ? "rgba(200,240,74,0.5)" : ACCENT,
+          color: "#07070d",
+          opacity: status === "loading" ? 0.7 : 1,
+        }}
+      >
+        {status === "loading" ? "Enviando..." : (
+          <>Garantir minha vaga como Membro Fundador <ArrowRight className="h-4 w-4" /></>
+        )}
+      </button>
 
-        <div>
-          <label className="block text-xs font-medium text-white/45 mb-1.5">
-            E-mail <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="email"
-            placeholder="joao@email.com"
-            {...register("email")}
-            className="w-full h-11 px-4 rounded-xl text-sm text-white placeholder-white/25 border transition-colors focus:outline-none"
-            style={{
-              background: errors.email ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.07)",
-              borderColor: errors.email ? "rgba(239,68,68,0.40)" : "rgba(255,255,255,0.12)",
-            }}
-          />
-          {errors.email && (
-            <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" /> {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-white/45 mb-1.5">
-            WhatsApp{" "}
-            <span className="text-white/25 font-normal">(opcional — para contato prioritário)</span>
-          </label>
-          <input
-            type="tel"
-            placeholder="(11) 99999-9999"
-            {...register("whatsapp")}
-            onChange={(e) => setValue("whatsapp", maskPhone(e.target.value))}
-            className="w-full h-11 px-4 rounded-xl text-sm text-white placeholder-white/25 border transition-colors focus:outline-none"
-            style={{
-              background: "rgba(255,255,255,0.07)",
-              borderColor: "rgba(255,255,255,0.12)",
-            }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full h-12 text-white font-semibold rounded-xl transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[15px] mt-1"
-          style={{
-            background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
-            boxShadow: isSubmitting ? "none" : "0 4px 20px rgba(37,99,235,0.30)",
-          }}
-        >
-          {isSubmitting ? (
-            <>
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-              Enviando...
-            </>
-          ) : (
-            <>
-              Quero acesso antecipado gratuito
-              <ArrowRight className="h-4 w-4" />
-            </>
-          )}
-        </button>
-      </form>
-
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-white/25">
-        <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> 100% gratuito</span>
-        <span className="w-px h-3 bg-white/10" />
-        <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> Dados protegidos</span>
-        <span className="w-px h-3 bg-white/10" />
-        <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Sem spam</span>
-      </div>
-    </>
+      <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.22)" }}>
+        100% gratuito · Sem cartão de crédito · Acesso antecipado
+      </p>
+    </form>
   );
 }
 
-// ── Dashboard preview (demo) ──────────────────────────────────────────────────
-const DEMO_RADAR_STATS = {
-  networkPropertiesCount: 5,
-  networkBuyersCount: 5,
-  matchesCount: 3,
-  myOpportunities: [{}, {}, {}] as any[],
-};
-
-const DEMO_MATCHES = [
-  { buyer: "Ana Pereira",   buyerInitials: "AP", buyerColor: "#2563eb", property: "Apto 2q · Pinheiros",    city: "São Paulo / SP",  score: 97 },
-  { buyer: "Marcos Santos", buyerInitials: "MS", buyerColor: "#7c3aed", property: "Casa c/ quintal",         city: "Campinas / SP",   score: 94 },
-  { buyer: "Roberto Lima",  buyerInitials: "RL", buyerColor: "#059669", property: "Casa em condo. · Tamboré", city: "Alphaville / SP", score: 98 },
-];
-
-const DEMO_OPPS = [
-  { title: "Casa Jardins",       city: "São Paulo / SP", priceNormal: 1200000, priceUrgent: 980000  },
-  { title: "Apto Vila Madalena", city: "São Paulo / SP", priceNormal: 620000,  priceUrgent: 520000  },
-  { title: "Cobertura Moema",    city: "São Paulo / SP", priceNormal: 2100000, priceUrgent: 1720000 },
-];
-
-function fmtBRL(v: number) {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(v);
-}
-
-function DashboardPreview() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [radarSize, setRadarSize] = useState(500);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      setRadarSize(Math.min(500, Math.floor(entry.contentRect.width) - 8));
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  return (
-    <section
-      className="py-16 md:py-24 border-y"
-      style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.015)" }}
-    >
-      <div className="max-w-6xl mx-auto px-5 sm:px-6">
-
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-4 text-xs font-semibold uppercase tracking-widest"
-            style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.25)", color: "#34d399" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Prévia ao vivo
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight mb-3">
-            Veja o que acontece dentro da plataforma
-          </h2>
-          <p className="text-white/40 text-sm max-w-lg mx-auto leading-relaxed">
-            O radar varre a rede em tempo real — cruzando compradores, imóveis e oportunidades
-            de todos os corretores conectados.
-          </p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-          {[
-            { value: "48",  label: "Compradores ativos",     color: "#60a5fa" },
-            { value: "312", label: "Imóveis na rede",        color: "#a78bfa" },
-            { value: "23",  label: "Matches hoje",           color: "#34d399" },
-            { value: "7",   label: "Oportunidades urgentes", color: "#fb923c" },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="rounded-xl p-4 text-center border"
-              style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.07)" }}
-            >
-              <p className="text-2xl font-extrabold" style={{ color: s.color }}>{s.value}</p>
-              <p className="text-[11px] text-white/35 mt-0.5 leading-tight">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Main panel: Radar + Cards */}
-        <div className="grid lg:grid-cols-[1fr_310px] gap-5 items-stretch">
-
-          {/* Radar card */}
-          <div
-            className="rounded-2xl border overflow-hidden flex flex-col"
-            style={{
-              background: "rgba(8,14,36,0.70)",
-              borderColor: "rgba(99,102,241,0.18)",
-              boxShadow: "0 0 48px rgba(99,102,241,0.10), inset 0 1px 0 rgba(255,255,255,0.05)",
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            {/* Card header */}
-            <div
-              className="px-5 py-3.5 flex items-center justify-between"
-              style={{ borderBottom: "1px solid rgba(99,102,241,0.14)", background: "rgba(99,102,241,0.07)" }}
-            >
-              <div className="flex items-center gap-2.5">
-                <Target className="h-4 w-4 text-indigo-400" />
-                <span className="text-sm font-bold text-white/85">Radar da Rede ImobMatch</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-emerald-400 font-semibold">Ao vivo</span>
-              </div>
-            </div>
-
-            {/* Radar canvas */}
-            <div className="p-5 flex flex-1 items-center justify-center relative" ref={containerRef}>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div
-                  className="w-72 h-72 rounded-full"
-                  style={{ background: "radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%)" }}
-                />
-              </div>
-              <MatchRadar stats={DEMO_RADAR_STATS} size={radarSize} />
-            </div>
-
-            {/* Card footer */}
-            <div
-              className="px-5 py-3 flex flex-wrap items-center justify-between gap-2"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
-            >
-              <p className="text-[11px] text-white/25">Varredura contínua da rede</p>
-              <div className="flex items-center gap-3 text-[10px] text-white/20">
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 opacity-70 inline-block" />
-                  5 imóveis
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-violet-400 opacity-70 inline-block" />
-                  5 compradores
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 opacity-70 inline-block" />
-                  3 matches
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400 opacity-70 inline-block" />
-                  3 oport.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right column: Matches + Opportunities */}
-          <div className="flex flex-col gap-4">
-
-            {/* Matches card */}
-            <div
-              className="rounded-2xl border overflow-hidden"
-              style={{
-                background: "rgba(5,150,105,0.05)",
-                borderColor: "rgba(5,150,105,0.22)",
-                boxShadow: "0 0 24px rgba(5,150,105,0.06)",
-              }}
-            >
-              <div
-                className="px-4 py-3 flex items-center justify-between"
-                style={{ background: "rgba(5,150,105,0.09)", borderBottom: "1px solid rgba(5,150,105,0.15)" }}
-              >
-                <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Últimos matches</span>
-                <span className="text-[10px] text-emerald-400/50 font-medium">pela rede</span>
-              </div>
-              {DEMO_MATCHES.map((m, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 px-4 py-3"
-                  style={{ borderBottom: i < DEMO_MATCHES.length - 1 ? "1px solid rgba(255,255,255,0.05)" : undefined }}
-                >
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                    style={{ background: m.buyerColor }}
-                  >
-                    {m.buyerInitials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-white/75 truncate">{m.buyer}</p>
-                    <p className="text-[10px] text-white/35 truncate">{m.property}</p>
-                    <p className="text-[10px] text-white/22 truncate">{m.city}</p>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-extrabold text-emerald-400">{m.score}%</p>
-                    <p className="text-[9px] text-white/30">compat.</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Opportunities card */}
-            <div
-              className="rounded-2xl border overflow-hidden"
-              style={{
-                background: "rgba(234,88,12,0.05)",
-                borderColor: "rgba(234,88,12,0.22)",
-                boxShadow: "0 0 24px rgba(234,88,12,0.06)",
-              }}
-            >
-              <div
-                className="px-4 py-3 flex items-center gap-2"
-                style={{ background: "rgba(234,88,12,0.09)", borderBottom: "1px solid rgba(234,88,12,0.15)" }}
-              >
-                <Flame className="h-3.5 w-3.5 text-orange-400" />
-                <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">Oportunidades urgentes</span>
-              </div>
-              {DEMO_OPPS.map((o, i) => {
-                const pct  = Math.round((1 - o.priceUrgent / o.priceNormal) * 100);
-                const save = o.priceNormal - o.priceUrgent;
-                return (
-                  <div
-                    key={i}
-                    className="px-4 py-3"
-                    style={{ borderBottom: i < DEMO_OPPS.length - 1 ? "1px solid rgba(255,255,255,0.05)" : undefined }}
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className="text-xs font-bold text-white/80 leading-tight">{o.title}</p>
-                      <span
-                        className="text-[10px] font-black text-white px-1.5 py-0.5 rounded-full flex-shrink-0"
-                        style={{ background: "#dc2626" }}
-                      >
-                        −{pct}%
-                      </span>
-                    </div>
-                    <p className="text-[10px] text-white/30 mb-1.5">{o.city}</p>
-                    <p className="text-[10px] text-white/25 line-through">{fmtBRL(o.priceNormal)}</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-extrabold text-white/82">{fmtBRL(o.priceUrgent)}</p>
-                      <p className="text-[10px] text-orange-400 font-semibold">−{fmtBRL(save)}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-          </div>
-        </div>
-
-        {/* Disclaimer */}
-        <p className="text-center text-[11px] text-white/20 mt-8 italic">
-          * Dados ilustrativos. Cadastre-se para ver os matches e oportunidades da Rede ImobMatch.
-        </p>
-      </div>
-    </section>
-  );
-}
-
-// ── Página principal ──────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════
+   PAGE
+═══════════════════════════════════════════════════════════ */
 export default function ListaVipPage() {
+  const [memberCount, setMemberCount] = useState<number | null>(null);
+
   return (
     <>
-      <title>Acesso Antecipado Exclusivo · ImobMatch</title>
-      <meta name="description" content="Plataforma de matches e parcerias para corretores. Garanta seu acesso exclusivo antecipado." />
+      <style>{FONT_STYLE}</style>
 
-      <div
-        className="min-h-screen font-sans"
-        style={{ background: "linear-gradient(160deg, #060c1a 0%, #0a1228 60%, #080e1f 100%)" }}
-      >
+      <div style={{ background: BG, minHeight: "100vh", fontFamily: "DM Sans, sans-serif" }}>
 
-        {/* ── HERO ──────────────────────────────────────────────────────────── */}
-        <section
-          className="relative overflow-hidden"
-          style={{ background: "linear-gradient(160deg,#0b1437 0%,#0f1d5e 40%,#1a0f5c 70%,#2e0f6e 100%)" }}
+        {/* ── Ambient glows ─────────────────────────────────── */}
+        <div className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 0 }}>
+          <div style={{
+            position: "absolute", top: "-10%", left: "60%",
+            width: 600, height: 600, borderRadius: "50%",
+            background: `radial-gradient(circle, ${ACCENT}0a 0%, transparent 65%)`,
+            filter: "blur(60px)",
+          }} />
+          <div style={{
+            position: "absolute", top: "40%", left: "-10%",
+            width: 500, height: 500, borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%)",
+            filter: "blur(60px)",
+          }} />
+        </div>
+
+        {/* ══════════════════════════════════════════════════════
+            NAVBAR
+        ══════════════════════════════════════════════════════ */}
+        <nav
+          className="sticky top-0 z-40"
+          style={{
+            background: "rgba(7,7,13,0.85)",
+            backdropFilter: "blur(16px)",
+            borderBottom: `1px solid ${BORDER}`,
+          }}
         >
-          {/* Imagem de fundo hero */}
-          <div className="pointer-events-none absolute inset-0">
-            <img
-              src="/hero_lista_vip.jpg"
-              alt=""
-              className="w-full h-full object-cover object-center opacity-20"
-            />
+          <div className="container mx-auto px-6 h-14 flex items-center justify-between">
+            <Link href="/" className="transition-opacity hover:opacity-70">
+              <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto object-contain" />
+            </Link>
+            <a
+              href="#form-hero"
+              className="text-xs font-semibold px-4 py-2 rounded-lg transition-all"
+              style={{ background: `${ACCENT}18`, color: ACCENT, border: `1px solid ${ACCENT}33` }}
+            >
+              Garantir vaga
+            </a>
           </div>
+        </nav>
 
-          {/* Ambient glows */}
-          <div className="pointer-events-none absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full"
-            style={{ background: "rgba(109,40,217,0.22)", filter: "blur(120px)" }} />
-          <div className="pointer-events-none absolute bottom-0 left-0 w-96 h-96 rounded-full"
-            style={{ background: "rgba(37,99,235,0.15)", filter: "blur(100px)" }} />
+        <div className="relative z-10">
 
-          <div className="relative max-w-6xl mx-auto px-5 sm:px-6 pt-8 pb-14 md:pt-14 md:pb-24">
+          {/* ══════════════════════════════════════════════════════
+              HERO — 2 colunas
+          ══════════════════════════════════════════════════════ */}
+          <section className="container mx-auto px-6 pt-16 pb-20 lg:pt-24 lg:pb-28">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-            {/* Logo */}
-            <div className="mb-8 md:mb-12">
-              <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 md:h-6 w-auto object-contain" />
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
-
-              {/* Copy */}
+              {/* Coluna esquerda — copy */}
               <div>
-                <div className="inline-flex items-center gap-2 border border-violet-400/30 bg-violet-500/10 text-violet-300 rounded-full px-3 py-1.5 text-[11px] md:text-xs font-semibold uppercase tracking-wider mb-6 max-w-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse flex-shrink-0" />
-                  <span className="truncate">Acesso exclusivo · Grupo Negócios Imobiliários</span>
+                {/* Badge */}
+                <div
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold mb-8"
+                  style={{ background: `${ACCENT}12`, border: `1px solid ${ACCENT}30`, color: ACCENT }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
+                  Acesso antecipado —&nbsp;
+                  <MemberCount onLoad={setMemberCount} />
+                  &nbsp;membros na fila
                 </div>
 
-                <h1 className="text-[2rem] sm:text-4xl md:text-[3.2rem] font-extrabold text-white leading-[1.08] tracking-tight mb-5">
-                  Pare de trabalhar sozinho.<br />
-                  <span className="text-transparent bg-clip-text"
-                    style={{ backgroundImage: "linear-gradient(90deg,#60a5fa,#a78bfa)" }}>
-                    A rede fecha por você.
-                  </span>
+                {/* Headline */}
+                <h1
+                  className="text-4xl lg:text-5xl xl:text-[3.4rem] leading-tight text-white mb-6"
+                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
+                >
+                  Seja um dos primeiros<br />
+                  <em style={{ color: ACCENT, fontStyle: "italic" }}>Membros Fundadores</em><br />
+                  da ImobMatch
                 </h1>
 
-                <p className="text-white/60 text-base md:text-lg leading-relaxed mb-7 max-w-md">
-                  Conecte seus imóveis e compradores à maior rede colaborativa de corretores.
-                  Matches automáticos, parcerias confiáveis e mais negócios — sem prospectar no escuro.
+                {/* Sub */}
+                <p className="text-base lg:text-lg leading-relaxed mb-10" style={{ color: MUTED, maxWidth: 480 }}>
+                  A plataforma que conecta corretores a compradores qualificados via inteligência artificial —
+                  antes mesmo do lançamento público. Garanta condições exclusivas que não existirão depois.
                 </p>
 
-                <ul className="space-y-3 mb-10">
+                {/* Lista de benefícios rápidos */}
+                <ul className="flex flex-col gap-3 mb-10">
                   {[
-                    "Tem cliente mas não acha o imóvel certo?",
-                    "Tem imóvel mas não encontra o comprador ideal?",
-                    "Dificuldade de fechar parcerias confiáveis?",
-                  ].map((pain) => (
-                    <li key={pain} className="flex items-center gap-3 text-white/70 text-sm">
-                      <span className="w-5 h-5 rounded-full bg-red-500/20 border border-red-400/30 flex items-center justify-center flex-shrink-0 text-red-400 text-xs font-bold">✕</span>
-                      {pain}
+                    "Acesso vitalício ao plano Fundador com desconto permanente",
+                    "Matches automáticos com compradores qualificados na sua região",
+                    "Radar de oportunidades da rede em tempo real",
+                    "Badge exclusivo de Membro Fundador no perfil",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm" style={{ color: "rgba(255,255,255,0.72)" }}>
+                      <CheckCircle2 className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: ACCENT }} />
+                      {item}
                     </li>
                   ))}
                 </ul>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {STATS.map((s) => (
-                    <div key={s.label} className="text-center">
-                      <p className="text-2xl font-extrabold text-white">{s.value}</p>
-                      <p className="text-white/40 text-[11px] mt-0.5 leading-tight">{s.label}</p>
-                    </div>
-                  ))}
+                {/* Social proof sutil */}
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    {["from-violet-500 to-blue-500", "from-teal-500 to-cyan-500", "from-pink-500 to-rose-500", "from-amber-400 to-orange-500"].map((g, i) => (
+                      <div key={i} className={`w-8 h-8 rounded-full border-2 bg-gradient-to-br ${g} flex-shrink-0`}
+                        style={{ borderColor: BG }} />
+                    ))}
+                  </div>
+                  <p className="text-xs" style={{ color: MUTED }}>
+                    Corretores de todo o Brasil já garantiram sua vaga
+                  </p>
                 </div>
               </div>
 
-              {/* Formulário */}
+              {/* Coluna direita — formulário */}
               <div>
                 <div
-                  className="rounded-2xl p-7 md:p-8 border"
+                  className="rounded-2xl p-8"
                   style={{
-                    background: "rgba(255,255,255,0.04)",
-                    borderColor: "rgba(255,255,255,0.10)",
-                    boxShadow: "0 4px 40px rgba(0,0,0,0.50)",
-                    backdropFilter: "blur(12px)",
+                    background: CARD_BG,
+                    border: `1px solid ${BORDER}`,
+                    boxShadow: `0 0 60px ${ACCENT}08`,
                   }}
                 >
-                  <SignupForm />
+                  <div className="mb-6">
+                    <div
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3 py-1 mb-4"
+                      style={{ background: `${GOLD}15`, color: GOLD, border: `1px solid ${GOLD}25` }}
+                    >
+                      <Star className="h-3 w-3" /> Vagas limitadas
+                    </div>
+                    <h2 className="text-xl font-bold text-white mb-1" style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}>
+                      Garanta sua vaga agora
+                    </h2>
+                    <p className="text-sm" style={{ color: MUTED }}>
+                      Sem compromisso. Gratuito para membros fundadores.
+                    </p>
+                  </div>
+
+                  <SignupForm id="form-hero" />
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* ── COMO FUNCIONA ──────────────────────────────────────────────────── */}
-        <section
-          className="py-14 md:py-20 border-y"
-          style={{
-            background: "rgba(255,255,255,0.01)",
-            borderColor: "rgba(255,255,255,0.06)",
-          }}
-        >
-          <div className="max-w-5xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">Como funciona</p>
-              <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                Do cadastro ao primeiro negócio<br className="hidden sm:block" /> em poucos dias
-              </h2>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { num: "01", title: "Garanta sua vaga",       desc: "Preencha o formulário acima. Vagas limitadas — estamos liberando por ordem de cadastro.", from: "#2563eb", to: "#1d4ed8" },
-                { num: "02", title: "Receba o acesso",         desc: "Você recebe um e-mail com o link exclusivo para criar sua conta e configurar seu perfil.", from: "#7c3aed", to: "#6d28d9" },
-                { num: "03", title: "Comece a gerar negócios", desc: "Cadastre imóveis e compradores. A plataforma faz o match e conecta você com os parceiros certos.", from: "#0891b2", to: "#0e7490" },
-              ].map((step) => (
-                <div
-                  key={step.num}
-                  className="relative rounded-2xl p-7 overflow-hidden border"
-                  style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)" }}
+          {/* ══════════════════════════════════════════════════════
+              BENEFÍCIOS — 3×2 grid
+          ══════════════════════════════════════════════════════ */}
+          <section style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
+            <div className="container mx-auto px-6 py-20">
+              <div className="text-center mb-14">
+                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: `${ACCENT}90` }}>
+                  Por que entrar agora
+                </p>
+                <h2
+                  className="text-3xl lg:text-4xl text-white"
+                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
                 >
-                  <span
-                    className="text-7xl font-black leading-none select-none block mb-3"
-                    style={{ backgroundImage: `linear-gradient(135deg,${step.from},${step.to})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
-                  >
-                    {step.num}
-                  </span>
-                  <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
-                  <p className="text-sm text-white/45 leading-relaxed">{step.desc}</p>
+                  O que Membros Fundadores ganham
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: <TrendingUp className="h-5 w-5" />,
+                    title: "Desconto permanente",
+                    desc: "Membros fundadores travam o preço de lançamento para sempre. Mesmo quando os planos subirem, você não paga a mais.",
+                    color: ACCENT,
+                  },
+                  {
+                    icon: <Zap className="h-5 w-5" />,
+                    title: "Matches automáticos",
+                    desc: "A IA conecta seus imóveis a compradores com perfil compatível na rede — sem você precisar fazer nada.",
+                    color: "#818cf8",
+                  },
+                  {
+                    icon: <Users className="h-5 w-5" />,
+                    title: "Radar da Rede",
+                    desc: "Veja em tempo real quais imóveis estão com desconto, quais compradores entraram na rede e onde estão as oportunidades.",
+                    color: "#fb923c",
+                  },
+                  {
+                    icon: <Shield className="h-5 w-5" />,
+                    title: "Badge exclusivo",
+                    desc: "Seu perfil terá o selo de Membro Fundador — um diferencial visível para outros corretores e compradores da plataforma.",
+                    color: GOLD,
+                  },
+                  {
+                    icon: <Clock className="h-5 w-5" />,
+                    title: "Acesso antecipado",
+                    desc: "Você entra antes do lançamento público. Menos concorrência, mais visibilidade, primeiros a fechar negócios na rede.",
+                    color: "#34d399",
+                  },
+                  {
+                    icon: <Star className="h-5 w-5" />,
+                    title: "Voz no produto",
+                    desc: "Fundadores participam de calls diretas com o time para sugerir funcionalidades. Você ajuda a moldar a plataforma.",
+                    color: "#f472b6",
+                  },
+                ].map(({ icon, title, desc, color }) => (
                   <div
-                    className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
-                    style={{ backgroundImage: `linear-gradient(90deg,${step.from},${step.to})` }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <DashboardPreview />
-
-        {/* ── BENEFÍCIOS ─────────────────────────────────────────────────────── */}
-        <section className="py-14 md:py-20">
-          <div className="max-w-5xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">O que você ganha</p>
-              <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                Tudo que um corretor moderno precisa<br className="hidden sm:block" /> em uma só plataforma
-              </h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              {[
-                {
-                  icon: Search,
-                  title: "Match automático",
-                  desc: "Seus compradores são cruzados com imóveis da rede em tempo real. Você recebe o lead — sem esforço.",
-                  from: "#2563eb", to: "#7c3aed",
-                },
-                {
-                  icon: HelpingHand,
-                  title: "Parcerias inteligentes",
-                  desc: "Conecte-se com corretores verificados e feche negócios que sozinho você nunca fecharia.",
-                  from: "#7c3aed", to: "#a855f7",
-                },
-                {
-                  icon: TrendingUp,
-                  title: "Mais negócios, menos esforço",
-                  desc: "A rede trabalha por você 24/7. Quando acorda, já tem oportunidades esperando.",
-                  from: "#0891b2", to: "#2563eb",
-                },
-                {
-                  icon: Shield,
-                  title: "Carteira protegida",
-                  desc: "Seus clientes e imóveis ficam registrados, organizados e seguros em um só lugar.",
-                  from: "#059669", to: "#0891b2",
-                },
-              ].map(({ icon: Icon, title, desc, from, to }) => (
-                <div
-                  key={title}
-                  className="relative rounded-2xl p-6 flex items-start gap-4 overflow-hidden border hover:-translate-y-0.5 transition-transform duration-200"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    borderColor: "rgba(255,255,255,0.08)",
-                  }}
-                >
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
-                    style={{ backgroundImage: `linear-gradient(135deg,${from},${to})` }}
+                    key={title}
+                    className="rounded-2xl p-6"
+                    style={{ background: CARD_BG, border: `1px solid ${BORDER}` }}
                   >
-                    <Icon className="h-5 w-5 text-white" />
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                      style={{ background: `${color}14`, color }}
+                    >
+                      {icon}
+                    </div>
+                    <h3 className="font-semibold text-white mb-2 text-sm">{title}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{desc}</p>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-white mb-1">{title}</h3>
-                    <p className="text-sm text-white/45 leading-relaxed">{desc}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* ── DEPOIMENTOS ────────────────────────────────────────────────────── */}
-        <section
-          className="max-w-5xl mx-auto px-5 sm:px-6 py-14 md:py-20 border-t"
-          style={{ borderColor: "rgba(255,255,255,0.06)" }}
-        >
-          <div className="text-center mb-12">
-            <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">Quem já usa</p>
-            <h2 className="text-3xl font-bold text-white tracking-tight">
-              Corretores que saíram do escuro
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t) => (
-              <div
-                key={t.name}
-                className="rounded-2xl border p-6"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  borderColor: "rgba(255,255,255,0.08)",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
-                }}
+          {/* ══════════════════════════════════════════════════════
+              COMO FUNCIONA — 3 passos
+          ══════════════════════════════════════════════════════ */}
+          <section className="container mx-auto px-6 py-20">
+            <div className="text-center mb-14">
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: `${ACCENT}90` }}>
+                Simples assim
+              </p>
+              <h2
+                className="text-3xl lg:text-4xl text-white"
+                style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
               >
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: t.stars }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-white/50 leading-relaxed mb-5">"{t.text}"</p>
-                <div
-                  className="flex items-center gap-3 pt-4 border-t"
-                  style={{ borderColor: "rgba(255,255,255,0.07)" }}
-                >
+                Como funciona
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              {[
+                {
+                  step: "01",
+                  title: "Cadastre-se na lista",
+                  desc: "Preencha o formulário acima. É gratuito e leva menos de 30 segundos.",
+                },
+                {
+                  step: "02",
+                  title: "Receba o convite",
+                  desc: "Assim que sua vaga for liberada, você recebe um e-mail com acesso à plataforma.",
+                },
+                {
+                  step: "03",
+                  title: "Comece a fechar negócios",
+                  desc: "Cadastre seus imóveis, ative os matches e acompanhe as oportunidades no radar.",
+                },
+              ].map(({ step, title, desc }, i) => (
+                <div key={step} className="flex flex-col items-center text-center">
                   <div
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                    style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)" }}
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-xl font-bold"
+                    style={{
+                      fontFamily: "Instrument Serif, serif",
+                      background: `${ACCENT}12`,
+                      border: `1px solid ${ACCENT}25`,
+                      color: ACCENT,
+                    }}
                   >
-                    {t.name.charAt(0)}
+                    {step}
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white/80">{t.name}</p>
-                    <p className="text-xs text-white/35">{t.role}</p>
-                  </div>
+                  {i < 2 && (
+                    <ChevronRight
+                      className="hidden md:block absolute translate-x-full mt-[-2.5rem]"
+                      style={{ color: BORDER, position: "relative" }}
+                    />
+                  )}
+                  <h3 className="font-semibold text-white mb-2">{title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ══════════════════════════════════════════════════════
+              HONESTY BLOCK — transparência
+          ══════════════════════════════════════════════════════ */}
+          <section style={{ borderTop: `1px solid ${BORDER}` }}>
+            <div className="container mx-auto px-6 py-20 max-w-3xl">
+              <div
+                className="rounded-2xl p-8 lg:p-10"
+                style={{ background: CARD_BG, border: `1px solid ${BORDER}` }}
+              >
+                <p className="text-xs font-bold uppercase tracking-widest mb-6" style={{ color: `${GOLD}90` }}>
+                  Transparência total
+                </p>
+                <h2
+                  className="text-2xl lg:text-3xl text-white mb-5"
+                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
+                >
+                  O que você precisa saber antes de entrar
+                </h2>
+                <div className="flex flex-col gap-4 text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.60)" }}>
+                  <p>
+                    A ImobMatch está em fase de lançamento. A plataforma existe, está funcionando e já tem corretores usando — mas ainda é cedo. Haverá bugs, ajustes e melhorias frequentes.
+                  </p>
+                  <p>
+                    A lista de Membros Fundadores é para corretores que querem entrar primeiro, aceitar imperfeições iniciais e crescer junto com o produto. Em troca, você ganha condições que nunca mais serão oferecidas depois do lançamento público.
+                  </p>
+                  <p>
+                    Não prometemos milagres nem resultados garantidos. O que prometemos é uma ferramenta séria, suporte ativo e um time comprometido em construir algo que realmente funcione para o corretor brasileiro.
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── CTA FINAL ──────────────────────────────────────────────────────── */}
-        <section
-          className="relative overflow-hidden py-14 md:py-20"
-          style={{ background: "linear-gradient(135deg,#1e3a8a 0%,#4c1d95 100%)" }}
-        >
-          <div className="pointer-events-none absolute inset-0"
-            style={{ background: "radial-gradient(ellipse at center, rgba(109,40,217,0.3) 0%, transparent 70%)" }} />
-          <div className="relative max-w-xl mx-auto px-6 text-center">
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs text-white/80 font-medium mb-6">
-              <Users className="h-3.5 w-3.5" />
-              Vagas limitadas — liberação gradual
             </div>
-            <h2 className="text-2xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
-              Sua concorrência já está dentro.
-            </h2>
-            <p className="text-blue-200/70 text-base leading-relaxed mb-8">
-              Cada dia fora da rede é um negócio que você deixou para outro corretor fechar.
-              Entre agora e comece a trabalhar de forma colaborativa.
-            </p>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-8 py-3.5 rounded-xl hover:bg-blue-50 transition shadow-2xl shadow-blue-900/30 text-[15px]"
-            >
-              Garantir minha vaga agora
-              <ArrowRight className="h-4 w-4" />
-            </button>
-            <p className="text-blue-300/60 text-xs mt-4">Gratuito · Sem cartão de crédito · Cancele quando quiser</p>
-          </div>
-        </section>
+          </section>
 
-        {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
-        <footer
-          className="border-t py-7"
-          style={{
-            background: "rgba(255,255,255,0.01)",
-            borderColor: "rgba(255,255,255,0.06)",
-          }}
-        >
-          <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto object-contain opacity-30" />
-            <p className="text-xs text-white/20">
-              © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados · Seus dados são protegidos e nunca serão compartilhados.
-            </p>
-          </div>
-        </footer>
+          {/* ══════════════════════════════════════════════════════
+              CTA FINAL
+          ══════════════════════════════════════════════════════ */}
+          <section style={{ borderTop: `1px solid ${BORDER}` }}>
+            <div className="container mx-auto px-6 py-20 lg:py-28">
+              <div className="max-w-xl mx-auto text-center mb-10">
+                <h2
+                  className="text-3xl lg:text-4xl text-white mb-4"
+                  style={{ fontFamily: "Instrument Serif, serif", fontWeight: 400 }}
+                >
+                  Pronto para garantir sua vaga?
+                </h2>
+                <p className="text-base" style={{ color: MUTED }}>
+                  As vagas de Membro Fundador são limitadas e serão encerradas sem aviso prévio.
+                </p>
+              </div>
 
+              <div className="max-w-md mx-auto">
+                <div
+                  className="rounded-2xl p-8"
+                  style={{
+                    background: CARD_BG,
+                    border: `1px solid ${ACCENT}25`,
+                    boxShadow: `0 0 80px ${ACCENT}0a`,
+                  }}
+                >
+                  <SignupForm id="form-cta" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ══════════════════════════════════════════════════════
+              FOOTER
+          ══════════════════════════════════════════════════════ */}
+          <footer style={{ borderTop: `1px solid ${BORDER}` }}>
+            <div className="container mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <Link href="/" className="transition-opacity hover:opacity-70">
+                <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-4 w-auto object-contain" />
+              </Link>
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.22)" }}>
+                © {new Date().getFullYear()} ImobMatch · Todos os direitos reservados
+              </p>
+              <div className="flex items-center gap-4 text-xs" style={{ color: "rgba(255,255,255,0.30)" }}>
+                <Link href="/imoveis" className="hover:text-white transition-colors">Ver imóveis</Link>
+                <Link href="/login" className="hover:text-white transition-colors">Entrar</Link>
+              </div>
+            </div>
+          </footer>
+
+        </div>
       </div>
     </>
   );
