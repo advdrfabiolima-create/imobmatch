@@ -2,12 +2,30 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Building2, Search } from "lucide-react";
 import { PropertyCard } from "@/components/properties/property-card";
+import {
+  OpportunitiesSidebar,
+  MobileOpportunitiesStrip,
+  type OpportunityItem,
+} from "@/components/properties/OpportunitiesSidebar";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 async function getProperties(params: URLSearchParams) {
   try {
-    const res = await fetch(`${API_URL}/properties?${params.toString()}`, { next: { revalidate: 30 } });
+    const res = await fetch(`${API_URL}/properties?${params.toString()}`, {
+      next: { revalidate: 30 },
+    });
+    return res.json();
+  } catch {
+    return { data: [], total: 0 };
+  }
+}
+
+async function getOpportunities(): Promise<{ data: OpportunityItem[]; total: number }> {
+  try {
+    const res = await fetch(`${API_URL}/opportunities?limit=6`, {
+      next: { revalidate: 60 },
+    });
     return res.json();
   } catch {
     return { data: [], total: 0 };
@@ -23,7 +41,8 @@ export default async function ImoveisPublicPage({ searchParams }: { searchParams
   if (searchParams.bedrooms) params.set("bedrooms", searchParams.bedrooms);
   if (searchParams.search)   params.set("search",   searchParams.search);
 
-  const { data: properties, total } = await getProperties(params);
+  const [{ data: properties, total }, { data: opportunities, total: oppsTotal }] =
+    await Promise.all([getProperties(params), getOpportunities()]);
 
   return (
     <div
@@ -48,16 +67,24 @@ export default async function ImoveisPublicPage({ searchParams }: { searchParams
           <Link href="/" className="flex items-center transition-opacity hover:opacity-70">
             <img src="/logo_texto_branco.png" alt="ImobMatch" className="h-5 w-auto object-contain" />
           </Link>
-          <Link
-            href="/login"
-            className="text-sm font-semibold text-white px-4 py-2 rounded-xl transition-opacity hover:opacity-90"
-            style={{
-              background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
-              boxShadow: "0 2px 10px rgba(37,99,235,0.25)",
-            }}
-          >
-            Entrar / Cadastrar
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/radar"
+              className="hidden sm:flex items-center gap-1.5 text-sm text-orange-400/75 hover:text-orange-400 transition-colors font-medium"
+            >
+              🔥 Oportunidades
+            </Link>
+            <Link
+              href="/login"
+              className="text-sm font-semibold text-white px-4 py-2 rounded-xl transition-opacity hover:opacity-90"
+              style={{
+                background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+                boxShadow: "0 2px 10px rgba(37,99,235,0.25)",
+              }}
+            >
+              Entrar / Cadastrar
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -144,24 +171,40 @@ export default async function ImoveisPublicPage({ searchParams }: { searchParams
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 py-8">
-        <p className="text-white/35 text-sm mb-6">{total} imóvel(is) encontrado(s)</p>
 
-        {properties?.length === 0 ? (
-          <div className="text-center py-20">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "rgba(37,99,235,0.12)" }}
-            >
-              <Building2 className="h-8 w-8 text-blue-400" />
-            </div>
-            <p className="text-lg text-white/50 font-medium">Nenhum imóvel encontrado</p>
-            <p className="text-sm text-white/25 mt-2">Tente ajustar os filtros de busca.</p>
+        {/* Strip de oportunidades — mobile */}
+        <MobileOpportunitiesStrip opportunities={opportunities} total={oppsTotal} />
+
+        {/* Layout: grid + sidebar */}
+        <div className="flex gap-6 items-start">
+
+          {/* Coluna principal */}
+          <div className="flex-1 min-w-0">
+            <p className="text-white/35 text-sm mb-6">
+              {total} imóvel(is) encontrado(s)
+            </p>
+
+            {properties?.length === 0 ? (
+              <div className="text-center py-20">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                  style={{ background: "rgba(37,99,235,0.12)" }}
+                >
+                  <Building2 className="h-8 w-8 text-blue-400" />
+                </div>
+                <p className="text-lg text-white/50 font-medium">Nenhum imóvel encontrado</p>
+                <p className="text-sm text-white/25 mt-2">Tente ajustar os filtros de busca.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {properties?.map((p: any) => <PropertyCard key={p.id} property={p} />)}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {properties?.map((p: any) => <PropertyCard key={p.id} property={p} />)}
-          </div>
-        )}
+
+          {/* Sidebar — desktop */}
+          <OpportunitiesSidebar opportunities={opportunities} total={oppsTotal} />
+        </div>
       </div>
     </div>
   );
