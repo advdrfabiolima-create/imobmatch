@@ -55,22 +55,24 @@ const PAGE_CSS = `
 /* NAV */
 .lv-nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 100;
-  padding: 20px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   border-bottom: 1px solid transparent;
   transition: all 0.3s;
   backdrop-filter: blur(0px);
 }
 .lv-nav.scrolled {
-  background: rgba(10,10,15,0.9);
+  background: rgba(8,8,15,0.92);
   border-color: var(--border);
   backdrop-filter: blur(20px);
+}
+.lv-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .lv-logo {
   display: flex;
@@ -81,7 +83,7 @@ const PAGE_CSS = `
   transition: opacity 0.2s;
 }
 .lv-logo:hover { opacity: 0.65; }
-.lv-logo img { height: 28px; width: auto; object-fit: contain; }
+.lv-logo img { height: 20px; width: auto; object-fit: contain; }
 .lv-nav-badge {
   font-size: 11px;
   font-weight: 600;
@@ -96,13 +98,18 @@ const PAGE_CSS = `
 
 /* HERO */
 .lv-hero {
-  min-height: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
   position: relative;
   overflow: hidden;
+}
+.lv-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 48px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
   align-items: center;
+  min-height: 100vh;
 }
 .lv-hero-bg {
   position: absolute;
@@ -126,7 +133,6 @@ const PAGE_CSS = `
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 100px 48px 60px 60px;
   position: relative;
   z-index: 1;
 }
@@ -648,11 +654,9 @@ const PAGE_CSS = `
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  .lv-hero { grid-template-columns: 1fr; min-height: auto; }
-  .lv-hero-left { padding: 100px 24px 40px; }
-  .lv-hero-right { padding: 0 24px 60px; }
+  .lv-hero-inner { grid-template-columns: 1fr; min-height: auto; padding: 80px 24px 40px; gap: 32px; }
   .lv-form-card { max-width: 100%; }
-  .lv-nav { padding: 16px 24px; }
+  .lv-nav-inner { padding: 16px 24px; }
   .lv-section { padding: 60px 24px; }
   .lv-how-section { padding: 60px 24px 80px; }
   .lv-benefits-grid { grid-template-columns: 1fr; }
@@ -844,16 +848,18 @@ export default function ListaVipPage() {
 
         {/* ── NAV ───────────────────────────────────────────── */}
         <nav className={`lv-nav${navScrolled ? " scrolled" : ""}`}>
-          <Link href="/" className="lv-logo">
-            <img src="/logo_texto_branco.png" alt="ImobMatch" />
-          </Link>
-          <span className="lv-nav-badge">Membros Fundadores</span>
+          <div className="lv-nav-inner">
+            <Link href="/" className="lv-logo">
+              <img src="/logo_texto_branco.png" alt="ImobMatch" />
+            </Link>
+            <span className="lv-nav-badge">Membros Fundadores</span>
+          </div>
         </nav>
 
         {/* ── HERO ──────────────────────────────────────────── */}
         <section className="lv-hero">
           <div className="lv-hero-bg" />
-
+          <div className="lv-hero-inner">
           {/* Coluna esquerda */}
           <div className="lv-hero-left">
             <div className="lv-founder-tag">✦ Grupo Negócios Imobiliários · Acesso Fundador</div>
@@ -921,6 +927,7 @@ export default function ListaVipPage() {
               <FounderForm />
             </div>
           </div>
+          </div>{/* fim lv-hero-inner */}
         </section>
 
         {/* ── BENEFÍCIOS ────────────────────────────────────── */}
