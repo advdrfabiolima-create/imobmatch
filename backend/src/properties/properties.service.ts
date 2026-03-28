@@ -122,6 +122,8 @@ export class PropertiesService {
     if (property.agentId !== agentId && role !== 'ADMIN') throw new ForbiddenException('Sem permissão');
 
     await this.prisma.match.deleteMany({ where: { propertyId: id } });
+    await this.prisma.opportunity.deleteMany({ where: { propertyId: id } });
+    await this.prisma.partnership.deleteMany({ where: { propertyId: id } });
 
     return this.prisma.property.delete({ where: { id } });
   }
