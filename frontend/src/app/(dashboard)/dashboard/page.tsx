@@ -167,7 +167,7 @@ function PlanBanner() {
   const { user } = useAuthStore();
   if (user?.isLifetime) {
     return (
-      <GlassCard glow="amber" className="flex flex-col sm:flex-row items-start sm:items-center gap-3 px-4 py-3">
+      <GlassCard glow="amber" className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
         <div className="flex items-center gap-2">
           <Crown className="h-4 w-4 text-amber-400 flex-shrink-0" />
           <span className="text-sm font-medium text-slate-400">Plano:</span>
@@ -175,11 +175,11 @@ function PlanBanner() {
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />Agency
           </span>
         </div>
-        <div className="hidden sm:block w-px h-5 bg-white/10" />
-        <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300">
-          <Infinity className="h-3.5 w-3.5" /> Acesso vitalício
+        <div className="w-px h-5 bg-white/10 hidden sm:block" />
+        <div className="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 whitespace-nowrap">
+          <Infinity className="h-3.5 w-3.5 flex-shrink-0" /> Acesso vitalício
         </div>
-        <div className="text-xs text-amber-500 flex items-center gap-1 font-medium">
+        <div className="text-xs text-amber-500 flex items-center gap-1 font-medium whitespace-nowrap">
           <Crown className="h-3 w-3" /> Fundador
         </div>
       </GlassCard>
