@@ -42,4 +42,16 @@ export class AdminController {
   removeProperty(@Param('id') id: string) {
     return this.adminService.removeProperty(id);
   }
+
+  @Get('opportunities')
+  @ApiOperation({ summary: 'Listar todas as oportunidades' })
+  listOpportunities(@Query() query: any) {
+    return this.adminService.listOpportunities(query);
+  }
+
+  @Delete('opportunities/:id')
+  @ApiOperation({ summary: 'Remover oportunidade abusiva' })
+  removeOpportunity(@Param('id') id: string) {
+    return this.adminService.removeOpportunity(id);
+  }
 }

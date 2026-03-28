@@ -78,4 +78,28 @@ export class AdminService {
     await this.prisma.match.deleteMany({ where: { propertyId: id } });
     return this.prisma.property.delete({ where: { id } });
   }
+
+  async listOpportunities(query: any) {
+    const { page = 1, limit = 20, search } = query;
+    const skip = (Number(page) - 1) * Number(limit);
+    const where: any = {};
+    if (search) where.title = { contains: search, mode: 'insensitive' };
+
+    const [data, total] = await Promise.all([
+      this.prisma.opportunity.findMany({
+        where, skip, take: Number(limit),
+        include: { agent: { select: { id: true, name: true, email: true, isActive: true } } },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.opportunity.count({ where }),
+    ]);
+
+    return { data, total, page: Number(page), totalPages: Math.ceil(total / Number(limit)) };
+  }
+
+  async removeOpportunity(id: string) {
+    const opp = await this.prisma.opportunity.findUnique({ where: { id } });
+    if (!opp) throw new NotFoundException('Oportunidade não encontrada');
+    return this.prisma.opportunity.delete({ where: { id } });
+  }
 }

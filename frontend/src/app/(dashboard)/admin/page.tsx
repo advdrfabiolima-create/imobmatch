@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import {
   Users, Building2, Zap, UserCheck, Search, ToggleLeft, Trash2,
-  Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard, MessageSquarePlus, Download,
+  Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard, MessageSquarePlus, Download, Flame,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
@@ -394,7 +394,7 @@ export default function AdminPage() {
   const { user } = useAuthStore();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState<"stats" | "users" | "properties" | "leads" | "feedbacks">("stats");
+  const [tab, setTab] = useState<"stats" | "users" | "properties" | "opportunities" | "leads" | "feedbacks">("stats");
   const [search, setSearch] = useState("");
 
   if (user?.role !== "ADMIN") {
@@ -436,12 +436,27 @@ export default function AdminPage() {
     },
   });
 
+  const { data: opportunities } = useQuery({
+    queryKey: ["admin-opportunities", search],
+    queryFn: () => api.get("/admin/opportunities", { params: { search } }).then((r) => r.data),
+    enabled: tab === "opportunities",
+  });
+
+  const deleteOpportunity = useMutation({
+    mutationFn: (id: string) => api.delete(`/admin/opportunities/${id}`),
+    onSuccess: () => {
+      toast.success("Oportunidade removida");
+      queryClient.invalidateQueries({ queryKey: ["admin-opportunities"] });
+    },
+  });
+
   const TABS = [
-    { key: "stats",      label: "Estatísticas"   },
-    { key: "users",      label: "Usuários"       },
-    { key: "properties", label: "Imóveis"        },
-    { key: "leads",      label: "Lista VIP 🔒"    },
-    { key: "feedbacks",  label: "Feedbacks 💬"   },
+    { key: "stats",         label: "Estatísticas"    },
+    { key: "users",         label: "Usuários"        },
+    { key: "properties",    label: "Imóveis"         },
+    { key: "opportunities", label: "Oportunidades"   },
+    { key: "leads",         label: "Lista VIP 🔒"     },
+    { key: "feedbacks",     label: "Feedbacks 💬"    },
   ] as const;
 
   return (
@@ -567,6 +582,43 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ── Oportunidades ── */}
+        {tab === "opportunities" && (
+          <div>
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Buscar oportunidades..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+            </div>
+            {opportunities?.data?.length === 0 ? (
+              <div className="text-center py-16 text-muted-foreground">
+                <Flame className="h-10 w-10 mx-auto mb-3" />
+                <p className="text-sm">Nenhuma oportunidade encontrada.</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-border border border-border rounded-xl overflow-hidden bg-card">
+                {opportunities?.data?.map((o: any) => (
+                  <div key={o.id} className="p-4 flex items-center justify-between hover:bg-accent">
+                    <div>
+                      <p className="font-medium text-foreground">{o.title}</p>
+                      <p className="text-sm text-muted-foreground">{o.city} · Corretor: {o.agent?.name}</p>
+                      <p className="text-xs text-muted-foreground/60">
+                        R$ {Number(o.priceUrgent).toLocaleString("pt-BR")} · Status: {o.status}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={o.status === "active" ? "success" : "secondary"}>{o.status}</Badge>
+                      <Button size="sm" variant="outline" className="text-red-400 hover:bg-red-500/10 border-red-500/30"
+                        onClick={() => confirm("Remover oportunidade?") && deleteOpportunity.mutate(o.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

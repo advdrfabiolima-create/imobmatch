@@ -56,7 +56,7 @@ export class OpportunitiesService {
     const { city, maxPrice, minPrice, page = 1, limit = 20 } = query;
     const skip = (Number(page) - 1) * Number(limit);
 
-    const where: any = { status: 'active' };
+    const where: any = { status: 'active', agent: { isActive: true } };
     if (city)     where.city        = { contains: city, mode: 'insensitive' };
     if (maxPrice) where.priceUrgent = { lte: Number(maxPrice) };
     if (minPrice) where.priceUrgent = { ...where.priceUrgent, gte: Number(minPrice) };
