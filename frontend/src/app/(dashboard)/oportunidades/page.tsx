@@ -371,7 +371,7 @@ function OpportunityCard({
         transform:  visible ? "translateY(0)" : "translateY(24px)",
         transition: "opacity 0.4s ease, transform 0.4s ease",
       }}
-      className="bg-card rounded-2xl shadow-sm border border-white/[0.07] overflow-hidden hover:border-white/[0.12] hover:-translate-y-0.5 transition-all duration-200"
+      className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden hover:border-border hover:-translate-y-0.5 transition-all duration-200"
     >
       {/* ── Image / Fallback ── */}
       <div className="relative overflow-hidden" style={{ height: 200 }}>
@@ -539,7 +539,7 @@ function OpportunityCard({
 
 function CardSkeleton() {
   return (
-    <div className="bg-card rounded-2xl shadow-sm border border-white/[0.07] overflow-hidden animate-pulse">
+    <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden animate-pulse">
       <div className="h-48 bg-white/5" />
       <div className="p-4 space-y-3">
         <div className="h-4 bg-white/8 rounded w-3/4" />

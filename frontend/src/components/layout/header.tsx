@@ -18,7 +18,7 @@ export function Header({ title }: HeaderProps) {
 
   return (
     <>
-    <header className="h-16 border-b border-white/[0.06] bg-[#060c1a]/80 backdrop-blur-xl flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
+    <header className="h-16 border-b border-border bg-[#060c1a]/80 backdrop-blur-xl flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
       <div className="flex items-center gap-3">
         {/* Hamburger — mobile only */}
         <button
@@ -35,7 +35,7 @@ export function Header({ title }: HeaderProps) {
         <button
           onClick={() => setShowFeedback(true)}
           title="Enviar Feedback"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-white/[0.06] hover:text-blue-400 transition-colors border border-white/[0.07] hover:border-blue-500/30"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-white/[0.06] hover:text-blue-400 transition-colors border border-border hover:border-blue-500/30"
         >
           <MessageSquarePlus className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">Feedback</span>

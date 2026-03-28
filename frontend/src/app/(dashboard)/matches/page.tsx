@@ -322,14 +322,14 @@ export default function MatchesPage() {
 
         {/* Best Matches Highlight */}
         {!filterStatus && bestMatches?.length > 0 && (
-          <div className="bg-gradient-to-r from-indigo-600/80 to-violet-600/80 border border-white/10 rounded-2xl p-6 text-white">
+          <div className="bg-gradient-to-r from-indigo-600/80 to-violet-600/80 border border-border rounded-2xl p-6 text-white">
             <div className="flex items-center gap-2 mb-4">
               <Zap className="h-5 w-5 text-yellow-300" />
               <h3 className="font-semibold">Melhores Matches (Score ≥ 70%)</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {bestMatches.slice(0, 3).map((m: any) => (
-                <div key={m.id} className="bg-white/10 rounded-xl p-4 border border-white/10">
+                <div key={m.id} className="bg-white/10 rounded-xl p-4 border border-border">
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-sm font-medium">{m.buyer?.buyerName}</span>
                     <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">
@@ -401,7 +401,7 @@ export default function MatchesPage() {
                 <Card
                   key={m.id}
                   className={`transition-all border-l-4 ${statusCfg.border || "border-l-border"} ${
-                    isRejected ? "opacity-50" : "hover:border-white/[0.12]"
+                    isRejected ? "opacity-50" : "hover:border-border"
                   }`}
                 >
                   <CardContent className="p-5">
@@ -509,7 +509,7 @@ export default function MatchesPage() {
                           <span className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium cursor-default ${
                             partnershipAccepted
                               ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/20"
-                              : "bg-white/10 text-slate-400 border border-white/10"
+                              : "bg-white/10 text-slate-400 border border-border"
                           }`}>
                             <Users className="h-3.5 w-3.5" />
                             {partnershipAccepted ? "Parceria Aceita" : "Proposta Enviada"}

@@ -68,7 +68,7 @@ function PropertyCardMsg({ content }: { content: string }) {
   return (
     <a
       href={`/imovel/${data.id}`} target="_blank" rel="noreferrer"
-      className="block rounded-xl overflow-hidden border border-white/15 hover:opacity-90 transition min-w-[220px]"
+      className="block rounded-xl overflow-hidden border border-border hover:opacity-90 transition min-w-[220px]"
     >
       {data.photo && <img src={data.photo} alt={data.title} className="w-full h-28 object-cover" />}
       <div className="p-2.5 bg-white/5">

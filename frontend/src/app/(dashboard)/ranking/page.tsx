@@ -150,7 +150,7 @@ export default function RankingPage() {
 
         {/* My position highlight */}
         {myAgent && (
-          <div className="bg-gradient-to-r from-indigo-600/80 to-violet-600/80 border border-white/10 text-white rounded-2xl p-4 mb-6 flex items-center gap-3">
+          <div className="bg-gradient-to-r from-indigo-600/80 to-violet-600/80 border border-border text-white rounded-2xl p-4 mb-6 flex items-center gap-3">
             <AgentAvatar
               name={myAgent.name} avatarUrl={myAgent.avatarUrl} score={myAgent.score}
               size="md" fallbackClassName="bg-white/20 text-white"
@@ -215,7 +215,7 @@ export default function RankingPage() {
               return (
                 <Card
                   key={agent.id}
-                  className={`transition-all ${isMe ? "ring-2 ring-primary/40 bg-primary/5" : "hover:border-white/[0.12]"}`}
+                  className={`transition-all ${isMe ? "ring-2 ring-primary/40 bg-primary/5" : "hover:border-border"}`}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">

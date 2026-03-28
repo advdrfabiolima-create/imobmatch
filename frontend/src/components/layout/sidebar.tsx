@@ -127,7 +127,7 @@ export function Sidebar() {
         }}
       >
         {/* Logo */}
-        <div className="px-5 py-5 flex items-center justify-between border-b border-white/8">
+        <div className="px-5 py-5 flex items-center justify-between border-b border-border">
           <Link href="/dashboard" onClick={close}>
             <img
               src="/logo_texto_branco.png"
@@ -145,7 +145,7 @@ export function Sidebar() {
         </div>
 
         {/* User info */}
-        <div className="px-4 py-4 border-b border-white/8">
+        <div className="px-4 py-4 border-b border-border">
           <div className="flex items-center gap-3">
             <AgentAvatar
               name={user?.name ?? ""}
@@ -193,7 +193,7 @@ export function Sidebar() {
         </nav>
 
         {/* Logout */}
-        <div className="px-3 py-3 border-t border-white/8">
+        <div className="px-3 py-3 border-t border-border">
           <button
             onClick={() => { close(); logout(); }}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 w-full"

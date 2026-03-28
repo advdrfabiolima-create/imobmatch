@@ -41,7 +41,7 @@ function GlassCard({
     <div
       className={`
         bg-[#0d1424]/80 backdrop-blur-md
-        border border-white/[0.07]
+        border border-border
         rounded-2xl
         ${glow ? glowMap[glow] : ""}
         ${className}
@@ -56,7 +56,7 @@ function GlassCard({
 
 function StatPill({ value, label, color }: { value: number; label: string; color: string }) {
   return (
-    <div className={`flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.06]`}>
+    <div className={`flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.04] border border-border`}>
       <span className={`text-lg font-bold ${color}`}>{value}</span>
       <span className="text-[10px] text-slate-500 font-medium mt-0.5">{label}</span>
     </div>
@@ -116,7 +116,7 @@ function OnboardingChecklist({ user, stats }: { user: any; stats: any }) {
 
   return (
     <GlassCard glow="blue" className="overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-indigo-400" />
           <span className="text-sm font-semibold text-white">Primeiros passos</span>
@@ -195,7 +195,7 @@ function PlanBanner() {
       <div className="flex items-center gap-2 min-w-0">
         <Crown className="h-4 w-4 text-slate-500 flex-shrink-0" />
         <span className="text-sm font-medium text-slate-400 whitespace-nowrap">Seu plano:</span>
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white whitespace-nowrap">
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 border border-border text-white whitespace-nowrap">
           <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${meta.dot}`} />{meta.label}
         </span>
       </div>
@@ -227,11 +227,9 @@ function PremiumStatCard({ title, value, sub, icon: Icon, color, href, pulse }: 
   const content = (
     <div className={`
       relative overflow-hidden rounded-2xl p-5 group transition-all duration-300 hover:-translate-y-1 cursor-pointer
-      bg-[#0d1424]/80 backdrop-blur-md border border-white/[0.07]
+      bg-[#0d1424]/80 backdrop-blur-md border border-border
       ${theme.glow}
     `}>
-      {/* Subtle top glow line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="flex items-start justify-between mb-4">
         <div className={`p-2.5 rounded-xl ${theme.icon}`}>
@@ -256,7 +254,7 @@ function PremiumStatCard({ title, value, sub, icon: Icon, color, href, pulse }: 
 
 function CompactStatCard({ title, value, sub, badge, icon: Icon, accent, href }: any) {
   const content = (
-    <div className="flex items-center gap-3 p-4 bg-[#0d1424]/60 border border-white/[0.06] rounded-xl hover:border-white/[0.12] hover:bg-white/[0.03] transition-all group cursor-pointer">
+    <div className="flex items-center gap-3 p-4 bg-[#0d1424]/60 border border-border rounded-xl hover:border-border hover:bg-white/[0.03] transition-all group cursor-pointer">
       {Icon && (
         <div className={`p-2 rounded-lg ${accent?.iconBg ?? "bg-white/[0.06]"} flex-shrink-0`}>
           <Icon className={`h-4 w-4 ${accent?.iconColor ?? "text-slate-400"}`} />
@@ -268,7 +266,7 @@ function CompactStatCard({ title, value, sub, badge, icon: Icon, accent, href }:
         {sub && <p className="text-[10px] text-slate-600 mt-0.5 truncate">{sub}</p>}
       </div>
       {badge && (
-        <span className={`text-[10px] font-bold px-2 py-1 rounded-lg border ${accent?.badgeStyle ?? "bg-white/[0.06] border-white/10 text-slate-400"}`}>
+        <span className={`text-[10px] font-bold px-2 py-1 rounded-lg border ${accent?.badgeStyle ?? "bg-white/[0.06] border-border text-slate-400"}`}>
           {badge}
         </span>
       )}
@@ -315,7 +313,7 @@ function NetworkOppsBlock({ opps, city }: { opps: any[]; city: string | null }) 
 
   return (
     <GlassCard glow="orange" className="overflow-hidden">
-      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-orange-500/15">
             <Flame className="h-4 w-4 text-orange-400" />
@@ -342,7 +340,7 @@ function NetworkOppsBlock({ opps, city }: { opps: any[]; city: string | null }) 
 
           return (
             <div key={opp.id}
-              className="bg-white/[0.03] border border-white/[0.06] hover:border-orange-500/20 hover:bg-white/[0.05] rounded-xl p-3.5 transition-all">
+              className="bg-white/[0.03] border border-border hover:border-orange-500/20 hover:bg-white/[0.05] rounded-xl p-3.5 transition-all">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm text-white truncate">{opp.title}</p>
@@ -451,7 +449,7 @@ function SmartActionsBlock({ stats }: { stats: any }) {
 
   return (
     <GlassCard>
-      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
+      <div className="px-5 py-4 border-b border-border flex items-center gap-2">
         <div className="p-1.5 rounded-lg bg-amber-500/15">
           <Lightbulb className="h-4 w-4 text-amber-400" />
         </div>
@@ -495,7 +493,7 @@ function MyActivityBlock({ stats }: { stats: any }) {
 
   return (
     <GlassCard>
-      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
+      <div className="px-5 py-4 border-b border-border flex items-center gap-2">
         <div className="p-1.5 rounded-lg bg-indigo-500/15">
           <TrendingUp className="h-4 w-4 text-indigo-400" />
         </div>
@@ -578,7 +576,7 @@ function PlatformPulse() {
 function RecentPropertiesCard({ properties }: { properties: any[] }) {
   return (
     <GlassCard>
-      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-indigo-500/15">
             <Building2 className="h-4 w-4 text-indigo-400" />
@@ -604,7 +602,7 @@ function RecentPropertiesCard({ properties }: { properties: any[] }) {
           <div className="space-y-2">
             {properties.map((p: any) => (
               <Link key={p.id} href="/meus-imoveis"
-                className="flex items-center justify-between p-3 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/[0.10] rounded-xl transition-all group">
+                className="flex items-center justify-between p-3 bg-white/[0.03] hover:bg-white/[0.06] border border-border hover:border-border rounded-xl transition-all group">
                 <div>
                   <p className="font-medium text-xs text-white truncate max-w-[160px] group-hover:text-indigo-300 transition-colors">{p.title}</p>
                   <p className="text-[11px] text-slate-500 mt-0.5">{PROPERTY_TYPE_LABELS[p.type]} · {formatDate(p.createdAt)}</p>
@@ -633,7 +631,7 @@ function RecentPropertiesCard({ properties }: { properties: any[] }) {
 function RecentMatchesCard({ matches }: { matches: any[] }) {
   return (
     <GlassCard>
-      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-amber-500/15">
             <Zap className="h-4 w-4 text-amber-400" />
@@ -659,7 +657,7 @@ function RecentMatchesCard({ matches }: { matches: any[] }) {
           <div className="space-y-2">
             {matches.map((m: any) => (
               <Link key={m.id} href="/matches"
-                className="block p-3 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/[0.10] rounded-xl transition-all group">
+                className="block p-3 bg-white/[0.03] hover:bg-white/[0.06] border border-border hover:border-border rounded-xl transition-all group">
                 <div className="flex items-center justify-between mb-1">
                   <p className="font-medium text-xs text-white group-hover:text-amber-300 transition-colors">{m.buyer?.buyerName}</p>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/20 text-amber-300">
@@ -791,7 +789,7 @@ export default function DashboardPage() {
             {/* ── CENTER: Radar Hero ── */}
             <GlassCard glow="violet" className="relative overflow-hidden flex flex-col">
               {/* Top bar */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-border">
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="relative flex h-1.5 w-1.5">
@@ -819,7 +817,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Footer info */}
-              <div className="px-5 py-3 border-t border-white/[0.05] flex items-center justify-between gap-3">
+              <div className="px-5 py-3 border-t border-border flex items-center justify-between gap-3">
                 <p className="text-[11px] leading-relaxed">
                   {(stats?.matchesCount > 0 || (stats?.myOpportunities?.length ?? 0) > 0) ? (
                     <span className="text-emerald-400 font-medium">
@@ -862,7 +860,7 @@ export default function DashboardPage() {
                       className={`text-center text-[10px] font-semibold py-1.5 rounded-lg border transition-colors ${
                         active
                           ? "bg-violet-600/20 border-violet-500/30 text-violet-300"
-                          : "bg-white/[0.03] border-white/[0.06] text-slate-600 hover:text-slate-400"
+                          : "bg-white/[0.03] border-border text-slate-600 hover:text-slate-400"
                       }`}>
                       {label}
                     </Link>

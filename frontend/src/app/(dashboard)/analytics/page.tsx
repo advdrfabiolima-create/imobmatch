@@ -93,7 +93,7 @@ function CustomTooltip({ active, payload, label }: any) {
 // ── Upgrade Banner ─────────────────────────────────────────────────────────────
 function UpgradeBanner() {
   return (
-    <div className="bg-gradient-to-r from-indigo-600/80 to-violet-600/80 border border-white/10 rounded-2xl p-6 text-white flex items-center justify-between">
+    <div className="bg-gradient-to-r from-indigo-600/80 to-violet-600/80 border border-border rounded-2xl p-6 text-white flex items-center justify-between">
       <div>
         <p className="font-semibold text-lg mb-1">Analytics avançados no plano Professional</p>
         <p className="text-white/70 text-sm">
