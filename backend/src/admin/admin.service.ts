@@ -75,6 +75,7 @@ export class AdminService {
   }
 
   async removeProperty(id: string) {
+    await this.prisma.match.deleteMany({ where: { propertyId: id } });
     return this.prisma.property.delete({ where: { id } });
   }
 }
