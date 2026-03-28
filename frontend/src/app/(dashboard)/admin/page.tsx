@@ -428,6 +428,15 @@ export default function AdminPage() {
     },
   });
 
+  const deleteUser = useMutation({
+    mutationFn: (id: string) => api.delete(`/admin/users/${id}`),
+    onSuccess: () => {
+      toast.success("Usuário removido permanentemente");
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    },
+    onError: () => toast.error("Erro ao remover usuário"),
+  });
+
   const deleteProperty = useMutation({
     mutationFn: (id: string) => api.delete(`/admin/properties/${id}`),
     onSuccess: () => {
@@ -550,6 +559,20 @@ export default function AdminPage() {
                     </Badge>
                     <Button size="sm" variant="outline" onClick={() => toggleUser.mutate(u.id)}>
                       <ToggleLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-red-400 hover:bg-red-500/10 border-red-500/30"
+                      onClick={() => {
+                        if (confirm(`Deletar permanentemente "${u.name}"?\n\nIsso irá remover todos os imóveis, oportunidades, compradores e dados do usuário. Essa ação não pode ser desfeita.`)) {
+                          deleteUser.mutate(u.id);
+                        }
+                      }}
+                      disabled={deleteUser.isPending}
+                      title="Deletar usuário permanentemente"
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>

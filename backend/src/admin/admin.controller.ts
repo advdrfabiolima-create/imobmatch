@@ -31,6 +31,12 @@ export class AdminController {
     return this.adminService.toggleUserStatus(id);
   }
 
+  @Delete('users/:id')
+  @ApiOperation({ summary: 'Deletar usuário e todos os seus dados' })
+  removeUser(@Param('id') id: string) {
+    return this.adminService.removeUser(id);
+  }
+
   @Get('properties')
   @ApiOperation({ summary: 'Listar todos os imóveis' })
   listProperties(@Query() query: any) {

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { normalizePlan } from '../common/plans.config';
 
@@ -54,6 +54,28 @@ export class AdminService {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('Usuário não encontrado');
     return this.prisma.user.update({ where: { id }, data: { isActive: !user.isActive } });
+  }
+
+  async removeUser(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+    if (user.role === 'ADMIN') throw new ForbiddenException('Não é possível deletar um administrador');
+
+    await this.prisma.$transaction([
+      this.prisma.match.deleteMany({ where: { OR: [{ property: { agentId: id } }, { buyer: { agentId: id } }] } }),
+      this.prisma.message.deleteMany({ where: { OR: [{ senderId: id }, { receiverId: id }] } }),
+      this.prisma.opportunity.deleteMany({ where: { agentId: id } }),
+      this.prisma.property.deleteMany({ where: { agentId: id } }),
+      this.prisma.buyer.deleteMany({ where: { agentId: id } }),
+      this.prisma.partnership.deleteMany({ where: { OR: [{ requesterId: id }, { receiverId: id }] } }),
+      this.prisma.teamInvite.deleteMany({ where: { invitedById: id } }),
+      this.prisma.subscription.deleteMany({ where: { userId: id } }),
+      this.prisma.feedback.deleteMany({ where: { userId: id } }),
+      this.prisma.post.deleteMany({ where: { userId: id } }),
+      this.prisma.user.delete({ where: { id } }),
+    ]);
+
+    return { message: 'Usuário removido com sucesso' };
   }
 
   async listProperties(query: any) {
