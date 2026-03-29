@@ -255,7 +255,7 @@ export class AuthService {
         id: true, name: true, email: true, phone: true, city: true,
         state: true, agency: true, creci: true, bio: true, avatarUrl: true,
         role: true, plan: true, isLifetime: true, isFirstLogin: true, emailVerified: true, createdAt: true,
-        cpfCnpj: true, personType: true,
+        cpfCnpj: true, personType: true, notifyMatchEmail: true,
         _count: { select: { properties: true, buyers: true } },
       },
     });

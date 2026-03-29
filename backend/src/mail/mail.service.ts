@@ -297,6 +297,80 @@ export class MailService {
     await this.send(to, name, '🎉 Sua vaga no ImobMatch foi liberada — veja como começar!', content);
   }
 
+  // ─── Notificação de novo match ──────────────────────────────────────────────
+
+  async sendMatchNotificationEmail(params: {
+    to: string;
+    toName: string;
+    role: 'property' | 'buyer';
+    score: number;
+    propertyTitle: string;
+    propertyCity: string | null;
+    buyerName: string;
+    otherAgentName: string;
+    matchCount?: number;
+  }): Promise<void> {
+    const { to, toName, role, score, propertyTitle, propertyCity, buyerName, otherAgentName, matchCount = 1 } = params;
+    const matchesUrl = `${this.frontendUrl}/matches`;
+    const displayScore = Math.min(score, 100);
+    const extraInfo = matchCount > 1 ? `<p style="color:#6b7280;font-size:13px;margin:0 0 20px;">E mais <strong>${matchCount - 1} outro(s) match(es)</strong> encontrado(s). Acesse a plataforma para ver todos.</p>` : '';
+
+    const isPropertyRole = role === 'property';
+
+    const content = `
+      <h2 style="color:#111827;font-size:20px;margin:0 0 8px;font-weight:700;">
+        🔔 Novo match encontrado, ${toName}!
+      </h2>
+      <p style="color:#6b7280;font-size:15px;line-height:1.7;margin:0 0 20px;">
+        ${isPropertyRole
+          ? `O comprador <strong>${buyerName}</strong> do corretor <strong>${otherAgentName}</strong> é compatível com um dos seus imóveis.`
+          : `Encontramos um imóvel compatível com o perfil do seu comprador <strong>${buyerName}</strong>.`
+        }
+      </p>
+
+      <div style="background:#f0f9ff;border:1px solid #bfdbfe;border-radius:10px;padding:20px 24px;margin:0 0 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;">
+          <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#1e40af;">Detalhes do match</span>
+          <span style="background:#dbeafe;color:#1d4ed8;font-size:13px;font-weight:700;padding:4px 12px;border-radius:20px;">${displayScore}% compatível</span>
+        </div>
+        <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;color:#374151;">
+          <tr>
+            <td style="padding:4px 0;color:#6b7280;width:120px;">Imóvel</td>
+            <td style="padding:4px 0;font-weight:600;">${propertyTitle}${propertyCity ? ` · ${propertyCity}` : ''}</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 0;color:#6b7280;">Comprador</td>
+            <td style="padding:4px 0;font-weight:600;">${buyerName}</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 0;color:#6b7280;">${isPropertyRole ? 'Corretor do comprador' : 'Corretor do imóvel'}</td>
+            <td style="padding:4px 0;font-weight:600;">${otherAgentName}</td>
+          </tr>
+        </table>
+      </div>
+
+      ${extraInfo}
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
+        <tr>
+          <td>
+            <a href="${matchesUrl}"
+               style="display:inline-block;background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;mso-padding-alt:0;line-height:1.4;">
+              🔗 Ver match na plataforma
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="color:#9ca3af;font-size:12px;margin:0;line-height:1.6;">
+        Você está recebendo este e-mail porque tem notificações de match ativadas.<br>
+        Para desativar, acesse <a href="${this.frontendUrl}/perfil" style="color:#6b7280;">Perfil → Notificações</a>.
+      </p>
+    `;
+
+    await this.send(to, toName, `🔔 Novo match ${displayScore}% — ${isPropertyRole ? propertyTitle : buyerName} · ImobMatch`, content);
+  }
+
   // ─── Encerramento de conta ──────────────────────────────────────────────────
 
   async sendAccountDeletedEmail(to: string, name: string): Promise<void> {

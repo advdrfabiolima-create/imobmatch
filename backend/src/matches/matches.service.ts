@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MatchStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RankingService } from '../ranking/ranking.service';
+import { MailService } from '../mail/mail.service';
 
 // Bônus adicionado ao score de match de acordo com o plano do corretor do imóvel.
 // O valor é somado após o cálculo 0–100 e armazenado no banco para ordenação.
@@ -23,6 +24,7 @@ export class MatchesService {
   constructor(
     private prisma: PrismaService,
     private rankingService: RankingService,
+    private mailService: MailService,
   ) {}
 
   // ==================== ALGORITMO DE MATCHING ====================
@@ -211,27 +213,90 @@ export class MatchesService {
 
   async generateForBuyer(buyerId: string): Promise<void> {
     try {
-      const buyer = await this.prisma.buyer.findUnique({ where: { id: buyerId } });
+      const buyer = await this.prisma.buyer.findUnique({
+        where: { id: buyerId },
+        include: { agent: { select: { id: true, name: true, email: true, notifyMatchEmail: true } } },
+      });
       if (!buyer) return;
 
       const properties = await this.prisma.property.findMany({
         where: { status: 'AVAILABLE', isPublic: true },
+        include: { agent: { select: { id: true, name: true, email: true, notifyMatchEmail: true } } },
       });
 
       const allAgentIds = [buyer.agentId, ...properties.map((p) => p.agentId)];
       const { boosts, proSet } = await this.getAgentPlanData(allAgentIds);
       const buyerAgentIsPro = proSet.has(buyer.agentId);
 
+      // Acumula novos matches cross-agent para envio de e-mail agrupado
+      const newMatchesByPropertyAgent = new Map<string, { agent: any; count: number; bestScore: number; propertyTitle: string; propertyCity: string | null }>();
+      let buyerAgentNewCount = 0;
+      let buyerAgentBestScore = 0;
+      let buyerAgentFirstPropertyTitle = '';
+      let buyerAgentFirstPropertyCity: string | null = null;
+      let buyerAgentFirstPropertyAgentName = '';
+
       for (const property of properties) {
         const isSameAgent = property.agentId === buyer.agentId;
-
-        // Cross-agent: exige que pelo menos um dos dois seja Pro+
         if (!isSameAgent && !buyerAgentIsPro && !proSet.has(property.agentId)) continue;
 
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
           const boost = boosts.get(property.agentId) ?? 0;
-          try { await this.upsertMatch(buyer.id, property.id, score, boost); } catch {}
+          try {
+            const result = await this.upsertMatch(buyer.id, property.id, score, boost);
+            if (result.isNew && !isSameAgent) {
+              const finalScore = Math.min(score + boost, 100);
+              // Agrega para o agente do comprador
+              buyerAgentNewCount++;
+              if (finalScore > buyerAgentBestScore) {
+                buyerAgentBestScore = finalScore;
+                buyerAgentFirstPropertyTitle = property.title;
+                buyerAgentFirstPropertyCity = property.city;
+                buyerAgentFirstPropertyAgentName = property.agent.name;
+              }
+              // Agrega por agente do imóvel
+              const existing = newMatchesByPropertyAgent.get(property.agentId);
+              if (!existing) {
+                newMatchesByPropertyAgent.set(property.agentId, { agent: property.agent, count: 1, bestScore: finalScore, propertyTitle: property.title, propertyCity: property.city });
+              } else {
+                existing.count++;
+                if (finalScore > existing.bestScore) { existing.bestScore = finalScore; existing.propertyTitle = property.title; existing.propertyCity = property.city; }
+              }
+            }
+          } catch {}
+        }
+      }
+
+      // Notifica o agente do comprador (1 e-mail resumido)
+      if (buyerAgentNewCount > 0 && buyer.agent.notifyMatchEmail) {
+        this.mailService.sendMatchNotificationEmail({
+          to: buyer.agent.email,
+          toName: buyer.agent.name,
+          role: 'buyer',
+          score: buyerAgentBestScore,
+          propertyTitle: buyerAgentFirstPropertyTitle,
+          propertyCity: buyerAgentFirstPropertyCity,
+          buyerName: buyer.buyerName,
+          otherAgentName: buyerAgentFirstPropertyAgentName,
+          matchCount: buyerAgentNewCount,
+        }).catch(() => {});
+      }
+
+      // Notifica cada agente de imóvel (1 e-mail por agente)
+      for (const { agent, count, bestScore, propertyTitle, propertyCity } of newMatchesByPropertyAgent.values()) {
+        if (agent.notifyMatchEmail) {
+          this.mailService.sendMatchNotificationEmail({
+            to: agent.email,
+            toName: agent.name,
+            role: 'property',
+            score: bestScore,
+            propertyTitle,
+            propertyCity,
+            buyerName: buyer.buyerName,
+            otherAgentName: buyer.agent.name,
+            matchCount: count,
+          }).catch(() => {});
         }
       }
     } catch { /* fire-and-forget: não bloqueia o cadastro */ }
@@ -239,11 +304,15 @@ export class MatchesService {
 
   async generateForProperty(propertyId: string): Promise<void> {
     try {
-      const property = await this.prisma.property.findUnique({ where: { id: propertyId } });
+      const property = await this.prisma.property.findUnique({
+        where: { id: propertyId },
+        include: { agent: { select: { id: true, name: true, email: true, notifyMatchEmail: true } } },
+      });
       if (!property || property.status !== 'AVAILABLE' || !property.isPublic) return;
 
       const buyers = await this.prisma.buyer.findMany({
         where: { status: 'ACTIVE' },
+        include: { agent: { select: { id: true, name: true, email: true, notifyMatchEmail: true } } },
       });
 
       const allAgentIds = [property.agentId, ...buyers.map((b) => b.agentId)];
@@ -251,15 +320,70 @@ export class MatchesService {
       const propertyAgentIsPro = proSet.has(property.agentId);
       const boost = boosts.get(property.agentId) ?? 0;
 
+      // Acumula novos matches cross-agent para envio de e-mail agrupado
+      const newMatchesByBuyerAgent = new Map<string, { agent: any; count: number; bestScore: number; buyerName: string }>();
+      let propertyAgentNewCount = 0;
+      let propertyAgentBestScore = 0;
+      let propertyAgentFirstBuyerName = '';
+
       for (const buyer of buyers) {
         const isSameAgent = buyer.agentId === property.agentId;
-
-        // Cross-agent: exige que pelo menos um dos dois seja Pro+
         if (!isSameAgent && !propertyAgentIsPro && !proSet.has(buyer.agentId)) continue;
 
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
-          try { await this.upsertMatch(buyer.id, property.id, score, boost); } catch {}
+          try {
+            const result = await this.upsertMatch(buyer.id, property.id, score, boost);
+            if (result.isNew && !isSameAgent) {
+              const finalScore = Math.min(score + boost, 100);
+              // Agrega para o agente do imóvel
+              propertyAgentNewCount++;
+              if (finalScore > propertyAgentBestScore) {
+                propertyAgentBestScore = finalScore;
+                propertyAgentFirstBuyerName = buyer.buyerName;
+              }
+              // Agrega por agente do comprador
+              const existing = newMatchesByBuyerAgent.get(buyer.agentId);
+              if (!existing) {
+                newMatchesByBuyerAgent.set(buyer.agentId, { agent: buyer.agent, count: 1, bestScore: finalScore, buyerName: buyer.buyerName });
+              } else {
+                existing.count++;
+                if (finalScore > existing.bestScore) { existing.bestScore = finalScore; existing.buyerName = buyer.buyerName; }
+              }
+            }
+          } catch {}
+        }
+      }
+
+      // Notifica o agente do imóvel (1 e-mail resumido)
+      if (propertyAgentNewCount > 0 && property.agent.notifyMatchEmail) {
+        this.mailService.sendMatchNotificationEmail({
+          to: property.agent.email,
+          toName: property.agent.name,
+          role: 'property',
+          score: propertyAgentBestScore,
+          propertyTitle: property.title,
+          propertyCity: property.city,
+          buyerName: propertyAgentFirstBuyerName,
+          otherAgentName: '',
+          matchCount: propertyAgentNewCount,
+        }).catch(() => {});
+      }
+
+      // Notifica cada agente de comprador (1 e-mail por agente)
+      for (const { agent, count, bestScore, buyerName } of newMatchesByBuyerAgent.values()) {
+        if (agent.notifyMatchEmail) {
+          this.mailService.sendMatchNotificationEmail({
+            to: agent.email,
+            toName: agent.name,
+            role: 'buyer',
+            score: bestScore,
+            propertyTitle: property.title,
+            propertyCity: property.city,
+            buyerName,
+            otherAgentName: property.agent.name,
+            matchCount: count,
+          }).catch(() => {});
         }
       }
     } catch { /* fire-and-forget */ }

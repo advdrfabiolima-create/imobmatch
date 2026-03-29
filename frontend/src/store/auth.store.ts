@@ -21,6 +21,7 @@ interface User {
   createdAt?: string;
   cpfCnpj?: string;
   personType?: string;
+  notifyMatchEmail?: boolean;
 }
 
 interface AuthState {

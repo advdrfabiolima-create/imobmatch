@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth.store";
 import { STATES } from "@/lib/utils";
-import { Loader2, Building2, MapPin, Mail, User, Camera, AlertTriangle, Lock, Eye, EyeOff } from "lucide-react";
+import { Loader2, Building2, MapPin, Mail, User, Camera, AlertTriangle, Lock, Eye, EyeOff, Bell } from "lucide-react";
 import { maskPhone, maskCpfCnpj } from "@/lib/masks";
 import toast from "react-hot-toast";
 import { AvatarCropModal } from "@/components/ui/avatar-crop-modal";
@@ -37,6 +37,8 @@ export default function PerfilPage() {
   const { user, updateUser, logout } = useAuthStore();
   const router = useRouter();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [notifyMatchEmail, setNotifyMatchEmail] = useState<boolean>(user?.notifyMatchEmail ?? true);
+  const [savingNotify, setSavingNotify] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCurrentPw, setShowCurrentPw] = useState(false);
   const [showNewPw, setShowNewPw] = useState(false);
@@ -376,6 +378,48 @@ export default function PerfilPage() {
                 <User className="h-4 w-4 text-muted-foreground/60" />
                 <span>Conta ativa</span>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Notificações */}
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Bell className="h-4 w-4 text-muted-foreground" />
+              Notificações
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-foreground">E-mail de novos matches</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Receba um e-mail quando um novo match acima de 70% for encontrado para seus imóveis ou compradores.
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={savingNotify}
+                onClick={async () => {
+                  const newVal = !notifyMatchEmail;
+                  setSavingNotify(true);
+                  try {
+                    const res = await api.patch("/users/profile", { notifyMatchEmail: newVal });
+                    setNotifyMatchEmail(newVal);
+                    updateUser(res.data);
+                    toast.success(newVal ? "Notificações ativadas" : "Notificações desativadas");
+                  } catch {
+                    toast.error("Erro ao salvar preferência");
+                  } finally {
+                    setSavingNotify(false);
+                  }
+                }}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${notifyMatchEmail ? "bg-primary" : "bg-muted"} ${savingNotify ? "opacity-50 cursor-not-allowed" : ""}`}
+                aria-pressed={notifyMatchEmail}
+              >
+                <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${notifyMatchEmail ? "translate-x-5" : "translate-x-0"}`} />
+              </button>
             </div>
           </CardContent>
         </Card>

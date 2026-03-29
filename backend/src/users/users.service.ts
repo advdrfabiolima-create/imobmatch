@@ -70,7 +70,7 @@ export class UsersService {
       select: {
         id: true, name: true, email: true, phone: true, city: true,
         state: true, agency: true, creci: true, bio: true, avatarUrl: true,
-        cpfCnpj: true, personType: true, updatedAt: true,
+        cpfCnpj: true, personType: true, notifyMatchEmail: true, updatedAt: true,
       },
     });
   }
