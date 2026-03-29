@@ -682,6 +682,210 @@ const PAGE_CSS = `
   .lv-founder-counter { flex-direction: column; align-items: flex-start; gap: 8px; }
   .lv-form-trust { flex-direction: column; align-items: center; gap: 8px; }
 }
+
+/* BARRA DE PROGRESSO */
+.lv-progress-wrap {
+  background: var(--accent-dim);
+  border: 1px solid rgba(124,92,252,0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 28px;
+}
+.lv-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.lv-progress-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+.lv-progress-dot {
+  width: 8px; height: 8px;
+  background: var(--accent-bright);
+  border-radius: 50%; flex-shrink: 0;
+  animation: lv-pulse-green 2s infinite;
+}
+.lv-progress-count {
+  font-size: 12px;
+  color: var(--accent-bright);
+  font-weight: 700;
+}
+.lv-progress-bar-bg {
+  height: 6px;
+  background: rgba(124,92,252,0.15);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.lv-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c5cfc, #a78bfa);
+  border-radius: 99px;
+  transition: width 1s ease;
+}
+.lv-progress-warn {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #fbbf24;
+  font-weight: 500;
+}
+
+/* MOCKUP DE PRODUTO */
+.lv-mockup-section {
+  padding: 80px 60px 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+.lv-mockup-wrap {
+  margin-top: 48px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.lv-mockup-bar {
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.lv-mock-dot-r { width: 10px; height: 10px; border-radius: 50%; background: rgba(239,68,68,0.4); }
+.lv-mock-dot-y { width: 10px; height: 10px; border-radius: 50%; background: rgba(251,191,36,0.4); }
+.lv-mock-dot-g { width: 10px; height: 10px; border-radius: 50%; background: rgba(52,211,153,0.4); }
+.lv-mockup-body {
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.lv-mock-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.lv-mock-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.lv-mock-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  border: 1px solid rgba(124,92,252,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.lv-mock-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.lv-mock-loc  { font-size: 11px; color: var(--muted); }
+.lv-mock-tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 20px; margin-bottom: 12px;
+}
+.lv-mock-tag-im { background: rgba(124,92,252,0.15); color: var(--accent-bright); border: 1px solid rgba(124,92,252,0.2); }
+.lv-mock-tag-co { background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
+.lv-mock-detail { font-size: 12px; color: var(--muted); line-height: 1.65; }
+.lv-mock-match-row {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(167,139,250,0.04));
+  border: 1px solid rgba(124,92,252,0.3);
+  border-radius: 12px;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.lv-mock-match-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+  background: var(--accent-dim);
+  border: 1px solid rgba(124,92,252,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.lv-mock-match-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.lv-mock-match-desc { font-size: 13px; color: var(--muted); }
+.lv-mock-match-score {
+  margin-left: auto; flex-shrink: 0;
+  text-align: center;
+}
+.lv-mock-match-pct {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px; color: var(--accent-bright); line-height: 1;
+}
+.lv-mock-match-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; }
+
+/* FAQ */
+.lv-faq-section {
+  padding: 80px 60px 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+.lv-faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 48px;
+}
+.lv-faq-item {
+  background: var(--surface);
+  padding: 28px 32px;
+}
+.lv-faq-q { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.lv-faq-a { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+/* STICKY CTA MOBILE */
+.lv-sticky-cta {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 16px 20px;
+  background: rgba(8,8,15,0.96);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  z-index: 200;
+}
+.lv-sticky-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #7c5cfc, #9d7fff);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(124,92,252,0.4);
+  transition: transform 0.15s;
+}
+.lv-sticky-btn:active { transform: scale(0.98); }
+
+@media (max-width: 900px) {
+  .lv-sticky-cta { display: block; }
+  .lv-faq-grid { grid-template-columns: 1fr; }
+  .lv-mockup-section { padding: 48px 16px 60px; }
+  .lv-faq-section { padding: 48px 16px 60px; }
+  .lv-mockup-body { grid-template-columns: 1fr; }
+  .lv-mock-match-row { grid-column: 1; flex-wrap: wrap; }
+  .lv-mock-match-score { margin-left: 0; }
+}
 `;
 
 /* ═══════════════════════════════════════════════════════════
@@ -787,7 +991,7 @@ function FounderForm({ onSuccess }: { onSuccess?: () => void }) {
 
       <div className="lv-form-group">
         <label className="lv-label">
-          WhatsApp <span style={{ fontWeight: 400, textTransform: "none", fontSize: 11 }}>(opcional)</span>
+          WhatsApp <span style={{ fontWeight: 400, textTransform: "none", fontSize: 11 }}>— te aviso na hora que seu acesso abrir</span>
         </label>
         <input
           className="lv-input"
@@ -810,7 +1014,7 @@ function FounderForm({ onSuccess }: { onSuccess?: () => void }) {
       )}
 
       <button className="lv-btn-submit" type="submit" disabled={status === "loading"}>
-        {status === "loading" ? "Enviando..." : "Quero ser membro fundador →"}
+        {status === "loading" ? "Enviando..." : "Garantir minha vaga gratuita →"}
       </button>
 
       <div className="lv-form-trust">
@@ -878,19 +1082,19 @@ export default function ListaVipPage() {
             <div className="lv-founder-tag">✦ Grupo Negócios Imobiliários · Acesso Fundador</div>
 
             <h1 className="lv-h1">
-              Seja um dos<br />
-              primeiros a<br />
-              <em>moldar a rede.</em>
+              O comprador certo<br />
+              para seu imóvel<br />
+              <em>já existe.</em>
             </h1>
 
             <p className="lv-hero-sub">
-              O ImobMatch ainda está nos primeiros dias. Estamos convidando corretores do grupo para ser membros fundadores — com vantagens que nunca mais voltarão.
+              Ele está com outro corretor. O ImobMatch conecta você a quem tem o que seu cliente procura — e vice-versa. Quem entra agora vira fundador, com vantagens permanentes que nunca mais voltarão.
             </p>
 
             <ul className="lv-pain-list">
-              <li>Tem cliente mas não acha o imóvel certo?</li>
-              <li>Tem imóvel mas não encontra o comprador ideal?</li>
-              <li>Difícil fechar parcerias confiáveis com outros corretores?</li>
+              <li>Você perde comissão toda semana por não conhecer o corretor certo no bairro certo.</li>
+              <li>Seu comprador sai frustrado porque seu portfólio não tem o imóvel que ele quer.</li>
+              <li>Parceria informal quebra no meio. Sem registro, sem compromisso, sem garantia.</li>
             </ul>
 
             <div className="lv-stats-row">
@@ -920,21 +1124,26 @@ export default function ListaVipPage() {
                 </p>
               </div>
 
-              {/* Contador real */}
-              <div className="lv-founder-counter">
-                <div className="lv-fc-left">
-                  <div className="lv-fc-dot" />
-                  <span className="lv-fc-text">
-                    Fundadores confirmados:{" "}
-                    <span className="lv-fc-count">
-                      {count === null
-                        ? <span style={{ display: "inline-block", width: 28, height: 14, borderRadius: 4, background: "rgba(200,240,74,0.2)", verticalAlign: "middle" }} />
-                        : displayed.toLocaleString("pt-BR")
-                      }
-                    </span>
+              {/* Barra de progresso de vagas */}
+              <div className="lv-progress-wrap">
+                <div className="lv-progress-header">
+                  <div className="lv-progress-label">
+                    <div className="lv-progress-dot" />
+                    <span>Vagas de fundador preenchidas</span>
+                  </div>
+                  <span className="lv-progress-count">
+                    {count === null ? "..." : `${Math.min(displayed, 100)}/100`}
                   </span>
                 </div>
-                <span className="lv-fc-badge">Atualizado agora</span>
+                <div className="lv-progress-bar-bg">
+                  <div
+                    className="lv-progress-bar-fill"
+                    style={{ width: count === null ? "0%" : `${Math.min((displayed / 100) * 100, 100)}%` }}
+                  />
+                </div>
+                {count !== null && displayed >= 80 && (
+                  <p className="lv-progress-warn">⚡ Últimas vagas disponíveis</p>
+                )}
               </div>
 
               <FounderForm />
@@ -994,6 +1203,69 @@ export default function ListaVipPage() {
           </div>
         </section>
 
+        {/* ── MOCKUP DO PRODUTO ─────────────────────────────── */}
+        <section className="lv-mockup-section lv-fade">
+          <p className="lv-section-label">Como funciona na prática</p>
+          <h2>Veja um match acontecendo</h2>
+          <p>Quando dois corretores têm perfis compatíveis — um com imóvel, outro com comprador — o sistema identifica e conecta os dois automaticamente.</p>
+
+          <div className="lv-mockup-wrap">
+            <div className="lv-mockup-bar">
+              <div className="lv-mock-dot-r" />
+              <div className="lv-mock-dot-y" />
+              <div className="lv-mock-dot-g" />
+            </div>
+            <div className="lv-mockup-body">
+              {/* Card corretor A */}
+              <div className="lv-mock-card">
+                <div className="lv-mock-card-header">
+                  <div className="lv-mock-avatar">🏠</div>
+                  <div>
+                    <div className="lv-mock-name">Carlos M.</div>
+                    <div className="lv-mock-loc">Corretor · São Paulo, SP</div>
+                  </div>
+                </div>
+                <div className="lv-mock-tag lv-mock-tag-im">Imóvel disponível</div>
+                <div className="lv-mock-detail">
+                  Apartamento 3 quartos · Pinheiros<br />
+                  R$ 850.000 · 92 m² · 2 vagas<br />
+                  Alto padrão, pronto para morar
+                </div>
+              </div>
+
+              {/* Card corretor B */}
+              <div className="lv-mock-card">
+                <div className="lv-mock-card-header">
+                  <div className="lv-mock-avatar">👤</div>
+                  <div>
+                    <div className="lv-mock-name">Fernanda L.</div>
+                    <div className="lv-mock-loc">Corretora · São Paulo, SP</div>
+                  </div>
+                </div>
+                <div className="lv-mock-tag lv-mock-tag-co">Comprador qualificado</div>
+                <div className="lv-mock-detail">
+                  Casal, 3 quartos · Pinheiros ou Itaim<br />
+                  Até R$ 900.000 · Mín. 80 m²<br />
+                  Financiamento aprovado
+                </div>
+              </div>
+
+              {/* Match card */}
+              <div className="lv-mock-match-row">
+                <div className="lv-mock-match-icon">✦</div>
+                <div>
+                  <div className="lv-mock-match-title">Match encontrado pelo ImobMatch</div>
+                  <div className="lv-mock-match-desc">Carlos e Fernanda foram conectados. O imóvel de Carlos atende 100% do perfil do comprador de Fernanda.</div>
+                </div>
+                <div className="lv-mock-match-score">
+                  <div className="lv-mock-match-pct">98%</div>
+                  <div className="lv-mock-match-lbl">compatibilidade</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── HONESTIDADE ───────────────────────────────────── */}
         <div className="lv-honesty lv-fade">
           <div className="lv-honesty-inner">
@@ -1008,6 +1280,31 @@ export default function ListaVipPage() {
           </div>
         </div>
 
+        {/* ── FAQ ───────────────────────────────────────────── */}
+        <section className="lv-faq-section lv-fade">
+          <p className="lv-section-label">Dúvidas frequentes</p>
+          <h2>Perguntas que todo corretor faz antes de entrar</h2>
+
+          <div className="lv-faq-grid">
+            <div className="lv-faq-item">
+              <div className="lv-faq-q">Isso é realmente grátis?</div>
+              <div className="lv-faq-a">Sim. Fundadores têm acesso permanentemente gratuito ao plano base do ImobMatch — sem cartão de crédito, sem cobrança futura. Independente de quando lançarmos planos pagos, o status de fundador é para sempre.</div>
+            </div>
+            <div className="lv-faq-item">
+              <div className="lv-faq-q">Quando vou receber o acesso?</div>
+              <div className="lv-faq-a">Estamos liberando por ordem de cadastro, região por região. Você recebe o link de acesso por e-mail assim que sua fila for chamada. Por isso entrar agora faz diferença — sua posição na fila é definida hoje.</div>
+            </div>
+            <div className="lv-faq-item">
+              <div className="lv-faq-q">Funciona na minha cidade?</div>
+              <div className="lv-faq-a">O ImobMatch cobre o Brasil inteiro. Quanto mais corretores da sua região se cadastrarem, mais rápido a rede local atinge escala e você começa a receber matches com qualidade.</div>
+            </div>
+            <div className="lv-faq-item">
+              <div className="lv-faq-q">Qual a diferença de um grupo de WhatsApp?</div>
+              <div className="lv-faq-a">No WhatsApp você anuncia para todos e espera alguém responder. No ImobMatch o sistema cruza automaticamente o seu comprador com o imóvel certo de outro corretor — sem ruído, sem spam, sem perder tempo.</div>
+            </div>
+          </div>
+        </section>
+
         {/* ── CTA FINAL ─────────────────────────────────────── */}
         <section className="lv-cta lv-fade">
           <h2>Sua concorrência ainda<br />não sabe que isso existe.</h2>
@@ -1016,6 +1313,13 @@ export default function ListaVipPage() {
             Garantir minha vaga de fundador →
           </button>
         </section>
+
+        {/* ── STICKY CTA MOBILE ─────────────────────────────── */}
+        <div className="lv-sticky-cta">
+          <button className="lv-sticky-btn" onClick={scrollToForm}>
+            Garantir minha vaga gratuita →
+          </button>
+        </div>
 
         {/* ── FOOTER ────────────────────────────────────────── */}
         <footer className="lv-footer">
