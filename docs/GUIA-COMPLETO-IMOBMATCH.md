@@ -94,7 +94,7 @@ Ideal para quem quer conhecer a plataforma antes de assinar.
 
 - Acesso ao dashboard
 - Cadastro limitado de imóveis e compradores
-- Visualização de matches internos (dentro da sua carteira)
+- Match automático com corretores de toda a rede
 - Perfil na rede
 
 ### Plano Starter
