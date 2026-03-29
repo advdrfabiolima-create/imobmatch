@@ -21,7 +21,7 @@ export class EarlyAccessService {
       throw new ConflictException('Este e-mail já está na lista de acesso antecipado.');
     }
 
-    return this.prisma.earlyAccessLead.create({
+    const lead = await this.prisma.earlyAccessLead.create({
       data: {
         fullName: dto.fullName,
         email:    dto.email,
@@ -30,6 +30,10 @@ export class EarlyAccessService {
       },
       select: { id: true, fullName: true, email: true, createdAt: true },
     });
+
+    const position = await this.prisma.earlyAccessLead.count();
+
+    return { ...lead, position };
   }
 
   // ── Admin: listagem com filtros ─────────────────────────────────────────────

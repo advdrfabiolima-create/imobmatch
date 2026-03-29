@@ -423,6 +423,74 @@ const PAGE_CSS = `
   color: var(--muted);
   line-height: 1.6;
 }
+.lv-success-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-dim);
+  border: 1px solid rgba(124,92,252,0.35);
+  border-radius: 12px;
+  padding: 10px 24px;
+  margin: 14px auto 20px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 34px;
+  color: var(--accent-bright);
+  letter-spacing: -0.01em;
+}
+.lv-share-box {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: left;
+}
+.lv-share-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.lv-share-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.lv-share-url {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+}
+.lv-share-btn {
+  background: var(--accent-dim);
+  border: 1px solid rgba(124,92,252,0.3);
+  color: var(--accent-bright);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.lv-share-btn:hover { background: rgba(124,92,252,0.22); }
+.lv-share-hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
 
 /* SECTIONS */
 .lv-section {
@@ -930,6 +998,8 @@ function FounderForm({ onSuccess }: { onSuccess?: () => void }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [position, setPosition] = useState<number | null>(null);
+  const [copied, setCopied] = useState(false);
 
   function validate() {
     const errs: Record<string, string> = {};
@@ -944,7 +1014,8 @@ function FounderForm({ onSuccess }: { onSuccess?: () => void }) {
     if (!validate()) return;
     setStatus("loading");
     try {
-      await api.post("/early-access", { fullName: fullName.trim(), email: email.trim(), whatsapp, source: "facebook_group" });
+      const res = await api.post("/early-access", { fullName: fullName.trim(), email: email.trim(), whatsapp, source: "facebook_group" });
+      setPosition(res.data?.position ?? null);
       setStatus("success");
       onSuccess?.();
     } catch (err: any) {
@@ -953,12 +1024,35 @@ function FounderForm({ onSuccess }: { onSuccess?: () => void }) {
     }
   }
 
+  const SHARE_URL = "https://www.useimobmatch.com.br/lista-vip";
+
+  function handleCopy() {
+    navigator.clipboard.writeText(SHARE_URL).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }
+
   if (status === "success") {
     return (
       <div className="lv-success">
         <div className="lv-success-icon">✓</div>
         <h3>Você está dentro.</h3>
-        <p>Bem-vindo aos fundadores do ImobMatch.<br />Em breve você receberá o acesso por e-mail.</p>
+        {position !== null && (
+          <div className="lv-success-num">Fundador #{position}</div>
+        )}
+        <p>Bem-vindo aos fundadores do ImobMatch.<br />Você receberá o acesso por e-mail em breve.</p>
+
+        <div className="lv-share-box">
+          <p className="lv-share-label">Chamar um colega corretor</p>
+          <div className="lv-share-row">
+            <span className="lv-share-url">{SHARE_URL}</span>
+            <button className="lv-share-btn" type="button" onClick={handleCopy}>
+              {copied ? "Copiado ✓" : "Copiar link"}
+            </button>
+          </div>
+          <p className="lv-share-hint">Cada colega que entrar aumenta o valor da rede para todos.</p>
+        </div>
       </div>
     );
   }
