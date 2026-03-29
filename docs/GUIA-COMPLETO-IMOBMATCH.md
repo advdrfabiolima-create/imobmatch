@@ -26,10 +26,9 @@
 14. [Analytics](#14-analytics)
 15. [Perfil e Configurações](#15-perfil-e-configurações)
 16. [Meu Plano](#16-meu-plano)
-17. [Painel Admin](#17-painel-admin)
-18. [Notificações por E-mail](#18-notificações-por-e-mail)
-19. [Glossário](#19-glossário)
-20. [Perguntas Frequentes](#20-perguntas-frequentes)
+17. [Notificações por E-mail](#17-notificações-por-e-mail)
+18. [Glossário](#18-glossário)
+19. [Perguntas Frequentes](#19-perguntas-frequentes)
 
 ---
 
@@ -720,42 +719,7 @@ Membros da equipe compartilham o contexto da imobiliária mas têm carteiras de 
 
 ---
 
-## 17. Painel Admin
-
-O **Painel Admin** é acessível apenas para contas com perfil de Administrador da plataforma. Permite gerenciar todos os aspectos da plataforma.
-
-### Gestão de leads (Lista VIP)
-
-Exibe todos os corretores que se cadastraram na lista de membros fundadores (/lista-vip), com:
-
-- **Nome, e-mail e telefone**
-- **Status:** Aguardando, Convidado ou Cadastrado
-- **Data de cadastro**
-
-**Ações disponíveis:**
-- **Convidar:** envia e-mail com link de acesso para o lead
-- **Convidar em massa:** selecione múltiplos leads e envie convites em lote
-- **Excluir:** remove o lead da lista
-- **Exportar CSV:** baixa a lista completa em formato Excel/CSV
-
-**Busca e filtros:** pesquise por nome, e-mail ou telefone e filtre por status.
-
-### Gestão de usuários
-
-Visualize e gerencie todos os corretores cadastrados na plataforma:
-
-- Ativar ou desativar contas
-- Alterar planos manualmente
-- Excluir contas permanentemente
-- Visualizar estatísticas por usuário
-
-### Gestão de oportunidades
-
-Monitore e modere as oportunidades publicadas na plataforma.
-
----
-
-## 18. Notificações por E-mail
+## 17. Notificações por E-mail
 
 O ImobMatch envia notificações automáticas por e-mail em situações específicas.
 
@@ -797,7 +761,7 @@ Demais notificações (parceria, fechamento, verificação de conta) não podem 
 
 ---
 
-## 19. Glossário
+## 18. Glossário
 
 | Termo | Definição |
 |---|---|
@@ -816,7 +780,7 @@ Demais notificações (parceria, fechamento, verificação de conta) não podem 
 
 ---
 
-## 20. Perguntas Frequentes
+## 19. Perguntas Frequentes
 
 **O ImobMatch substitui o CRECI ou o registro profissional?**
 Não. O ImobMatch é uma ferramenta de apoio para corretores registrados. O CRECI continua sendo obrigatório para exercer a profissão.
