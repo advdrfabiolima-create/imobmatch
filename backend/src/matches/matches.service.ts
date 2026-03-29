@@ -15,9 +15,9 @@ const PLAN_BOOST: Record<string, number> = {
   agency:  15,
 };
 
-// Planos que habilitam o match automático entre corretores diferentes.
-// Se pelo menos um dos dois agentes envolvidos for Pro+, o match é gerado.
-const PRO_PLANS = new Set(['pro', 'premium', 'agency']);
+// Match automático cross-agent habilitado para todos os planos.
+// A diferenciação entre planos ocorre via bônus de score (PLAN_BOOST)
+// e limites de cadastro de imóveis/compradores.
 
 @Injectable()
 export class MatchesService {
@@ -205,12 +205,6 @@ export class MatchesService {
 
   // ==================== MATCH AUTOMÁTICO (ao cadastrar comprador/imóvel, score ≥ 70) ====================
 
-  // ── Regra de match automático entre corretores ─────────────────────────────
-  // Match cross-agent só é gerado automaticamente se pelo menos um dos dois
-  // agentes envolvidos (comprador ou imóvel) estiver em plano Pro, Premium ou Agency.
-  // Matches dentro do próprio corretor (mesmo agentId) são sempre gerados.
-  // O botão manual "Verificar Matches" não tem essa restrição.
-
   async generateForBuyer(buyerId: string): Promise<void> {
     try {
       const buyer = await this.prisma.buyer.findUnique({
@@ -225,8 +219,7 @@ export class MatchesService {
       });
 
       const allAgentIds = [buyer.agentId, ...properties.map((p) => p.agentId)];
-      const { boosts, proSet } = await this.getAgentPlanData(allAgentIds);
-      const buyerAgentIsPro = proSet.has(buyer.agentId);
+      const boosts = await this.getPlanBoosts(allAgentIds);
 
       // Acumula novos matches cross-agent para envio de e-mail agrupado
       const newMatchesByPropertyAgent = new Map<string, { agent: any; count: number; bestScore: number; propertyTitle: string; propertyCity: string | null }>();
@@ -238,8 +231,6 @@ export class MatchesService {
 
       for (const property of properties) {
         const isSameAgent = property.agentId === buyer.agentId;
-        if (!isSameAgent && !buyerAgentIsPro && !proSet.has(property.agentId)) continue;
-
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
           const boost = boosts.get(property.agentId) ?? 0;
@@ -316,8 +307,7 @@ export class MatchesService {
       });
 
       const allAgentIds = [property.agentId, ...buyers.map((b) => b.agentId)];
-      const { boosts, proSet } = await this.getAgentPlanData(allAgentIds);
-      const propertyAgentIsPro = proSet.has(property.agentId);
+      const boosts = await this.getPlanBoosts(allAgentIds);
       const boost = boosts.get(property.agentId) ?? 0;
 
       // Acumula novos matches cross-agent para envio de e-mail agrupado
@@ -328,8 +318,6 @@ export class MatchesService {
 
       for (const buyer of buyers) {
         const isSameAgent = buyer.agentId === property.agentId;
-        if (!isSameAgent && !propertyAgentIsPro && !proSet.has(buyer.agentId)) continue;
-
         const score = this.calculateScore(buyer, property);
         if (score >= 70) {
           try {
