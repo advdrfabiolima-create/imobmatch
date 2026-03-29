@@ -1382,7 +1382,7 @@ export default function ListaVipPage() {
           <div className="lv-faq-grid">
             <div className="lv-faq-item">
               <div className="lv-faq-q">Isso é realmente grátis?</div>
-              <div className="lv-faq-a">Sim. Fundadores têm acesso permanentemente gratuito ao plano base do ImobMatch — sem cartão de crédito, sem cobrança futura. Independente de quando lançarmos planos pagos, o status de fundador é para sempre.</div>
+              <div className="lv-faq-a">Sim. Fundadores têm acesso permanentemente gratuito ao plano básico do ImobMatch — sem cartão de crédito, sem cobrança futura. Independente de quando lançarmos planos pagos, o status de fundador é para sempre.</div>
             </div>
             <div className="lv-faq-item">
               <div className="lv-faq-q">Quando vou receber o acesso?</div>
