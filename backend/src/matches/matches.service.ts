@@ -15,6 +15,8 @@ const PLAN_BOOST: Record<string, number> = {
   agency:  15,
 };
 
+const PRO_PLANS = new Set(['pro', 'premium', 'agency']);
+
 // Match automático cross-agent habilitado para todos os planos.
 // A diferenciação entre planos ocorre via bônus de score (PLAN_BOOST)
 // e limites de cadastro de imóveis/compradores.
