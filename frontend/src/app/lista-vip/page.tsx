@@ -620,6 +620,21 @@ const PAGE_CSS = `
   margin: 0 auto 80px;
   max-width: 1080px;
   padding: 0 60px;
+  position: relative;
+}
+.lv-honesty::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(124,92,252,0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.lv-honesty-inner {
+  position: relative;
+  z-index: 1;
 }
 .lv-honesty-inner {
   background: rgba(124,92,252,0.07);
@@ -810,6 +825,21 @@ const PAGE_CSS = `
   max-width: 1200px;
   margin: 0 auto;
   border-top: 1px solid var(--border);
+  position: relative;
+}
+.lv-mockup-section::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 500px;
+  background: radial-gradient(ellipse, rgba(124,92,252,0.09) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.lv-mockup-section > * {
+  position: relative;
+  z-index: 1;
 }
 .lv-mockup-wrap {
   margin-top: 48px;
