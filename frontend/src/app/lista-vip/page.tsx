@@ -626,6 +626,7 @@ const PAGE_CSS = `
   border: 1px solid rgba(124,92,252,0.2);
   border-radius: 20px;
   padding: 52px 60px;
+  box-shadow: 0 0 40px rgba(124,92,252,0.12);
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 60px;
@@ -812,10 +813,11 @@ const PAGE_CSS = `
 }
 .lv-mockup-wrap {
   margin-top: 48px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(124,92,252,0.2);
   border-radius: 16px;
   overflow: hidden;
   background: var(--surface);
+  box-shadow: 0 0 48px rgba(124,92,252,0.14);
 }
 .lv-mockup-bar {
   background: rgba(255,255,255,0.025);
