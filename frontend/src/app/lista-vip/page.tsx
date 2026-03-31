@@ -627,8 +627,8 @@ const PAGE_CSS = `
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 700px; height: 400px;
-  background: radial-gradient(ellipse, rgba(124,92,252,0.1) 0%, transparent 70%);
+  width: 120%; height: 300%;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(124,92,252,0.22) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
@@ -832,8 +832,8 @@ const PAGE_CSS = `
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 800px; height: 500px;
-  background: radial-gradient(ellipse, rgba(124,92,252,0.09) 0%, transparent 70%);
+  width: 120%; height: 300%;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(124,92,252,0.2) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
