@@ -754,7 +754,7 @@ export default function HomePage() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-white/80 hover:text-white transition-colors">
+            <Link href="/lista-vip" className="text-sm font-medium text-white/80 hover:text-white transition-colors">
               Entrar
             </Link>
             <Link
@@ -784,7 +784,7 @@ export default function HomePage() {
               </Link>
             ))}
             <div className="pt-3 mt-3 border-t border-white/10 flex flex-col gap-2">
-              <Link href="/login" onClick={() => setMenuOpen(false)}
+              <Link href="/lista-vip" onClick={() => setMenuOpen(false)}
                 className="block text-center py-2.5 rounded-xl border border-white/20 text-sm font-medium text-white hover:bg-white/10 transition">
                 Entrar
               </Link>
@@ -1505,7 +1505,7 @@ export default function HomePage() {
             <div>
               <p className="text-white font-semibold text-sm mb-5">Conta</p>
               <ul className="space-y-3 text-sm">
-                <li><Link href="/login"    className="hover:text-white transition-colors">Entrar</Link></li>
+                <li><Link href="/lista-vip"    className="hover:text-white transition-colors">Entrar</Link></li>
                 <li><Link href="/lista-vip" className="hover:text-white transition-colors">Criar conta grátis</Link></li>
               </ul>
             </div>
