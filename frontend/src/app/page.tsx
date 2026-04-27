@@ -164,7 +164,7 @@ export default function GatewayPage() {
           }}
           onMouseEnter={() => setHovered("agent")}
           onMouseLeave={() => setHovered(null)}
-          onClick={() => router.push("/lista-vip")}
+          onClick={() => router.push("/para-corretores")}
         >
           {/* Dot pattern */}
           <div
@@ -331,7 +331,7 @@ export default function GatewayPage() {
             background: "linear-gradient(150deg, #0a0e26 0%, #190a50 100%)",
             cursor: "pointer",
           }}
-          onClick={() => router.push("/lista-vip")}
+          onClick={() => router.push("/para-corretores")}
         >
           <div
             className="absolute pointer-events-none"

@@ -334,7 +334,7 @@ function LiveActivitySection() {
             Esses são exemplos do tipo de atividade que acontece na plataforma
           </p>
           <Link
-            href="/register"
+            href="/lista-vip"
             className="group inline-flex items-center gap-2 text-blue-400 font-semibold text-sm hover:text-blue-300 transition-colors"
           >
             Quero fazer parte da rede
@@ -530,7 +530,7 @@ function OpportunityImpactSection() {
                   </div>
                 )}
                 <Link
-                  href={isReal ? "/radar" : "/register"}
+                  href={isReal ? "/radar" : "/lista-vip"}
                   className="group w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition"
                   style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)" }}
                 >
@@ -571,7 +571,7 @@ function OpportunityImpactSection() {
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link
-              href="/register"
+              href="/lista-vip"
               className="group inline-flex items-center gap-2 border text-orange-300 px-8 py-3.5 rounded-xl font-bold active:scale-[0.99] transition-all duration-200 hover:bg-orange-500/10"
               style={{ borderColor: "rgba(251,146,60,0.40)" }}
             >
@@ -758,7 +758,7 @@ export default function HomePage() {
               Entrar
             </Link>
             <Link
-              href="/register"
+              href="/lista-vip"
               className="inline-flex items-center gap-1.5 bg-white text-blue-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-50 transition shadow-lg shadow-blue-900/30 active:scale-[0.98]"
             >
               Cadastrar grátis
@@ -788,7 +788,7 @@ export default function HomePage() {
                 className="block text-center py-2.5 rounded-xl border border-white/20 text-sm font-medium text-white hover:bg-white/10 transition">
                 Entrar
               </Link>
-              <Link href="/register" onClick={() => setMenuOpen(false)}
+              <Link href="/lista-vip" onClick={() => setMenuOpen(false)}
                 className="block text-center py-2.5 rounded-xl bg-white text-blue-700 text-sm font-bold hover:bg-blue-50 transition">
                 Cadastrar grátis
               </Link>
@@ -868,7 +868,7 @@ export default function HomePage() {
           </div>
 
           <div className="text-center mt-14">
-            <Link href="/register"
+            <Link href="/lista-vip"
               className="group inline-flex items-center gap-2 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg hover:opacity-95 active:scale-[0.98] transition-all duration-200"
               style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)", boxShadow: "0 4px 20px rgba(37,99,235,0.30)" }}>
               Começar a gerar oportunidades
@@ -1187,7 +1187,7 @@ export default function HomePage() {
                   {p.price}
                 </p>
                 <p className="text-xs mb-5" style={{ color: "rgba(255,255,255,0.38)" }}>{p.desc}</p>
-                <Link href="/register"
+                <Link href="/lista-vip"
                   className="inline-flex items-center justify-center gap-1 w-full py-2.5 rounded-xl text-sm font-semibold transition active:scale-[0.98]"
                   style={p.highlight
                     ? { background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)", color: "#fff", boxShadow: "0 2px 12px rgba(37,99,235,0.30)" }
@@ -1463,7 +1463,7 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-            <Link href="/register"
+            <Link href="/lista-vip"
               className="group inline-flex items-center justify-center gap-2 bg-white text-blue-700 px-8 py-4 rounded-xl text-base font-bold hover:bg-blue-50 active:scale-[0.98] transition-all duration-200 shadow-xl shadow-blue-900/30">
               Começar a gerar oportunidades
               <ArrowRight className="h-5 w-5 group-hover:translate-x-0.5 transition-transform" />
@@ -1506,7 +1506,7 @@ export default function HomePage() {
               <p className="text-white font-semibold text-sm mb-5">Conta</p>
               <ul className="space-y-3 text-sm">
                 <li><Link href="/login"    className="hover:text-white transition-colors">Entrar</Link></li>
-                <li><Link href="/register" className="hover:text-white transition-colors">Criar conta grátis</Link></li>
+                <li><Link href="/lista-vip" className="hover:text-white transition-colors">Criar conta grátis</Link></li>
               </ul>
             </div>
             <div>
