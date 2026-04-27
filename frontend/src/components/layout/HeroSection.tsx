@@ -310,7 +310,7 @@ export default function HeroSection() {
           {/* CTAs */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:mt-10 lg:gap-4">
             <Link
-              href="/register"
+              href="/lista-vip"
               className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-4 text-base font-semibold text-white shadow-[0_18px_40px_rgba(79,70,229,0.28)] transition hover:-translate-y-px hover:shadow-[0_20px_45px_rgba(79,70,229,0.34)] sm:w-auto sm:px-8 sm:py-5 sm:text-lg"
             >
               Começar a gerar oportunidades

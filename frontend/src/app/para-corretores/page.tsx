@@ -18,7 +18,6 @@ import HeroSection from "@/components/layout/HeroSection";
 const NAV_LINKS = [
   { href: "#como-funciona",  label: "Como funciona"  },
   { href: "#funcionalidades", label: "Funcionalidades" },
-  { href: "/plans",           label: "Planos"          },
   { href: "/imoveis",         label: "Imóveis"         },
   { href: "/radar",   label: "Oportunidades"   },
   { href: "#app",             label: "📱 App"          },
@@ -1140,7 +1139,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════════
           PLANOS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="py-24">
+      <section className="py-24 hidden">
         <div className="mx-auto max-w-7xl px-6">
           <div
             ref={fadePlanos.ref}
