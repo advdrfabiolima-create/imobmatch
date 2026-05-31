@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/layout/header";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
@@ -54,12 +54,33 @@ export default function MeuPlanoPage() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelling, setCancelling]         = useState(false);
 
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   useEffect(() => {
     api.get("/billing/subscription")
       .then(r => setSubscription(r.data))
       .catch(() => setSubscription(null))
       .finally(() => setSubLoading(false));
   }, []);
+
+  // Polling automático enquanto status = PENDING
+  useEffect(() => {
+    if (subscription?.status !== "PENDING") {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+      return;
+    }
+    pollingRef.current = setInterval(async () => {
+      try {
+        const { data } = await api.get("/billing/subscription");
+        setSubscription(data);
+        if (data?.status === "ACTIVE") {
+          updateUser({ plan: data.plan });
+          if (pollingRef.current) clearInterval(pollingRef.current);
+        }
+      } catch { /* silent */ }
+    }, 8_000);
+    return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
+  }, [subscription?.status, updateUser]);
 
   if (user?.isLifetime) {
     return (
@@ -102,7 +123,9 @@ export default function MeuPlanoPage() {
     try {
       const { data } = await api.post("/billing/checkout", { planId });
       if (data?.paymentUrl) {
-        window.location.href = data.paymentUrl;
+        // Abre Asaas em nova aba e redireciona esta para a página de confirmação
+        window.open(data.paymentUrl, "_blank");
+        window.location.href = "/pagamento-confirmado";
       } else {
         toast.error("Não foi possível gerar o link de pagamento.");
       }
