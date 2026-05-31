@@ -124,6 +124,8 @@ export class AuthService {
 
   // ─── register ──────────────────────────────────────────────────────────────
 
+  private readonly FOUNDER_LIMIT = 50;
+
   async register(dto: RegisterDto) {
     const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (existing) throw new ConflictException('E-mail já cadastrado');
@@ -132,19 +134,26 @@ export class AuthService {
     const verificationToken = uuidv4();
     const verificationExpiry = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 horas
 
-    const user = await this.prisma.user.create({
-      data: {
-        ...dto,
-        password: hashedPassword,
-        emailVerified: false,
-        emailVerificationToken: verificationToken,
-        emailVerificationExpiry: verificationExpiry,
-      },
-      select: {
-        id: true, name: true, email: true, phone: true,
-        city: true, state: true, agency: true, creci: true,
-        role: true, plan: true, isLifetime: true, isFirstLogin: true, emailVerified: true, createdAt: true,
-      },
+    // Cria o usuário e verifica a vaga de fundador atomicamente
+    const user = await this.prisma.$transaction(async (tx) => {
+      const founderCount = await tx.user.count({ where: { isFounder: true } });
+      const isFounder = founderCount < this.FOUNDER_LIMIT;
+
+      return tx.user.create({
+        data: {
+          ...dto,
+          password: hashedPassword,
+          emailVerified: false,
+          emailVerificationToken: verificationToken,
+          emailVerificationExpiry: verificationExpiry,
+          isFounder,
+        },
+        select: {
+          id: true, name: true, email: true, phone: true,
+          city: true, state: true, agency: true, creci: true,
+          role: true, plan: true, isFounder: true, isLifetime: true, isFirstLogin: true, emailVerified: true, createdAt: true,
+        },
+      });
     });
 
     this.mailService.sendVerificationEmail(user.email, user.name, verificationToken);
@@ -254,7 +263,7 @@ export class AuthService {
       select: {
         id: true, name: true, email: true, phone: true, city: true,
         state: true, agency: true, creci: true, bio: true, avatarUrl: true,
-        role: true, plan: true, isLifetime: true, isFirstLogin: true, emailVerified: true, createdAt: true,
+        role: true, plan: true, isFounder: true, isLifetime: true, isFirstLogin: true, emailVerified: true, createdAt: true,
         cpfCnpj: true, personType: true, notifyMatchEmail: true,
         _count: { select: { properties: true, buyers: true } },
       },

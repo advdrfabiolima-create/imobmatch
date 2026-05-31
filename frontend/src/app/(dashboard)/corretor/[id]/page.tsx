@@ -91,6 +91,11 @@ export default function CorretorPerfilPage() {
                       {agent.creci}
                     </span>
                   )}
+                  {agent.isFounder && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border bg-violet-500/10 text-violet-300 border-violet-500/30">
+                      ✦ Membro Fundador
+                    </span>
+                  )}
                 </div>
 
                 {agent.agency && (

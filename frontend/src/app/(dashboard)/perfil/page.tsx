@@ -263,6 +263,11 @@ export default function PerfilPage() {
                   <Badge variant={user?.role === "ADMIN" ? "default" : "secondary"}>
                     {user?.role === "ADMIN" ? "Administrador" : "Corretor"}
                   </Badge>
+                  {user?.isFounder && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border bg-violet-500/10 text-violet-300 border-violet-500/30">
+                      ✦ Membro Fundador
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground/60 mt-2">
                   Clique no ícone de câmera para adicionar sua foto ou logomarca

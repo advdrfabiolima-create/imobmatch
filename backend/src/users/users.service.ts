@@ -30,7 +30,7 @@ export class UsersService {
         select: {
           id: true, name: true, email: true, phone: true, city: true,
           state: true, agency: true, creci: true, bio: true, avatarUrl: true, createdAt: true,
-          score: true,
+          isFounder: true, score: true,
           _count: { select: { properties: true } },
         },
         orderBy: { createdAt: 'desc' },
@@ -47,6 +47,7 @@ export class UsersService {
       select: {
         id: true, name: true, email: true, phone: true, city: true,
         state: true, agency: true, creci: true, bio: true, avatarUrl: true, createdAt: true,
+        isFounder: true,
         properties: {
           where: { isPublic: true, status: 'AVAILABLE' },
           select: {

@@ -78,7 +78,14 @@ export default function CorretoresPage() {
                       size="lg"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-foreground">{agent.name}</p>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <p className="font-semibold text-foreground">{agent.name}</p>
+                        {agent.isFounder && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold border bg-violet-500/10 text-violet-300 border-violet-500/30 leading-none">
+                            ✦ Fundador
+                          </span>
+                        )}
+                      </div>
                       {agent.agency && <p className="text-sm text-primary truncate">{agent.agency}</p>}
                       {(agent.city || agent.state) && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
