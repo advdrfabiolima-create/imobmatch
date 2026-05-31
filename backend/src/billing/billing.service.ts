@@ -105,8 +105,10 @@ export class BillingService {
       }
     }
 
-    const nextDueDate = new Date().toISOString().split('T')[0];
-    const planLabel   = planId.charAt(0).toUpperCase() + planId.slice(1);
+    const nextDueDate  = new Date().toISOString().split('T')[0];
+    const planLabel    = planId.charAt(0).toUpperCase() + planId.slice(1);
+    const frontendUrl  = this.config.get('FRONTEND_URL') ?? 'https://app.useimobmatch.com.br';
+    const redirectUrl  = `${frontendUrl}/pagamento-confirmado`;
 
     // Cria assinatura no Asaas
     const subscription = await this.request<any>('POST', '/subscriptions', {
@@ -116,6 +118,7 @@ export class BillingService {
       nextDueDate,
       cycle:       'MONTHLY',
       description: `Plano ${planLabel} - ImobMatch`,
+      redirectUrl,  // URL de retorno após pagamento no checkout Asaas
     });
 
     // Salva/atualiza assinatura local como PENDING
