@@ -1,4 +1,5 @@
 import { Controller, Post, Patch, Body, Get, Query, UseGuards, Request, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Request as ExpressRequest, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -99,9 +100,16 @@ export class AuthController {
   @Post('resend-verification')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Reenviar e-mail de verificação' })
+  @ApiOperation({ summary: 'Reenviar e-mail de verificação (autenticado)' })
   resendVerification(@Request() req) {
     return this.authService.resendVerification(req.user.id);
+  }
+
+  @Post('resend-verification-public')
+  @Throttle({ default: { ttl: 60000, limit: 3 } })
+  @ApiOperation({ summary: 'Reenviar verificação por e-mail sem autenticação (3 req/min)' })
+  resendVerificationPublic(@Body() body: { email: string }) {
+    return this.authService.resendVerificationByEmail(body.email);
   }
 
   @Get('me')

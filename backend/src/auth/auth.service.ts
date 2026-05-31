@@ -4,8 +4,11 @@ import {
   ConflictException,
   BadRequestException,
   NotFoundException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
@@ -18,6 +21,8 @@ const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
@@ -176,9 +181,44 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.password);
     if (!valid) throw new UnauthorizedException('Credenciais inválidas');
 
+    if (!user.emailVerified) {
+      throw new HttpException(
+        {
+          message: 'E-mail não confirmado. Verifique sua caixa de entrada (e a pasta de spam) pelo link enviado no cadastro.',
+          code: 'EMAIL_NOT_VERIFIED',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
     const { password, ...userWithoutPassword } = user;
     const tokens = await this.generateTokens({ id: user.id, email: user.email, role: user.role });
     return { user: { ...userWithoutPassword, plan: normalizePlan(user.plan) }, ...tokens };
+  }
+
+  // ─── resendVerificationByEmail (público, sem autenticação) ─────────────────
+
+  async resendVerificationByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    // Resposta genérica para não revelar se o e-mail existe
+    const response = { message: 'Se o e-mail existir e não estiver verificado, um novo link será enviado.' };
+
+    if (!user || user.emailVerified) return response;
+
+    const token = uuidv4();
+    const expiry = new Date(Date.now() + 48 * 60 * 60 * 1000);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { emailVerificationToken: token, emailVerificationExpiry: expiry },
+    });
+
+    this.mailService.sendVerificationEmail(user.email, user.name, token).catch((err) => {
+      this.logger?.warn?.(`Falha ao reenviar verificação para ${email}: ${err?.message}`);
+    });
+
+    return response;
   }
 
   // ─── forgotPassword ────────────────────────────────────────────────────────

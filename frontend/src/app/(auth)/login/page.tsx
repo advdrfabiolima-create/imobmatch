@@ -9,11 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Eye, EyeOff, Loader2, ArrowRight,
-  Building2, Users, TrendingUp, ShieldCheck,
+  Building2, Users, TrendingUp, ShieldCheck, MailWarning,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/auth.store";
+import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -106,7 +107,10 @@ function LeftPanel() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword]         = useState(false);
+  const [emailNotVerified, setEmailNotVerified] = useState(false);
+  const [pendingEmail, setPendingEmail]         = useState("");
+  const [resending, setResending]               = useState(false);
   const { login, isLoading } = useAuthStore();
   const router = useRouter();
 
@@ -117,13 +121,31 @@ export default function LoginPage() {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: FormData) => {
+    setEmailNotVerified(false);
     try {
       await login(data.email, data.password);
       const { user } = useAuthStore.getState();
       toast.success("Bem-vindo de volta!");
       router.push(user?.isFirstLogin ? "/welcome" : "/dashboard");
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Credenciais inválidas");
+      if (err?.response?.data?.code === "EMAIL_NOT_VERIFIED") {
+        setEmailNotVerified(true);
+        setPendingEmail(data.email);
+      } else {
+        toast.error(err?.response?.data?.message || "Credenciais inválidas");
+      }
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      await api.post("/auth/resend-verification-public", { email: pendingEmail });
+      toast.success("Novo link enviado! Verifique sua caixa de entrada.");
+    } catch {
+      toast.error("Erro ao reenviar. Tente novamente em alguns instantes.");
+    } finally {
+      setResending(false);
     }
   };
 
@@ -233,6 +255,27 @@ export default function LoginPage() {
                   <p className="text-[11.5px] text-red-500 mt-1">{errors.password.message}</p>
                 )}
               </div>
+
+              {/* E-mail não verificado */}
+              {emailNotVerified && (
+                <div className="flex flex-col gap-2 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+                  <div className="flex items-center gap-2 text-amber-300">
+                    <MailWarning className="h-4 w-4 flex-shrink-0" />
+                    <p className="text-sm font-semibold">E-mail não confirmado</p>
+                  </div>
+                  <p className="text-xs text-amber-300/80 leading-relaxed">
+                    Verifique sua caixa de entrada e a pasta de spam pelo link enviado no cadastro.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resending}
+                    className="self-start text-xs font-semibold text-amber-200 underline underline-offset-2 hover:no-underline disabled:opacity-50 transition-opacity"
+                  >
+                    {resending ? "Enviando..." : "Reenviar e-mail de confirmação"}
+                  </button>
+                </div>
+              )}
 
               {/* Submit */}
               <div className="pt-1">

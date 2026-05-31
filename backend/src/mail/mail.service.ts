@@ -31,7 +31,7 @@ export class MailService {
         ✉️ Confirmar e-mail
       </a>
       <p style="color:#9ca3af;font-size:13px;margin:28px 0 0;line-height:1.6;">
-        Este link expira em <strong>24 horas</strong>.<br>
+        Este link expira em <strong>48 horas</strong>.<br>
         Se você não criou uma conta no ImobMatch, ignore este e-mail.
       </p>
       <p style="color:#d1d5db;font-size:11px;margin:16px 0 0;word-break:break-all;">
