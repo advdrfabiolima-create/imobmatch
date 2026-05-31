@@ -163,7 +163,10 @@ export default function PlansPage() {
             <Zap className="h-3 w-3" /> Preços simples e transparentes
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-5 tracking-tight leading-[1.05]">
-            Invista no seu crescimento
+            Invista no seu{" "}
+            <span className="bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">
+              crescimento
+            </span>
           </h1>
           <p className="text-lg text-blue-200/70 max-w-xl mx-auto leading-relaxed">
             Comece grátis e evolua conforme sua carteira cresce. Sem fidelidade, sem surpresas.
