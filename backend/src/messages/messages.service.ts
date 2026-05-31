@@ -71,6 +71,7 @@ export class MessagesService {
         receiver: { select: { id: true, name: true, avatarUrl: true } },
       },
       orderBy: { createdAt: 'desc' },
+      take: 2000,
     });
 
     const conversationMap = new Map();

@@ -193,18 +193,23 @@ export class BillingService {
     const eventType = event?.event as string;
     const payment   = event?.payment;
 
-    this.logger.log(`Asaas webhook: ${eventType}`);
+    this.logger.log(`Asaas webhook: ${eventType} paymentId=${payment?.id ?? 'n/a'}`);
 
     if (!payment?.subscription) return { received: true };
 
     const subscriptionId = payment.subscription as string;
+    const paymentId      = payment.id as string | undefined;
+
+    // ── Idempotência: ignora evento já processado ────────────────────────────
+    // Asaas pode reenviar o mesmo webhook em caso de timeout/falha
+    const sub = await this.prisma.subscription.findFirst({
+      where: { asaasSubscriptionId: subscriptionId },
+    });
+    if (!sub) return { received: true };
 
     // ── Pagamento confirmado → ativa plano ──────────────────────────────────
     if (eventType === 'PAYMENT_CONFIRMED' || eventType === 'PAYMENT_RECEIVED') {
-      const sub = await this.prisma.subscription.findFirst({
-        where: { asaasSubscriptionId: subscriptionId },
-      });
-      if (sub) {
+      if (sub.status !== 'ACTIVE') {
         await this.prisma.subscription.update({
           where: { id: sub.id },
           data:  {
@@ -216,40 +221,52 @@ export class BillingService {
           where: { id: sub.userId },
           data:  { plan: sub.plan },
         });
-        this.logger.log(`Plano ativado: user=${sub.userId} → ${sub.plan}`);
+        this.logger.log(`Plano ativado: user=${sub.userId} → ${sub.plan} (paymentId=${paymentId})`);
       }
+    }
+
+    // ── Pagamento falhou → mantém status anterior, registra falha ───────────
+    if (eventType === 'PAYMENT_FAILED') {
+      await this.prisma.subscription.update({
+        where: { id: sub.id },
+        data:  { status: 'OVERDUE' },
+      });
+      this.logger.warn(`Pagamento falhou: user=${sub.userId} plano=${sub.plan} (paymentId=${paymentId})`);
     }
 
     // ── Pagamento vencido → marca overdue (mantém plano ativo por hora) ─────
     if (eventType === 'PAYMENT_OVERDUE') {
-      const sub = await this.prisma.subscription.findFirst({
-        where: { asaasSubscriptionId: subscriptionId },
+      await this.prisma.subscription.update({
+        where: { id: sub.id },
+        data:  { status: 'OVERDUE' },
       });
-      if (sub) {
-        await this.prisma.subscription.update({
-          where: { id: sub.id },
-          data:  { status: 'OVERDUE' },
-        });
-        this.logger.log(`Pagamento vencido: user=${sub.userId}`);
-      }
+      this.logger.log(`Pagamento vencido: user=${sub.userId}`);
+    }
+
+    // ── Pagamento estornado/deletado → downgrade para free ───────────────────
+    if (eventType === 'PAYMENT_DELETED' || eventType === 'PAYMENT_REFUNDED') {
+      await this.prisma.subscription.update({
+        where: { id: sub.id },
+        data:  { status: 'CANCELLED', cancelledAt: new Date() },
+      });
+      await this.prisma.user.update({
+        where: { id: sub.userId },
+        data:  { plan: 'free' },
+      });
+      this.logger.log(`Pagamento estornado/deletado → free: user=${sub.userId}`);
     }
 
     // ── Assinatura inativada → downgrade para free ───────────────────────────
     if (eventType === 'SUBSCRIPTION_INACTIVATED') {
-      const sub = await this.prisma.subscription.findFirst({
-        where: { asaasSubscriptionId: subscriptionId },
+      await this.prisma.subscription.update({
+        where: { id: sub.id },
+        data:  { status: 'INACTIVE', cancelledAt: new Date() },
       });
-      if (sub) {
-        await this.prisma.subscription.update({
-          where: { id: sub.id },
-          data:  { status: 'INACTIVE', cancelledAt: new Date() },
-        });
-        await this.prisma.user.update({
-          where: { id: sub.userId },
-          data:  { plan: 'free' },
-        });
-        this.logger.log(`Assinatura inativada, plano → free: user=${sub.userId}`);
-      }
+      await this.prisma.user.update({
+        where: { id: sub.userId },
+        data:  { plan: 'free' },
+      });
+      this.logger.log(`Assinatura inativada, plano → free: user=${sub.userId}`);
     }
 
     return { received: true };
