@@ -495,15 +495,6 @@ export default function MatchesPage() {
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        {isSameAgent && buyerPhone && (
-                          <a
-                            href={getWhatsAppLink(buyerPhone, `Olá ${m.buyer.buyerName}, tenho um imóvel que pode ser do seu interesse!`)}
-                            target="_blank" rel="noreferrer"
-                            className="flex items-center gap-1 text-xs bg-emerald-600/90 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-500 transition"
-                          >
-                            <Phone className="h-3 w-3" /> WhatsApp
-                          </a>
-                        )}
 
                         {!isSameAgent && otherAgentId && partnershipExists && (
                           <span className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium cursor-default ${

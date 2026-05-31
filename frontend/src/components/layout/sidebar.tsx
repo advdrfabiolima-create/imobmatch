@@ -44,8 +44,16 @@ export function Sidebar() {
     (p: any) => p.requesterId === user?.id && p.status === "ACCEPTED"
   ).length ?? 0;
 
-  const NavLink = ({ href, label, icon: Icon, badge, activeColor = "blue", bonus }: {
-    href: string; label: string; icon: React.ElementType; badge?: number; activeColor?: string; bonus?: boolean;
+  const { data: unreadData } = useQuery({
+    queryKey: ["unread-messages-badge"],
+    queryFn: () => api.get("/messages/unread").then((r) => r.data),
+    refetchInterval: 15000,
+    enabled: !!user,
+  });
+  const unreadCount: number = unreadData?.count ?? 0;
+
+  const NavLink = ({ href, label, icon: Icon, badge, badgeColor = "emerald", activeColor = "blue", bonus }: {
+    href: string; label: string; icon: React.ElementType; badge?: number; badgeColor?: "emerald" | "red"; activeColor?: string; bonus?: boolean;
   }) => {
     const active = pathname === href || pathname.startsWith(href + "/");
 
@@ -92,8 +100,12 @@ export function Sidebar() {
             </span>
           )}
           {badge != null && badge > 0 && (
-            <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-emerald-500/90 text-white text-[11px] font-bold flex items-center justify-center shadow-sm shadow-emerald-500/30">
-              {badge}
+            <span className={`min-w-[20px] h-5 px-1.5 rounded-full text-white text-[11px] font-bold flex items-center justify-center shadow-sm ${
+              badgeColor === "red"
+                ? "bg-red-500/90 shadow-red-500/30"
+                : "bg-emerald-500/90 shadow-emerald-500/30"
+            }`}>
+              {badge > 99 ? "99+" : badge}
             </span>
           )}
         </Link>
@@ -173,7 +185,7 @@ export function Sidebar() {
             icon={UserCheck}
             badge={pendingCount > 0 ? pendingCount : undefined}
           />
-          <NavLink href="/mensagens"     label="Mensagens"        icon={MessageSquare} />
+          <NavLink href="/mensagens" label="Mensagens" icon={MessageSquare} badge={unreadCount > 0 ? unreadCount : undefined} badgeColor="red" />
           <NavLink href="/corretores"    label="Corretores"       icon={Search} />
           <NavLink href="/oportunidades" label="Oportunidades"    icon={Flame}      activeColor="amber" />
           <NavLink href="/feed"          label="Feed da Rede"     icon={Rss} />

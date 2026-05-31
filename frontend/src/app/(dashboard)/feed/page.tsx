@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
 import {
-  Rss, Home, User, UserCheck, Zap, Send, Image as ImageIcon, MessageCircle,
+  Rss, Home, User, UserCheck, Zap, Send, Image as ImageIcon, MessageSquare,
 } from "lucide-react";
+import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
 import toast from "react-hot-toast";
 
@@ -148,17 +149,15 @@ function PostCard({ post, currentUserId }: { post: any; currentUserId?: string }
             <p className="text-sm text-foreground/80 whitespace-pre-wrap">{post.content}</p>
 
             {/* Contact button */}
-            {!isOwnPost && post.user?.phone && (
+            {!isOwnPost && post.user?.id && (
               <div className="mt-3">
-                <a
-                  href={`https://wa.me/55${post.user.phone.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition-colors"
+                <Link
+                  href={`/mensagens?partner=${post.user.id}`}
+                  className="inline-flex items-center gap-1.5 text-xs bg-primary/90 hover:bg-primary text-white px-3 py-1.5 rounded-lg transition-colors"
                 >
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  Contatar via WhatsApp
-                </a>
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Enviar mensagem
+                </Link>
               </div>
             )}
 

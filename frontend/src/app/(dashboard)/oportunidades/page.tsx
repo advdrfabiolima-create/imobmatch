@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
 import {
-  Zap, MapPin, Phone, Plus, X, TrendingDown,
+  Zap, MapPin, Plus, X, TrendingDown,
   Building2, Home, Landmark, Warehouse, Trees,
   Eye, MessageCircle, Clock, Flame, RefreshCw,
-  Wallet, Users, MoreVertical, PauseCircle, CheckCircle2, Trash2,
+  Wallet, Users, MoreVertical, PauseCircle, CheckCircle2, Trash2, MessageSquare,
 } from "lucide-react";
+import Link from "next/link";
 import { STATES } from "@/lib/utils";
 import { CitySelect } from "@/components/ui/city-select";
 import { useAuthStore } from "@/store/auth.store";
@@ -360,9 +361,6 @@ function OpportunityCard({
   // Resolve photo: photoUrl > property.photos[0] > null (fallback)
   const photo = opp.photoUrl || opp.property?.photos?.[0] || null;
 
-  const whatsappUrl = opp.agent?.phone
-    ? `https://wa.me/55${opp.agent.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá ${opp.agent.name}, vi sua oportunidade "${opp.title}" no ImobMatch e tenho um cliente interessado!`)}`
-    : undefined;
 
   return (
     <div
@@ -517,17 +515,15 @@ function OpportunityCard({
           {isOwner ? (
             <span className="text-xs text-muted-foreground/60 italic">Você publicou</span>
           ) : (
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href={`/mensagens?partner=${opp.agentId}`}
               className={`flex items-center gap-1.5 text-xs font-bold text-white px-3 py-2 rounded-xl shadow-sm transition-all duration-200 active:scale-95 ${
                 isCritical ? "bg-red-600 hover:bg-red-700" : "bg-orange-500 hover:bg-orange-600"
-              } ${!whatsappUrl ? "opacity-50 pointer-events-none" : ""}`}
+              }`}
             >
-              <Phone className="h-3.5 w-3.5" />
+              <MessageSquare className="h-3.5 w-3.5" />
               💰 Tenho comprador
-            </a>
+            </Link>
           )}
         </div>
       </div>
