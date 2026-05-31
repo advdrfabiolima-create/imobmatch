@@ -12,7 +12,6 @@ import {
   MapPin,
   Building2,
   MessageSquare,
-  Phone,
   Mail,
   ArrowLeft,
   Loader2,
@@ -132,14 +131,6 @@ export default function CorretorPerfilPage() {
                     Mensagem
                   </Button>
                 </Link>
-                {agent.phone && (
-                  <a href={`https://wa.me/55${agent.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none">
-                    <Button className="w-full bg-green-600 hover:bg-green-700 gap-2" size="sm">
-                      <Phone className="h-4 w-4" />
-                      WhatsApp
-                    </Button>
-                  </a>
-                )}
               </div>
             </div>
           </CardContent>
