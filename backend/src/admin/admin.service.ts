@@ -124,4 +124,33 @@ export class AdminService {
     if (!opp) throw new NotFoundException('Oportunidade não encontrada');
     return this.prisma.opportunity.delete({ where: { id } });
   }
+
+  async listSubscriptions(query: { search?: string; status?: string; page?: number; limit?: number }) {
+    const { search, status, page = 1, limit = 50 } = query;
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const where: any = {};
+    if (status) where.status = status;
+    if (search) where.user = {
+      OR: [
+        { name:  { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ],
+    };
+
+    const [subscriptions, total] = await Promise.all([
+      this.prisma.subscription.findMany({
+        where,
+        skip,
+        take: Number(limit),
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: { select: { id: true, name: true, email: true, plan: true, city: true, state: true } },
+        },
+      }),
+      this.prisma.subscription.count({ where }),
+    ]);
+
+    return { data: subscriptions, total, page: Number(page), totalPages: Math.ceil(total / Number(limit)) };
+  }
 }

@@ -60,4 +60,10 @@ export class AdminController {
   removeOpportunity(@Param('id') id: string) {
     return this.adminService.removeOpportunity(id);
   }
+
+  @Get('subscriptions')
+  @ApiOperation({ summary: 'Listar assinaturas com dados do usuário' })
+  listSubscriptions(@Query() query: any) {
+    return this.adminService.listSubscriptions(query);
+  }
 }

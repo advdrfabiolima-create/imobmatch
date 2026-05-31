@@ -11,8 +11,10 @@ import { api } from "@/lib/api";
 import {
   Users, Building2, Zap, UserCheck, Search, ToggleLeft, Trash2,
   Mail, Send, CheckCircle2, Clock, UserPlus, Phone, CreditCard, MessageSquarePlus, Download, Flame,
+  DollarSign, TrendingUp, AlertCircle, XCircle, BadgeCheck,
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { PLANS } from "@/config/plans";
 
 // ── Badge de plano ────────────────────────────────────────────────────────────
 const PLAN_STYLES: Record<string, string> = {
@@ -389,12 +391,262 @@ function FeedbacksTab() {
   );
 }
 
+// ── Helpers financeiros ───────────────────────────────────────────────────────
+
+const PLAN_PRICES: Record<string, number> = {
+  free: 0, starter: 39, pro: 79, premium: 149, agency: 399,
+};
+
+const PLAN_LABELS: Record<string, string> = {
+  free: "Free", starter: "Starter", pro: "Pro", premium: "Premium", agency: "Agency",
+};
+
+const SUB_STATUS: Record<string, { label: string; color: string; icon: React.ElementType }> = {
+  ACTIVE:    { label: "Ativa",               color: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30", icon: BadgeCheck   },
+  PENDING:   { label: "Aguardando",          color: "bg-amber-500/15 text-amber-300 border-amber-500/30",      icon: Clock        },
+  OVERDUE:   { label: "Vencida",             color: "bg-red-500/15 text-red-300 border-red-500/30",            icon: AlertCircle  },
+  CANCELLED: { label: "Cancelada",           color: "bg-white/5 text-muted-foreground border-border",          icon: XCircle      },
+  INACTIVE:  { label: "Inativa",             color: "bg-white/5 text-muted-foreground border-border",          icon: XCircle      },
+};
+
+function SubStatusBadge({ status }: { status: string }) {
+  const cfg = SUB_STATUS[status] ?? SUB_STATUS.INACTIVE;
+  const Icon = cfg.icon;
+  return (
+    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${cfg.color}`}>
+      <Icon className="h-3 w-3" /> {cfg.label}
+    </span>
+  );
+}
+
+// ── Aba Financeiro ────────────────────────────────────────────────────────────
+function FinanceiroTab() {
+  const [search, setSearch]       = useState("");
+  const [statusFilter, setStatus] = useState("");
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-subscriptions", search, statusFilter],
+    queryFn: () =>
+      api.get("/admin/subscriptions", {
+        params: { search: search || undefined, status: statusFilter || undefined, limit: 100 },
+      }).then((r) => r.data),
+  });
+
+  const subs: any[] = data?.data ?? [];
+  const total: number = data?.total ?? 0;
+
+  // MRR = soma dos planos ACTIVE
+  const mrr = subs
+    .filter((s) => s.status === "ACTIVE")
+    .reduce((acc, s) => acc + (PLAN_PRICES[s.plan] ?? PLAN_PRICES[s.user?.plan] ?? 0), 0);
+
+  const activeCount    = subs.filter((s) => s.status === "ACTIVE").length;
+  const overdueCount   = subs.filter((s) => s.status === "OVERDUE").length;
+  const cancelledCount = subs.filter((s) => s.status === "CANCELLED" || s.status === "INACTIVE").length;
+
+  // Breakdown por plano (apenas ativos)
+  const byPlan = subs
+    .filter((s) => s.status === "ACTIVE")
+    .reduce((acc: Record<string, number>, s) => {
+      const p = s.plan ?? s.user?.plan ?? "free";
+      acc[p] = (acc[p] ?? 0) + 1;
+      return acc;
+    }, {});
+
+  return (
+    <div className="space-y-6">
+
+      {/* Cards de resumo */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-5 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">MRR</p>
+              <p className="text-2xl font-bold text-emerald-400">
+                R$ {mrr.toLocaleString("pt-BR")}
+              </p>
+              <p className="text-xs text-muted-foreground/60 mt-0.5">receita mensal recorrente</p>
+            </div>
+            <div className="p-2.5 bg-emerald-500/10 rounded-xl">
+              <TrendingUp className="h-5 w-5 text-emerald-400" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-5 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Assinantes ativos</p>
+              <p className="text-2xl font-bold text-foreground">{activeCount}</p>
+              <p className="text-xs text-muted-foreground/60 mt-0.5">de {total} total</p>
+            </div>
+            <div className="p-2.5 bg-white/5 rounded-xl">
+              <DollarSign className="h-5 w-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-5 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Vencidas</p>
+              <p className="text-2xl font-bold text-red-400">{overdueCount}</p>
+              <p className="text-xs text-muted-foreground/60 mt-0.5">requerem atenção</p>
+            </div>
+            <div className="p-2.5 bg-red-500/10 rounded-xl">
+              <AlertCircle className="h-5 w-5 text-red-400" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-5 flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Canceladas</p>
+              <p className="text-2xl font-bold text-muted-foreground">{cancelledCount}</p>
+              <p className="text-xs text-muted-foreground/60 mt-0.5">inativas ou canceladas</p>
+            </div>
+            <div className="p-2.5 bg-white/5 rounded-xl">
+              <XCircle className="h-5 w-5 text-muted-foreground" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Breakdown por plano */}
+      {Object.keys(byPlan).length > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+              Distribuição por plano (ativos)
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {(["starter", "pro", "premium", "agency"] as const).map((pid) => {
+                const count = byPlan[pid] ?? 0;
+                if (!count) return null;
+                const price = PLAN_PRICES[pid];
+                const subtotal = count * price;
+                return (
+                  <div key={pid} className="flex items-center gap-2 bg-white/5 border border-border rounded-xl px-4 py-2.5">
+                    <CreditCard className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <div>
+                      <p className="text-xs font-semibold text-foreground">{PLAN_LABELS[pid]}</p>
+                      <p className="text-[11px] text-muted-foreground">{count}× R$ {price} = <strong className="text-emerald-400">R$ {subtotal.toLocaleString("pt-BR")}</strong>/mês</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Filtros */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por nome ou e-mail..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatus(e.target.value)}
+          className="h-10 px-3 rounded-md border border-input bg-background text-sm sm:w-44"
+        >
+          <option value="">Todos os status</option>
+          <option value="ACTIVE">Ativas</option>
+          <option value="PENDING">Aguardando</option>
+          <option value="OVERDUE">Vencidas</option>
+          <option value="CANCELLED">Canceladas</option>
+          <option value="INACTIVE">Inativas</option>
+        </select>
+      </div>
+
+      {/* Tabela */}
+      {isLoading ? (
+        <div className="space-y-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-16 bg-white/5 rounded-xl animate-pulse" />
+          ))}
+        </div>
+      ) : subs.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground">
+          <DollarSign className="h-10 w-10 mx-auto mb-3 opacity-30" />
+          <p className="text-sm">Nenhuma assinatura encontrada.</p>
+        </div>
+      ) : (
+        <div className="border border-border rounded-xl overflow-hidden bg-card">
+          {/* Cabeçalho */}
+          <div className="bg-muted/50 border-b border-border px-4 py-2.5 grid grid-cols-12 gap-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            <span className="col-span-4">Usuário</span>
+            <span className="col-span-2">Plano</span>
+            <span className="col-span-2 text-right">Valor/mês</span>
+            <span className="col-span-2">Status</span>
+            <span className="col-span-2 hidden sm:block">Próximo venc.</span>
+          </div>
+
+          <div className="divide-y divide-border">
+            {subs.map((s: any) => {
+              const plan      = s.plan ?? s.user?.plan ?? "free";
+              const price     = PLAN_PRICES[plan] ?? 0;
+              const planLabel = PLAN_LABELS[plan] ?? plan;
+              return (
+                <div key={s.id} className="grid grid-cols-12 gap-3 px-4 py-3.5 items-center hover:bg-accent transition-colors">
+                  {/* Usuário */}
+                  <div className="col-span-4 min-w-0">
+                    <p className="font-medium text-sm text-foreground truncate">{s.user?.name ?? "—"}</p>
+                    <p className="text-xs text-muted-foreground truncate">{s.user?.email ?? "—"}</p>
+                  </div>
+
+                  {/* Plano */}
+                  <div className="col-span-2">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border bg-primary/10 text-primary border-primary/20">
+                      <CreditCard className="h-3 w-3" />
+                      {planLabel}
+                    </span>
+                  </div>
+
+                  {/* Valor */}
+                  <div className="col-span-2 text-right">
+                    {price > 0 ? (
+                      <span className="text-sm font-bold text-emerald-400">
+                        R$ {price.toLocaleString("pt-BR")}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Grátis</span>
+                    )}
+                  </div>
+
+                  {/* Status */}
+                  <div className="col-span-2">
+                    <SubStatusBadge status={s.status} />
+                  </div>
+
+                  {/* Próximo vencimento */}
+                  <div className="col-span-2 hidden sm:block">
+                    <p className="text-xs text-muted-foreground">
+                      {s.nextDueDate ? formatDate(s.nextDueDate) : "—"}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <p className="text-xs text-muted-foreground/60">{total} assinatura(s) no total</p>
+    </div>
+  );
+}
+
 // ── Página principal Admin ────────────────────────────────────────────────────
 export default function AdminPage() {
   const { user } = useAuthStore();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState<"stats" | "users" | "properties" | "opportunities" | "leads" | "feedbacks">("stats");
+  const [tab, setTab] = useState<"stats" | "users" | "properties" | "opportunities" | "financeiro" | "leads" | "feedbacks">("stats");
   const [search, setSearch] = useState("");
 
   if (user?.role !== "ADMIN") {
@@ -464,7 +716,8 @@ export default function AdminPage() {
     { key: "users",         label: "Usuários"        },
     { key: "properties",    label: "Imóveis"         },
     { key: "opportunities", label: "Oportunidades"   },
-    { key: "leads",         label: "Lista VIP 🔒"     },
+    { key: "financeiro",    label: "Financeiro 💰"   },
+    { key: "leads",         label: "Lista VIP 🔒"    },
     { key: "feedbacks",     label: "Feedbacks 💬"    },
   ] as const;
 
@@ -646,6 +899,7 @@ export default function AdminPage() {
         )}
 
         {/* ── Lista VIP ── */}
+        {tab === "financeiro" && <FinanceiroTab />}
         {tab === "leads" && <LeadsTab />}
 
         {/* ── Feedbacks ── */}
