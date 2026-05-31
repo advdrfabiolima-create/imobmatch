@@ -236,7 +236,7 @@ export default function GatewayPage() {
               Sou corretor
               <ArrowRight className="h-4 w-4" />
             </div>
-            <p className="text-white/22 text-xs mt-3">Acesso antecipado gratuito</p>
+            <p className="text-white/22 text-xs mt-3">Criar conta gratuita</p>
           </div>
 
           {/* Bottom hint */}
